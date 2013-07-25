@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Link onde ficam os padrões de configurações do Hibernate para mapeamento. -->
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+ "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+	<session-factory>
+		<!-- propriedade em que deve ser atribuído a classe de conexão com o MySQL. 
+			Deve-se adicionar a classe nas libs do projeto -->
+		<property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+		<!-- propriedade em que deve ser atribuído o endereço de conexão do banco -->
+		<property name="hibernate.connection.url">jdbc:mysql://localhost/tcc</property>
+		<!-- propriedade em que deve ser atribuído a username do banco -->
+		<property name="hibernate.connection.username">root</property>
+		<!-- propriedade em que deve ser atribuído a senha do banco -->
+		<property name="hibernate.connection.password">root</property>
+		<!-- propriedade Escolhe o dialeto do Banco de Dados. Nesse caso MySQL -->
+		<property name="dialect">org.hibernate.dialect.MySQLDialect</property>
+		<!-- propriedade que mostra os comandos sql utilizados no Console da IDE -->
+		<property name="show_sql">true</property>
+
+		<!-- Classes que irão mapear as Entidades do Banco -->
+		<mapping class="com.ufjf.DTO.CalendarioSemestre" />
+		<mapping class="com.ufjf.DTO.Curso" />
+		<mapping class="com.ufjf.DTO.Participacao" />
+		<mapping class="com.ufjf.DTO.Pergunta" />
+		<mapping class="com.ufjf.DTO.Permissoes" />
+		<mapping class="com.ufjf.DTO.Questionario" />
+		<mapping class="com.ufjf.DTO.Resposta" />
+		<mapping class="com.ufjf.DTO.TCC" />
+		<mapping class="com.ufjf.DTO.TipoUsuario" />
+		<mapping class="com.ufjf.DTO.Usuario" />
+	</session-factory>
+</hibernate-configuration>
