@@ -1,6 +1,39 @@
-<?page title="Auto Generated index.zul"?>
-<window title="Hello World!!" border="normal" width="200px">
+<?page title="Login"?>
+<zk>
+	<div
+		style="position:absolute; top:50%;
+margin-top:-100px; left:50%; margin-left:-150px;">
+		<div align="center" apply="org.zkoss.bind.BindComposer"
+			viewModel="@id('lf') @init('com.ufjf.controller.LoginController')"
+			form="@id('fx') @load(lf.usuario) @save(lf.usuario, before='submit')"
+			id="loginForm">
+			<panel title="Login" height="200px" width="300px"
+				border="normal">
+				<panelchildren>
+					<tablelayout columns="2">
+						<tablechildren colspan="2"><space height="20px"/> </tablechildren>
+						<tablechildren>Matricula:</tablechildren>
+						<tablechildren>
+							<textbox value="@bind(fx.matricula)"
+								width="150px" tabindex="1" id="loginMatricula" />
+						</tablechildren>
+						<tablechildren colspan="2"><space height="20px"/> </tablechildren>
+						<tablechildren>Senha:</tablechildren>
+						<tablechildren>
+							<textbox value="@bind(fx.senha)"
+								type="password" width="150px" tabindex="2" id="loginSenha" />
+						</tablechildren>
+						<tablechildren colspan="2"><space height="15px"/> </tablechildren>
+						<tablechildren colspan="2">
+							<div align="right">
+								<button label="Ok"
+									onClick="@command('submit')" width="50px" height="30px" />
+							</div>
+						</tablechildren>
+					</tablelayout>
+				</panelchildren>
+			</panel>
 
-<label value="You are using: ${desktop.webApp.version}"/>
-
-</window>
+		</div>
+	</div>
+</zk>

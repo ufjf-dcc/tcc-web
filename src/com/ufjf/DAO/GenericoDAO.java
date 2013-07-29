@@ -3,12 +3,22 @@ package com.ufjf.DAO;
 import java.util.List;
 
 import org.hibernate.HibernateException;
+import org.hibernate.Session;
 
 import com.ufjf.InterfaceDAO.IGenericoDAO;
 
 public class GenericoDAO implements IGenericoDAO {
-	
+
 	HibernateUtil hibernateUtil = new HibernateUtil();
+	Session session;
+
+	public GenericoDAO() {
+		try {
+			session = hibernateUtil.getInstance();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	@Override
 	public boolean salvar(Object objeto) throws HibernateException {
@@ -31,7 +41,7 @@ public class GenericoDAO implements IGenericoDAO {
 		}
 		return retorno;
 	}
-	
+
 	@Override
 	public boolean editar(Object objeto) throws HibernateException {
 		boolean retorno = false;

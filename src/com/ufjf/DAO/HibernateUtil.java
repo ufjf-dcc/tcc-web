@@ -31,8 +31,10 @@ public class HibernateUtil {
 	private static void start() {
 		try {
 			Configuration configuration = new Configuration();
-			serviceRegistry = new ServiceRegistryBuilder().applySettings(
-					configuration.getProperties()).buildServiceRegistry();
+			configuration.configure();
+			serviceRegistry = new ServiceRegistryBuilder()
+					.applySettings(configuration.getProperties())
+					.buildServiceRegistry();
 			sessionFactory = configuration.buildSessionFactory(serviceRegistry);
 		} catch (Throwable e) {
 			throw new ExceptionInInitializerError(e);
@@ -61,7 +63,7 @@ public class HibernateUtil {
 	 * @param end
 	 * @return List<?>
 	 */
-	@SuppressWarnings({ "finally", "rawtypes", "unchecked" })
+	@SuppressWarnings({ "finally", "rawtypes" })
 	public static List<?> findAll(Class objClass, int begin, int end) {
 		List<?> lista = null;
 		Query query = null;
