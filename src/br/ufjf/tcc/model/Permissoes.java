@@ -1,4 +1,4 @@
-package com.ufjf.DTO;
+package br.ufjf.tcc.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;

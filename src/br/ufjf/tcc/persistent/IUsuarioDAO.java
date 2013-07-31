@@ -1,7 +1,9 @@
-package com.ufjf.InterfaceDAO;
+package br.ufjf.tcc.persistent;
 
-import com.ufjf.DTO.Usuario;
+import org.hibernate.HibernateException;
+
+import br.ufjf.tcc.model.Usuario;
 
 public interface IUsuarioDAO {
-	public Usuario retornaUsuario(String matricula, String senha);
+	public Usuario retornaUsuario(String matricula, String senha) throws HibernateException, Exception;
 }

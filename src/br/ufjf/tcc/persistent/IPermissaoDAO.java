@@ -1,4 +1,4 @@
-package com.ufjf.InterfaceDAO;
+package br.ufjf.tcc.persistent;
 
 
 public interface IPermissaoDAO {
