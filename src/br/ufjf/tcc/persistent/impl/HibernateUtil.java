@@ -1,4 +1,4 @@
-package com.ufjf.DAO;
+package br.ufjf.tcc.persistent.impl;
 
 import java.util.List;
 

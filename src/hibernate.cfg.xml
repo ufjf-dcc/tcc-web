@@ -19,15 +19,15 @@
 		<property name="show_sql">true</property>
 
 		<!-- Classes que irão mapear as Entidades do Banco -->
-		<mapping class="com.ufjf.DTO.CalendarioSemestre" />
-		<mapping class="com.ufjf.DTO.Curso" />
-		<mapping class="com.ufjf.DTO.Participacao" />
-		<mapping class="com.ufjf.DTO.Pergunta" />
-		<mapping class="com.ufjf.DTO.Permissoes" />
-		<mapping class="com.ufjf.DTO.Questionario" />
-		<mapping class="com.ufjf.DTO.Resposta" />
-		<mapping class="com.ufjf.DTO.TCC" />
-		<mapping class="com.ufjf.DTO.TipoUsuario" />
-		<mapping class="com.ufjf.DTO.Usuario" />
+		<mapping class="br.ufjf.tcc.model.CalendarioSemestre" />
+		<mapping class="br.ufjf.tcc.model.Curso" />
+		<mapping class="br.ufjf.tcc.model.Participacao" />
+		<mapping class="br.ufjf.tcc.model.Pergunta" />
+		<mapping class="br.ufjf.tcc.model.Permissoes" />
+		<mapping class="br.ufjf.tcc.model.Questionario" />
+		<mapping class="br.ufjf.tcc.model.Resposta" />
+		<mapping class="br.ufjf.tcc.model.TCC" />
+		<mapping class="br.ufjf.tcc.model.TipoUsuario" />
+		<mapping class="br.ufjf.tcc.model.Usuario" />
 	</session-factory>
 </hibernate-configuration>
