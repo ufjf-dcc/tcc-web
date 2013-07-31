@@ -1,21 +1,23 @@
-package com.ufjf.DAO;
+package br.ufjf.tcc.persistent.impl;
 
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.criterion.Restrictions;
 
-import com.ufjf.DTO.Usuario;
-import com.ufjf.InterfaceDAO.IUsuarioDAO;
+import br.ufjf.tcc.model.Usuario;
+import br.ufjf.tcc.persistent.GenericoDAO;
+import br.ufjf.tcc.persistent.IUsuarioDAO;
+
 
 public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 
 	@SuppressWarnings("finally")
 	@Override
-	public Usuario retornaUsuario(String matricula, String senha) {
+	public Usuario retornaUsuario(String matricula, String senha) throws HibernateException, Exception {
 		Usuario usuario = null;
 		try {
 
-			Criteria criteria = session
+			Criteria criteria = getSession()
 					.createCriteria(Usuario.class, "usuario")
 					.add(Restrictions.eq("usuario.matricula", matricula))
 					.add(Restrictions.eq("usuario.senha", senha))
@@ -25,7 +27,7 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 		} catch (HibernateException e) {
 			System.err.println(e.fillInStackTrace());
 		} finally {
-			session.close();
+			getSession().close();
 			return usuario;
 		}
 	}
