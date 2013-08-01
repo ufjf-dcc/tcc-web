@@ -5,19 +5,10 @@ import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 
-import br.ufjf.tcc.persistent.impl.HibernateUtil;
 
 public class GenericoDAO implements IGenericoDAO {
 
 	private Session session;
-
-	public GenericoDAO() {
-		try {
-			session = HibernateUtil.getInstance();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
 	@Override
 	public boolean salvar(Object objeto) throws HibernateException {

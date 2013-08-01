@@ -1,4 +1,4 @@
-package br.ufjf.tcc.persistent.impl;
+package br.ufjf.tcc.persistent;
 
 import java.util.List;
 
