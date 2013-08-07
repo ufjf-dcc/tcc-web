@@ -5,7 +5,6 @@ import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 
-
 public class GenericoDAO implements IGenericoDAO {
 
 	private Session session;
@@ -102,8 +101,13 @@ public class GenericoDAO implements IGenericoDAO {
 	}
 
 	public Session getSession() throws Exception {
-		if (!session.isOpen()) {
+		if(session == null){
 			session = HibernateUtil.getInstance();
+		}
+		else{
+			if (!session.isOpen()){
+				session = HibernateUtil.getInstance();
+			}
 		}
 		return session;
 	}
