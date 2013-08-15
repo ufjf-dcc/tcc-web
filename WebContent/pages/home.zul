@@ -1,5 +1,12 @@
 <?page title="Home" contentType="text/html;charset=UTF-8"?>
+
 <zk>
-<include src="/templates/menu.zul" />
-	
+	<div align="center" apply="org.zkoss.bind.BindComposer"
+		viewModel="@id('hf') @init('br.ufjf.tcc.controller.HomeController')"
+		form="@id('fx') @load(hf.usuario)">
+		<include src="/templates/menu.zul" />
+
+		Seja bem vindo(a) :
+		<label value="@load(fx.nomeUsuario)" />
+	</div>
 </zk>
