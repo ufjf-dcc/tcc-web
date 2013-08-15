@@ -44,7 +44,7 @@ public class LoginController {
 			loginBusiness = new LoginBusiness();
 			String senha = encripta(usuario.getSenha());
 			usuario = loginBusiness.login(usuario.getMatricula(), senha);
-			if (usuario != null) {
+			if (usuario != null && usuario.getIdUsuario() > 0) {
 				Executions.sendRedirect("/pages/home.zul");
 			}
 		}
