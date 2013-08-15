@@ -1,22 +1,26 @@
 <zk>
-	<menubar id="menubar" width="100%">
-		<menuitem label="Home" href="/pages/home.zul" />
+	<div align="center" apply="org.zkoss.bind.BindComposer"
+		viewModel="@id('hf') @init('br.ufjf.tcc.controller.MenuController')"
+		form="@id('fx') @load(hf.usuario)">
+		<menubar id="menubar" width="100%">
+			<menuitem label="Home" href="/pages/home.zul" />
 
-		<menu label="Professor">
-			<menupopup>
-				<menuitem label="Teste" />
-			</menupopup>
-		</menu>
-		<menu label="Aluno">
-			<menupopup>
-				<menuitem label="Upload de TCC" />
-			</menupopup>
-		</menu>
-		<menu label="Configurações">
-			<menupopup>
-				<menuitem label="Teste" />
-			</menupopup>
-		</menu>
-		<menuitem label="Sair" />
-	</menubar>
+			<menu label="Professor">
+				<menupopup>
+					<menuitem label="Teste" />
+				</menupopup>
+			</menu>
+			<menu label="Aluno">
+				<menupopup>
+					<menuitem label="Upload de TCC" />
+				</menupopup>
+			</menu>
+			<menu label="Configurações">
+				<menupopup>
+					<menuitem label="Teste" />
+				</menupopup>
+			</menu>
+			<menuitem label="Sair" onClick="@command('sair')" />
+		</menubar>
+	</div>
 </zk>

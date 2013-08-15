@@ -9,42 +9,45 @@ import jonelo.jacksum.algorithm.AbstractChecksum;
 
 import org.hibernate.HibernateException;
 import org.zkoss.bind.annotation.Command;
+import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zul.Messagebox;
 
+import br.ufjf.tcc.business.LoginBusiness;
 import br.ufjf.tcc.model.Usuario;
-import br.ufjf.tcc.persistent.impl.UsuarioDAO;
-
 
 public class LoginController {
 
 	private Usuario usuario = new Usuario();
-	private UsuarioDAO usuarioDAO;
+	private LoginBusiness loginBusiness;
+	private HttpSession session = (HttpSession) (Executions.getCurrent())
+			.getDesktop().getSession().getNativeSession();
+
+	@Init
+	public void verificaLogado() throws HibernateException, Exception {
+		usuario = (Usuario) session.getAttribute("usuario");
+		if (usuario != null) {
+			loginBusiness = new LoginBusiness();
+			usuario = loginBusiness.login(usuario.getMatricula(),
+					usuario.getSenha());
+			if (usuario != null) {
+				Executions.sendRedirect("/pages/home.zul");
+				return;
+			}
+		}
+		usuario = new Usuario();
+	}
 
 	@Command
 	public void submit() throws HibernateException, Exception {
-		String senha = encripta(usuario.getSenha());
-		usuarioDAO = new UsuarioDAO();
-		usuario = usuarioDAO.retornaUsuario(usuario.getMatricula(), senha);
-
-		if (usuario != null) {
-			HttpSession session = (HttpSession) (Executions.getCurrent())
-					.getDesktop().getSession().getNativeSession();
-			session.setAttribute("usuario", usuario);
-			Executions.sendRedirect("/pages/home.zul");
-		}else{
-			usuario = new Usuario();
-			Messagebox.show("Usuário ou Senha inválidos!", "Error", Messagebox.OK,Messagebox.ERROR);
+		if (usuario != null && usuario.getMatricula() != null
+				&& usuario.getSenha() != null) {
+			loginBusiness = new LoginBusiness();
+			String senha = encripta(usuario.getSenha());
+			usuario = loginBusiness.login(usuario.getMatricula(), senha);
+			if (usuario != null && usuario.getIdUsuario() > 0) {
+				Executions.sendRedirect("/pages/home.zul");
+			}
 		}
-
-	}
-
-	public Usuario getUsuario() {
-		return usuario;
-	}
-
-	public void setUsuario(Usuario usuario) {
-		this.usuario = usuario;
 	}
 
 	public static String encripta(String senha) {
@@ -57,6 +60,14 @@ public class LoginController {
 			ns.printStackTrace();
 			return senha;
 		}
+	}
+
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
 	}
 
 }

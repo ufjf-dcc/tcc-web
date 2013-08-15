@@ -5,19 +5,9 @@ import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 
-import br.ufjf.tcc.persistent.impl.HibernateUtil;
-
 public class GenericoDAO implements IGenericoDAO {
 
 	private Session session;
-
-	public GenericoDAO() {
-		try {
-			session = HibernateUtil.getInstance();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
 	@Override
 	public boolean salvar(Object objeto) throws HibernateException {
@@ -111,8 +101,13 @@ public class GenericoDAO implements IGenericoDAO {
 	}
 
 	public Session getSession() throws Exception {
-		if (!session.isOpen()) {
+		if(session == null){
 			session = HibernateUtil.getInstance();
+		}
+		else{
+			if (!session.isOpen()){
+				session = HibernateUtil.getInstance();
+			}
 		}
 		return session;
 	}
