@@ -2,8 +2,6 @@ package br.ufjf.tcc.controller;
 
 import java.security.NoSuchAlgorithmException;
 
-import javax.servlet.http.HttpSession;
-
 import jonelo.jacksum.JacksumAPI;
 import jonelo.jacksum.algorithm.AbstractChecksum;
 
@@ -11,6 +9,8 @@ import org.hibernate.HibernateException;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Session;
+import org.zkoss.zk.ui.Sessions;
 
 import br.ufjf.tcc.business.LoginBusiness;
 import br.ufjf.tcc.model.Usuario;
@@ -19,8 +19,7 @@ public class LoginController {
 
 	private Usuario usuario = new Usuario();
 	private LoginBusiness loginBusiness;
-	private HttpSession session = (HttpSession) (Executions.getCurrent())
-			.getDesktop().getSession().getNativeSession();
+	private Session session = Sessions.getCurrent();
 
 	@Init
 	public void verificaLogado() throws HibernateException, Exception {

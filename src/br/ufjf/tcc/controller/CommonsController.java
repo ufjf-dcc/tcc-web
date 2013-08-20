@@ -1,17 +1,16 @@
 package br.ufjf.tcc.controller;
 
-import javax.servlet.http.HttpSession;
-
 import org.hibernate.HibernateException;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Session;
+import org.zkoss.zk.ui.Sessions;
 
 import br.ufjf.tcc.business.LoginBusiness;
 import br.ufjf.tcc.model.Usuario;
 
 public class CommonsController {
 	private Usuario usuarioCommon;
-	private HttpSession session = (HttpSession) (Executions.getCurrent())
-			.getDesktop().getSession().getNativeSession();
+	private Session session = Sessions.getCurrent();
 	private LoginBusiness loginBusiness;
 
 	public void testaLogado() throws HibernateException, Exception {
@@ -36,7 +35,7 @@ public class CommonsController {
 		return usuarioCommon;
 	}
 
-	public HttpSession getSession() {
+	public Session getSession() {
 		return session;
 	}
 }
