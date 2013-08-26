@@ -10,10 +10,11 @@ public class HomeController extends CommonsController {
 
 	@Init
 	public void init() throws HibernateException, Exception{
-		testaLogado();
+		super.testaLogado();
 	}
 	
 	public Usuario getUsuario(){
 		return super.getUsuarioCommon();
 	}
+
 }
