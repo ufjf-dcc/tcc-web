@@ -14,7 +14,7 @@ public class HomeController extends CommonsController {
 	}
 	
 	public Usuario getUsuario(){
-		return super.getUsuarioCommon();
+		return super.getUsuario();
 	}
 
 }

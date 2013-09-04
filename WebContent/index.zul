@@ -5,7 +5,7 @@
 margin-top:-100px; left:50%; margin-left:-150px;">
 		<div align="center" apply="org.zkoss.bind.BindComposer"
 			viewModel="@id('lf') @init('br.ufjf.tcc.controller.LoginController')"
-			form="@id('fx') @load(lf.usuario) @save(lf.usuario, before='submit')"
+			form="@id('fx') @load(lf.usuarioForm) @save(lf.usuarioForm, before='submit')"
 			id="loginForm">
 			<panel title="Login" height="200px" width="300px"
 				border="normal">

@@ -6,9 +6,8 @@ import jonelo.jacksum.JacksumAPI;
 import jonelo.jacksum.algorithm.AbstractChecksum;
 
 import org.hibernate.HibernateException;
-import org.zkoss.zk.ui.Session;
-import org.zkoss.zk.ui.Sessions;
 
+import br.ufjf.tcc.library.SessionManager;
 import br.ufjf.tcc.model.Usuario;
 import br.ufjf.tcc.persistent.impl.UsuarioDAO;
 
@@ -16,13 +15,11 @@ public class UsuarioBusiness {
 
 	public boolean login(String matricula, String senha)
 			throws HibernateException, Exception {
-		Usuario usuario;
 		UsuarioDAO usuarioDAO = new UsuarioDAO();
-		usuario = usuarioDAO.retornaUsuario(matricula, this.encripta(senha));
+		Usuario usuario = usuarioDAO.retornaUsuario(matricula, this.encripta(senha));
 
 		if (usuario != null) {
-			Session session = Sessions.getCurrent();
-			session.setAttribute("usuario", usuario);
+			SessionManager.setAttribute("usuario", usuario);
 			return true;
 		}
 
@@ -40,7 +37,7 @@ public class UsuarioBusiness {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 
