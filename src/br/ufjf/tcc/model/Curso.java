@@ -33,8 +33,6 @@ public class Curso implements Serializable {
 	 */
 	@Id
 	@Column(name = "idCurso", unique = true, nullable = false)
-	@GeneratedValue(generator = "increment")
-	@GenericGenerator(name = "increment", strategy = "increment")
 	private int idCurso;
 
 	/**

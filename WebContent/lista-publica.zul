@@ -1,0 +1,20 @@
+<?page title="Lista Péblica"?>
+<zk>
+	<div apply="org.zkoss.bind.BindComposer"
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.ListaPublicaController')">
+		<grid model="@load(vm.tccs) @template('lista')" mold="paging" pageSize="20">
+			<columns>
+				<column width="100%">NomeTCC</column>
+				<column width="100%">Autor</column>
+				<column width="100%">Orientador</column>
+			</columns>
+			<template name="lista">
+				<row>
+					<label value="@load(each.nomeTCC)" />
+					<label value="@load(each.aluno.nomeUsuario)" />
+					<label value="@load(each.orientador.nomeUsuario)" />
+				</row>
+			</template>
+		</grid>
+	</div>
+</zk>
