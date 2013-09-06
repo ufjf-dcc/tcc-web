@@ -1,8 +1,18 @@
-<?page title="Lista Péblica"?>
+<?page title="Lista Pública de monografias"?>
 <zk>
+	<style src="style.css" />
 	<div apply="org.zkoss.bind.BindComposer"
 		viewModel="@id('vm') @init('br.ufjf.tcc.controller.ListaPublicaController')">
-		<grid model="@load(vm.tccs) @template('lista')" mold="paging" pageSize="20">
+		<grid model="@load(vm.filterTccs) @template('lista')" emptyMessage="Nada foi encontrado." mold="paging" pageSize="20">
+			<auxhead sclass="text-center">
+            	<auxheader label="Lista Pública de monografias" colspan="3" />
+        	</auxhead>
+			<auxhead sclass="text-center">
+				<auxheader colspan="3">
+					<textbox id="filtro" value="@bind(vm.filterString)"/>
+							<button label="Filtrar" height="21px;" width="60px" onClick="@command('filtra')"/>
+				</auxheader>
+			</auxhead>
 			<columns>
 				<column width="100%">NomeTCC</column>
 				<column width="100%">Autor</column>
@@ -16,5 +26,7 @@
 				</row>
 			</template>
 		</grid>
+		<space height="20px"/>
+		<button label="Download Button Test" onClick="@command('testeDownload')" width="100%" height="30px" />
 	</div>
 </zk>

@@ -93,12 +93,12 @@ public class Usuario implements Serializable {
 
 	/**
 	 * Relacionamento N para 1 entre Usuario e Curso. Mapeando {@link Curso} na
-	 * variável {@code curso} e retorno do tipo {@code EAGER} que indica que
+	 * variável {@code curso} e retorno do tipo {@code LAZY} que indica que não
 	 * será carregado automáticamente este dado quando retornarmos o
 	 * {@link Usuario}.
 	 * 
 	 */
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "idCurso", nullable = true)
 	private Curso curso;
 

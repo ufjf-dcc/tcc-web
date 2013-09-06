@@ -2,16 +2,16 @@
 <zk>
 	<div
 		style="position:absolute; top:50%;
-margin-top:-100px; left:50%; margin-left:-150px;">
+margin-top:-125px; left:50%; margin-left:-150px;">
 		<div align="center" apply="org.zkoss.bind.BindComposer"
 			viewModel="@id('lf') @init('br.ufjf.tcc.controller.LoginController')"
 			form="@id('fx') @load(lf.usuarioForm) @save(lf.usuarioForm, before='submit')"
 			id="loginForm">
-			<panel title="Login" height="100%" width="300px"
+			<panel title="Login" height="250px" width="300px"
 				border="normal">
 				<panelchildren>
 					<tablelayout columns="2">
-						<tablechildren colspan="2"><space height="20px"/> </tablechildren>
+						<tablechildren colspan="2"><space height="20px"/></tablechildren>
 						<tablechildren>Matricula:</tablechildren>
 						<tablechildren>
 							<textbox value="@bind(fx.matricula)"
@@ -25,11 +25,11 @@ margin-top:-100px; left:50%; margin-left:-150px;">
 						</tablechildren>
 						<tablechildren colspan="2"><space height="15px"/> </tablechildren>
 						<tablechildren colspan="2">
-								<button label="Logar" onClick="@command('submit')" width="100%" height="30px" />
+								<button label="Efetuar login" onClick="@command('submit')" width="100%" height="30px" />
 						</tablechildren>
 						<tablechildren colspan="2"><space height="15px"/></tablechildren>
 						<tablechildren colspan="2">
-							<button label="Lista de pública de TCCs" width="100%" height="30px" href="/lista-publica.zul"/>
+							<button label="Lista Pública de monografias" width="100%" height="30px" href="/lista-publica.zul"/>
 						</tablechildren>
 						<tablechildren colspan="2"><space height="15px"/></tablechildren>
 					</tablelayout>

@@ -9,10 +9,10 @@ import org.hibernate.Session;
 import br.ufjf.tcc.model.TCC;
 import br.ufjf.tcc.persistent.GenericoDAO;
 import br.ufjf.tcc.persistent.HibernateUtil;
-import br.ufjf.tcc.persistent.IPermissaoDAO;
+import br.ufjf.tcc.persistent.ITCCDAO;
 
 
-public class TCCDAO extends GenericoDAO implements IPermissaoDAO {
+public class TCCDAO extends GenericoDAO implements ITCCDAO {
 
 	public List<TCC> getListaPublica() {
 		Session session = null;

@@ -1,5 +1,5 @@
 package br.ufjf.tcc.persistent;
 
-public interface ICursoDAO {
-		
+public interface IPermissoesDAO {
+
 }
