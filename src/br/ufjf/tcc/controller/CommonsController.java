@@ -23,5 +23,16 @@ public class CommonsController {
 	public Usuario getUsuario() {
 		return usuario;
 	}
+	
+	public boolean checaPermissao(String nomePermissao){
+		
+		for (int i = 0; i < usuario.getTipoUsuario().getPermissoes().size(); i++) {
+            if (usuario.getTipoUsuario().getPermissoes().get(i).getNomePermissao().contains(nomePermissao)){
+            	return true;
+            }
+        }
+		
+		return false;
+	}
 
 }

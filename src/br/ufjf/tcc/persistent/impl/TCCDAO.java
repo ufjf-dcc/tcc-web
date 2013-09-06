@@ -11,7 +11,7 @@ import br.ufjf.tcc.persistent.GenericoDAO;
 import br.ufjf.tcc.persistent.HibernateUtil;
 import br.ufjf.tcc.persistent.ITCCDAO;
 
-
+@SuppressWarnings("unchecked")
 public class TCCDAO extends GenericoDAO implements ITCCDAO {
 
 	public List<TCC> getListaPublica() {
@@ -21,7 +21,6 @@ public class TCCDAO extends GenericoDAO implements ITCCDAO {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	    session.beginTransaction();
 	    		
 		Query query = session.createQuery("select t, a, o from TCC as t inner join t.aluno as a inner join t.orientador as o");
 		
