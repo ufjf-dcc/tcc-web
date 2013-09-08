@@ -1,34 +1,32 @@
 package br.ufjf.tcc.persistent.impl;
 
-import org.hibernate.Criteria;
-import org.hibernate.HibernateException;
-import org.hibernate.criterion.Restrictions;
+import java.util.List;
+
+import org.hibernate.Query;
 
 import br.ufjf.tcc.model.Usuario;
 import br.ufjf.tcc.persistent.GenericoDAO;
 import br.ufjf.tcc.persistent.IUsuarioDAO;
 
-
 public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 
-	@SuppressWarnings("finally")
-	@Override
-	public Usuario retornaUsuario(String matricula, String senha) throws HibernateException, Exception {
-		Usuario usuario = null;
+	public Usuario retornaUsuario(String matricula, String senha) {
 		try {
-
-			Criteria criteria = getSession()
-					.createCriteria(Usuario.class, "usuario")
-					.add(Restrictions.eq("usuario.matricula", matricula))
-					.add(Restrictions.eq("usuario.senha", senha))
-					.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
-
-			usuario = (Usuario) criteria.uniqueResult();
-		} catch (HibernateException e) {
-			System.err.println(e.fillInStackTrace());
-		} finally {
+			Query query = getSession().createQuery("select u, c, t from Usuario as u inner join u.curso as c inner join u.tipoUsuario as t where u.matricula = :matricula AND u.senha = :senha");
+			query.setParameter("matricula", matricula);
+			query.setParameter("senha", senha);
+			
+			List<Object[]> resultado = query.list();
+			
 			getSession().close();
-			return usuario;
+			
+			if(!resultado.isEmpty()) 
+				return ((Usuario) resultado.get(0)[0]);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+		
+		return null;
 	}
 }

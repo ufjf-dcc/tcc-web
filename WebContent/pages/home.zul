@@ -1,4 +1,4 @@
-<?page title="Home" contentType="text/html;charset=UTF-8"?>
+<?page title="Home"?>
 
 <zk>
 	<div align="center" apply="org.zkoss.bind.BindComposer"

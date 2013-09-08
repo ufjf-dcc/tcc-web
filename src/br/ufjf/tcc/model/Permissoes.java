@@ -54,7 +54,7 @@ public class Permissoes implements Serializable {
 	 * 
 	 */
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "permissoes")
-	private List<TipoUsuario> tipousuario = new ArrayList<TipoUsuario>();
+	private List<TipoUsuario> tipoUsuario = new ArrayList<TipoUsuario>();
 
 	public int getIdPermissao() {
 		return idPermissao;
@@ -72,12 +72,12 @@ public class Permissoes implements Serializable {
 		this.nomePermissao = nomePermissao;
 	}
 
-	public List<TipoUsuario> getTipousuario() {
-		return tipousuario;
+	public List<TipoUsuario> getTipoUsuario() {
+		return tipoUsuario;
 	}
 
-	public void setTipousuario(List<TipoUsuario> tipousuario) {
-		this.tipousuario = tipousuario;
+	public void setTipoUsuario(List<TipoUsuario> tipoUsuario) {
+		this.tipoUsuario = tipoUsuario;
 	}
 
 }
