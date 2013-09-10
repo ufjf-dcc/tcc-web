@@ -3,7 +3,7 @@
 	<style src="/widgets/grid/inline_row_editing/style.css" />
 	<div apply="org.zkoss.bind.BindComposer"
 		viewModel="@id('vm') @init('br.ufjf.tcc.controller.GerenciamentoUsuarioController')">
-		<include src="/templates/menu.zul" />
+		<include src="@bind(vm.menu)" />
 		<div>
 			<textbox id="pesquisa"/>
 			<button
@@ -23,14 +23,14 @@
 					</hlayout>
 				</auxheader>
 			</auxhead>
-			<columns>
-				<column width="50px">id</column>
-				<column width="100px">Matrícula</column>
-				<column>Nome</column>
-				<column width="180px">Email</column>
-				<column width="100px">Titulação</column>
-				<!-- <column width="50px">Tipo</column>  -->
-				<column width="120px" visible="@load(vm.displayEdit)">Editar</column>
+			<columns menupopup="auto">
+				<column width="50px" label="id" sort="auto(usuario.idUsuario)" />
+				<column hflex="1" label="Matrícula" sort="auto(usuario.matricula)" />
+				<column hflex="3" label="Nome" sort="auto(usuario.nomeUsuario)" />
+				<column hflex="2" label="Email" sort="auto(usuario.email)" />
+				<column hflex="1" label="Titulação" sort="auto(usuario.titulacao)" />
+				<!-- <column label="Tipo" sort="auto(usuario.tipoUsuario.nomeTipoUsuario)" />  -->
+				<column width="100px" label="Editar" visible="@load(vm.displayEdit)" />
 			</columns>
 			<template name="editable">
 				<row>

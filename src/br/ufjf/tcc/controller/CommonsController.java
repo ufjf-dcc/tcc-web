@@ -39,5 +39,12 @@ public class CommonsController {
 	public void paginaProibida(){
 		Executions.sendRedirect("/index.zul");
 	}
+	
+	public String getMenu() {
+		int tipoUsuario = usuario.getTipoUsuario().getIdTipoUsuario();
+		if (tipoUsuario == 4)
+			return "/templates/menu-admin.zul";
+		return "/templates/menu-aluno.zul";
+	}
 
 }

@@ -3,7 +3,7 @@
 	<style src="/widgets/grid/inline_row_editing/style.css" />
 	<div apply="org.zkoss.bind.BindComposer"
 		viewModel="@id('vm') @init('br.ufjf.tcc.controller.GerenciamentoCursoController')">
-		<include src="/templates/menu.zul" />
+		<include src="@bind(vm.menu)" />
 		<div>
 			
 		</div>
@@ -24,10 +24,10 @@
 					</hlayout>
 				</auxheader>
 			</auxhead>
-			<columns>
-				<column width="50px">id</column>
-				<column>Nome</column>
-				<column width="120px" visible="@load(vm.displayEdit)">Editar</column>
+			<columns menupopup="auto">
+				<column width="50px" label="id" sort="auto(curso.idCurso)" />
+				<column hflex="5" label="Nome" sort="auto(curso.nomeCurso)" />
+				<column width="100px" label="Editar" sort="" visible="@load(vm.displayEdit)" />
 			</columns>
 			<template name="editable">
 				<row>

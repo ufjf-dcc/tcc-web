@@ -272,4 +272,12 @@ public class TCC implements Serializable {
 		this.participacoes = participacoes;
 	}
 
+	public String getPalavrasChave() {
+		return palavrasChave;
+	}
+
+	public void setPalavrasChave(String palavrasChave) {
+		this.palavrasChave = palavrasChave;
+	}
+
 }

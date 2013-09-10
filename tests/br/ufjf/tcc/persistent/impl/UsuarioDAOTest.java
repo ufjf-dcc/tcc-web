@@ -22,13 +22,13 @@ public class UsuarioDAOTest {
 	@Test
 	public void testFalseUser() throws HibernateException, Exception {
 		Usuario usuario = usuarioDao.retornaUsuario("201235027", usuarioBusiness.encripta("errada"));
-		assertNull("retornaUsuairo deve ser null", usuario);
+		assertNull("retornaUsuario deve ser null", usuario);
 	}
 	
 	@Test
 	public void testTrueUser() throws HibernateException, Exception {
 		Usuario usuario = usuarioDao.retornaUsuario("201235027", usuarioBusiness.encripta("teste"));
-		assertNotNull("retornaUsuairo não deve ser null", usuario);
+		assertNotNull("retornaUsuario não deve ser null", usuario);
 	}
 	
 }
