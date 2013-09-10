@@ -1,0 +1,65 @@
+<?page title="Cursos cadastrados"?>
+<zk>
+	<style src="/widgets/grid/inline_row_editing/style.css" />
+	<div apply="org.zkoss.bind.BindComposer"
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.GerenciamentoCursoController')">
+		<include src="/templates/menu.zul" />
+		<div>
+			
+		</div>
+		<grid id="demoGrid"
+			model="@load(vm.cursos) @template((vm.displayEdit and each.editingStatus) ? 'editable' : 'noneditable')"
+			mold="paging" pageSize="20">
+			<auxhead>
+				<auxheader colspan="7"
+					label="Cursos cadastrados no sistema">
+					<hlayout>
+						<textbox id="pesquisa"/>
+							<button
+								label="Pesquisar"
+								onClick="@command('search', expression=pesquisa.text)" />
+						<checkbox checked="@bind(vm.displayEdit)"
+							label="Ativar edição">
+						</checkbox>
+					</hlayout>
+				</auxheader>
+			</auxhead>
+			<columns>
+				<column width="50px">id</column>
+				<column>Nome</column>
+				<column width="120px" visible="@load(vm.displayEdit)">Editar</column>
+			</columns>
+			<template name="editable">
+				<row>
+					<label value="@load(each.curso.idCurso)" />
+					<textbox 
+						value="@load(each.curso.nomeCurso) @save(each.curso.nomeCurso, before='confirm')" />
+					<div>
+						<button
+							image="/widgets/grid/inline_row_editing/confirm.gif"
+							onClick="@command('confirm', cursoStatus=each)" />
+						<button
+							image="/widgets/grid/inline_row_editing/cancel.png"
+							onClick="@command('changeEditableStatus', cursoStatus=each)" />
+					</div>
+				</row>
+			</template>
+			<template name="noneditable">
+				<row>
+					<label value="@load(each.curso.idCurso)" />
+					<label value="@load(each.curso.nomeCurso)" />
+					<div>
+						<button
+							image="/widgets/grid/inline_row_editing/edit.gif"
+							onClick="@command('changeEditableStatus', cursoStatus=each)" />
+						<button
+							image="/widgets/grid/inline_row_editing/delete.png"
+							onClick="@command('delete', idCurso=each.curso)" />
+					</div>
+				</row>
+			</template>
+		</grid>
+		<button label="Voltar" href="/pages/home.zul"/>
+		<button label="Cadastrar Curso" onClick="@command('addCurso')" />
+	</div>
+</zk>

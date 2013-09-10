@@ -8,5 +8,7 @@
 
 		Seja bem vindo(a) :
 		<label value="@load(fx.nomeUsuario)" />
+		<button label="Admininstrar usuários (teste)" href="/pages/gerenciamento-usuario.zul"/>
+		<button label="Admininstrar cursos (teste)" href="/pages/gerenciamento-curso.zul"/>
 	</div>
 </zk>

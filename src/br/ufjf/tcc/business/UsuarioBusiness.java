@@ -1,6 +1,8 @@
 package br.ufjf.tcc.business;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 
 import jonelo.jacksum.JacksumAPI;
 import jonelo.jacksum.algorithm.AbstractChecksum;
@@ -51,6 +53,35 @@ public class UsuarioBusiness {
 			ns.printStackTrace();
 			return senha;
 		}
+	}
+	
+	public List<Usuario> getUsuarios() {
+		UsuarioDAO usuarioDAO = new UsuarioDAO();
+		List<Usuario> resultados = new ArrayList<Usuario>();
+		for(Object usuario : usuarioDAO.procuraTodos(Usuario.class, -1, -1)) {
+			resultados.add((Usuario) usuario);
+		}
+		return resultados;
+	}
+	
+	public List<Usuario> buscar(String expressão) {
+		UsuarioDAO usuarioDAO = new UsuarioDAO();
+		return usuarioDAO.buscar(expressão);
+	}
+	
+	public boolean editar(Usuario usuario) {
+		UsuarioDAO usuarioDAO = new UsuarioDAO();
+		return usuarioDAO.editar(usuario);
+	}
+	
+	public boolean salvar(Usuario usuario) {
+		UsuarioDAO usuarioDAO = new UsuarioDAO();
+		return usuarioDAO.salvar(usuario);
+	}
+	
+	public boolean exclui(Usuario usuario) {
+		UsuarioDAO usuarioDAO = new UsuarioDAO();
+		return usuarioDAO.exclui(usuario);
 	}
 
 }

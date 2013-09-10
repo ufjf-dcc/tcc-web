@@ -1,0 +1,71 @@
+<window id="addUsuario" title="Cadastrar Usuário" width="300px" border="normal"
+    apply="org.zkoss.bind.BindComposer"
+	viewModel="@id('lf') @init('br.ufjf.tcc.controller.AdicaoUsuarioController')"
+	form="@id('fx') @load(lf.usuario) @save(lf.usuario, before='submit')">
+	<tablelayout columns="2">
+	
+		<tablechildren colspan="2"><space height="20px"/> </tablechildren>
+		<tablechildren>Nome do Usuário:</tablechildren>
+		<tablechildren>
+			<textbox value="@bind(fx.nomeUsuario)"
+				tabindex="1" id="id" />
+		</tablechildren>
+		
+		<tablechildren colspan="2"><space height="15px"/> </tablechildren>
+		<tablechildren>Matrícula:</tablechildren>
+		<tablechildren>
+			<textbox value="@bind(fx.matricula)"
+				tabindex="1" id="" />
+		</tablechildren>
+		
+		<tablechildren colspan="2"><space height="15px"/> </tablechildren>
+		<tablechildren>Curso:</tablechildren>
+		<tablechildren>
+			<combobox id="cmbCurso" width="150px"
+				model="@load(lf.cursos)" selectedItem="@bind(lf.curso)" >
+				<template name="model">
+                    <comboitem label="@load(each.nomeCurso)" />
+                </template>
+            </combobox>
+		</tablechildren>
+		
+		<tablechildren colspan="2"><space height="15px"/> </tablechildren>
+		<tablechildren>Email:</tablechildren>
+		<tablechildren>
+			<textbox value="@bind(fx.email)"
+				tabindex="1" id="" />
+		</tablechildren>
+		
+		<tablechildren colspan="2"><space height="15px"/> </tablechildren>
+		<tablechildren>Titulação:</tablechildren>
+		<tablechildren>
+			<textbox value="@bind(fx.titulacao)"
+				tabindex="1" id="" />
+		</tablechildren>
+		
+		<tablechildren colspan="2"><space height="15px"/> </tablechildren>
+		<tablechildren>Tipo:</tablechildren>
+		<tablechildren>
+			<combobox id="cmbTipoUsuario" width="150px"
+				model="@load(lf.tiposUsuario)" selectedItem="@bind(lf.tipoUsuario)" >
+				<template name="model">
+                    <comboitem label="@load(each.nomeTipoUsuario)" />
+                </template>
+            </combobox>
+		</tablechildren>
+		
+		<tablechildren colspan="2"><space height="15px"/> </tablechildren>
+		<tablechildren>Senha:</tablechildren>
+		<tablechildren>
+			<textbox value="@bind(fx.senha)"
+				type="password" tabindex="1" id="" />
+		</tablechildren>
+		
+		<tablechildren colspan="2">
+			<div align="center">
+				<button label="Cadastrar" onClick="@command('submit', window=addUsuario)"/>
+				<button label="Cancelar" onClick="@command('cancel', window=addUsuario)"/>
+			</div>
+		</tablechildren>
+	</tablelayout>
+</window>

@@ -1,6 +1,81 @@
-<?page title="Gerenciamento de Usuário"?>
+<?page title="Usuários cadastrados"?>
 <zk>
-	<window title="Gerenciamento de Usuário" border="normal">
-	New Content Here!
-	</window>
+	<style src="/widgets/grid/inline_row_editing/style.css" />
+	<div apply="org.zkoss.bind.BindComposer"
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.GerenciamentoUsuarioController')">
+		<include src="/templates/menu.zul" />
+		<div>
+			<textbox id="pesquisa"/>
+			<button
+				label="Pesquisar"
+				onClick="@command('search', expression=pesquisa.text)" />
+		</div>
+		<grid id="demoGrid" 
+			model="@load(vm.usuarios) @template((vm.displayEdit and each.editingStatus) ? 'editable' : 'noneditable')"
+			mold="paging" pageSize="20">
+			<auxhead>
+				<auxheader colspan="7"
+					label="Usuários cadastrados no sistema">
+					<hlayout>
+						<checkbox checked="@bind(vm.displayEdit)"
+							label="Ativar edição">
+						</checkbox>
+					</hlayout>
+				</auxheader>
+			</auxhead>
+			<columns>
+				<column width="50px">id</column>
+				<column width="100px">Matrícula</column>
+				<column>Nome</column>
+				<column width="180px">Email</column>
+				<column width="100px">Titulação</column>
+				<!-- <column width="50px">Tipo</column>  -->
+				<column width="120px" visible="@load(vm.displayEdit)">Editar</column>
+			</columns>
+			<template name="editable">
+				<row>
+					<label 
+						value="@load(each.usuario.idUsuario)" />
+					<textbox 
+						value="@load(each.usuario.matricula) @save(each.usuario.matricula, before='confirm')" />
+					<textbox 
+						value="@load(each.usuario.nomeUsuario) @save(each.usuario.nomeUsuario, before='confirm')" />
+					<textbox 
+						value="@load(each.usuario.email) @save(each.usuario.email, before='confirm')" />
+					<textbox 
+						value="@load(each.usuario.titulacao) @save(each.usuario.titulacao, before='confirm')" />
+					<!-- <textbox 
+						value="@load(each.usuario.tipoUsuario.nomeTipoUsuario) @save(each.usuario.tipoUsuario, before='confirm')" />  -->
+					<div>
+						<button
+							image="/widgets/grid/inline_row_editing/confirm.gif"
+							onClick="@command('confirm', usuarioStatus=each)" />
+						<button
+							image="/widgets/grid/inline_row_editing/cancel.png"
+							onClick="@command('changeEditableStatus', usuarioStatus=each)" />
+					</div>
+				</row>
+			</template>
+			<template name="noneditable">
+				<row>
+					<label value="@load(each.usuario.idUsuario)" />
+					<label value="@load(each.usuario.matricula)" />
+					<label value="@load(each.usuario.nomeUsuario)" />
+					<label value="@load(each.usuario.email)" />
+					<label value="@load(each.usuario.titulacao)" />
+					<!-- <label value="@load(each.usuario.tipoUsuario.nomeTipoUsuario)" /> -->
+					<div>
+						<button
+							image="/widgets/grid/inline_row_editing/edit.gif"
+							onClick="@command('changeEditableStatus', usuarioStatus=each)" />
+						<button
+							image="/widgets/grid/inline_row_editing/delete.png"
+							onClick="@command('delete', idUsuario=each.usuario)" />
+					</div>
+				</row>
+			</template>
+		</grid>
+		<button label="Voltar" href="/pages/home.zul"/>
+		<button label="Cadastrar Usuário" onClick="@command('addUsuario')" />
+	</div>
 </zk>

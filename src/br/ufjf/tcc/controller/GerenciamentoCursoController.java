@@ -15,14 +15,14 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 import org.zkoss.zul.Messagebox.ClickEvent;
 
-import br.ufjf.tcc.business.UsuarioBusiness;
-import br.ufjf.tcc.model.Usuario;
+import br.ufjf.tcc.business.CursoBusiness;
+import br.ufjf.tcc.model.Curso;
 
-public class GerenciamentoUsuarioController extends CommonsController{
-	private final UsuarioBusiness usuarioBusiness = new UsuarioBusiness();
-	private List<UsuarioStatus> usuariosStatuses = 
-			generateStatusList(usuarioBusiness.getUsuarios());
-	private boolean displayEdit = true; //permite, ou não, a edição
+public class GerenciamentoCursoController extends CommonsController{
+	private final CursoBusiness cursoBusiness = new CursoBusiness();
+	private List<CursoStatus> cursosStatuses = 
+			generateStatusList(cursoBusiness.getCursos());
+	private boolean displayEdit = true;
 	
 	@Init
 	public void init() throws HibernateException, Exception{
@@ -34,29 +34,29 @@ public class GerenciamentoUsuarioController extends CommonsController{
 		return displayEdit;
 	}
 	
-	@NotifyChange({"usuarios", "displayEdit"})
+	@NotifyChange({"cursos", "displayEdit"})
 	public void setDisplayEdit(boolean displayEdit) {
 		this.displayEdit = displayEdit;
 	}
 
-	public List<UsuarioStatus> getUsuarios() {
-		return usuariosStatuses;
+	public List<CursoStatus> getCursos() {
+		return cursosStatuses;
 	}
 	
 	@Command
-	public void changeEditableStatus(@BindingParam("usuarioStatus") UsuarioStatus lcs) {
+	public void changeEditableStatus(@BindingParam("cursoStatus") CursoStatus lcs) {
 		lcs.setEditingStatus(!lcs.getEditingStatus());
 		refreshRowTemplate(lcs);
 	}
 	
 	@Command
-	public void confirm(@BindingParam("usuarioStatus") UsuarioStatus lcs) {
+	public void confirm(@BindingParam("cursoStatus") CursoStatus lcs) {
 		changeEditableStatus(lcs);
-		usuarioBusiness.editar(lcs.getUsuario());
+		cursoBusiness.editar(lcs.getCurso());
 		refreshRowTemplate(lcs);
 	}
 	
-	public void refreshRowTemplate(UsuarioStatus lcs) {
+	public void refreshRowTemplate(CursoStatus lcs) {
 		/*
 		 * This code is special and notifies ZK that the bean's value
 		 * has changed as it is used in the template mechanism.
@@ -65,56 +65,56 @@ public class GerenciamentoUsuarioController extends CommonsController{
 		BindUtils.postNotifyChange(null, null, lcs, "editingStatus");
 	}
 	
-	@NotifyChange({"usuarios"})
+	@NotifyChange({"cursos"})
 	@Command
 	public void search(@BindingParam("expression") String expression) {
-		usuariosStatuses = generateStatusList(usuarioBusiness.buscar(expression));
+		cursosStatuses = generateStatusList(cursoBusiness.buscar(expression));
 	}
 	
-	@NotifyChange({"usuarios"})
+	@NotifyChange({"cursos"})
 	@Command
-	public void delete(@BindingParam("idUsuario") final Usuario usuario) {
+	public void delete(@BindingParam("idCurso") final Curso curso) {
 		EventListener<ClickEvent> clickListener = new EventListener<Messagebox.ClickEvent>() {
-			@NotifyChange({"usuarios"})
+			@NotifyChange({"cursos"})
             public void onEvent(ClickEvent event) throws Exception {
                 if(Messagebox.Button.YES.equals(event.getButton())) {
-                	usuarioBusiness.exclui(usuario);
-                    usuariosStatuses = generateStatusList(usuarioBusiness.getUsuarios());
+                	cursoBusiness.exclui(curso);
+                    cursosStatuses = generateStatusList(cursoBusiness.getCursos());
                     Messagebox.show("O curso foi excluído com sucesso.");
                 }
             }
         };
         
-        Messagebox.show("Tem certeza que deseja excluir o curso " + usuario.getNomeUsuario() + " (essa operação não pode ser desfeita) ?", "Excluir curso", new Messagebox.Button[]{
+        Messagebox.show("Tem certeza que deseja excluir o curso " + curso.getNomeCurso() + " (essa operação não pode ser desfeita) ?", "Excluir curso", new Messagebox.Button[]{
                 Messagebox.Button.YES, Messagebox.Button.NO }, Messagebox.QUESTION, clickListener);
 		
 	}
 	
-	private static List<UsuarioStatus> generateStatusList(List<Usuario> usuarios) {
-		List<UsuarioStatus> usuarioss = new ArrayList<UsuarioStatus>();
-		for(Usuario lc : usuarios) {
-			usuarioss.add(new UsuarioStatus(lc, false));
+	private static List<CursoStatus> generateStatusList(List<Curso> cursos) {
+		List<CursoStatus> cursoss = new ArrayList<CursoStatus>();
+		for(Curso lc : cursos) {
+			cursoss.add(new CursoStatus(lc, false));
 		}
-		return usuarioss;
+		return cursoss;
 	}
 	
 	@Command
-    public void addUsuario() {
+    public void addCurso() {
 		Window window = (Window)Executions.createComponents(
-                "/widgets/dialogs/add-usuario.zul", null, null);
+                "/widgets/dialogs/add-curso.zul", null, null);
         window.doModal();
     }
 	
-	public static class UsuarioStatus {
-		private Usuario lc;
+	public static class CursoStatus {
+		private Curso lc;
 		private boolean editingStatus;
 		
-		public UsuarioStatus(Usuario lc, boolean editingStatus) {
+		public CursoStatus(Curso lc, boolean editingStatus) {
 			this.lc = lc;
 			this.editingStatus = editingStatus;
 		}
 		
-		public Usuario getUsuario() {
+		public Curso getCurso() {
 			return lc;
 		}
 		
@@ -126,5 +126,4 @@ public class GerenciamentoUsuarioController extends CommonsController{
 			this.editingStatus = editingStatus;
 		}
 	}
-	
 }

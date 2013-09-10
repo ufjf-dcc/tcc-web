@@ -1,0 +1,9 @@
+.z-label { 
+	display:block; 
+}
+tr.z-row td.z-row-inner { 
+	padding: 2px 5px; 
+}
+.z-row-cnt, .z-column-cnt { 
+	text-align: center; 
+}
