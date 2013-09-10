@@ -7,7 +7,7 @@ import org.zkoss.zul.Window;
 import br.ufjf.tcc.business.CursoBusiness;
 import br.ufjf.tcc.model.Curso;
 
-public class AdicaoCursoController {
+public class AdicaoCursoController extends CommonsController {
 	private CursoBusiness cursoBusiness = new CursoBusiness();
 	private Curso curso = new Curso();
 	

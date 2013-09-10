@@ -13,16 +13,16 @@ import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.model.TipoUsuario;
 import br.ufjf.tcc.model.Usuario;
 
-public class AdicaoUsuarioController {
+public class AdicaoUsuarioController extends CommonsController {
 	private UsuarioBusiness usuarioBusiness = new UsuarioBusiness();
-	private Usuario usuario = new Usuario();
+	private Usuario novoUsuario = new Usuario();
 	private TipoUsuario tipoUsuario;
 	private List<TipoUsuario> tiposUsuario = (new TipoUsuarioBusiness()).getTiposUsuarios();
 	private Curso curso;
 	private List<Curso> cursos = (new CursoBusiness()).getCursos();
 	
-	public Usuario getUsuario() {
-		return this.usuario;
+	public Usuario getNovoUsuario() {
+		return this.novoUsuario;
 	}
 	
 	public TipoUsuario getTipoUsuario(){
@@ -31,7 +31,7 @@ public class AdicaoUsuarioController {
 	
 	public void setTipoUsuario(TipoUsuario tipoUsuario) {
 		this.tipoUsuario = tipoUsuario;
-		usuario.setTipoUsuario(tipoUsuario);
+		novoUsuario.setTipoUsuario(tipoUsuario);
 	}
 	
 	public List<TipoUsuario> getTiposUsuario(){
@@ -44,7 +44,7 @@ public class AdicaoUsuarioController {
 	
 	public void setCurso(Curso curso){
 		this.curso = curso;
-		usuario.setCurso(curso);
+		novoUsuario.setCurso(curso);
 	}
 	
 	public List<Curso> getCursos() {
@@ -53,15 +53,15 @@ public class AdicaoUsuarioController {
  
 	@Command
     public void submit(@BindingParam("window")  Window x) {
-		usuario.setSenha(usuarioBusiness.encripta(usuario.getSenha()));		
-		usuarioBusiness.salvar(usuario);
+		novoUsuario.setSenha(usuarioBusiness.encripta(novoUsuario.getSenha()));		
+		usuarioBusiness.salvar(novoUsuario);
         x.detach();
     }
 	
 	@Command
     public void cancel(@BindingParam("window")  Window x) {
 		usuarioBusiness = null;
-		usuario = null;
+		novoUsuario = null;
         x.detach();
     }
 }
