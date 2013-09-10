@@ -43,11 +43,27 @@ public class TCC implements Serializable {
 	/**
 	 * Campo com o nome do TCC. Relaciona com a coluna {@code nomeTCC} do banco
 	 * através da anotação
-	 * {@code @Column(name = "nomeTCC", length = 45, nullable = true)}.
+	 * {@code @Column(name = "nomeTCC", length = 250, nullable = true)}.
 	 */
-	@Column(name = "nomeTCC", length = 45, nullable = true)
+	@Column(name = "nomeTCC", length = 250, nullable = true)
 	private String nomeTCC;
 
+	/**
+	 * Campo com o resumo do TCC. Relaciona com a coluna {@code resumoTCC} do
+	 * banco através da anotação
+	 * {@code @Column(name = "resumoTCC", length = 45, nullable = true)}.
+	 */
+	@Column(name = "resumoTCC", length = 45, nullable = true)
+	private String resumoTCC;
+	
+	/**
+	 * Campo com as palavras chaves do TCC. Relaciona com a coluna {@code palavrasChave} do
+	 * banco através da anotação
+	 * {@code @Column(name = "palavrasChave", length = 250, nullable = true)}.
+	 */
+	@Column(name = "palavrasChave", length = 250, nullable = true)
+	private String palavrasChave;
+	
 	/**
 	 * Campo com o arquivo do TCC. Relaciona com a coluna
 	 * {@code arquivoTCCBanca} do banco através da anotação
@@ -71,14 +87,6 @@ public class TCC implements Serializable {
 	 */
 	@Column(name = "salaDefesa", length = 45, nullable = true)
 	private String salaDefesa;
-
-	/**
-	 * Campo com o resumo do TCC. Relaciona com a coluna {@code resumoTCC} do
-	 * banco através da anotação
-	 * {@code @Column(name = "resumoTCC", length = 45, nullable = true)}.
-	 */
-	@Column(name = "resumoTCC", length = 45, nullable = true)
-	private String resumoTCC;
 
 	/**
 	 * Campo com o parecer da banca. Relaciona com a coluna {@code parecerBanca}
