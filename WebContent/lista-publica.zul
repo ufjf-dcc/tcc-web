@@ -3,7 +3,9 @@
 	<style src="style.css" />
 	<div apply="org.zkoss.bind.BindComposer"
 		viewModel="@id('vm') @init('br.ufjf.tcc.controller.ListaPublicaController')">
-		<grid model="@load(vm.filterTccs) @template('lista')" emptyMessage="Nada foi encontrado." mold="paging" pageSize="20">
+		<grid model="@load(vm.filterTccs) @template('lista')" 
+			emptyMessage="Nada foi encontrado." 
+			mold="paging" pageSize="20">
 			<auxhead sclass="text-center">
             	<auxheader label="Lista Pública de monografias" colspan="4" />
         	</auxhead>
@@ -14,24 +16,39 @@
 				</auxheader>
 			</auxhead>
 			<columns>
-				<column hflex="6" label="NomeTCC" />
-				<column hflex="2" label="Autor" />
-				<column hflex="2" label="Orientador" />
+				<column hflex="6" label="NomeTCC" sort="auto(nomeTCC)"/>
+				<column hflex="2" label="Autor" sort="auto(aluno.nomeUsuario)"/>
+				<column hflex="2" label="Orientador" sort="auto(orientador.nomeUsuario)"/>
 				<column width="100px" label="Download" />
 			</columns>
 			<template name="lista">
 				<row>
                     <div>
-                        <label value="${each.nomeTCC}" 
+                    <label value="${each.nomeTCC}" 
                         popup="${each.idTCC}, position=at_pointer" style="cursor:pointer" />
                         <popup id="${each.idTCC}">
 						    <vlayout width="500px">
-							    <label value="Resumo" style="font-size: 14px; font-weight: bold;" />							    
+							    <label value="Resumo" style="font-size: 14px; font-weight: bold; text-align: justify; display: block;" />							    
 				                <label value="${each.resumoTCC}" />
+				                <label value="Palavras-chave" style="font-size: 14px; font-weight: bold; text-align: justify; display: block;" />							    
+				                <label value="${each.palavrasChave}" />
 							</vlayout>
 						</popup>
                     </div>
-                    <label value="${each.aluno.nomeUsuario}" />
+                    <div>
+                    <label value="${each.aluno.nomeUsuario}" 
+                        popup="${each.aluno.matricula}, position=at_pointer" style="cursor:pointer" />
+                        <popup id="${each.aluno.matricula}">
+						    <vlayout width="500px">
+						    	<!-- <label value="Curso" style="font-size: 14px; font-weight: bold; text-align: justify; display: block;" />							    
+				                <label value="${each.aluno.curso.nomeCurso}" /> -->
+				                <label value="Titulação" style="font-size: 14px; font-weight: bold; text-align: justify; display: block;" />							    
+				                <label value="${each.aluno.titulacao}" />
+							    <label value="Email" style="font-size: 14px; font-weight: bold; text-align: justify; display: block;" />							    
+				                <label value="${each.aluno.email}" />
+							</vlayout>
+						</popup>
+                    </div>
 					<label value="@load(each.orientador.nomeUsuario)" />
 					<button label="Download " onClick="@command('testeDownload')" width="100%" height="30px" />
 				</row>

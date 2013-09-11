@@ -30,6 +30,7 @@
 				<column hflex="2" label="Email" sort="auto(usuario.email)" />
 				<column hflex="1" label="Titulação" sort="auto(usuario.titulacao)" />
 				<!-- <column label="Tipo" sort="auto(usuario.tipoUsuario.nomeTipoUsuario)" />  -->
+				<column label="Ver permissões" />
 				<column width="100px" label="Editar" visible="@load(vm.displayEdit)" />
 			</columns>
 			<template name="editable">
@@ -46,6 +47,7 @@
 						value="@load(each.usuario.titulacao) @save(each.usuario.titulacao, before='confirm')" />
 					<!-- <textbox 
 						value="@load(each.usuario.tipoUsuario.nomeTipoUsuario) @save(each.usuario.tipoUsuario, before='confirm')" />  -->
+					<button label="Editar permissões" />
 					<div>
 						<button
 							image="/widgets/grid/inline_row_editing/confirm.gif"
@@ -64,6 +66,7 @@
 					<label value="@load(each.usuario.email)" />
 					<label value="@load(each.usuario.titulacao)" />
 					<!-- <label value="@load(each.usuario.tipoUsuario.nomeTipoUsuario)" /> -->
+					<button label="Ver permissões" onClick="@command('verPermissoes', usuarioSelecionado=each.usuario)" />
 					<div>
 						<button
 							image="/widgets/grid/inline_row_editing/edit.gif"

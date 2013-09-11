@@ -16,5 +16,11 @@ public class TipoUsuarioBusiness {
 		}
 		return resultados;
 	}
+	
+	public TipoUsuario getTipoUsuario(int id) {
+		TipoUsuarioDAO tipoUsuarioDAO = new TipoUsuarioDAO();
+		TipoUsuario resultado = (TipoUsuario) tipoUsuarioDAO.procuraId(id, TipoUsuario.class);
+		return resultado;
+	}
 
 }

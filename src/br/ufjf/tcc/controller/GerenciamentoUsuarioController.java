@@ -1,6 +1,7 @@
 package br.ufjf.tcc.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.hibernate.HibernateException;
@@ -12,8 +13,8 @@ import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.Window;
 import org.zkoss.zul.Messagebox.ClickEvent;
+import org.zkoss.zul.Window;
 
 import br.ufjf.tcc.business.UsuarioBusiness;
 import br.ufjf.tcc.model.Usuario;
@@ -102,6 +103,16 @@ public class GerenciamentoUsuarioController extends CommonsController{
     public void addUsuario() {
 		Window window = (Window)Executions.createComponents(
                 "/widgets/dialogs/add-usuario.zul", null, null);
+        window.doModal();
+    }
+	
+	@Command
+    public void verPermissoes(@BindingParam("usuarioSelecionado") Usuario usuarioSelecionado) {
+		final HashMap<String, Usuario> map = new HashMap<String, Usuario>();
+        map.put("usuarioSelecionado", usuarioSelecionado );
+        
+		Window window = (Window)Executions.createComponents(
+                "/widgets/dialogs/ver-permissoes.zul", null, map);
         window.doModal();
     }
 	

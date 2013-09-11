@@ -2,6 +2,7 @@ package br.ufjf.tcc.controller;
 
 import org.hibernate.HibernateException;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zul.Messagebox;
 
 import br.ufjf.tcc.business.UsuarioBusiness;
 import br.ufjf.tcc.library.SessionManager;
@@ -30,20 +31,24 @@ public class CommonsController {
             if (usuario.getTipoUsuario().getPermissoes().get(i).getNomePermissao().contains(nomePermissao)){
             	return true;
             }
-        }
+        }*/
 		
-		return false;*/
 		return true;
 	}
 	
-	public void paginaProibida(){
-		Executions.sendRedirect("/index.zul");
+	public void paginaProibida(){        
+        Messagebox.show("Você não tem permisão para acessar esta página.", "Acesso negado", new Messagebox.Button[]{
+                Messagebox.Button.OK}, Messagebox.QUESTION, null);
 	}
 	
 	public String getMenu() {
 		int tipoUsuario = usuario.getTipoUsuario().getIdTipoUsuario();
 		if (tipoUsuario == 4)
 			return "/templates/menu-admin.zul";
+		if (tipoUsuario == 3)
+			return "/templates/menu-coord.zul";
+		if (tipoUsuario == 2)
+			return "/templates/menu-prof.zul";
 		return "/templates/menu-aluno.zul";
 	}
 
