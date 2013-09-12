@@ -2,6 +2,8 @@ package br.ufjf.tcc.controller;
 
 import java.util.List;
 
+import org.hibernate.Query;
+import org.hibernate.Session;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ContextParam;
@@ -14,7 +16,9 @@ import org.zkoss.zul.Window;
 
 import br.ufjf.tcc.business.UsuarioBusiness;
 import br.ufjf.tcc.model.Permissoes;
+import br.ufjf.tcc.model.TipoUsuario;
 import br.ufjf.tcc.model.Usuario;
+import br.ufjf.tcc.persistent.HibernateUtil;
 
 public class PermissoesUsuarioController extends CommonsController {
 	private UsuarioBusiness usuarioBusiness = new UsuarioBusiness();
@@ -26,17 +30,24 @@ public class PermissoesUsuarioController extends CommonsController {
             @ExecutionArgParam("usuarioSelecionado") Usuario usuarioSelecionado) {
         Selectors.wireComponents(view, this, false);
         this.usuarioSelecionado = usuarioSelecionado;
-        /*try {
-			new HibernateUtil();
-			Session sessao = HibernateUtil.getInstance();
-			permissoes = this.usuarioSelecionado.getTipoUsuario().getPermissoes();
-			System.out.println(permissoes.size());
-	        sessao.flush();
-	        sessao.close();
+        
+        Session sessao = null;
+        try {
+			
+			sessao = HibernateUtil.getInstance();
+			sessao.update(usuarioSelecionado);	//carrega o tipoUsuario e o Curso, que são LAZY	
+			Query query = sessao.createQuery("select t from TipoUsuario t join fetch t.permissoes where t.idTipoUsuario = :idTipoUsuario");
+	        query.setParameter("idTipoUsuario", this.usuarioSelecionado.getTipoUsuario().getIdTipoUsuario());
+	        
+	        permissoes = ((TipoUsuario) query.uniqueResult()).getPermissoes();
+	        
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}*/
+		}
+
+        sessao.flush();
+        sessao.close();
     }
 	
 	public Usuario getUsuarioSelecionado() {

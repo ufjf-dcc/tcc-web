@@ -4,12 +4,6 @@
 	<div apply="org.zkoss.bind.BindComposer"
 		viewModel="@id('vm') @init('br.ufjf.tcc.controller.GerenciamentoUsuarioController')">
 		<include src="@bind(vm.menu)" />
-		<div>
-			<textbox id="pesquisa"/>
-			<button
-				label="Pesquisar"
-				onClick="@command('search', expression=pesquisa.text)" />
-		</div>
 		<grid id="demoGrid" 
 			model="@load(vm.usuarios) @template((vm.displayEdit and each.editingStatus) ? 'editable' : 'noneditable')"
 			mold="paging" pageSize="20">
@@ -17,6 +11,10 @@
 				<auxheader colspan="7"
 					label="Usuários cadastrados no sistema">
 					<hlayout>
+						<div>
+							<textbox id="filtro" value="@bind(vm.filterString)" />
+							<button label="Pesquisar" onClick="@command('filtra')" />
+						</div>
 						<checkbox checked="@bind(vm.displayEdit)"
 							label="Ativar edição">
 						</checkbox>
@@ -30,7 +28,7 @@
 				<column hflex="2" label="Email" sort="auto(usuario.email)" />
 				<column hflex="1" label="Titulação" sort="auto(usuario.titulacao)" />
 				<!-- <column label="Tipo" sort="auto(usuario.tipoUsuario.nomeTipoUsuario)" />  -->
-				<column label="Ver permissões" />
+				<column width="150px" label="Ver permissões" />
 				<column width="100px" label="Editar" visible="@load(vm.displayEdit)" />
 			</columns>
 			<template name="editable">

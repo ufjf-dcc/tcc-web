@@ -2,6 +2,7 @@ package br.ufjf.tcc.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import org.hibernate.HibernateException;
@@ -21,9 +22,11 @@ import br.ufjf.tcc.model.Usuario;
 
 public class GerenciamentoUsuarioController extends CommonsController{
 	private final UsuarioBusiness usuarioBusiness = new UsuarioBusiness();
+	private List<Usuario> allUsuarios = usuarioBusiness.getUsuarios();
 	private List<UsuarioStatus> usuariosStatuses = 
-			generateStatusList(usuarioBusiness.getUsuarios());
+			generateStatusList(allUsuarios);
 	private boolean displayEdit = true; //permite, ou não, a edição
+	private String filterString = null;
 	
 	@Init
 	public void init() throws HibernateException, Exception{
@@ -66,10 +69,29 @@ public class GerenciamentoUsuarioController extends CommonsController{
 		BindUtils.postNotifyChange(null, null, lcs, "editingStatus");
 	}
 	
+	public String getFilterString() {
+		return filterString;
+	}
+
+	public void setFilterString(String filterString) {
+		this.filterString = filterString;
+	}
+	
 	@NotifyChange({"usuarios"})
 	@Command
-	public void search(@BindingParam("expression") String expression) {
-		usuariosStatuses = generateStatusList(usuarioBusiness.buscar(expression));
+	public void filtra() {
+		List<Usuario> temp = new ArrayList<Usuario>();
+		String filter = filterString.toLowerCase().trim();
+        for (Iterator<Usuario> i = allUsuarios.iterator(); i.hasNext();) {
+            Usuario tmp = i.next();
+            if (tmp.getNomeUsuario().toLowerCase().contains(filter) ||
+                tmp.getEmail().toLowerCase().contains(filter) ||
+                tmp.getMatricula().toLowerCase().contains(filter)) {
+            	temp.add(tmp);
+            }
+        }
+        
+        usuariosStatuses = generateStatusList(temp);;
 	}
 	
 	@NotifyChange({"usuarios"})
@@ -81,12 +103,12 @@ public class GerenciamentoUsuarioController extends CommonsController{
                 if(Messagebox.Button.YES.equals(event.getButton())) {
                 	usuarioBusiness.exclui(usuario);
                     usuariosStatuses = generateStatusList(usuarioBusiness.getUsuarios());
-                    Messagebox.show("O curso foi excluído com sucesso.");
+                    Messagebox.show("O usuário foi excluído com sucesso.");
                 }
             }
         };
         
-        Messagebox.show("Tem certeza que deseja excluir o curso " + usuario.getNomeUsuario() + " (essa operação não pode ser desfeita) ?", "Excluir curso", new Messagebox.Button[]{
+        Messagebox.show("Tem certeza que deseja excluir o usuário " + usuario.getNomeUsuario() + " (essa operação não pode ser desfeita) ?", "Excluir usuário", new Messagebox.Button[]{
                 Messagebox.Button.YES, Messagebox.Button.NO }, Messagebox.QUESTION, clickListener);
 		
 	}

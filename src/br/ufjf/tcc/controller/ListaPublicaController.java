@@ -15,8 +15,7 @@ import br.ufjf.tcc.model.TCC;
 
 public class ListaPublicaController extends CommonsController {
 
-	private TCCBusiness tccBusiness = new TCCBusiness();
-	private List<TCC> allTccs = tccBusiness.getListaPublica();
+	private List<TCC> allTccs = new TCCBusiness().getListaPublica();
 	private List<TCC> filterTccs = allTccs;
 	private String filterString = null;
 

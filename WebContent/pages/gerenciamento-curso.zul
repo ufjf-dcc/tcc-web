@@ -4,9 +4,6 @@
 	<div apply="org.zkoss.bind.BindComposer"
 		viewModel="@id('vm') @init('br.ufjf.tcc.controller.GerenciamentoCursoController')">
 		<include src="@bind(vm.menu)" />
-		<div>
-			
-		</div>
 		<grid id="demoGrid"
 			model="@load(vm.cursos) @template((vm.displayEdit and each.editingStatus) ? 'editable' : 'noneditable')"
 			mold="paging" pageSize="20">
@@ -14,10 +11,10 @@
 				<auxheader colspan="7"
 					label="Cursos cadastrados no sistema">
 					<hlayout>
-						<textbox id="pesquisa"/>
-							<button
-								label="Pesquisar"
-								onClick="@command('search', expression=pesquisa.text)" />
+						<div>
+							<textbox id="filtro" value="@bind(vm.filterString)" />
+							<button label="Pesquisar" onClick="@command('filtra')" />
+						</div>
 						<checkbox checked="@bind(vm.displayEdit)"
 							label="Ativar edição">
 						</checkbox>

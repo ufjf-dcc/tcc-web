@@ -39,7 +39,7 @@
                     <label value="${each.aluno.nomeUsuario}" 
                         popup="${each.aluno.matricula}, position=at_pointer" style="cursor:pointer" />
                         <popup id="${each.aluno.matricula}">
-						    <vlayout width="500px">
+						    <vlayout width="300px">
 						    	<!-- <label value="Curso" style="font-size: 14px; font-weight: bold; text-align: justify; display: block;" />							    
 				                <label value="${each.aluno.curso.nomeCurso}" /> -->
 				                <label value="Titulação" style="font-size: 14px; font-weight: bold; text-align: justify; display: block;" />							    
