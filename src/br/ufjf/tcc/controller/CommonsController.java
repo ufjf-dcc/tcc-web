@@ -46,7 +46,7 @@ public class CommonsController {
 		if (tipoUsuario == 4)
 			return "/templates/menu-admin.zul";
 		if (tipoUsuario == 3)
-			return "/templates/menu-coord.zul";
+			return "/templates/menu-orient.zul";
 		if (tipoUsuario == 2)
 			return "/templates/menu-prof.zul";
 		return "/templates/menu-aluno.zul";

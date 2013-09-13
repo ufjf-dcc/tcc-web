@@ -5,6 +5,8 @@ import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
+import br.ufjf.tcc.model.Permissoes;
+import br.ufjf.tcc.model.TipoUsuario;
 import br.ufjf.tcc.model.Usuario;
 import br.ufjf.tcc.persistent.GenericoDAO;
 import br.ufjf.tcc.persistent.HibernateUtil;
@@ -50,5 +52,35 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 		List<Usuario> usuarios = query.list();
 		session.close();
 		return usuarios;
+	}
+	
+	public List<Permissoes> getPermissoes(Usuario usuario) {
+		try {
+			getSession().update(usuario);
+			Query query = getSession().createQuery("select t from TipoUsuario t join fetch t.permissoes where t.idTipoUsuario = :idTipoUsuario");
+	        query.setParameter("idTipoUsuario", usuario.getTipoUsuario().getIdTipoUsuario());
+	        
+	        return ((TipoUsuario) query.uniqueResult()).getPermissoes();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return null;		
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Usuario> getOrientados(Usuario usuario) {
+		try {
+			Query query = getSession().createQuery("select a from TCC t join fetch t.aluno a where t.orientador = :idUsuario");
+	        query.setParameter("idUsuario", usuario.getIdUsuario());
+	        
+	        return query.list();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return null;		
 	}
 }

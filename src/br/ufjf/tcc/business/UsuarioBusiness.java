@@ -10,6 +10,7 @@ import jonelo.jacksum.algorithm.AbstractChecksum;
 import org.hibernate.HibernateException;
 
 import br.ufjf.tcc.library.SessionManager;
+import br.ufjf.tcc.model.Permissoes;
 import br.ufjf.tcc.model.Usuario;
 import br.ufjf.tcc.persistent.impl.UsuarioDAO;
 
@@ -62,6 +63,16 @@ public class UsuarioBusiness {
 			resultados.add((Usuario) usuario);
 		}
 		return resultados;
+	}
+	
+	public List<Permissoes> getPermissoes(Usuario usuario) {
+		UsuarioDAO usuarioDAO = new UsuarioDAO();
+		return usuarioDAO.getPermissoes(usuario);
+	}
+	
+	public List<Usuario> getOrientados(Usuario usuario) {
+		UsuarioDAO usuarioDAO = new UsuarioDAO();
+		return usuarioDAO.getOrientados(usuario);
 	}
 	
 	public List<Usuario> buscar(String expressão) {
