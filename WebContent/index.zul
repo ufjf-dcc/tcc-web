@@ -29,7 +29,7 @@ margin-top:-125px; left:50%; margin-left:-150px;">
 						</tablechildren>
 						<tablechildren colspan="2"><space height="15px"/></tablechildren>
 						<tablechildren colspan="2">
-							<button label="Lista Pública de monografias" width="100%" height="30px" href="/lista-publica.zul"/>
+							<button label="Lista Pública de Monografias" width="100%" height="30px" href="/lista-publica.zul"/>
 						</tablechildren>
 						<tablechildren colspan="2"><space height="15px"/></tablechildren>
 					</tablelayout>

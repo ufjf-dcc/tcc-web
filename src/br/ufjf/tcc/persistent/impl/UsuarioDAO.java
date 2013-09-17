@@ -18,17 +18,16 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 
 	public Usuario retornaUsuario(String matricula, String senha) {
 		try {
-			Query query = getSession().createQuery("select u, c, t from Usuario as u inner join u.curso as c inner join u.tipoUsuario as t where u.matricula = :matricula AND u.senha = :senha");
+			Query query = getSession().createQuery("select u from Usuario as u join fetch u.curso join fetch u.tipoUsuario where u.matricula = :matricula AND u.senha = :senha");
 			query.setParameter("matricula", matricula);
 			query.setParameter("senha", senha);
 			
-			@SuppressWarnings("unchecked")
-			List<Object[]> resultado = query.list();
+			Usuario resultado = (Usuario) query.uniqueResult();
 			
 			getSession().close();
-			
-			if(!resultado.isEmpty()) 
-				return ((Usuario) resultado.get(0)[0]);
+
+			if(resultado != null)
+				return resultado;
 			
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -51,25 +51,25 @@ public class Usuario implements Serializable {
 	/**
 	 * Campo com a senha do usuario. Relaciona com a coluna {@code senha} do
 	 * banco através da anotação
-	 * {@code @Column(name = "senha", length = 45, nullable = false)}.
+	 * {@code @Column(name = "senha", length = 255, nullable = false)}.
 	 */
-	@Column(name = "senha", length = 45, nullable = false)
+	@Column(name = "senha", length = 255, nullable = false)
 	private String senha;
 
 	/**
 	 * Campo com o email do usuario. Relaciona com a coluna {@code email} do
 	 * banco através da anotação
-	 * {@code @Column(name = "email", length = 45, nullable = false)}.
+	 * {@code @Column(name = "email", length = 255, nullable = false)}.
 	 */
-	@Column(name = "email", length = 45, nullable = false)
+	@Column(name = "email", length = 255, nullable = false)
 	private String email;
 
 	/**
 	 * Campo com o nome do usuario. Relaciona com a coluna {@code nomeUsuario}
 	 * do banco através da anotação
-	 * {@code @Column(name = "nomeUsuario", length = 45, nullable = false)}.
+	 * {@code @Column(name = "nomeUsuario", length = 255, nullable = false)}.
 	 */
-	@Column(name = "nomeUsuario", length = 45, nullable = false)
+	@Column(name = "nomeUsuario", length = 255, nullable = false)
 	private String nomeUsuario;
 
 	/**

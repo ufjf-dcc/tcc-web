@@ -1,4 +1,4 @@
-<?page title="Lista Pública de monografias"?>
+<?page title="Lista Pública de Monografias"?>
 <zk>
 	<style src="style.css" />
 	<div apply="org.zkoss.bind.BindComposer"
@@ -7,10 +7,10 @@
 			emptyMessage="Nada foi encontrado." 
 			mold="paging" pageSize="20">
 			<auxhead sclass="text-center">
-            	<auxheader label="Lista Pública de monografias" colspan="4" />
+            	<auxheader label="Lista Pública de Monografias" colspan="2" />
         	</auxhead>
 			<auxhead sclass="text-center">
-				<auxheader colspan="4">
+				<auxheader colspan="2">
 					<textbox id="filtro" value="@bind(vm.filterString)"/>
 							<button label="Filtrar" height="21px;" width="60px" onClick="@command('filtra')"/>
 				</auxheader>
@@ -18,25 +18,28 @@
 			<columns>
 				<column hflex="6" label="NomeTCC" sort="auto(nomeTCC)"/>
 				<column hflex="2" label="Autor" sort="auto(aluno.nomeUsuario)"/>
-				<column hflex="2" label="Orientador" sort="auto(orientador.nomeUsuario)"/>
-				<column width="100px" label="Download" />
 			</columns>
 			<template name="lista">
 				<row tooltip="${each.idTCC}, position=at_pointer" style="cursor:pointer" >
 					<div>
 						<label value="${each.nomeTCC}" />
 						<popup id="${each.idTCC}">
-						    <vlayout width="500px">
+						    <vlayout width="550px">
 							    <label value="Resumo" style="font-size: 14px; font-weight: bold; text-align: justify; display: block;" />							    
 					               <label value="${each.resumoTCC}" />
+					               <label value="Orientador" style="font-size: 14px; font-weight: bold; text-align: justify; display: block;" />							    
+					               <label value="${each.orientador.nomeUsuario}" />
 					               <label value="Palavras-chave" style="font-size: 14px; font-weight: bold; text-align: justify; display: block;" />							    
 					               <label value="${each.palavrasChave}" />
+					               <space height="20px"/>
+					               <hlayout>
+							       		<button label="Dowload PDF" onClick="@command('downloadPDF', tcc=each)" width="265px" height="30px" />
+							       		<button if="${each.arquivoExtraTCCFinal != ''}" label="Dowload Arquivos" onClick="@command('downloadExtra', tcc=each)" width="265px" height="30px" />
+							       </hlayout>
 							</vlayout>
 						</popup> 
 					</div>
                     <label value="${each.aluno.nomeUsuario}" />
-					<label value="@load(each.orientador.nomeUsuario)" />
-					<button label="Download " onClick="@command('testeDownload')" width="100%" height="30px" />
 				</row>
 			</template>
 		</grid>
