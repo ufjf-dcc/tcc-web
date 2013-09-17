@@ -12,9 +12,7 @@ import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.Messagebox.ClickEvent;
 import org.zkoss.zul.Window;
 
 import br.ufjf.tcc.business.UsuarioBusiness;
@@ -38,7 +36,7 @@ public class GerenciamentoUsuarioController extends CommonsController{
 		return displayEdit;
 	}
 	
-	@NotifyChange({"usuarios", "displayEdit"})
+	@NotifyChange({"usuariosStatuses", "displayEdit"})
 	public void setDisplayEdit(boolean displayEdit) {
 		this.displayEdit = displayEdit;
 	}
@@ -94,23 +92,17 @@ public class GerenciamentoUsuarioController extends CommonsController{
         usuariosStatuses = generateStatusList(temp);;
 	}
 	
-	@NotifyChange({"usuarios"})
+	@NotifyChange("usuarios")
 	@Command
-	public void delete(@BindingParam("idUsuario") final Usuario usuario) {
-		EventListener<ClickEvent> clickListener = new EventListener<Messagebox.ClickEvent>() {
-			@NotifyChange({"usuarios"})
-            public void onEvent(ClickEvent event) throws Exception {
-                if(Messagebox.Button.YES.equals(event.getButton())) {
-                	usuarioBusiness.exclui(usuario);
-                    usuariosStatuses = generateStatusList(usuarioBusiness.getUsuarios());
-                    Messagebox.show("O usuário foi excluído com sucesso.");
-                }
-            }
-        };
+	public void delete(@BindingParam("usuario") Usuario usuario) {
+		if (usuarioBusiness.exclui(usuario)) {
+        	Messagebox.show("O usuário foi excluído com sucesso.");
+	    	usuariosStatuses = null;
+	        usuariosStatuses = generateStatusList(usuarioBusiness.getUsuarios());
+		} else {
+			Messagebox.show("O usuário não foi excluído.");
+		}
         
-        Messagebox.show("Tem certeza que deseja excluir o usuário " + usuario.getNomeUsuario() + " (essa operação não pode ser desfeita) ?", "Excluir usuário", new Messagebox.Button[]{
-                Messagebox.Button.YES, Messagebox.Button.NO }, Messagebox.QUESTION, clickListener);
-		
 	}
 	
 	private static List<UsuarioStatus> generateStatusList(List<Usuario> usuarios) {

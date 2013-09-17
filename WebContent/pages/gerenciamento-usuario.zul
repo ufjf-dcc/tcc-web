@@ -71,7 +71,7 @@
 							onClick="@command('changeEditableStatus', usuarioStatus=each)" />
 						<button
 							image="/widgets/grid/inline_row_editing/delete.png"
-							onClick="@command('delete', idUsuario=each.usuario)" />
+							onClick="@command('delete', usuario=each.usuario)" />
 					</div>
 				</row>
 			</template>

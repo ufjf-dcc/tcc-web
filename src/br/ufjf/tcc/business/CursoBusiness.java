@@ -16,9 +16,13 @@ public class CursoBusiness extends AbstractValidator {
 	//validação dos formulários
 	public void validate(ValidationContext ctx) {
 		Map<String,Property> beanProps = ctx.getProperties(ctx.getProperty().getBase());
-
-		validarId(ctx, (Integer)beanProps.get("idCurso").getValue());
-		validarNome(ctx, (String)beanProps.get("nomeCurso").getValue());
+		
+		if (!jaExiste((Integer)beanProps.get("idCurso").getValue())) {
+			validarId(ctx, (Integer)beanProps.get("idCurso").getValue());
+			validarNome(ctx, (String)beanProps.get("nomeCurso").getValue());
+		} else
+			this.addInvalidMessage(ctx, "idCurso", "Já existe um curso com o id " + 
+					(Integer)beanProps.get("idCurso").getValue());
 	}
 
 	private void validarId(ValidationContext ctx, int idCurso) {
@@ -29,6 +33,9 @@ public class CursoBusiness extends AbstractValidator {
 	private void validarNome(ValidationContext ctx, String nomeCurso) {
 		if(nomeCurso == null)
 			this.addInvalidMessage(ctx, "nomeCurso", "O nome do curso deve ser preenchido");
+		else
+			if(nomeCurso.trim().length() == 0)
+				this.addInvalidMessage(ctx, "nomeCurso", "O nome do curso deve ser preenchido");
 	}
 	
 	//comunicação com o CursoDAO
@@ -59,6 +66,11 @@ public class CursoBusiness extends AbstractValidator {
 	public boolean exclui(Curso curso) {
 		CursoDAO cursoDAO = new CursoDAO();
 		return cursoDAO.exclui(curso);
+	}
+	
+	public boolean jaExiste(int idCurso) {
+		CursoDAO cursoDAO = new CursoDAO();
+		return cursoDAO.procuraId(idCurso, Curso.class) != null ? true : false;
 	}
 
 }

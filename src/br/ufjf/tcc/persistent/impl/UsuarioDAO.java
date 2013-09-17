@@ -37,6 +37,24 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 		return null;
 	}
 	
+	public boolean jaExiste (String matricula) {
+		try {
+			Query query = getSession().createQuery("select u from Usuario u where u.matricula = :matricula");
+			query.setParameter("matricula", matricula);
+			
+			boolean resultado = query.list().size() > 0 ? true : false;
+			
+			getSession().close();
+			
+			return resultado;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return false;
+	}
+	
 	@SuppressWarnings("unchecked")
 	public List<Usuario> buscar(String expressão) {
 		System.out.println(expressão);

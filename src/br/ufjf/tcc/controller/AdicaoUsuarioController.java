@@ -53,7 +53,8 @@ public class AdicaoUsuarioController extends CommonsController {
  
 	@Command
     public void submit(@BindingParam("window")  Window x) {
-		novoUsuario.setSenha(usuarioBusiness.encripta(novoUsuario.getSenha()));		
+		//implementar senha aleatória posteriormente
+		novoUsuario.setSenha(usuarioBusiness.encripta("123"));	
 		usuarioBusiness.salvar(novoUsuario);
         x.detach();
     }

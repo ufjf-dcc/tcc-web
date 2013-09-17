@@ -1,21 +1,26 @@
 <window id="addUsuario" title="Cadastrar Usuário" width="300px" border="normal"
     apply="org.zkoss.bind.BindComposer"
 	viewModel="@id('lf') @init('br.ufjf.tcc.controller.AdicaoUsuarioController')"
-	form="@id('fx') @load(lf.novoUsuario) @save(lf.novoUsuario, before='submit')">
+	validationMessages="@id('vmsgs')"
+	form="@id('fx') @load(lf.novoUsuario) @save(lf.novoUsuario, before='submit') @validator('br.ufjf.tcc.business.UsuarioBusiness')" >
 	<tablelayout columns="2">
 	
 		<tablechildren colspan="2"><space height="20px"/> </tablechildren>
 		<tablechildren>Nome do Usuário:</tablechildren>
 		<tablechildren>
 			<textbox value="@bind(fx.nomeUsuario)"
-				tabindex="1" id="id" />
+				tabindex="1" id="nomeUsuario" />
+			<label class="error"
+		        value="@load(vmsgs['nomeUsuario'])" />
 		</tablechildren>
 		
 		<tablechildren colspan="2"><space height="15px"/> </tablechildren>
 		<tablechildren>Matrícula:</tablechildren>
 		<tablechildren>
 			<textbox value="@bind(fx.matricula)"
-				tabindex="1" id="" />
+				tabindex="1" id="matricula" />
+			<label class="error"
+		        value="@load(vmsgs['matricula'])" />
 		</tablechildren>
 		
 		<tablechildren colspan="2"><space height="15px"/> </tablechildren>
@@ -33,14 +38,18 @@
 		<tablechildren>Email:</tablechildren>
 		<tablechildren>
 			<textbox value="@bind(fx.email)"
-				tabindex="1" id="" />
+				tabindex="1" id="email" />
+			<label class="error"
+		        value="@load(vmsgs['email'])" />
 		</tablechildren>
 		
 		<tablechildren colspan="2"><space height="15px"/> </tablechildren>
 		<tablechildren>Titulação:</tablechildren>
 		<tablechildren>
 			<textbox value="@bind(fx.titulacao)"
-				tabindex="1" id="" />
+				tabindex="1" id="titulacao" />
+			<label class="error"
+		        value="@load(vmsgs['titulacao'])" />
 		</tablechildren>
 		
 		<tablechildren colspan="2"><space height="15px"/> </tablechildren>
@@ -52,13 +61,6 @@
                     <comboitem label="@load(each.nomeTipoUsuario)" />
                 </template>
             </combobox>
-		</tablechildren>
-		
-		<tablechildren colspan="2"><space height="15px"/> </tablechildren>
-		<tablechildren>Senha:</tablechildren>
-		<tablechildren>
-			<textbox value="@bind(fx.senha)"
-				type="password" tabindex="1" id="" />
 		</tablechildren>
 		
 		<tablechildren colspan="2">
