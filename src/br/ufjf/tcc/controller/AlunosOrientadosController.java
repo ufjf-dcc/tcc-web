@@ -13,6 +13,7 @@ public class AlunosOrientadosController extends CommonsController {
 
 	@Init
 	public void init() {	// Initialize
+		System.out.println(getUsuario().getIdUsuario());
 		selected = usuarios.get(0); // Selected First One
 	}
 

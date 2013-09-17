@@ -9,11 +9,10 @@ import br.ufjf.tcc.library.SessionManager;
 import br.ufjf.tcc.model.Usuario;
 
 public class CommonsController {
-	private Usuario usuario;
 	private UsuarioBusiness usuarioBusiness;
 
 	public void testaLogado() throws HibernateException, Exception {
-		usuario = (Usuario) SessionManager.getAttribute("usuario");
+		Usuario usuario = getUsuario();
 		usuarioBusiness = new UsuarioBusiness();
 		if (!usuarioBusiness.checaLogin(usuario)) {
 			Executions.sendRedirect("/index.zul");
@@ -22,7 +21,7 @@ public class CommonsController {
 	}
 
 	public Usuario getUsuario() {
-		return usuario;
+		return (Usuario) SessionManager.getAttribute("usuario");
 	}
 	
 	public boolean checaPermissao(String nomePermissao){
@@ -42,7 +41,7 @@ public class CommonsController {
 	}
 	
 	public String getMenu() {
-		int tipoUsuario = usuario.getTipoUsuario().getIdTipoUsuario();
+		int tipoUsuario = getUsuario().getTipoUsuario().getIdTipoUsuario();
 		if (tipoUsuario == 4)
 			return "/templates/menu-admin.zul";
 		if (tipoUsuario == 3)

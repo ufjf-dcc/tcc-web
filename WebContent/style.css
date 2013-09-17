@@ -6,3 +6,7 @@ tbody.z-grid-empty-body td {
 	font-size: 15px;
 	padding: 10px;
 }
+
+.error {
+	color: #FF0000;
+}
