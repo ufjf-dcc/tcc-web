@@ -11,9 +11,7 @@ import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.Messagebox.ClickEvent;
 import org.zkoss.zul.Window;
 
 import br.ufjf.tcc.business.CursoBusiness;
@@ -94,20 +92,13 @@ public class GerenciamentoCursoController extends CommonsController{
 	@NotifyChange({"cursos"})
 	@Command
 	public void delete(@BindingParam("idCurso") final Curso curso) {
-		EventListener<ClickEvent> clickListener = new EventListener<Messagebox.ClickEvent>() {
-			@NotifyChange({"cursos"})
-            public void onEvent(ClickEvent event) throws Exception {
-                if(Messagebox.Button.YES.equals(event.getButton())) {
-                	cursoBusiness.exclui(curso);
-                    cursosStatuses = generateStatusList(cursoBusiness.getCursos());
-                    Messagebox.show("O curso foi excluído com sucesso.");
-                }
-            }
-        };
-        
-        Messagebox.show("Tem certeza que deseja excluir o curso " + curso.getNomeCurso() + " (essa operação não pode ser desfeita) ?", "Excluir curso", new Messagebox.Button[]{
-                Messagebox.Button.YES, Messagebox.Button.NO }, Messagebox.QUESTION, clickListener);
-		
+		if (cursoBusiness.exclui(curso)) {
+			Messagebox.show("O curso foi excluído com sucesso.");
+			cursosStatuses = null;
+			cursosStatuses = generateStatusList(cursoBusiness.getCursos());
+		} else {
+			Messagebox.show("O curso não foi excluído.");
+		}
 	}
 	
 	private static List<CursoStatus> generateStatusList(List<Curso> cursos) {

@@ -110,4 +110,24 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 		
 		return null;
 	}
+
+	@SuppressWarnings("unused")
+	@Override
+	public Usuario update(Usuario usuario) {
+		/*Dando update no usuário e solicitando os IDs do tipo e
+		 * do curso, faz com que o Tipo e o Curso sejam "carregados"
+		 * do banco, retornando o usuário com todas as informações.
+		 */
+		try {
+			getSession().update(usuario);
+			int auxTipo = usuario.getTipoUsuario().getIdTipoUsuario();
+			int auxCurso = usuario.getCurso().getIdCurso();
+			getSession().close();
+			return usuario;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
 }

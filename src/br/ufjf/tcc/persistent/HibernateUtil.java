@@ -186,6 +186,7 @@ public class HibernateUtil {
 			System.err.println(e.fillInStackTrace());
 			return false;
 		} finally {
+			session.flush();
 			session.close();
 			return true;
 		}

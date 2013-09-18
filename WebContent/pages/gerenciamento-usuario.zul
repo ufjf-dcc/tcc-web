@@ -21,14 +21,14 @@
 					</hlayout>
 				</auxheader>
 			</auxhead>
-			<columns menupopup="auto">
+			<columns>
 				<column width="50px" label="id" sort="auto(usuario.idUsuario)" />
 				<column hflex="1" label="Matrícula" sort="auto(usuario.matricula)" />
 				<column hflex="3" label="Nome" sort="auto(usuario.nomeUsuario)" />
 				<column hflex="2" label="Email" sort="auto(usuario.email)" />
+				<column hflex="2" label="Curso" sort="auto(usuario.curso.nomeCurso)" />
 				<column hflex="1" label="Titulação" sort="auto(usuario.titulacao)" />
-				<!-- <column label="Tipo" sort="auto(usuario.tipoUsuario.nomeTipoUsuario)" />  -->
-				<column width="150px" label="Ver permissões" />
+				<column label="Tipo" sort="auto(usuario.tipoUsuario.nomeTipoUsuario)" />
 				<column width="100px" label="Editar" visible="@load(vm.displayEdit)" />
 			</columns>
 			<template name="editable">
@@ -41,11 +41,21 @@
 						value="@load(each.usuario.nomeUsuario) @save(each.usuario.nomeUsuario, before='confirm')" />
 					<textbox 
 						value="@load(each.usuario.email) @save(each.usuario.email, before='confirm')" />
+					<combobox id="cmbCurso" width="150px"
+						model="@load(vm.cursos)" selectedItem="@bind(each.usuario.curso)">
+						<template name="model">
+							<comboitem label="@load(each.nomeCurso)" />
+						</template>
+					</combobox>
 					<textbox 
 						value="@load(each.usuario.titulacao) @save(each.usuario.titulacao, before='confirm')" />
-					<!-- <textbox 
-						value="@load(each.usuario.tipoUsuario.nomeTipoUsuario) @save(each.usuario.tipoUsuario, before='confirm')" />  -->
-					<button label="Editar permissões" />
+					<combobox id="cmbTipoUsuario" width="150px"
+						model="@load(vm.tiposUsuario)" selectedItem="@bind(each.usuario.tipoUsuario)">
+						<template name="model">
+							<comboitem
+								label="@load(each.nomeTipoUsuario)" />
+						</template>
+					</combobox>
 					<div>
 						<button
 							image="/widgets/grid/inline_row_editing/confirm.gif"
@@ -62,9 +72,9 @@
 					<label value="@load(each.usuario.matricula)" />
 					<label value="@load(each.usuario.nomeUsuario)" />
 					<label value="@load(each.usuario.email)" />
+					<label value="@load(each.usuario.curso.nomeCurso)" />
 					<label value="@load(each.usuario.titulacao)" />
-					<!-- <label value="@load(each.usuario.tipoUsuario.nomeTipoUsuario)" /> -->
-					<button label="Ver permissões" onClick="@command('verPermissoes', usuarioSelecionado=each.usuario)" />
+					<label value="@load(each.usuario.tipoUsuario.nomeTipoUsuario)" />
 					<div>
 						<button
 							image="/widgets/grid/inline_row_editing/edit.gif"

@@ -15,28 +15,47 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
+import br.ufjf.tcc.business.CursoBusiness;
+import br.ufjf.tcc.business.TipoUsuarioBusiness;
 import br.ufjf.tcc.business.UsuarioBusiness;
+import br.ufjf.tcc.model.Curso;
+import br.ufjf.tcc.model.TipoUsuario;
 import br.ufjf.tcc.model.Usuario;
 
 public class GerenciamentoUsuarioController extends CommonsController{
 	private final UsuarioBusiness usuarioBusiness = new UsuarioBusiness();
 	private List<Usuario> allUsuarios = usuarioBusiness.getUsuarios();
-	private List<UsuarioStatus> usuariosStatuses = 
-			generateStatusList(allUsuarios);
+	private List<UsuarioStatus> usuariosStatuses;
+	private List<TipoUsuario> tiposUsuario = (new TipoUsuarioBusiness()).getTiposUsuarios();
+	private List<Curso> cursos = (new CursoBusiness()).getCursos();
 	private boolean displayEdit = true; //permite, ou não, a edição
 	private String filterString = null;
 	
 	@Init
+	@NotifyChange("usuarios")
 	public void init() throws HibernateException, Exception{
 		super.testaLogado();
 		if(!checaPermissao("guc__")) super.paginaProibida();
+
+		for(int i = 0; i < allUsuarios.size(); i++)
+			allUsuarios.set(i, usuarioBusiness.update(allUsuarios.get(i)));
+		
+		usuariosStatuses = generateStatusList(allUsuarios);
+	}
+	
+	public List<TipoUsuario> getTiposUsuario(){
+		return this.tiposUsuario;
+	}
+	
+	public List<Curso> getCursos() {
+		return this.cursos;
 	}
 	
 	public boolean isDisplayEdit() {
 		return displayEdit;
 	}
 	
-	@NotifyChange({"usuariosStatuses", "displayEdit"})
+	@NotifyChange({"usuarios", "displayEdit"})
 	public void setDisplayEdit(boolean displayEdit) {
 		this.displayEdit = displayEdit;
 	}
@@ -75,7 +94,7 @@ public class GerenciamentoUsuarioController extends CommonsController{
 		this.filterString = filterString;
 	}
 	
-	@NotifyChange({"usuarios"})
+	@NotifyChange("usuarios")
 	@Command
 	public void filtra() {
 		List<Usuario> temp = new ArrayList<Usuario>();
@@ -107,8 +126,8 @@ public class GerenciamentoUsuarioController extends CommonsController{
 	
 	private static List<UsuarioStatus> generateStatusList(List<Usuario> usuarios) {
 		List<UsuarioStatus> usuarioss = new ArrayList<UsuarioStatus>();
-		for(Usuario lc : usuarios) {
-			usuarioss.add(new UsuarioStatus(lc, false));
+		for(Usuario usuario : usuarios) {
+			usuarioss.add(new UsuarioStatus(usuario, false));
 		}
 		return usuarioss;
 	}

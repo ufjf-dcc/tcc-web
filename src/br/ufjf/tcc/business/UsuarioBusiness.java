@@ -139,5 +139,10 @@ public class UsuarioBusiness extends AbstractValidator {
 		UsuarioDAO usuarioDAO = new UsuarioDAO();
 		return usuarioDAO.jaExiste(matricula);
 	}
+	
+	public Usuario update(Usuario usuario) {
+		UsuarioDAO usuarioDAO = new UsuarioDAO();
+		return usuarioDAO.update(usuario);
+	}
 
 }

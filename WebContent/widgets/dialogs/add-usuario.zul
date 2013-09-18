@@ -1,73 +1,85 @@
-<window id="addUsuario" title="Cadastrar Usuário" width="300px" border="normal"
-    apply="org.zkoss.bind.BindComposer"
+<window id="addUsuario" title="Cadastrar Usuário" width="300px"
+	border="normal" apply="org.zkoss.bind.BindComposer"
 	viewModel="@id('lf') @init('br.ufjf.tcc.controller.AdicaoUsuarioController')"
 	validationMessages="@id('vmsgs')"
-	form="@id('fx') @load(lf.novoUsuario) @save(lf.novoUsuario, before='submit') @validator('br.ufjf.tcc.business.UsuarioBusiness')" >
-	<tablelayout columns="2">
-	
-		<tablechildren colspan="2"><space height="20px"/> </tablechildren>
-		<tablechildren>Nome do Usuário:</tablechildren>
-		<tablechildren>
-			<textbox value="@bind(fx.nomeUsuario)"
-				tabindex="1" id="nomeUsuario" />
-			<label class="error"
-		        value="@load(vmsgs['nomeUsuario'])" />
-		</tablechildren>
-		
-		<tablechildren colspan="2"><space height="15px"/> </tablechildren>
-		<tablechildren>Matrícula:</tablechildren>
-		<tablechildren>
-			<textbox value="@bind(fx.matricula)"
-				tabindex="1" id="matricula" />
-			<label class="error"
-		        value="@load(vmsgs['matricula'])" />
-		</tablechildren>
-		
-		<tablechildren colspan="2"><space height="15px"/> </tablechildren>
-		<tablechildren>Curso:</tablechildren>
-		<tablechildren>
-			<combobox id="cmbCurso" width="150px"
-				model="@load(lf.cursos)" selectedItem="@bind(lf.curso)" >
-				<template name="model">
-                    <comboitem label="@load(each.nomeCurso)" />
-                </template>
-            </combobox>
-		</tablechildren>
-		
-		<tablechildren colspan="2"><space height="15px"/> </tablechildren>
-		<tablechildren>Email:</tablechildren>
-		<tablechildren>
-			<textbox value="@bind(fx.email)"
-				tabindex="1" id="email" />
-			<label class="error"
-		        value="@load(vmsgs['email'])" />
-		</tablechildren>
-		
-		<tablechildren colspan="2"><space height="15px"/> </tablechildren>
-		<tablechildren>Titulação:</tablechildren>
-		<tablechildren>
-			<textbox value="@bind(fx.titulacao)"
-				tabindex="1" id="titulacao" />
-			<label class="error"
-		        value="@load(vmsgs['titulacao'])" />
-		</tablechildren>
-		
-		<tablechildren colspan="2"><space height="15px"/> </tablechildren>
-		<tablechildren>Tipo:</tablechildren>
-		<tablechildren>
-			<combobox id="cmbTipoUsuario" width="150px"
-				model="@load(lf.tiposUsuario)" selectedItem="@bind(lf.tipoUsuario)" >
-				<template name="model">
-                    <comboitem label="@load(each.nomeTipoUsuario)" />
-                </template>
-            </combobox>
-		</tablechildren>
-		
-		<tablechildren colspan="2">
-			<div align="center">
-				<button label="Cadastrar" onClick="@command('submit', window=addUsuario)"/>
-				<button label="Cancelar" onClick="@command('cancel', window=addUsuario)"/>
-			</div>
-		</tablechildren>
-	</tablelayout>
+	form="@id('fx') @load(lf.novoUsuario) @save(lf.novoUsuario, before='submit') @validator('br.ufjf.tcc.business.UsuarioBusiness')">
+	<grid>
+		<columns>
+			<column hflex="1" />
+			<column hflex="2" />
+		</columns>
+		<rows>
+			<row>
+				<label value="Nome do Usuário:" />
+				<div>
+					<textbox value="@bind(fx.nomeUsuario)" tabindex="1"
+						id="nomeUsuario" />
+					<label class="error"
+						value="@load(vmsgs['nomeUsuario'])" />
+				</div>
+			</row>
+
+			<row>
+				<label value="Matrícula:" />
+				<div>
+					<textbox value="@bind(fx.matricula)" tabindex="1"
+						id="matricula" />
+					<label class="error"
+						value="@load(vmsgs['matricula'])" />
+				</div>
+			</row>
+
+			<row>
+				<label value="Curso:" />
+				<div>
+					<combobox id="cmbCurso" width="150px"
+						model="@load(lf.cursos)" selectedItem="@bind(lf.curso)">
+						<template name="model">
+							<comboitem label="@load(each.nomeCurso)" />
+						</template>
+					</combobox>
+				</div>
+			</row>
+
+			<row>
+				<label value="Email:" />
+				<div>
+					<textbox value="@bind(fx.email)" tabindex="1"
+						id="email" />
+					<label class="error" value="@load(vmsgs['email'])" />
+				</div>
+			</row>
+
+			<row>
+				<label value="Titulação:" />
+				<div>
+					<textbox value="@bind(fx.titulacao)" tabindex="1"
+						id="titulacao" />
+					<label class="error"
+						value="@load(vmsgs['titulacao'])" />
+				</div>
+			</row>
+
+			<row>
+				<label value="Tipo:" />
+				<div>
+					<combobox id="cmbTipoUsuario" width="150px"
+						model="@load(lf.tiposUsuario)"
+						selectedItem="@bind(lf.tipoUsuario)">
+						<template name="model">
+							<comboitem
+								label="@load(each.nomeTipoUsuario)" />
+						</template>
+					</combobox>
+				</div>
+			</row>
+
+			<row>
+				<button label="Cadastrar"
+					onClick="@command('submit', window=addUsuario)" />
+				<button label="Cancelar"
+					onClick="@command('cancel', window=addUsuario)" />
+			</row>
+		</rows>
+	</grid>
 </window>

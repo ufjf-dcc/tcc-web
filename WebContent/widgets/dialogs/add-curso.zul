@@ -4,29 +4,30 @@
 	validationMessages="@id('vmsgs')"
 	form="@id('fx') @load(lf.curso) @save(lf.curso, before='submit') @validator('br.ufjf.tcc.business.CursoBusiness')" >
 	<style src="style.css" />
-	<tablelayout columns="2">
-		<tablechildren colspan="2"><space height="20px"/> </tablechildren>
-		<tablechildren>Id do Curso:</tablechildren>
-		<tablechildren>
-			<textbox value="@bind(fx.idCurso)"
-				tabindex="1" id="idCurso" />
-			<label class="error"
-		        value="@load(vmsgs['idCurso'])" />
-		</tablechildren>
-		<tablechildren colspan="2"><space height="20px"/> </tablechildren>
-		<tablechildren>Nome do Curso:</tablechildren>
-		<tablechildren>
-			<textbox value="@bind(fx.nomeCurso)"
-				tabindex="1" id="nomeCurso" />
-		    <label class="error"
-		        value="@load(vmsgs['nomeCurso'])" />
-		</tablechildren>
-		<tablechildren colspan="2"><space height="15px"/> </tablechildren>
-		<tablechildren colspan="2">
-			<div align="center">
+	<grid>
+		<rows>
+			<row>
+				<label value="Id do Curso:" />
+				<div>
+					<textbox value="@bind(fx.idCurso)"
+						tabindex="1" id="idCurso" />
+					<label class="error"
+				        value="@load(vmsgs['idCurso'])" />
+				</div>
+			</row>
+			<row>
+				<label value="Nome do Curso:" />
+				<div>
+					<textbox value="@bind(fx.nomeCurso)"
+						tabindex="2" id="nomeCurso" />
+				    <label class="error"
+				        value="@load(vmsgs['nomeCurso'])" />
+				</div>
+			</row>
+			<row>
 				<button label="Cadastrar" onClick="@command('submit', window=addCurso)"/>
 				<button label="Cancelar" onClick="@command('cancel', window=addCurso)"/>
-			</div>
-		</tablechildren>
-	</tablelayout>
+			</row>
+		</rows>
+	</grid>
 </window>
