@@ -2,7 +2,6 @@ package br.ufjf.tcc.controller;
 
 import org.hibernate.HibernateException;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zul.Messagebox;
 
 import br.ufjf.tcc.business.UsuarioBusiness;
 import br.ufjf.tcc.library.SessionManager;
@@ -36,8 +35,7 @@ public class CommonsController {
 	}
 	
 	public void paginaProibida(){        
-        Messagebox.show("Você não tem permisão para acessar esta página.", "Acesso negado", new Messagebox.Button[]{
-                Messagebox.Button.OK}, Messagebox.QUESTION, null);
+		Executions.sendRedirect("/home.zul");
 	}
 	
 	public String getMenu() {

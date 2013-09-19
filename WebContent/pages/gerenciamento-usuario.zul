@@ -1,11 +1,11 @@
-<?page title="Usuários cadastrados"?>
+<?page title="Gerenciamento de Usuários"?>
 <zk>
 	<style src="/widgets/grid/inline_row_editing/style.css" />
 	<div apply="org.zkoss.bind.BindComposer"
 		viewModel="@id('vm') @init('br.ufjf.tcc.controller.GerenciamentoUsuarioController')">
 		<include src="@bind(vm.menu)" />
 		<grid id="demoGrid" 
-			model="@load(vm.usuarios) @template((vm.displayEdit and each.editingStatus) ? 'editable' : 'noneditable')"
+			model="@load(vm.usuarios) @template(each.editingStatus ? 'editable' : 'noneditable')"
 			mold="paging" pageSize="20">
 			<auxhead>
 				<auxheader colspan="7"
@@ -15,42 +15,39 @@
 							<textbox id="filtro" value="@bind(vm.filterString)" />
 							<button label="Pesquisar" onClick="@command('filtra')" />
 						</div>
-						<checkbox checked="@bind(vm.displayEdit)"
-							label="Ativar edição">
-						</checkbox>
 					</hlayout>
 				</auxheader>
 			</auxhead>
 			<columns>
-				<column width="50px" label="id" sort="auto(usuario.idUsuario)" />
-				<column hflex="1" label="Matrícula" sort="auto(usuario.matricula)" />
-				<column hflex="3" label="Nome" sort="auto(usuario.nomeUsuario)" />
-				<column hflex="2" label="Email" sort="auto(usuario.email)" />
-				<column hflex="2" label="Curso" sort="auto(usuario.curso.nomeCurso)" />
-				<column hflex="1" label="Titulação" sort="auto(usuario.titulacao)" />
-				<column label="Tipo" sort="auto(usuario.tipoUsuario.nomeTipoUsuario)" />
-				<column width="100px" label="Editar" visible="@load(vm.displayEdit)" />
+				<column width="50px" label="id" sort="auto(idUsuario)" />
+				<column hflex="1" label="Matrícula" sort="auto(matricula)" />
+				<column hflex="3" label="Nome" sort="auto(nomeUsuario)" />
+				<column hflex="2" label="Email" sort="auto(email)" />
+				<column hflex="2" label="Curso" sort="auto(curso.nomeCurso)" />
+				<column hflex="1" label="Titulação" sort="auto(titulacao)" />
+				<column label="Tipo" sort="auto(tipoUsuario.nomeTipoUsuario)" />
+				<column width="100px" label="Editar"/>
 			</columns>
 			<template name="editable">
 				<row>
 					<label 
-						value="@load(each.usuario.idUsuario)" />
+						value="@load(each.idUsuario)" />
 					<textbox 
-						value="@load(each.usuario.matricula) @save(each.usuario.matricula, before='confirm')" />
+						value="@load(each.matricula) @save(each.matricula, before='confirm')" />
 					<textbox 
-						value="@load(each.usuario.nomeUsuario) @save(each.usuario.nomeUsuario, before='confirm')" />
+						value="@load(each.nomeUsuario) @save(each.nomeUsuario, before='confirm')" />
 					<textbox 
-						value="@load(each.usuario.email) @save(each.usuario.email, before='confirm')" />
-					<combobox id="cmbCurso" width="150px"
-						model="@load(vm.cursos)" selectedItem="@bind(each.usuario.curso)">
+						value="@load(each.email) @save(each.email, before='confirm')" />
+					<combobox width="150px" value="@load(each.curso.nomeCurso)" 
+						model="@load(vm.cursos)" selectedItem="@bind(each.curso)">
 						<template name="model">
 							<comboitem label="@load(each.nomeCurso)" />
 						</template>
 					</combobox>
 					<textbox 
-						value="@load(each.usuario.titulacao) @save(each.usuario.titulacao, before='confirm')" />
-					<combobox id="cmbTipoUsuario" width="150px"
-						model="@load(vm.tiposUsuario)" selectedItem="@bind(each.usuario.tipoUsuario)">
+						value="@load(each.titulacao) @save(each.titulacao, before='confirm')" />
+					<combobox width="150px" value="@load(each.tipoUsuario.nomeTipoUsuario)"
+						model="@load(vm.tiposUsuario)" selectedItem="@bind(each.tipoUsuario)" >
 						<template name="model">
 							<comboitem
 								label="@load(each.nomeTipoUsuario)" />
@@ -59,29 +56,29 @@
 					<div>
 						<button
 							image="/widgets/grid/inline_row_editing/confirm.gif"
-							onClick="@command('confirm', usuarioStatus=each)" />
+							onClick="@command('confirm', usuario=each)" />
 						<button
 							image="/widgets/grid/inline_row_editing/cancel.png"
-							onClick="@command('changeEditableStatus', usuarioStatus=each)" />
+							onClick="@command('changeEditableStatus', usuario=each)" />
 					</div>
 				</row>
 			</template>
 			<template name="noneditable">
 				<row>
-					<label value="@load(each.usuario.idUsuario)" />
-					<label value="@load(each.usuario.matricula)" />
-					<label value="@load(each.usuario.nomeUsuario)" />
-					<label value="@load(each.usuario.email)" />
-					<label value="@load(each.usuario.curso.nomeCurso)" />
-					<label value="@load(each.usuario.titulacao)" />
-					<label value="@load(each.usuario.tipoUsuario.nomeTipoUsuario)" />
+					<label value="@load(each.idUsuario)" />
+					<label value="@load(each.matricula)" />
+					<label value="@load(each.nomeUsuario)" />
+					<label value="@load(each.email)" />
+					<label value="@load(each.curso.nomeCurso)" />
+					<label value="@load(each.titulacao)" />
+					<label value="@load(each.tipoUsuario.nomeTipoUsuario)" />
 					<div>
 						<button
 							image="/widgets/grid/inline_row_editing/edit.gif"
-							onClick="@command('changeEditableStatus', usuarioStatus=each)" />
+							onClick="@command('changeEditableStatus', usuario=each)" />
 						<button
 							image="/widgets/grid/inline_row_editing/delete.png"
-							onClick="@command('delete', usuario=each.usuario)" />
+							onClick="@command('delete', usuario=each)" />
 					</div>
 				</row>
 			</template>

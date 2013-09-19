@@ -10,6 +10,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  * DTO da Tabela {@code Curso} contém os atributos e relacionamentos da mesma.
@@ -70,6 +71,9 @@ public class Curso implements Serializable {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "curso")
 	private List<CalendarioSemestre> calendarios = new ArrayList<CalendarioSemestre>();
 
+	@Transient
+	private boolean editingStatus;
+	
 	public int getIdCurso() {
 		return idCurso;
 	}
@@ -110,4 +114,11 @@ public class Curso implements Serializable {
 		this.calendarios = calendarios;
 	}
 
+	public boolean getEditingStatus() {
+		return editingStatus;
+	}
+	
+	public void setEditingStatus(boolean editingStatus) {
+		this.editingStatus = editingStatus;
+	}
 }

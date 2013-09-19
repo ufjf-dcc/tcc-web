@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -132,6 +133,9 @@ public class Usuario implements Serializable {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "professor")
 	private List<Participacao> participacoes = new ArrayList<Participacao>();
 
+	@Transient
+	private boolean editingStatus;
+	
 	public int getIdUsuario() {
 		return idUsuario;
 	}
@@ -193,7 +197,10 @@ public class Usuario implements Serializable {
 	}
 
 	public void setCurso(Curso curso) {
-		this.curso = curso;
+		if(curso.getIdCurso() == 0)
+			this.curso = null;
+		else 
+			this.curso = curso;
 	}
 
 	public List<TCC> getTcc() {
@@ -218,6 +225,14 @@ public class Usuario implements Serializable {
 
 	public void setParticipacoes(List<Participacao> participacoes) {
 		this.participacoes = participacoes;
+	}
+	
+	public boolean getEditingStatus() {
+		return editingStatus;
+	}
+	
+	public void setEditingStatus(boolean editingStatus) {
+		this.editingStatus = editingStatus;
 	}
 
 }

@@ -5,7 +5,7 @@
 		viewModel="@id('vm') @init('br.ufjf.tcc.controller.GerenciamentoCursoController')">
 		<include src="@bind(vm.menu)" />
 		<grid id="demoGrid"
-			model="@load(vm.cursos) @template((vm.displayEdit and each.editingStatus) ? 'editable' : 'noneditable')"
+			model="@load(vm.cursos) @template(each.editingStatus ? 'editable' : 'noneditable')"
 			mold="paging" pageSize="20">
 			<auxhead>
 				<auxheader colspan="7"
@@ -15,43 +15,40 @@
 							<textbox id="filtro" value="@bind(vm.filterString)" />
 							<button label="Pesquisar" onClick="@command('filtra')" />
 						</div>
-						<checkbox checked="@bind(vm.displayEdit)"
-							label="Ativar edição">
-						</checkbox>
 					</hlayout>
 				</auxheader>
 			</auxhead>
 			<columns>
 				<column width="70px" label="Código" sort="auto(curso.idCurso)" />
 				<column hflex="5" label="Nome" sort="auto(curso.nomeCurso)" />
-				<column width="100px" label="Editar" sort="" visible="@load(vm.displayEdit)" />
+				<column width="100px" label="Editar" sort=""/>
 			</columns>
 			<template name="editable">
 				<row>
-					<label value="@load(each.curso.idCurso)" />
+					<label value="@load(each.idCurso)" />
 					<textbox 
-						value="@load(each.curso.nomeCurso) @save(each.curso.nomeCurso, before='confirm')" />
+						value="@load(each.nomeCurso) @save(each.nomeCurso, before='confirm')" />
 					<div>
 						<button
 							image="/widgets/grid/inline_row_editing/confirm.gif"
-							onClick="@command('confirm', cursoStatus=each)" />
+							onClick="@command('confirm', curso=each)" />
 						<button
 							image="/widgets/grid/inline_row_editing/cancel.png"
-							onClick="@command('changeEditableStatus', cursoStatus=each)" />
+							onClick="@command('changeEditableStatus', curso=each)" />
 					</div>
 				</row>
 			</template>
 			<template name="noneditable">
 				<row>
-					<label value="@load(each.curso.idCurso)" />
-					<label value="@load(each.curso.nomeCurso)" />
+					<label value="@load(each.idCurso)" />
+					<label value="@load(each.nomeCurso)" />
 					<div>
 						<button
 							image="/widgets/grid/inline_row_editing/edit.gif"
-							onClick="@command('changeEditableStatus', cursoStatus=each)" />
+							onClick="@command('changeEditableStatus', curso=each)" />
 						<button
 							image="/widgets/grid/inline_row_editing/delete.png"
-							onClick="@command('delete', idCurso=each.curso)" />
+							onClick="@command('delete', curso=each)" />
 					</div>
 				</row>
 			</template>

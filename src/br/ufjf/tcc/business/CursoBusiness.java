@@ -45,6 +45,7 @@ public class CursoBusiness extends AbstractValidator {
 		for(Object curso : cursoDAO.procuraTodos(Curso.class, -1, -1)) {
 			resultados.add((Curso) curso);
 		}
+
 		return resultados;
 	}
 	

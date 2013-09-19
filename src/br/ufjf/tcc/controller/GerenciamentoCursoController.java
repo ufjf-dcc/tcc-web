@@ -15,56 +15,60 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
 import br.ufjf.tcc.business.CursoBusiness;
+import br.ufjf.tcc.business.TipoUsuarioBusiness;
 import br.ufjf.tcc.model.Curso;
+import br.ufjf.tcc.model.TipoUsuario;
+import br.ufjf.tcc.model.Usuario;
 
 public class GerenciamentoCursoController extends CommonsController{
 	private final CursoBusiness cursoBusiness = new CursoBusiness();
 	private List<Curso> allCursos = cursoBusiness.getCursos();
-	private List<CursoStatus> cursosStatuses = 
-			generateStatusList(allCursos);
-	private boolean displayEdit = true;
-	private String filterString = null;
+	private List<Curso> cursos = allCursos;
+	private String filterString = "";
 	
 	@Init
 	public void init() throws HibernateException, Exception{
 		super.testaLogado();
-		if(!checaPermissao("guc__")) super.paginaProibida();
-	}
-	
-	public boolean isDisplayEdit() {
-		return displayEdit;
-	}
-	
-	@NotifyChange({"cursos", "displayEdit"})
-	public void setDisplayEdit(boolean displayEdit) {
-		this.displayEdit = displayEdit;
+		if(!checaPermissao("gcc__")) super.paginaProibida();
 	}
 
-	public List<CursoStatus> getCursos() {
-		return cursosStatuses;
+	public List<Curso> getCursos() {
+		return cursos;
 	}
 	
 	@Command
-	public void changeEditableStatus(@BindingParam("cursoStatus") CursoStatus lcs) {
-		lcs.setEditingStatus(!lcs.getEditingStatus());
-		refreshRowTemplate(lcs);
+	public void changeEditableStatus(@BindingParam("curso") Curso curso) {
+		curso.setEditingStatus(!curso.getEditingStatus());
+		refreshRowTemplate(curso);
 	}
 	
 	@Command
-	public void confirm(@BindingParam("cursoStatus") CursoStatus lcs) {
-		changeEditableStatus(lcs);
-		cursoBusiness.editar(lcs.getCurso());
-		refreshRowTemplate(lcs);
+	public void confirm(@BindingParam("curso") Curso curso) {
+		changeEditableStatus(curso);
+		cursoBusiness.editar(curso);
+		refreshRowTemplate(curso);
 	}
 	
-	public void refreshRowTemplate(CursoStatus lcs) {
-		/*
-		 * This code is special and notifies ZK that the bean's value
-		 * has changed as it is used in the template mechanism.
-		 * This stops the entire Grid's data from being refreshed
-		 */
-		BindUtils.postNotifyChange(null, null, lcs, "editingStatus");
+	public void refreshRowTemplate(Curso curso) {
+		BindUtils.postNotifyChange(null, null, curso, "editingStatus");
 	}
+	
+	@NotifyChange({"cursos"})
+	@Command
+	public void delete(@BindingParam("curso") final Curso curso) {
+		if (cursoBusiness.exclui(curso)) {
+			Messagebox.show("O curso foi excluído com sucesso.");
+		} else {
+			Messagebox.show("O curso não foi excluído.");
+		}
+	}
+	
+	@Command
+    public void addCurso() {
+		Window window = (Window)Executions.createComponents(
+                "/widgets/dialogs/add-curso.zul", null, null);
+        window.doModal();
+    }
 	
 	public String getFilterString() {
 		return filterString;
@@ -74,7 +78,7 @@ public class GerenciamentoCursoController extends CommonsController{
 		this.filterString = filterString;
 	}
 	
-	@NotifyChange({"cursos"})
+	@NotifyChange("cursos")
 	@Command
 	public void filtra() {
 		List<Curso> temp = new ArrayList<Curso>();
@@ -86,55 +90,7 @@ public class GerenciamentoCursoController extends CommonsController{
             }
         }
         
-        cursosStatuses = generateStatusList(temp);;
+        cursos = temp;
 	}
-	
-	@NotifyChange({"cursos"})
-	@Command
-	public void delete(@BindingParam("idCurso") final Curso curso) {
-		if (cursoBusiness.exclui(curso)) {
-			Messagebox.show("O curso foi excluído com sucesso.");
-			cursosStatuses = null;
-			cursosStatuses = generateStatusList(cursoBusiness.getCursos());
-		} else {
-			Messagebox.show("O curso não foi excluído.");
-		}
-	}
-	
-	private static List<CursoStatus> generateStatusList(List<Curso> cursos) {
-		List<CursoStatus> cursoss = new ArrayList<CursoStatus>();
-		for(Curso lc : cursos) {
-			cursoss.add(new CursoStatus(lc, false));
-		}
-		return cursoss;
-	}
-	
-	@Command
-    public void addCurso() {
-		Window window = (Window)Executions.createComponents(
-                "/widgets/dialogs/add-curso.zul", null, null);
-        window.doModal();
-    }
-	
-	public static class CursoStatus {
-		private Curso lc;
-		private boolean editingStatus;
-		
-		public CursoStatus(Curso lc, boolean editingStatus) {
-			this.lc = lc;
-			this.editingStatus = editingStatus;
-		}
-		
-		public Curso getCurso() {
-			return lc;
-		}
-		
-		public boolean getEditingStatus() {
-			return editingStatus;
-		}
-		
-		public void setEditingStatus(boolean editingStatus) {
-			this.editingStatus = editingStatus;
-		}
-	}
+
 }

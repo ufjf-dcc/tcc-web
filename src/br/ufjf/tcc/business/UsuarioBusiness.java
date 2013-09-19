@@ -1,7 +1,6 @@
 package br.ufjf.tcc.business;
 
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -96,12 +95,10 @@ public class UsuarioBusiness extends AbstractValidator {
 		}
 	}
 	
-	public List<Usuario> getUsuarios() {
+	public List<Usuario> getTodosUsuarios() {
 		UsuarioDAO usuarioDAO = new UsuarioDAO();
-		List<Usuario> resultados = new ArrayList<Usuario>();
-		for(Object usuario : usuarioDAO.procuraTodos(Usuario.class, -1, -1)) {
-			resultados.add((Usuario) usuario);
-		}
+		List<Usuario> resultados = usuarioDAO.getTodosUsuarios();
+
 		return resultados;
 	}
 	

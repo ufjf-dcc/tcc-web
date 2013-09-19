@@ -1,7 +1,6 @@
 package br.ufjf.tcc.controller;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -22,70 +21,78 @@ import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.model.TipoUsuario;
 import br.ufjf.tcc.model.Usuario;
 
-public class GerenciamentoUsuarioController extends CommonsController{
-	private final UsuarioBusiness usuarioBusiness = new UsuarioBusiness();
-	private List<Usuario> allUsuarios = usuarioBusiness.getUsuarios();
-	private List<UsuarioStatus> usuariosStatuses;
-	private List<TipoUsuario> tiposUsuario = (new TipoUsuarioBusiness()).getTiposUsuarios();
-	private List<Curso> cursos = (new CursoBusiness()).getCursos();
-	private boolean displayEdit = true; //permite, ou não, a edição
-	private String filterString = null;
-	
-	@Init
-	@NotifyChange("usuarios")
-	public void init() throws HibernateException, Exception{
-		super.testaLogado();
-		if(!checaPermissao("guc__")) super.paginaProibida();
+public class GerenciamentoUsuarioController extends CommonsController {
+	private UsuarioBusiness usuarioBusiness = new UsuarioBusiness();
+	private List<Usuario> allUsuarios = usuarioBusiness.getTodosUsuarios();
+	private List<Usuario> usuarios = allUsuarios;
+	private List<TipoUsuario> tiposUsuario = (new TipoUsuarioBusiness())
+			.getTiposUsuarios();
+	private List<Curso> cursos = this.getAllCursos();
+	private String filterString = "";
 
-		for(int i = 0; i < allUsuarios.size(); i++)
-			allUsuarios.set(i, usuarioBusiness.update(allUsuarios.get(i)));
-		
-		usuariosStatuses = generateStatusList(allUsuarios);
+	@Init
+	public void init() throws HibernateException, Exception {
+		super.testaLogado();
+		if (!checaPermissao("guc__"))
+			super.paginaProibida();
+	}
+
+	private List<Curso> getAllCursos() {
+		List<Curso> cursoss = (new CursoBusiness()).getCursos();
+		Curso empty = new Curso();
+		empty.setIdCurso(0);
+		empty.setNomeCurso(" ");
+		cursoss.add(empty);
+		return cursoss;
 	}
 	
-	public List<TipoUsuario> getTiposUsuario(){
+	public List<TipoUsuario> getTiposUsuario() {
 		return this.tiposUsuario;
 	}
-	
+
 	public List<Curso> getCursos() {
 		return this.cursos;
 	}
-	
-	public boolean isDisplayEdit() {
-		return displayEdit;
-	}
-	
-	@NotifyChange({"usuarios", "displayEdit"})
-	public void setDisplayEdit(boolean displayEdit) {
-		this.displayEdit = displayEdit;
+
+	public List<Usuario> getUsuarios() {
+		return usuarios;
 	}
 
-	public List<UsuarioStatus> getUsuarios() {
-		return usuariosStatuses;
-	}
-	
 	@Command
-	public void changeEditableStatus(@BindingParam("usuarioStatus") UsuarioStatus lcs) {
-		lcs.setEditingStatus(!lcs.getEditingStatus());
-		refreshRowTemplate(lcs);
+	public void changeEditableStatus(@BindingParam("usuario") Usuario usuario) {
+		usuario.setEditingStatus(!usuario.getEditingStatus());
+		refreshRowTemplate(usuario);
 	}
-	
+
 	@Command
-	public void confirm(@BindingParam("usuarioStatus") UsuarioStatus lcs) {
-		changeEditableStatus(lcs);
-		usuarioBusiness.editar(lcs.getUsuario());
-		refreshRowTemplate(lcs);
+	public void confirm(@BindingParam("usuario") Usuario usuario) {
+		changeEditableStatus(usuario);
+		usuarioBusiness.editar(usuario);
+		refreshRowTemplate(usuario);
 	}
-	
-	public void refreshRowTemplate(UsuarioStatus lcs) {
-		/*
-		 * This code is special and notifies ZK that the bean's value
-		 * has changed as it is used in the template mechanism.
-		 * This stops the entire Grid's data from being refreshed
-		 */
-		BindUtils.postNotifyChange(null, null, lcs, "editingStatus");
+
+	@NotifyChange("usuarios")
+	@Command
+	public void delete(@BindingParam("usuario") Usuario usuario) {
+		if (usuarioBusiness.exclui(usuario)) {
+			Messagebox.show("O usuário foi excluído com sucesso.");
+		} else {
+			Messagebox.show("O usuário não foi excluído.");
+		}
+
 	}
-	
+
+	@Command
+	public void addUsuario() {
+		Window window = (Window) Executions.createComponents(
+				"/widgets/dialogs/add-usuario.zul", null, null);
+		window.doModal();
+	}
+
+	public void refreshRowTemplate(Usuario usuario) {
+		BindUtils.postNotifyChange(null, null, usuario, "editingStatus");
+	}
+
 	public String getFilterString() {
 		return filterString;
 	}
@@ -93,82 +100,23 @@ public class GerenciamentoUsuarioController extends CommonsController{
 	public void setFilterString(String filterString) {
 		this.filterString = filterString;
 	}
-	
+
 	@NotifyChange("usuarios")
 	@Command
 	public void filtra() {
 		List<Usuario> temp = new ArrayList<Usuario>();
 		String filter = filterString.toLowerCase().trim();
-        for (Iterator<Usuario> i = allUsuarios.iterator(); i.hasNext();) {
-            Usuario tmp = i.next();
-            if (tmp.getNomeUsuario().toLowerCase().contains(filter) ||
-                tmp.getEmail().toLowerCase().contains(filter) ||
-                tmp.getMatricula().toLowerCase().contains(filter)) {
-            	temp.add(tmp);
-            }
-        }
-        
-        usuariosStatuses = generateStatusList(temp);;
+		for (Iterator<Usuario> i = allUsuarios.iterator(); i.hasNext();) {
+			Usuario tmp = i.next();
+			if (tmp.getNomeUsuario().toLowerCase().contains(filter)
+					|| tmp.getEmail().toLowerCase().contains(filter)
+					|| tmp.getMatricula().toLowerCase().contains(filter)
+					|| (tmp.getCurso() != null && tmp.getCurso().getNomeCurso().toLowerCase().contains(filter)) ) {
+				temp.add(tmp);
+			}
+		}
+
+		usuarios = temp;
 	}
-	
-	@NotifyChange("usuarios")
-	@Command
-	public void delete(@BindingParam("usuario") Usuario usuario) {
-		if (usuarioBusiness.exclui(usuario)) {
-        	Messagebox.show("O usuário foi excluído com sucesso.");
-	    	usuariosStatuses = null;
-	        usuariosStatuses = generateStatusList(usuarioBusiness.getUsuarios());
-		} else {
-			Messagebox.show("O usuário não foi excluído.");
-		}
-        
-	}
-	
-	private static List<UsuarioStatus> generateStatusList(List<Usuario> usuarios) {
-		List<UsuarioStatus> usuarioss = new ArrayList<UsuarioStatus>();
-		for(Usuario usuario : usuarios) {
-			usuarioss.add(new UsuarioStatus(usuario, false));
-		}
-		return usuarioss;
-	}
-	
-	@Command
-    public void addUsuario() {
-		Window window = (Window)Executions.createComponents(
-                "/widgets/dialogs/add-usuario.zul", null, null);
-        window.doModal();
-    }
-	
-	@Command
-    public void verPermissoes(@BindingParam("usuarioSelecionado") Usuario usuarioSelecionado) {
-		final HashMap<String, Usuario> map = new HashMap<String, Usuario>();
-        map.put("usuarioSelecionado", usuarioSelecionado );
-        
-		Window window = (Window)Executions.createComponents(
-                "/widgets/dialogs/ver-permissoes.zul", null, map);
-        window.doModal();
-    }
-	
-	public static class UsuarioStatus {
-		private Usuario lc;
-		private boolean editingStatus;
-		
-		public UsuarioStatus(Usuario lc, boolean editingStatus) {
-			this.lc = lc;
-			this.editingStatus = editingStatus;
-		}
-		
-		public Usuario getUsuario() {
-			return lc;
-		}
-		
-		public boolean getEditingStatus() {
-			return editingStatus;
-		}
-		
-		public void setEditingStatus(boolean editingStatus) {
-			this.editingStatus = editingStatus;
-		}
-	}
-	
+
 }
