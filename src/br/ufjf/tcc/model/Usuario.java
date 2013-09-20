@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -51,25 +52,25 @@ public class Usuario implements Serializable {
 	/**
 	 * Campo com a senha do usuario. Relaciona com a coluna {@code senha} do
 	 * banco através da anotação
-	 * {@code @Column(name = "senha", length = 45, nullable = false)}.
+	 * {@code @Column(name = "senha", length = 255, nullable = false)}.
 	 */
-	@Column(name = "senha", length = 45, nullable = false)
+	@Column(name = "senha", length = 255, nullable = false)
 	private String senha;
 
 	/**
 	 * Campo com o email do usuario. Relaciona com a coluna {@code email} do
 	 * banco através da anotação
-	 * {@code @Column(name = "email", length = 45, nullable = false)}.
+	 * {@code @Column(name = "email", length = 255, nullable = false)}.
 	 */
-	@Column(name = "email", length = 45, nullable = false)
+	@Column(name = "email", length = 255, nullable = false)
 	private String email;
 
 	/**
 	 * Campo com o nome do usuario. Relaciona com a coluna {@code nomeUsuario}
 	 * do banco através da anotação
-	 * {@code @Column(name = "nomeUsuario", length = 45, nullable = false)}.
+	 * {@code @Column(name = "nomeUsuario", length = 255, nullable = false)}.
 	 */
-	@Column(name = "nomeUsuario", length = 45, nullable = false)
+	@Column(name = "nomeUsuario", length = 255, nullable = false)
 	private String nomeUsuario;
 
 	/**
@@ -93,12 +94,12 @@ public class Usuario implements Serializable {
 
 	/**
 	 * Relacionamento N para 1 entre Usuario e Curso. Mapeando {@link Curso} na
-	 * variável {@code curso} e retorno do tipo {@code EAGER} que indica que
+	 * variável {@code curso} e retorno do tipo {@code LAZY} que indica que não
 	 * será carregado automáticamente este dado quando retornarmos o
 	 * {@link Usuario}.
 	 * 
 	 */
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "idCurso", nullable = true)
 	private Curso curso;
 
@@ -132,6 +133,9 @@ public class Usuario implements Serializable {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "professor")
 	private List<Participacao> participacoes = new ArrayList<Participacao>();
 
+	@Transient
+	private boolean editingStatus;
+	
 	public int getIdUsuario() {
 		return idUsuario;
 	}
@@ -193,7 +197,10 @@ public class Usuario implements Serializable {
 	}
 
 	public void setCurso(Curso curso) {
-		this.curso = curso;
+		if(curso.getIdCurso() == 0)
+			this.curso = null;
+		else 
+			this.curso = curso;
 	}
 
 	public List<TCC> getTcc() {
@@ -218,6 +225,14 @@ public class Usuario implements Serializable {
 
 	public void setParticipacoes(List<Participacao> participacoes) {
 		this.participacoes = participacoes;
+	}
+	
+	public boolean getEditingStatus() {
+		return editingStatus;
+	}
+	
+	public void setEditingStatus(boolean editingStatus) {
+		this.editingStatus = editingStatus;
 	}
 
 }

@@ -43,49 +43,65 @@ public class TCC implements Serializable {
 	/**
 	 * Campo com o nome do TCC. Relaciona com a coluna {@code nomeTCC} do banco
 	 * através da anotação
-	 * {@code @Column(name = "nomeTCC", length = 45, nullable = true)}.
+	 * {@code @Column(name = "nomeTCC", length = 255, nullable = true)}.
 	 */
-	@Column(name = "nomeTCC", length = 45, nullable = true)
+	@Column(name = "nomeTCC", length = 255, nullable = true)
 	private String nomeTCC;
 
 	/**
+	 * Campo com o resumo do TCC. Relaciona com a coluna {@code resumoTCC} do
+	 * banco através da anotação
+	 * {@code @Column(name = "resumoTCC", nullable = true)}.
+	 */
+	@Column(name = "resumoTCC", nullable = true)
+	private String resumoTCC;
+	
+	/**
+	 * Campo com as palavras chaves do TCC. Relaciona com a coluna {@code palavrasChave} do
+	 * banco através da anotação
+	 * {@code @Column(name = "palavrasChave", length = 255, nullable = true)}.
+	 */
+	@Column(name = "palavrasChave", length = 255, nullable = true)
+	private String palavrasChave;
+	
+	/**
 	 * Campo com o arquivo do TCC. Relaciona com a coluna
 	 * {@code arquivoTCCBanca} do banco através da anotação
-	 * {@code @Column(name = "arquivoTCCBanca", length = 45, nullable = true)}.
+	 * {@code @Column(name = "arquivoTCCBanca", length = 255, nullable = true)}.
 	 */
-	@Column(name = "arquivoTCCBanca", length = 45, nullable = true)
+	@Column(name = "arquivoTCCBanca", length = 255, nullable = true)
 	private String arquivoTCCBanca;
 
 	/**
 	 * Campo com o arquivo final do TCC. Relaciona com a coluna
 	 * {@code arquivoTCCFinal} do banco através da anotação
-	 * {@code @Column(name = "arquivoTCCFinal", length = 45, nullable = true)}.
+	 * {@code @Column(name = "arquivoTCCFinal", length = 255, nullable = true)}.
 	 */
-	@Column(name = "arquivoTCCFinal", length = 45, nullable = true)
+	@Column(name = "arquivoTCCFinal", length = 255, nullable = true)
 	private String arquivoTCCFinal;
+	
+	/**
+	 * Campo com o arquivo extra final do TCC. Relaciona com a coluna
+	 * {@code arquivoTCCFinal} do banco através da anotação
+	 * {@code @Column(name = "arquivoExtraTCCFinal", length = 255, nullable = true)}.
+	 */
+	@Column(name = "arquivoExtraTCCFinal", length = 255, nullable = true)
+	private String arquivoExtraTCCFinal;
 
 	/**
 	 * Campo com a sala de defesa. Relaciona com a coluna {@code salaDefesa} do
 	 * banco através da anotação
-	 * {@code @Column(name = "salaDefesa", length = 45, nullable = true)}.
+	 * {@code @Column(name = "salaDefesa", length = 50, nullable = true)}.
 	 */
-	@Column(name = "salaDefesa", length = 45, nullable = true)
+	@Column(name = "salaDefesa", length = 50, nullable = true)
 	private String salaDefesa;
-
-	/**
-	 * Campo com o resumo do TCC. Relaciona com a coluna {@code resumoTCC} do
-	 * banco através da anotação
-	 * {@code @Column(name = "resumoTCC", length = 45, nullable = true)}.
-	 */
-	@Column(name = "resumoTCC", length = 45, nullable = true)
-	private String resumoTCC;
 
 	/**
 	 * Campo com o parecer da banca. Relaciona com a coluna {@code parecerBanca}
 	 * do banco através da anotação
-	 * {@code @Column(name = "parecerBanca", length = 45, nullable = true)}.
+	 * {@code @Column(name = "parecerBanca", nullable = true)}.
 	 */
-	@Column(name = "parecerBanca", length = 45, nullable = true)
+	@Column(name = "parecerBanca", nullable = true)
 	private String parecerBanca;
 
 	/**
@@ -184,6 +200,14 @@ public class TCC implements Serializable {
 		this.arquivoTCCFinal = arquivoTCCFinal;
 	}
 
+	public String getArquivoExtraTCCFinal() {
+		return arquivoExtraTCCFinal;
+	}
+
+	public void setArquivoExtraTCCFinal(String arquivoExtraTCCFinal) {
+		this.arquivoExtraTCCFinal = arquivoExtraTCCFinal;
+	}
+	
 	public String getSalaDefesa() {
 		return salaDefesa;
 	}
@@ -262,6 +286,14 @@ public class TCC implements Serializable {
 
 	public void setParticipacoes(List<Participacao> participacoes) {
 		this.participacoes = participacoes;
+	}
+
+	public String getPalavrasChave() {
+		return palavrasChave;
+	}
+
+	public void setPalavrasChave(String palavrasChave) {
+		this.palavrasChave = palavrasChave;
 	}
 
 }

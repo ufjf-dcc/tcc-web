@@ -1,0 +1,100 @@
+<?page title="Cursos cadastrados"?>
+<zk>
+	<style src="/style.css" />
+	<div apply="org.zkoss.bind.BindComposer"
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.GerenciamentoCursoController')">
+		<include src="@bind(vm.menu)" />
+		<grid id="curseGrid"
+			model="@load(vm.cursos) @template(each.editingStatus ? 'editable' : 'noneditable')"
+			mold="paging" pageSize="20">
+			<auxhead sclass="text-center">
+				<auxheader label="Cursos cadastrados no sistema"
+					colspan="8" />
+			</auxhead>
+			<auxhead>
+				<auxheader colspan="3">
+					<div>
+						<div style="float:left">
+							<textbox id="filtro"
+								value="@bind(vm.filterString)" />
+							<button label="Pesquisar"
+								onClick="@command('filtra')" />
+						</div>
+						<div style="float:right">
+							<button label="Cadastrar Curso"
+								onClick="@command('addCurso', window=addCurso)" />
+						</div>
+					</div>
+				</auxheader>
+			</auxhead>
+			<columns>
+				<column width="70px" label="Código"
+					sort="auto(curso.idCurso)" />
+				<column hflex="5" label="Nome"
+					sort="auto(curso.nomeCurso)" />
+				<column width="100px" label="Editar" sort="" />
+			</columns>
+			<template name="editable">
+				<row>
+					<label value="@load(each.idCurso)" />
+					<textbox
+						value="@load(each.nomeCurso) @save(each.nomeCurso, before='confirm')" />
+					<div>
+						<button image="/img/confirm.gif"
+							onClick="@command('confirm', curso=each)" />
+						<button image="/img/cancel.png"
+							onClick="@command('changeEditableStatus', curso=each)" />
+					</div>
+				</row>
+			</template>
+			<template name="noneditable">
+				<row>
+					<label value="@load(each.idCurso)" />
+					<label value="@load(each.nomeCurso)" />
+					<div>
+						<button image="/img/edit.gif"
+							onClick="@command('changeEditableStatus', curso=each)" />
+						<button image="/img/delete.png"
+							onClick="@command('delete', curso=each)" />
+					</div>
+				</row>
+			</template>
+		</grid>
+		<window id="addCurso" title="Cadastrar Curso" visible="false"
+			width="300px" border="normal" position="center,center"
+			closable="true"
+			onClose="self.visible = false; event.stopPropagation();">
+			<grid>
+				<columns>
+					<column hflex="1" />
+					<column hflex="2" />
+				</columns>
+				<rows>
+					<row>
+						<label value="Id do Curso:" />
+						<div>
+							<textbox
+								value="@load(vm.novoCurso.idCurso) @save(vm.novoCurso.idCurso, before='submit')"
+								tabindex="1" id="idCurso" />
+							<label class="error"
+								value="@load(vm.errors['idCurso'])" />
+						</div>
+					</row>
+					<row>
+						<label value="Nome do Curso:" />
+						<div>
+							<textbox
+								value="@load(vm.novoCurso.nomeCurso) @save(vm.novoCurso.nomeCurso, before='submit')"
+								tabindex="2" id="nomeCurso" />
+							<label class="error"
+								value="@load(vm.errors['nomeCurso'])" />
+						</div>
+					</row>
+
+				</rows>
+			</grid>
+			<button label="Cadastrar" onClick="@command('submit')"
+				width="75px" />
+		</window>
+	</div>
+</zk>

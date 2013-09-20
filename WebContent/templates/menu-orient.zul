@@ -1,0 +1,11 @@
+<zk>
+	<div align="center" apply="org.zkoss.bind.BindComposer"
+		viewModel="@id('hf') @init('br.ufjf.tcc.controller.MenuController')"
+		form="@id('fx') @load(hf.usuario)">
+		<menubar id="menubar" width="100%">
+			<menuitem label="Home" href="/pages/home.zul" />
+			<menuitem label="Alunos orientados" href="/pages/alunos-orientados.zul" />
+			<menuitem label="Sair" onClick="@command('sair')" />
+		</menubar>
+	</div>
+</zk>

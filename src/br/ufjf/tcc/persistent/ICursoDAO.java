@@ -1,7 +1,9 @@
 package br.ufjf.tcc.persistent;
 
+import java.util.List;
 
-public interface ICursoDAO extends IGenericoDAO {
-	
-	
+import br.ufjf.tcc.model.Curso;
+
+public interface ICursoDAO {
+	public List<Curso> buscar(String expressão);		
 }
