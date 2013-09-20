@@ -83,8 +83,8 @@ public class GerenciamentoUsuarioController extends CommonsController {
 					public void onEvent(Event e) {
 						if (Messagebox.ON_OK.equals(e.getName())) {
 
-							if (usuarioBusiness.exclui(usuario)) {
-								BindUtils.postNotifyChange(null,null,this,"usuarios");
+							if (usuarioBusiness.exclui(usuario)) {								
+								removeFromList(usuario);
 								Messagebox.show(
 										"O usuário foi excluído com sucesso.",
 										"Sucesso", 0, Messagebox.INFORMATION);
@@ -97,7 +97,12 @@ public class GerenciamentoUsuarioController extends CommonsController {
 					}
 				});
 	}
-
+	
+	public void removeFromList(Usuario usuario){
+		usuarios.remove(usuario);
+		allUsuarios.remove(usuario);
+		BindUtils.postNotifyChange(null,null,this,"usuarios");
+	}
 
 	public void refreshRowTemplate(Usuario usuario) {
 		BindUtils.postNotifyChange(null, null, usuario, "editingStatus");
@@ -145,6 +150,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 		novoUsuario.setSenha(usuarioBusiness.encripta("123"));
 		if(usuarioBusiness.salvar(novoUsuario)){
 			allUsuarios.add(novoUsuario);
+			this.filtra();
 			BindUtils.postNotifyChange(null,null,this,"usuarios");
 			Messagebox.show(
 					"Usuário adicionado com sucesso!",
