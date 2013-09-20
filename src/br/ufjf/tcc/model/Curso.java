@@ -7,12 +7,10 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.GenericGenerator;
+import javax.persistence.Transient;
 
 /**
  * DTO da Tabela {@code Curso} contém os atributos e relacionamentos da mesma.
@@ -33,16 +31,14 @@ public class Curso implements Serializable {
 	 */
 	@Id
 	@Column(name = "idCurso", unique = true, nullable = false)
-	@GeneratedValue(generator = "increment")
-	@GenericGenerator(name = "increment", strategy = "increment")
 	private int idCurso;
 
 	/**
 	 * Campo com o nome do curso. Relaciona com a coluna {@code nomeCurso} do
 	 * banco através da anotação
-	 * {@code @Column(name = "nomeCurso", length = 45, nullable = false)}.
+	 * {@code @Column(name = "nomeCurso", length = 80, nullable = false)}.
 	 */
-	@Column(name = "nomeCurso", length = 45, nullable = false)
+	@Column(name = "nomeCurso", length = 80, nullable = false)
 	private String nomeCurso;
 
 	/**
@@ -75,6 +71,9 @@ public class Curso implements Serializable {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "curso")
 	private List<CalendarioSemestre> calendarios = new ArrayList<CalendarioSemestre>();
 
+	@Transient
+	private boolean editingStatus;
+	
 	public int getIdCurso() {
 		return idCurso;
 	}
@@ -115,4 +114,11 @@ public class Curso implements Serializable {
 		this.calendarios = calendarios;
 	}
 
+	public boolean getEditingStatus() {
+		return editingStatus;
+	}
+	
+	public void setEditingStatus(boolean editingStatus) {
+		this.editingStatus = editingStatus;
+	}
 }

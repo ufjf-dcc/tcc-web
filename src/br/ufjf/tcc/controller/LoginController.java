@@ -1,73 +1,51 @@
 package br.ufjf.tcc.controller;
 
-import java.security.NoSuchAlgorithmException;
-
-import javax.servlet.http.HttpSession;
-
-import jonelo.jacksum.JacksumAPI;
-import jonelo.jacksum.algorithm.AbstractChecksum;
-
 import org.hibernate.HibernateException;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zul.Messagebox;
 
-import br.ufjf.tcc.business.LoginBusiness;
+import br.ufjf.tcc.business.UsuarioBusiness;
+import br.ufjf.tcc.library.SessionManager;
 import br.ufjf.tcc.model.Usuario;
 
 public class LoginController {
 
-	private Usuario usuario = new Usuario();
-	private LoginBusiness loginBusiness;
-	private HttpSession session = (HttpSession) (Executions.getCurrent())
-			.getDesktop().getSession().getNativeSession();
+	private Usuario usuarioForm = new Usuario();
+	private UsuarioBusiness usuarioBusiness;
 
 	@Init
 	public void verificaLogado() throws HibernateException, Exception {
-		usuario = (Usuario) session.getAttribute("usuario");
-		if (usuario != null) {
-			loginBusiness = new LoginBusiness();
-			usuario = loginBusiness.login(usuario.getMatricula(),
-					usuario.getSenha());
-			if (usuario != null) {
-				Executions.sendRedirect("/pages/home.zul");
-				return;
-			}
+		Usuario usuario = (Usuario) SessionManager.getAttribute("usuario");
+		usuarioBusiness = new UsuarioBusiness();
+		if (usuarioBusiness.checaLogin(usuario)) {
+			Executions.sendRedirect("/pages/home.zul");
+			return;
 		}
-		usuario = new Usuario();
 	}
 
 	@Command
 	public void submit() throws HibernateException, Exception {
-		if (usuario != null && usuario.getMatricula() != null
-				&& usuario.getSenha() != null) {
-			loginBusiness = new LoginBusiness();
-			String senha = encripta(usuario.getSenha());
-			usuario = loginBusiness.login(usuario.getMatricula(), senha);
-			if (usuario != null && usuario.getIdUsuario() > 0) {
+		if (usuarioForm != null && usuarioForm.getMatricula() != null
+				&& usuarioForm.getSenha() != null) {
+			usuarioBusiness = new UsuarioBusiness();
+			if (usuarioBusiness.login(usuarioForm.getMatricula(),
+					usuarioForm.getSenha())) {
 				Executions.sendRedirect("/pages/home.zul");
+			} else {
+				Messagebox.show("Usuário ou Senha inválidos!", "Falha no Login",
+						Messagebox.OK, Messagebox.ERROR);
 			}
 		}
 	}
 
-	public static String encripta(String senha) {
-		try {
-			AbstractChecksum checksum = null;
-			checksum = JacksumAPI.getChecksumInstance("whirlpool-1");
-			checksum.update(senha.getBytes());
-			return checksum.getFormattedValue();
-		} catch (NoSuchAlgorithmException ns) {
-			ns.printStackTrace();
-			return senha;
-		}
+	public Usuario getUsuarioForm() {
+		return usuarioForm;
 	}
 
-	public Usuario getUsuario() {
-		return usuario;
-	}
-
-	public void setUsuario(Usuario usuario) {
-		this.usuario = usuario;
+	public void setUsuarioForm(Usuario usuarioForm) {
+		this.usuarioForm = usuarioForm;
 	}
 
 }

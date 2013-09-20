@@ -1,0 +1,78 @@
+<?page title="Lista Pública de Monografias"?>
+<zk>
+	<style src="/style.css" />
+	<div apply="org.zkoss.bind.BindComposer"
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.ListaPublicaController')">
+		<grid model="@load(vm.filterTccs) @template('lista')"
+			emptyMessage="@load(vm.emptyMessage)" mold="paging" pageSize="20">
+			<auxhead sclass="text-center">
+				<auxheader label="Lista Pública de Monografias"
+					colspan="2" />
+			</auxhead>
+			<auxhead>
+				<auxheader colspan="2">
+					<div>
+						<div style="float:left">
+							<textbox id="filtro"
+								value="@bind(vm.filterString)" />
+							<button label="Filtrar" height="21px;"
+								width="60px" onClick="@command('filtra')" />
+						</div>
+						<div style="float:right">
+							<combobox id="cmbCurso" width="150px"
+								model="@load(vm.cursos)" value="Selecione um Curso"
+								selectedItem="@bind(vm.curso)"
+								onChange="@command('changeCurso')">
+								<template name="model">
+									<comboitem
+										label="@load(each.nomeCurso)" />
+								</template>
+							</combobox>
+						</div>
+					</div>
+				</auxheader>
+			</auxhead>
+			<columns>
+				<column hflex="6" label="NomeTCC" sort="auto(nomeTCC)" />
+				<column hflex="2" label="Autor"
+					sort="auto(aluno.nomeUsuario)" />
+			</columns>
+			<template name="lista">
+				<row tooltip="${each.idTCC}, position=at_pointer"
+					style="cursor:pointer">
+					<div>
+						<label value="@load(each.nomeTCC)" />
+						<popup id="${each.idTCC}">
+							<vlayout width="550px">
+								<label value="Resumo"
+									style="font-size: 14px; font-weight: bold; text-align: justify; display: block;" />
+								<label value="@load(each.resumoTCC)" />
+								<label value="Orientador"
+									style="font-size: 14px; font-weight: bold; text-align: justify; display: block;" />
+								<label
+									value="@load(each.orientador.nomeUsuario)" />
+								<label value="Palavras-chave"
+									visible="@load(not empty each.palavrasChave)"
+									style="font-size: 14px; font-weight: bold; text-align: justify; display: block;" />
+								<label
+									value="@load(each.palavrasChave)" />
+								<space height="20px" />
+								<hlayout>
+									<button label="Dowload PDF"
+										onClick="@command('downloadPDF', tcc=each)" width="265px"
+										height="30px" />
+									<button
+										visible="@load(not empty each.arquivoExtraTCCFinal)"
+										label="Dowload Arquivos"
+										onClick="@command('downloadExtra', tcc=each)" width="265px"
+										height="30px" />
+								</hlayout>
+							</vlayout>
+						</popup>
+					</div>
+					<label value="@load(each.aluno.nomeUsuario)" />
+				</row>
+			</template>
+		</grid>
+	</div>
+</zk>

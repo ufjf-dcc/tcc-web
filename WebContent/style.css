@@ -1,0 +1,22 @@
+.text-center {
+	text-align: center;
+}
+
+tbody.z-grid-empty-body td {
+	font-size: 15px;
+	padding: 10px;
+}
+
+.error {
+	color: #FF0000;
+}
+
+.z-label { 
+	display:block; 
+}
+tr.z-row td.z-row-inner { 
+	padding: 2px 5px; 
+}
+.z-row-cnt, .z-column-cnt { 
+	text-align: center; 
+}
