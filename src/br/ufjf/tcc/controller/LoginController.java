@@ -34,7 +34,7 @@ public class LoginController {
 					usuarioForm.getSenha())) {
 				Executions.sendRedirect("/pages/home.zul");
 			} else {
-				Messagebox.show("Usuário ou Senha inválidos!", "Error",
+				Messagebox.show("Usuário ou Senha inválidos!", "Falha no Login",
 						Messagebox.OK, Messagebox.ERROR);
 			}
 		}

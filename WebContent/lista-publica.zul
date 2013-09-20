@@ -22,24 +22,24 @@
 			<template name="lista">
 				<row tooltip="${each.idTCC}, position=at_pointer" style="cursor:pointer" >
 					<div>
-						<label value="${each.nomeTCC}" />
+						<label value="@load(each.nomeTCC)" />
 						<popup id="${each.idTCC}">
 						    <vlayout width="550px">
 							    <label value="Resumo" style="font-size: 14px; font-weight: bold; text-align: justify; display: block;" />							    
-					               <label value="${each.resumoTCC}" />
+					               <label value="@load(each.resumoTCC)" />
 					               <label value="Orientador" style="font-size: 14px; font-weight: bold; text-align: justify; display: block;" />							    
-					               <label value="${each.orientador.nomeUsuario}" />
-					               <label value="Palavras-chave" style="font-size: 14px; font-weight: bold; text-align: justify; display: block;" />							    
-					               <label value="${each.palavrasChave}" />
+					               <label value="@load(each.orientador.nomeUsuario)" />
+					               <label value="Palavras-chave" visible="@load(not empty each.palavrasChave)" style="font-size: 14px; font-weight: bold; text-align: justify; display: block;" />							    
+					               <label value="@load(each.palavrasChave)" />
 					               <space height="20px"/>
 					               <hlayout>
 							       		<button label="Dowload PDF" onClick="@command('downloadPDF', tcc=each)" width="265px" height="30px" />
-							       		<button if="${each.arquivoExtraTCCFinal != ''}" label="Dowload Arquivos" onClick="@command('downloadExtra', tcc=each)" width="265px" height="30px" />
+							       		<button visible="@load(not empty each.arquivoExtraTCCFinal)" label="Dowload Arquivos" onClick="@command('downloadExtra', tcc=each)" width="265px" height="30px" />
 							       </hlayout>
 							</vlayout>
 						</popup> 
 					</div>
-                    <label value="${each.aluno.nomeUsuario}" />
+                    <label value="@load(each.aluno.nomeUsuario)" />
 				</row>
 			</template>
 		</grid>

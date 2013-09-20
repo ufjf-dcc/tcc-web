@@ -11,6 +11,7 @@ import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
@@ -29,6 +30,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 			.getTiposUsuarios();
 	private List<Curso> cursos = this.getAllCursos();
 	private String filterString = "";
+	private Usuario novoUsuario;
 
 	@Init
 	public void init() throws HibernateException, Exception {
@@ -45,7 +47,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 		cursoss.add(empty);
 		return cursoss;
 	}
-	
+
 	public List<TipoUsuario> getTiposUsuario() {
 		return this.tiposUsuario;
 	}
@@ -71,23 +73,31 @@ public class GerenciamentoUsuarioController extends CommonsController {
 		refreshRowTemplate(usuario);
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@NotifyChange("usuarios")
 	@Command
-	public void delete(@BindingParam("usuario") Usuario usuario) {
-		if (usuarioBusiness.exclui(usuario)) {
-			Messagebox.show("O usuário foi excluído com sucesso.");
-		} else {
-			Messagebox.show("O usuário não foi excluído.");
-		}
+	public void delete(@BindingParam("usuario") final Usuario usuario) {
+		Messagebox.show("Você tem certeza que deseja deletar o usuario: "
+				+ usuario.getNomeUsuario() + "?", "Confirmação", Messagebox.OK
+				| Messagebox.CANCEL, Messagebox.QUESTION,
+				new org.zkoss.zk.ui.event.EventListener() {
+					public void onEvent(Event e) {
+						if (Messagebox.ON_OK.equals(e.getName())) {
 
+							if (usuarioBusiness.exclui(usuario)) {
+								Messagebox.show(
+										"O usuário foi excluído com sucesso.",
+										"Sucesso", 0, Messagebox.INFORMATION);
+							} else {
+								Messagebox.show("O usuário não foi excluído.",
+										"Erro", 0, Messagebox.ERROR);
+							}
+
+						}
+					}
+				});
 	}
 
-	@Command
-	public void addUsuario() {
-		Window window = (Window) Executions.createComponents(
-				"/widgets/dialogs/add-usuario.zul", null, null);
-		window.doModal();
-	}
 
 	public void refreshRowTemplate(Usuario usuario) {
 		BindUtils.postNotifyChange(null, null, usuario, "editingStatus");
@@ -111,12 +121,34 @@ public class GerenciamentoUsuarioController extends CommonsController {
 			if (tmp.getNomeUsuario().toLowerCase().contains(filter)
 					|| tmp.getEmail().toLowerCase().contains(filter)
 					|| tmp.getMatricula().toLowerCase().contains(filter)
-					|| (tmp.getCurso() != null && tmp.getCurso().getNomeCurso().toLowerCase().contains(filter)) ) {
+					|| (tmp.getCurso() != null && tmp.getCurso().getNomeCurso()
+							.toLowerCase().contains(filter))) {
 				temp.add(tmp);
 			}
 		}
 
 		usuarios = temp;
 	}
+	
+	@Command
+	public void addUsuario(@BindingParam("window")  Window window) {
+		this.limpa();
+		window.doOverlapped();
+	}
 
+	public Usuario getNovoUsuario() {
+		return this.novoUsuario;
+	}
+
+	@Command
+	public void submit() {
+		novoUsuario.setSenha(usuarioBusiness.encripta("123"));
+		if(usuarioBusiness.salvar(novoUsuario))
+			this.limpa();
+	}
+	
+	public void limpa(){
+		novoUsuario = new Usuario();
+		BindUtils.postNotifyChange(null,null,this,"novoUsuario");
+	}
 }

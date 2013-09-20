@@ -2,7 +2,8 @@
 <zk>
 	<style src="/widgets/grid/inline_row_editing/style.css" />
 	<div apply="org.zkoss.bind.BindComposer"
-		viewModel="@id('vm') @init('br.ufjf.tcc.controller.GerenciamentoUsuarioController')">
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.GerenciamentoUsuarioController')"
+		validationMessages="@id('vmsgs')">
 		<include src="@bind(vm.menu)" />
 		<grid id="demoGrid" 
 			model="@load(vm.usuarios) @template(each.editingStatus ? 'editable' : 'noneditable')"
@@ -84,6 +85,86 @@
 			</template>
 		</grid>
 		<button label="Voltar" href="/pages/home.zul"/>
-		<button label="Cadastrar Usuário" onClick="@command('addUsuario')" />
+		<button label="Cadastrar Usuário" onClick="@command('addUsuario', window=addUsuario)" />
+		<window id="addUsuario" title="Cadastrar Usuário" visible="false" width="300px" border="normal"  position="center,center"
+			closable="true" onClose="self.visible = false; event.stopPropagation(); "
+			form="@id('fx') @load(vm.novoUsuario) @save(vm.novoUsuario, before='submit') @validator('br.ufjf.tcc.business.UsuarioBusiness')">
+				<grid>
+					<columns>
+						<column hflex="1" />
+						<column hflex="2" />
+					</columns>
+					<rows>
+						<row>
+							<label value="Nome do Usuário:" />
+							<div>
+								<textbox value="@bind(fx.nomeUsuario)" tabindex="1"
+									id="nomeUsuario" />
+								<label class="error"
+									value="@load(vmsgs['nomeUsuario'])" />
+							</div>
+						</row>
+			
+						<row>
+							<label value="Matrícula:" />
+							<div>
+								<textbox value="@bind(fx.matricula)" tabindex="1"
+									id="matricula" />
+								<label class="error"
+									value="@load(vmsgs['matricula'])" />
+							</div>
+						</row>
+			
+						<row>
+							<label value="Curso:" />
+							<div>
+								<combobox id="cmbCurso" width="150px"
+									model="@load(vm.cursos)" selectedItem="@bind(fx.curso)">
+									<template name="model">
+										<comboitem label="@load(each.nomeCurso)" />
+									</template>
+								</combobox>
+							</div>
+						</row>
+			
+						<row>
+							<label value="Email:" />
+							<div>
+								<textbox value="@bind(fx.email)" tabindex="1"
+									id="email" />
+								<label class="error" value="@load(vmsgs['email'])" />
+							</div>
+						</row>
+			
+						<row>
+							<label value="Titulação:" />
+							<div>
+								<textbox value="@bind(fx.titulacao)" tabindex="1"
+									id="titulacao" />
+								<label class="error"
+									value="@load(vmsgs['titulacao'])" />
+							</div>
+						</row>
+			
+						<row>
+							<label value="Tipo:" />
+							<div>
+								<combobox id="cmbTipoUsuario" width="150px"
+									model="@load(vm.tiposUsuario)"
+									selectedItem="@bind(fx.tipoUsuario)">
+									<template name="model">
+										<comboitem
+											label="@load(each.nomeTipoUsuario)" />
+									</template>
+								</combobox>
+							</div>
+						</row>
+			
+						<row>
+							<button label="Cadastrar" onClick="@command('submit')" width="100%" />
+						</row>
+					</rows>
+				</grid>
+		</window>
 	</div>
 </zk>
