@@ -1,6 +1,6 @@
 <?page title="Cursos cadastrados"?>
 <zk>
-	<style src="/widgets/grid/inline_row_editing/style.css" />
+	<style src="/style.css" />
 	<div apply="org.zkoss.bind.BindComposer"
 		viewModel="@id('vm') @init('br.ufjf.tcc.controller.GerenciamentoCursoController')">
 		<include src="@bind(vm.menu)" />
@@ -30,10 +30,10 @@
 						value="@load(each.nomeCurso) @save(each.nomeCurso, before='confirm')" />
 					<div>
 						<button
-							image="/widgets/grid/inline_row_editing/confirm.gif"
+							image="/img/confirm.gif"
 							onClick="@command('confirm', curso=each)" />
 						<button
-							image="/widgets/grid/inline_row_editing/cancel.png"
+							image="/img/cancel.png"
 							onClick="@command('changeEditableStatus', curso=each)" />
 					</div>
 				</row>
@@ -44,10 +44,10 @@
 					<label value="@load(each.nomeCurso)" />
 					<div>
 						<button
-							image="/widgets/grid/inline_row_editing/edit.gif"
+							image="/img/edit.gif"
 							onClick="@command('changeEditableStatus', curso=each)" />
 						<button
-							image="/widgets/grid/inline_row_editing/delete.png"
+							image="/img/delete.png"
 							onClick="@command('delete', curso=each)" />
 					</div>
 				</row>

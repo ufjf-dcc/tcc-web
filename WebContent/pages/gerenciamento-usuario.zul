@@ -1,6 +1,6 @@
 <?page title="Gerenciamento de Usuários"?>
 <zk>
-	<style src="/widgets/grid/inline_row_editing/style.css" />
+	<style src="/style.css" />
 	<div apply="org.zkoss.bind.BindComposer"
 		viewModel="@id('vm') @init('br.ufjf.tcc.controller.GerenciamentoUsuarioController')"
 		validationMessages="@id('vmsgs')">
@@ -8,9 +8,11 @@
 		<grid id="demoGrid"
 			model="@load(vm.usuarios) @template(each.editingStatus ? 'editable' : 'noneditable')"
 			mold="paging" pageSize="20">
+			<auxhead sclass="text-center">
+            	<auxheader label="Usuários cadastrados no sistema" colspan="8" />
+        	</auxhead>
 			<auxhead>
-				<auxheader colspan="8"
-					label="Usuários cadastrados no sistema">
+				<auxheader colspan="8">
 					<div>
 						<div style="float:left">
 							<textbox id="filtro"
@@ -50,7 +52,8 @@
 						value="@load(each.email) @save(each.email, before='confirm')" />
 					<combobox width="150px"
 						value="@load(each.curso.nomeCurso ne null ? each.curso.nomeCurso : 'Nenhum')"
-						model="@load(vm.cursos)" selectedItem="@bind(each.curso)">
+						model="@load(vm.cursos)"
+						selectedItem="@load(each.curso) @save(each.curso, before='confirm')">
 						<template name="model">
 							<comboitem label="@load(each.nomeCurso)" />
 						</template>
@@ -67,11 +70,9 @@
 						</template>
 					</combobox>
 					<div>
-						<button
-							image="/widgets/grid/inline_row_editing/confirm.gif"
+						<button image="/img/confirm.gif"
 							onClick="@command('confirm', usuario=each)" />
-						<button
-							image="/widgets/grid/inline_row_editing/cancel.png"
+						<button image="/img/cancel.png"
 							onClick="@command('changeEditableStatus', usuario=each)" />
 					</div>
 				</row>
@@ -88,22 +89,18 @@
 					<label
 						value="@load(each.tipoUsuario.nomeTipoUsuario)" />
 					<div>
-						<button
-							image="/widgets/grid/inline_row_editing/edit.gif"
+						<button image="/img/edit.gif"
 							onClick="@command('changeEditableStatus', usuario=each)" />
-						<button
-							image="/widgets/grid/inline_row_editing/delete.png"
+						<button image="/img/delete.png"
 							onClick="@command('delete', usuario=each)" />
 					</div>
 				</row>
 			</template>
 		</grid>
-
 		<window id="addUsuario" title="Cadastrar Usuário"
 			visible="false" width="300px" border="normal"
 			position="center,center" closable="true"
-			onClose="self.visible = false; event.stopPropagation(); "
-			form="@id('fx') @load(vm.novoUsuario) @save(vm.novoUsuario, before='submit') @validator('br.ufjf.tcc.business.UsuarioBusiness')">
+			onClose="self.visible = false; event.stopPropagation();">
 			<grid>
 				<columns>
 					<column hflex="1" />
@@ -113,7 +110,8 @@
 					<row>
 						<label value="Nome do Usuário:" />
 						<div>
-							<textbox value="@bind(fx.nomeUsuario)"
+							<textbox
+								value="@load(vm.novoUsuario.nomeUsuario) @save(vm.novoUsuario.nomeUsuario, before='submit')"
 								tabindex="1" id="nomeUsuario" />
 							<label class="error"
 								value="@load(vmsgs['nomeUsuario'])" />
@@ -123,7 +121,8 @@
 					<row>
 						<label value="Matrícula:" />
 						<div>
-							<textbox value="@bind(fx.matricula)"
+							<textbox
+								value="@load(vm.novoUsuario.matricula) @save(vm.novoUsuario.matricula, before='submit')"
 								tabindex="1" id="matricula" />
 							<label class="error"
 								value="@load(vmsgs['matricula'])" />
@@ -133,8 +132,9 @@
 					<row>
 						<label value="Curso:" />
 						<div>
-							<combobox id="cmbCurso" width="150px"
-								model="@load(vm.cursos)" selectedItem="@bind(fx.curso)">
+							<combobox id="cmbCurso" width="150px" model="@load(vm.cursos)"
+								value="@load(vm.novoUsuario.curso.nomeCurso ne null ? vm.novoUsuario.curso.nomeCurso : 'Nenhum')" 
+								selectedItem="@load(vm.novoUsuario.curso) @save(vm.novoUsuario.curso, before='submit')">
 								<template name="model">
 									<comboitem
 										label="@load(each.nomeCurso)" />
@@ -146,7 +146,8 @@
 					<row>
 						<label value="Email:" />
 						<div>
-							<textbox value="@bind(fx.email)"
+							<textbox
+								value="@load(vm.novoUsuario.email) @save(vm.novoUsuario.email, before='submit')"
 								tabindex="1" id="email" />
 							<label class="error"
 								value="@load(vmsgs['email'])" />
@@ -156,7 +157,8 @@
 					<row>
 						<label value="Titulação:" />
 						<div>
-							<textbox value="@bind(fx.titulacao)"
+							<textbox
+								value="@load(vm.novoUsuario.titulacao) @save(vm.novoUsuario.titulacao, before='submit')"
 								tabindex="1" id="titulacao" />
 							<label class="error"
 								value="@load(vmsgs['titulacao'])" />
@@ -166,9 +168,9 @@
 					<row>
 						<label value="Tipo:" />
 						<div>
-							<combobox id="cmbTipoUsuario" width="150px"
-								model="@load(vm.tiposUsuario)"
-								selectedItem="@bind(fx.tipoUsuario)">
+							<combobox id="cmbTipoUsuario" width="150px" model="@load(vm.tiposUsuario)"
+								value="@load(vm.novoUsuario.tipoUsuario.nomeTipoUsuario ne null ? vm.novoUsuario.tipoUsuario.nomeTipoUsuario : 'Aluno')"
+								selectedItem="@load(vm.novoUsuario.tipoUsuario) @save(vm.novoUsuario.tipoUsuario, before='submit')">
 								<template name="model">
 									<comboitem
 										label="@load(each.nomeTipoUsuario)" />
@@ -176,12 +178,14 @@
 							</combobox>
 						</div>
 					</row>
+
+					<row>
+						<div></div>
+						<button label="Cadastrar"
+							onClick="@command('submit')" width="100%" />
+					</row>
 				</rows>
 			</grid>
-			<div align="center" style="padding-top:5px;">
-				<button label="Cadastrar" onClick="@command('submit')"
-					width="100px" />
-			</div>
 		</window>
 	</div>
 </zk>
