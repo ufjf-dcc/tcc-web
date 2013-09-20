@@ -10,7 +10,6 @@ import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
@@ -40,11 +39,12 @@ public class GerenciamentoUsuarioController extends CommonsController {
 	}
 
 	private List<Curso> getAllCursos() {
-		List<Curso> cursoss = (new CursoBusiness()).getCursos();
+		List<Curso> cursoss = new ArrayList<Curso>();
 		Curso empty = new Curso();
 		empty.setIdCurso(0);
-		empty.setNomeCurso(" ");
+		empty.setNomeCurso("Nenhum");
 		cursoss.add(empty);
+		cursoss.addAll((new CursoBusiness()).getCursos());
 		return cursoss;
 	}
 
@@ -74,7 +74,6 @@ public class GerenciamentoUsuarioController extends CommonsController {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@NotifyChange("usuarios")
 	@Command
 	public void delete(@BindingParam("usuario") final Usuario usuario) {
 		Messagebox.show("Você tem certeza que deseja deletar o usuario: "
@@ -85,6 +84,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 						if (Messagebox.ON_OK.equals(e.getName())) {
 
 							if (usuarioBusiness.exclui(usuario)) {
+								BindUtils.postNotifyChange(null,null,this,"usuarios");
 								Messagebox.show(
 										"O usuário foi excluído com sucesso.",
 										"Sucesso", 0, Messagebox.INFORMATION);
@@ -143,8 +143,14 @@ public class GerenciamentoUsuarioController extends CommonsController {
 	@Command
 	public void submit() {
 		novoUsuario.setSenha(usuarioBusiness.encripta("123"));
-		if(usuarioBusiness.salvar(novoUsuario))
+		if(usuarioBusiness.salvar(novoUsuario)){
+			allUsuarios.add(novoUsuario);
+			BindUtils.postNotifyChange(null,null,this,"usuarios");
+			Messagebox.show(
+					"Usuário adicionado com sucesso!",
+					"Sucesso", 0, Messagebox.INFORMATION);
 			this.limpa();
+		}
 	}
 	
 	public void limpa(){

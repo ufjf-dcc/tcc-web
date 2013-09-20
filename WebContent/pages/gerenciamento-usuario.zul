@@ -39,7 +39,7 @@
 						value="@load(each.nomeUsuario) @save(each.nomeUsuario, before='confirm')" />
 					<textbox 
 						value="@load(each.email) @save(each.email, before='confirm')" />
-					<combobox width="150px" value="@load(each.curso.nomeCurso)" 
+					<combobox width="150px" value="@load(each.curso.nomeCurso ne null ? each.curso.nomeCurso : 'Nenhum')" 
 						model="@load(vm.cursos)" selectedItem="@bind(each.curso)">
 						<template name="model">
 							<comboitem label="@load(each.nomeCurso)" />
@@ -70,7 +70,7 @@
 					<label value="@load(each.matricula)" />
 					<label value="@load(each.nomeUsuario)" />
 					<label value="@load(each.email)" />
-					<label value="@load(each.curso.nomeCurso)" />
+					<label value="@load(each.curso.nomeCurso ne null ? each.curso.nomeCurso : 'Nenhum')" />
 					<label value="@load(each.titulacao)" />
 					<label value="@load(each.tipoUsuario.nomeTipoUsuario)" />
 					<div>
@@ -161,6 +161,7 @@
 						</row>
 			
 						<row>
+							<div></div>
 							<button label="Cadastrar" onClick="@command('submit')" width="100%" />
 						</row>
 					</rows>

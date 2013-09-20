@@ -15,10 +15,7 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
 import br.ufjf.tcc.business.CursoBusiness;
-import br.ufjf.tcc.business.TipoUsuarioBusiness;
 import br.ufjf.tcc.model.Curso;
-import br.ufjf.tcc.model.TipoUsuario;
-import br.ufjf.tcc.model.Usuario;
 
 public class GerenciamentoCursoController extends CommonsController{
 	private final CursoBusiness cursoBusiness = new CursoBusiness();
