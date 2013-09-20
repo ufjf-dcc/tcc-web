@@ -1,41 +1,40 @@
 package br.ufjf.tcc.business;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.zkoss.bind.Property;
-import org.zkoss.bind.ValidationContext;
-import org.zkoss.bind.validator.AbstractValidator;
 
 import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.persistent.impl.CursoDAO;
 
-public class CursoBusiness extends AbstractValidator {
+public class CursoBusiness {
+	public Map<String,String> errors = new HashMap<String, String>();
 	
 	//validação dos formulários
-	public void validate(ValidationContext ctx) {
-		Map<String,Property> beanProps = ctx.getProperties(ctx.getProperty().getBase());
+	public boolean validate(Curso curso) {
+		errors.clear();
 		
-		if (!jaExiste((Integer)beanProps.get("idCurso").getValue())) {
-			validarId(ctx, (Integer)beanProps.get("idCurso").getValue());
-			validarNome(ctx, (String)beanProps.get("nomeCurso").getValue());
-		} else
-			this.addInvalidMessage(ctx, "idCurso", "Já existe um curso com o id " + 
-					(Integer)beanProps.get("idCurso").getValue());
+		validateId(curso.getIdCurso());
+		validateName(curso.getNomeCurso());
+		
+		if (errors.size() == 0)
+			return !jaExiste(curso.getIdCurso()) ? true : false;
+			
+		return false;
 	}
 
-	private void validarId(ValidationContext ctx, int idCurso) {
+	public void validateId(int idCurso) {
 		if(idCurso <= 0)
-			this.addInvalidMessage(ctx, "idCurso", "O id do curso deve ser maior que zero");
+			errors.put("idCurso", "O código deve ser maior que zero");
 	}
 	
-	private void validarNome(ValidationContext ctx, String nomeCurso) {
+	public void validateName(String nomeCurso) {
 		if(nomeCurso == null)
-			this.addInvalidMessage(ctx, "nomeCurso", "O nome do curso deve ser preenchido");
+			errors.put("nomeCurso", "Informe o nome");
 		else
 			if(nomeCurso.trim().length() == 0)
-				this.addInvalidMessage(ctx, "nomeCurso", "O nome do curso deve ser preenchido");
+				errors.put("nomeCurso", "Informe o nome");
 	}
 	
 	//comunicação com o CursoDAO
@@ -71,7 +70,9 @@ public class CursoBusiness extends AbstractValidator {
 	
 	public boolean jaExiste(int idCurso) {
 		CursoDAO cursoDAO = new CursoDAO();
-		return cursoDAO.procuraId(idCurso, Curso.class) != null ? true : false;
+		boolean jaExiste = cursoDAO.jaExiste(idCurso);
+		if (jaExiste) errors.put("idCurso", "Já existe um curso com este código");
+		return jaExiste;
 	}
 
 }

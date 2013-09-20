@@ -1,8 +1,10 @@
 package br.ufjf.tcc.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.hibernate.HibernateException;
 import org.zkoss.bind.BindUtils;
@@ -30,6 +32,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 	private List<Curso> cursos = this.getAllCursos();
 	private String filterString = "";
 	private Usuario novoUsuario;
+	private Map<String, String> errors = new HashMap<String, String>();
 
 	@Init
 	public void init() throws HibernateException, Exception {
@@ -76,32 +79,35 @@ public class GerenciamentoUsuarioController extends CommonsController {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Command
 	public void delete(@BindingParam("usuario") final Usuario usuario) {
-		Messagebox.show("Você tem certeza que deseja deletar o usuario: "
+		Messagebox.show("Você tem certeza que deseja deletar o usuário: "
 				+ usuario.getNomeUsuario() + "?", "Confirmação", Messagebox.OK
 				| Messagebox.CANCEL, Messagebox.QUESTION,
 				new org.zkoss.zk.ui.event.EventListener() {
 					public void onEvent(Event e) {
 						if (Messagebox.ON_OK.equals(e.getName())) {
 
-							if (usuarioBusiness.exclui(usuario)) {								
+							if (usuarioBusiness.exclui(usuario)) {
 								removeFromList(usuario);
 								Messagebox.show(
 										"O usuário foi excluído com sucesso.",
-										"Sucesso", 0, Messagebox.INFORMATION);
+										"Sucesso", Messagebox.OK,
+										Messagebox.INFORMATION);
 							} else {
-								Messagebox.show("O usuário não foi excluído.",
-										"Erro", 0, Messagebox.ERROR);
+								Messagebox
+										.show("O usuário não foi excluído.",
+												"Erro", Messagebox.OK,
+												Messagebox.ERROR);
 							}
 
 						}
 					}
 				});
 	}
-	
-	public void removeFromList(Usuario usuario){
+
+	public void removeFromList(Usuario usuario) {
 		usuarios.remove(usuario);
 		allUsuarios.remove(usuario);
-		BindUtils.postNotifyChange(null,null,this,"usuarios");
+		BindUtils.postNotifyChange(null, null, this, "usuarios");
 	}
 
 	public void refreshRowTemplate(Usuario usuario) {
@@ -134,9 +140,9 @@ public class GerenciamentoUsuarioController extends CommonsController {
 
 		usuarios = temp;
 	}
-	
+
 	@Command
-	public void addUsuario(@BindingParam("window")  Window window) {
+	public void addUsuario(@BindingParam("window") Window window) {
 		this.limpa();
 		window.doOverlapped();
 	}
@@ -145,22 +151,41 @@ public class GerenciamentoUsuarioController extends CommonsController {
 		return this.novoUsuario;
 	}
 
+	public Map<String, String> getErrors() {
+		return this.errors;
+	}
+
 	@Command
 	public void submit() {
+		// implementar senha aleatória
 		novoUsuario.setSenha(usuarioBusiness.encripta("123"));
-		if(usuarioBusiness.salvar(novoUsuario)){
-			allUsuarios.add(novoUsuario);
-			this.filtra();
-			BindUtils.postNotifyChange(null,null,this,"usuarios");
-			Messagebox.show(
-					"Usuário adicionado com sucesso!",
-					"Sucesso", 0, Messagebox.INFORMATION);
-			this.limpa();
+		if (usuarioBusiness.validate(novoUsuario)) {
+			if (usuarioBusiness.salvar(novoUsuario)) {
+				allUsuarios.add(novoUsuario);
+				this.filtra();
+				BindUtils.postNotifyChange(null, null, this, "usuarios");
+				Messagebox.show("Usuário adicionado com sucesso!", "Sucesso",
+						Messagebox.OK, Messagebox.EXCLAMATION);
+				this.limpa();
+			} else {
+				Messagebox.show("Usuário não foi adicionado!", "Erro",
+						Messagebox.OK, Messagebox.ERROR);
+				clearErrors();
+			}
+		} else {
+			this.errors = usuarioBusiness.errors;
+			BindUtils.postNotifyChange(null, null, this, "errors");
 		}
 	}
-	
-	public void limpa(){
+
+	public void limpa() {
+		clearErrors();
 		novoUsuario = new Usuario();
-		BindUtils.postNotifyChange(null,null,this,"novoUsuario");
+		BindUtils.postNotifyChange(null, null, this, "novoUsuario");
+	}
+
+	public void clearErrors() {
+		errors.clear();
+		BindUtils.postNotifyChange(null, null, this, "errors");
 	}
 }

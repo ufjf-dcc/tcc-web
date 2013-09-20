@@ -2,15 +2,15 @@
 <zk>
 	<style src="/style.css" />
 	<div apply="org.zkoss.bind.BindComposer"
-		viewModel="@id('vm') @init('br.ufjf.tcc.controller.GerenciamentoUsuarioController')"
-		validationMessages="@id('vmsgs')">
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.GerenciamentoUsuarioController')">
 		<include src="@bind(vm.menu)" />
-		<grid id="demoGrid"
+		<grid id="userGrid"
 			model="@load(vm.usuarios) @template(each.editingStatus ? 'editable' : 'noneditable')"
 			mold="paging" pageSize="20">
 			<auxhead sclass="text-center">
-            	<auxheader label="Usuários cadastrados no sistema" colspan="8" />
-        	</auxhead>
+				<auxheader label="Usuários cadastrados no sistema"
+					colspan="8" />
+			</auxhead>
 			<auxhead>
 				<auxheader colspan="8">
 					<div>
@@ -114,7 +114,7 @@
 								value="@load(vm.novoUsuario.nomeUsuario) @save(vm.novoUsuario.nomeUsuario, before='submit')"
 								tabindex="1" id="nomeUsuario" />
 							<label class="error"
-								value="@load(vmsgs['nomeUsuario'])" />
+								value="@load(vm.errors['nomeUsuario'])" />
 						</div>
 					</row>
 
@@ -125,15 +125,16 @@
 								value="@load(vm.novoUsuario.matricula) @save(vm.novoUsuario.matricula, before='submit')"
 								tabindex="1" id="matricula" />
 							<label class="error"
-								value="@load(vmsgs['matricula'])" />
+								value="@load(vm.errors['matricula'])" />
 						</div>
 					</row>
 
 					<row>
 						<label value="Curso:" />
 						<div>
-							<combobox id="cmbCurso" width="150px" model="@load(vm.cursos)"
-								value="@load(vm.novoUsuario.curso.nomeCurso ne null ? vm.novoUsuario.curso.nomeCurso : 'Nenhum')" 
+							<combobox id="cmbCurso" width="150px"
+								model="@load(vm.cursos)"
+								value="@load(vm.novoUsuario.curso.nomeCurso ne null ? vm.novoUsuario.curso.nomeCurso : 'Nenhum')"
 								selectedItem="@load(vm.novoUsuario.curso) @save(vm.novoUsuario.curso, before='submit')">
 								<template name="model">
 									<comboitem
@@ -150,7 +151,7 @@
 								value="@load(vm.novoUsuario.email) @save(vm.novoUsuario.email, before='submit')"
 								tabindex="1" id="email" />
 							<label class="error"
-								value="@load(vmsgs['email'])" />
+								value="@load(vm.errors['email'])" />
 						</div>
 					</row>
 
@@ -160,15 +161,14 @@
 							<textbox
 								value="@load(vm.novoUsuario.titulacao) @save(vm.novoUsuario.titulacao, before='submit')"
 								tabindex="1" id="titulacao" />
-							<label class="error"
-								value="@load(vmsgs['titulacao'])" />
 						</div>
 					</row>
 
 					<row>
 						<label value="Tipo:" />
 						<div>
-							<combobox id="cmbTipoUsuario" width="150px" model="@load(vm.tiposUsuario)"
+							<combobox id="cmbTipoUsuario" width="150px"
+								model="@load(vm.tiposUsuario)"
 								value="@load(vm.novoUsuario.tipoUsuario.nomeTipoUsuario ne null ? vm.novoUsuario.tipoUsuario.nomeTipoUsuario : 'Aluno')"
 								selectedItem="@load(vm.novoUsuario.tipoUsuario) @save(vm.novoUsuario.tipoUsuario, before='submit')">
 								<template name="model">
@@ -178,14 +178,10 @@
 							</combobox>
 						</div>
 					</row>
-
-					<row>
-						<div></div>
-						<button label="Cadastrar"
-							onClick="@command('submit')" width="100%" />
-					</row>
 				</rows>
 			</grid>
+			<button label="Cadastrar" onClick="@command('submit')"
+				width="75px" />
 		</window>
 	</div>
 </zk>

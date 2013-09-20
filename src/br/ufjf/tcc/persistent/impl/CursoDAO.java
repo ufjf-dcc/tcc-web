@@ -31,4 +31,22 @@ public class CursoDAO extends GenericoDAO implements ICursoDAO {
 		return cursos;
 	}
 	
+	public boolean jaExiste (int idCurso) {
+		try {
+			Query query = getSession().createQuery("select c from Curso c where c.idCurso = :idCurso");
+			query.setParameter("idCurso", idCurso);
+			
+			boolean resultado = query.list().size() > 0 ? true : false;
+			
+			getSession().close();
+			
+			return resultado;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return false;
+	}
+	
 }
