@@ -21,7 +21,7 @@ public class ListaPublicaController extends CommonsController {
 
 	private Curso curso = null;
 	private List<Curso> cursos = this.getAllCursos();
-	private String emptyMessage = "Selecione um Curso na caixa acima.";
+	private String emptyMessage = "Selecione um curso na caixa acima.";
 	private List<TCC> allTccs = null;
 	private List<TCC> filterTccs = allTccs;
 	private String filterString = "";
@@ -57,12 +57,12 @@ public class ListaPublicaController extends CommonsController {
 	public void changeCurso() {
 		if (curso.getIdCurso() > 0) {
 			allTccs = new TCCBusiness().getPublicListByCurso(curso);
-			if(allTccs == null)
+			if(allTccs == null || allTccs.size() == 0)
 				emptyMessage = "Nenhuma monografica encontrada para o curso de "+ curso.getNomeCurso();
 			else
 				emptyMessage = "Sem resultados para seu filtro no curso de "+ curso.getNomeCurso();
 		} else {
-			emptyMessage = "Selecione um Curso na caixa acima.";
+			emptyMessage = "Selecione um curso na caixa acima.";
 			allTccs = null;
 		}
 		this.filtra();
