@@ -19,7 +19,7 @@
 								width="60px" onClick="@command('filtra')" />
 						</div>
 						<div style="float:right">
-							<combobox id="cmbCurso" width="150px"
+							<combobox id="cmbCurso" width="150px" readonly="true"
 								model="@load(vm.cursos)" value="Selecione um Curso"
 								selectedItem="@bind(vm.curso)"
 								onChange="@command('changeCurso')">

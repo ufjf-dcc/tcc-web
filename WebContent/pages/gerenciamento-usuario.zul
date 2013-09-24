@@ -51,7 +51,7 @@
 						value="@load(each.nomeUsuario) @save(each.nomeUsuario, before='confirm')" />
 					<textbox
 						value="@load(each.email) @save(each.email, before='confirm')" />
-					<combobox width="150px"
+					<combobox width="150px" readonly="true"
 						value="@load(each.curso.nomeCurso ne null ? each.curso.nomeCurso : 'Nenhum')"
 						model="@load(vm.cursos)"
 						selectedItem="@load(each.curso) @save(each.curso, before='confirm')">
@@ -61,7 +61,7 @@
 					</combobox>
 					<textbox
 						value="@load(each.titulacao) @save(each.titulacao, before='confirm')" />
-					<combobox width="150px"
+					<combobox width="150px" readonly="true"
 						value="@load(each.tipoUsuario.nomeTipoUsuario)"
 						model="@load(vm.tiposUsuario)"
 						selectedItem="@bind(each.tipoUsuario)">
@@ -133,7 +133,7 @@
 					<row>
 						<label value="Curso:" />
 						<div>
-							<combobox id="cmbCurso" width="150px"
+							<combobox id="cmbCurso" width="150px" readonly="true"
 								model="@load(vm.cursos)"
 								value="@load(vm.novoUsuario.curso.nomeCurso ne null ? vm.novoUsuario.curso.nomeCurso : 'Nenhum')"
 								selectedItem="@load(vm.novoUsuario.curso) @save(vm.novoUsuario.curso, before='submit')">
@@ -168,7 +168,7 @@
 					<row>
 						<label value="Tipo:" />
 						<div>
-							<combobox id="cmbTipoUsuario" width="150px"
+							<combobox id="cmbTipoUsuario" width="150px" readonly="true"
 								model="@load(vm.tiposUsuario)"
 								value="@load(vm.novoUsuario.tipoUsuario.nomeTipoUsuario ne null ? vm.novoUsuario.tipoUsuario.nomeTipoUsuario : 'Aluno')"
 								selectedItem="@load(vm.novoUsuario.tipoUsuario) @save(vm.novoUsuario.tipoUsuario, before='submit')">
