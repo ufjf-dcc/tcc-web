@@ -1,8 +1,9 @@
 <?page title="new page title" contentType="text/html;charset=UTF-8"?>
+<?init class="br.ufjf.tcc.controller.AuthController"?>
 <zk>
-	<window border="normal" title="Upload (exemplo)" apply="org.zkoss.bind.BindComposer"
+	<!-- <window border="normal" title="Upload (exemplo)" apply="org.zkoss.bind.BindComposer"
 		viewModel="@id('vm') @init('br.ufjf.tcc.teste.Upload')">
 		<button id="up" upload="true" onUpload="@command('up', evt=event, lbl=lbl)" label="upload" />
 		<label id="lbl" />
-	</window>
+	</window> -->
 </zk>

@@ -182,7 +182,7 @@
 				</rows>
 			</grid>
 			<button label="Cadastrar" onClick="@command('submit')"
-				width="75px" />
+				width="75px" style="margin-top:5px" />
 		</window>
 	</div>
 </zk>

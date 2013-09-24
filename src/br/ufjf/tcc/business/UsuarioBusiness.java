@@ -112,6 +112,11 @@ public class UsuarioBusiness {
 		return usuarioDAO.getPermissoes(usuario);
 	}
 	
+	public List<Usuario> getOrientadores() {
+		UsuarioDAO usuarioDAO = new UsuarioDAO();
+		return usuarioDAO.getOrientadores();
+	}
+	
 	public List<Usuario> getOrientados(Usuario usuario) {
 		UsuarioDAO usuarioDAO = new UsuarioDAO();
 		return usuarioDAO.getOrientados(usuario);

@@ -24,6 +24,7 @@ import org.hibernate.annotations.GenericGenerator;
 @Entity
 @Table(name = "Usuario")
 public class Usuario implements Serializable {
+	public static final int ALUNO = 1, PROFESSOR = 2, COORDENADOR = 3, ADMINISTRADOR = 4;
 
 	private static final long serialVersionUID = 1L;
 
@@ -135,7 +136,7 @@ public class Usuario implements Serializable {
 
 	@Transient
 	private boolean editingStatus;
-	
+
 	public int getIdUsuario() {
 		return idUsuario;
 	}
@@ -197,9 +198,9 @@ public class Usuario implements Serializable {
 	}
 
 	public void setCurso(Curso curso) {
-		if(curso.getIdCurso() == 0)
+		if (curso.getIdCurso() == 0)
 			this.curso = null;
-		else 
+		else
 			this.curso = curso;
 	}
 
@@ -226,11 +227,11 @@ public class Usuario implements Serializable {
 	public void setParticipacoes(List<Participacao> participacoes) {
 		this.participacoes = participacoes;
 	}
-	
+
 	public boolean getEditingStatus() {
 		return editingStatus;
 	}
-	
+
 	public void setEditingStatus(boolean editingStatus) {
 		this.editingStatus = editingStatus;
 	}

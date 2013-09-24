@@ -1,0 +1,78 @@
+<?page title="Cadastro de TCC" contentType="text/html;charset=UTF-8"?>
+<?init class="br.ufjf.tcc.controller.AuthController"?>
+<zk>
+	<style src="/style.css" />
+	<div
+		style="position:absolute; top:50%;
+margin-top:-125px; left:50%; margin-left:-150px;">
+		<include src="@bind(vm.menu)" />
+		<window title="Cadastrar TCC" width="300px" border="normal"
+			position="center,center" closable="true"
+			apply="org.zkoss.bind.BindComposer"
+			viewModel="@id('vm') @init('br.ufjf.tcc.controller.CadastroTccController')"
+			form="@id('tcc') @load(vm.newTcc) @save(vm.newTcc, before='submit')">
+			<grid>
+				<columns>
+					<column hflex="1" />
+					<column hflex="2" />
+				</columns>
+				<rows>
+					<row>
+						<label value="Nome do TCC: " />
+						<div>
+							<textbox value="@bind(tcc.nomeTCC)"
+								width="100%" />
+							<label class="error"
+								value="@load(vm.errors['nomeTCC'])" />
+						</div>
+					</row>
+					<row>
+						<label value="Autor: " />
+						<textbox value="@load(vm.usuario.nomeUsuario)"
+							disabled="true" width="100%" />
+					</row>
+					<row>
+						<label value="Orientador: " />
+						<div>
+							<combobox id="cmbOrientadores" width="100%"
+								model="@load(vm.orientadores)"
+								readonly="true"
+								selectedItem="@load(vm.newTcc.orientador) @save(vm.newTcc.orientador, before='submit')">
+								<template name="model">
+									<comboitem
+										label="@load(each.nomeUsuario)" />
+								</template>
+							</combobox>
+							<label class="error"
+								value="@load(vm.errors['orientador'])" />
+						</div>
+					</row>
+					<row>
+						<label value="Resumo: " />
+						<textbox value="@bind(tcc.resumoTCC)" rows="6"
+							width="100%" />
+					</row>
+					<row>
+						<label value="Palavras-chave: " />
+						<textbox value="@bind(tcc.palavrasChave)"
+							width="100%" />
+					</row>
+					<row>
+						<label value="Arquivo (PDF): " />
+						<vlayout>
+							<button label="Selecionar arquivo..."
+								upload="true"
+								onUpload="@command('upload', evt=event, lbl=fileStatus)" />
+							<label id="fileStatus"
+								value="Aguardando arquivo..." />
+						</vlayout>
+					</row>
+				</rows>
+			</grid>
+			<div align="center">
+				<button label="Cadastrar" onClick="@command('submit')"
+					width="75px" style="margin-top:5px" />
+			</div>
+		</window>
+	</div>
+</zk>

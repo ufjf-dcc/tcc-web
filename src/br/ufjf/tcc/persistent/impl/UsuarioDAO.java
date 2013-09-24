@@ -18,61 +18,66 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 
 	public Usuario retornaUsuario(String matricula, String senha) {
 		try {
-			Query query = getSession().createQuery("select u from Usuario as u left join fetch u.curso join fetch u.tipoUsuario where u.matricula = :matricula AND u.senha = :senha");
+			Query query = getSession()
+					.createQuery(
+							"select u from Usuario as u left join fetch u.curso join fetch u.tipoUsuario where u.matricula = :matricula AND u.senha = :senha");
 			query.setParameter("matricula", matricula);
 			query.setParameter("senha", senha);
-			
+
 			Usuario resultado = (Usuario) query.uniqueResult();
-			
+
 			getSession().close();
 
-			if(resultado != null)
+			if (resultado != null)
 				return resultado;
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		return null;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public List<Usuario> getTodosUsuarios() {
 		try {
-			Query query = getSession().createQuery("select u from Usuario as u left join fetch u.curso join fetch u.tipoUsuario ORDER BY u.idUsuario");
-			
+			Query query = getSession()
+					.createQuery(
+							"select u from Usuario as u left join fetch u.curso join fetch u.tipoUsuario ORDER BY u.idUsuario");
+
 			List<Usuario> resultados = query.list();
-			
+
 			getSession().close();
 
-			if(resultados != null)
+			if (resultados != null)
 				return resultados;
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		return null;
 	}
-	
-	public boolean jaExiste (String matricula) {
+
+	public boolean jaExiste(String matricula) {
 		try {
-			Query query = getSession().createQuery("select u from Usuario u where u.matricula = :matricula");
+			Query query = getSession().createQuery(
+					"select u from Usuario u where u.matricula = :matricula");
 			query.setParameter("matricula", matricula);
-			
+
 			boolean resultado = query.list().size() > 0 ? true : false;
-			
+
 			getSession().close();
-			
+
 			return resultado;
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		return false;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public List<Usuario> buscar(String expressão) {
 		System.out.println(expressão);
@@ -83,59 +88,84 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	    session.beginTransaction();
-		
-		Query query = session.createQuery("from Usuario where nomeUsuario LIKE :pesquisa");
+		session.beginTransaction();
+
+		Query query = session
+				.createQuery("from Usuario where nomeUsuario LIKE :pesquisa");
 		query.setParameter("pesquisa", "%" + expressão + "%");
 		List<Usuario> usuarios = query.list();
 		session.close();
 		return usuarios;
 	}
-	
+
 	public List<Permissoes> getPermissoes(Usuario usuario) {
 		try {
 			getSession().update(usuario);
-			Query query = getSession().createQuery("select t from TipoUsuario t join fetch t.permissoes where t.idTipoUsuario = :idTipoUsuario");
-	        query.setParameter("idTipoUsuario", usuario.getTipoUsuario().getIdTipoUsuario());
-	        
-	        return ((TipoUsuario) query.uniqueResult()).getPermissoes();
+			Query query = getSession()
+					.createQuery(
+							"select t from TipoUsuario t join fetch t.permissoes where t.idTipoUsuario = :idTipoUsuario");
+			query.setParameter("idTipoUsuario", usuario.getTipoUsuario()
+					.getIdTipoUsuario());
+
+			return ((TipoUsuario) query.uniqueResult()).getPermissoes();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		return null;		
+
+		return null;
 	}
-	
+
+	@SuppressWarnings("unchecked")
+	public List<Usuario> getOrientadores() {
+		try {
+			Query query = getSession()
+					.createQuery(
+							"select u from Usuario as u where u.tipoUsuario.idTipoUsuario = :professor OR u.tipoUsuario.idTipoUsuario = :coordenador");
+			query.setParameter("professor", Usuario.PROFESSOR);
+			query.setParameter("coordenador", Usuario.COORDENADOR);
+			
+			List<Usuario> usuarios = query.list();
+			getSession().close();
+			return usuarios;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
 	@SuppressWarnings("unchecked")
 	public List<Usuario> getOrientados(Usuario orientador) {
 		try {
-			Query query = getSession().createQuery("select t from TCC t where t.orientador = :orientador");
-	        query.setParameter("orientador", orientador);
-	        //System.out.println(orientador.getIdUsuario());
-	        
-	        List<TCC> tccs = query.list();
-	        List<Usuario> alunos = new ArrayList<Usuario>();
-	        
-	        for (int i = 0; i < tccs.size(); i++)
-	        	alunos.add(tccs.get(i).getAluno());
-	        
-	        return alunos;
-	        
+			Query query = getSession().createQuery(
+					"select t from TCC t where t.orientador = :orientador");
+			query.setParameter("orientador", orientador);
+
+			List<TCC> tccs = query.list();
+			List<Usuario> alunos = new ArrayList<Usuario>();
+
+			for (int i = 0; i < tccs.size(); i++)
+				alunos.add(tccs.get(i).getAluno());
+			getSession().close();
+			return alunos;
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return null;
 	}
 
 	@SuppressWarnings("unused")
 	@Override
 	public Usuario update(Usuario usuario) {
-		/*Dando update no usuário e solicitando os IDs do tipo e
-		 * do curso, faz com que o Tipo e o Curso sejam "carregados"
-		 * do banco, retornando o usuário com todas as informações.
+		/*
+		 * Dando update no usuário e solicitando os IDs do tipo e do curso, faz
+		 * com que o Tipo e o Curso sejam "carregados" do banco, retornando o
+		 * usuário com todas as informações.
 		 */
 		try {
 			getSession().update(usuario);
