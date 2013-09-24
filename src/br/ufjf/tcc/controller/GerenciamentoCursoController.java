@@ -29,7 +29,6 @@ public class GerenciamentoCursoController extends CommonsController {
 
 	@Init
 	public void init() throws HibernateException, Exception {
-		super.testaLogado();
 		if (!checaPermissao("gcc__"))
 			super.paginaProibida();
 	}

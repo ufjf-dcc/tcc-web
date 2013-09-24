@@ -1,9 +1,10 @@
 <?page title="Gerenciamento de Usuários"?>
+<?init class="br.ufjf.tcc.controller.AuthController"?>
 <zk>
 	<style src="/style.css" />
 	<div apply="org.zkoss.bind.BindComposer"
 		viewModel="@id('vm') @init('br.ufjf.tcc.controller.GerenciamentoUsuarioController')">
-		<include src="@bind(vm.menu)" />
+		<include src="@load(vm.menu)" />
 		<grid id="userGrid"
 			model="@load(vm.usuarios) @template(each.editingStatus ? 'editable' : 'noneditable')"
 			mold="paging" pageSize="20">

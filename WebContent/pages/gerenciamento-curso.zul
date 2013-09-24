@@ -1,9 +1,10 @@
 <?page title="Cursos cadastrados"?>
+<?init class="br.ufjf.tcc.controller.AuthController"?>
 <zk>
 	<style src="/style.css" />
 	<div apply="org.zkoss.bind.BindComposer"
 		viewModel="@id('vm') @init('br.ufjf.tcc.controller.GerenciamentoCursoController')">
-		<include src="@bind(vm.menu)" />
+		<include src="@load(vm.menu)" />
 		<grid id="curseGrid"
 			model="@load(vm.cursos) @template(each.editingStatus ? 'editable' : 'noneditable')"
 			mold="paging" pageSize="20">
