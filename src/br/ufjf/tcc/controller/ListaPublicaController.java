@@ -2,6 +2,8 @@ package br.ufjf.tcc.controller;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -21,10 +23,12 @@ public class ListaPublicaController extends CommonsController {
 
 	private Curso curso = null;
 	private List<Curso> cursos = this.getAllCursos();
+	private List<Integer> years;
 	private String emptyMessage = "Selecione um curso na caixa acima.";
-	private List<TCC> allTccs = null;
-	private List<TCC> filterTccs = allTccs;
+	private List<TCC> tccsByCurso = null;
+	private List<TCC> filterTccs = tccsByCurso;
 	private String filterString = "";
+	private int filterYear = 0;
 
 	public String getEmptyMessage() {
 		return emptyMessage;
@@ -42,6 +46,31 @@ public class ListaPublicaController extends CommonsController {
 		this.curso = curso;
 	}
 
+	public List<Integer> getYears() {
+		return years;
+	}
+
+	public void updateYears() {
+		years = new ArrayList<Integer>();
+		for (TCC tcc : filterTccs) {
+			Calendar cal = Calendar.getInstance();
+			cal.setTimeInMillis(tcc.getDataEnvioFinal().getTime());
+			int year = cal.get(Calendar.YEAR);
+			if (!years.contains(year))
+				years.add(year);
+		}
+
+		Collections.sort(years);
+	}
+
+	public int getFilterYear() {
+		return filterYear;
+	}
+
+	public void setFilterYear(int filterYear) {
+		this.filterYear = filterYear;
+	}
+
 	private List<Curso> getAllCursos() {
 		List<Curso> cursoss = new ArrayList<Curso>();
 		Curso empty = new Curso();
@@ -52,21 +81,28 @@ public class ListaPublicaController extends CommonsController {
 		return cursoss;
 	}
 
-	@NotifyChange("emptyMessage")
+	@NotifyChange({"emptyMessage", "years"})
 	@Command
 	public void changeCurso() {
 		if (curso.getIdCurso() > 0) {
-			allTccs = new TCCBusiness().getPublicListByCurso(curso);
-			if(allTccs == null || allTccs.size() == 0)
-				emptyMessage = "Nenhuma monografica encontrada para o curso de "+ curso.getNomeCurso();
-			else
-				emptyMessage = "Sem resultados para seu filtro no curso de "+ curso.getNomeCurso();
+			tccsByCurso = new TCCBusiness().getPublicListByCurso(curso);
+			if (tccsByCurso == null || tccsByCurso.size() == 0)
+				emptyMessage = "Nenhuma monografica encontrada para o curso de "
+						+ curso.getNomeCurso();
+			else {
+				emptyMessage = "Sem resultados para seu filtro no curso de "
+						+ curso.getNomeCurso();
+				filterTccs = tccsByCurso;
+				updateYears();
+			}
 		} else {
 			emptyMessage = "Selecione um curso na caixa acima.";
-			allTccs = null;
+			filterTccs = tccsByCurso = null;
+			years = new ArrayList<Integer>();
 		}
 		this.filtra();
 		BindUtils.postNotifyChange(null, null, this, "filterTccs");
+		BindUtils.postNotifyChange(null, null, this, "years");
 	}
 
 	public List<TCC> getFilterTccs() {
@@ -81,13 +117,13 @@ public class ListaPublicaController extends CommonsController {
 		this.filterString = filterString;
 	}
 
-	@NotifyChange("filterTccs")
+	@NotifyChange({ "filterTccs", "years" })
 	@Command
 	public void filtra() {
 		String filter = filterString.toLowerCase().trim();
-		if (filter != "" && allTccs != null) {
+		if (filter != "" && tccsByCurso != null) {
 			List<TCC> temp = new ArrayList<TCC>();
-			for (Iterator<TCC> i = allTccs.iterator(); i.hasNext();) {
+			for (Iterator<TCC> i = tccsByCurso.iterator(); i.hasNext();) {
 				TCC tmp = i.next();
 				if (tmp.getNomeTCC().toLowerCase().contains(filter)
 						|| tmp.getAluno().getNomeUsuario().toLowerCase()
@@ -102,8 +138,27 @@ public class ListaPublicaController extends CommonsController {
 			}
 
 			filterTccs = temp;
+			updateYears();
 		} else {
-			filterTccs = allTccs;
+			filterTccs = tccsByCurso;
+		}
+	}
+
+	@NotifyChange("filterTccs")
+	@Command
+	public void filterYear() {
+		if (tccsByCurso != null) {
+			filterTccs = new ArrayList<TCC>();
+			for (TCC tcc : tccsByCurso) {
+				Calendar cal = Calendar.getInstance();
+				cal.setTimeInMillis(tcc.getDataEnvioFinal().getTime());
+				int year = cal.get(Calendar.YEAR);
+				if (year == filterYear) {
+					filterTccs.add(tcc);
+				}
+			}
+		} else {
+			filterTccs = tccsByCurso;
 		}
 	}
 

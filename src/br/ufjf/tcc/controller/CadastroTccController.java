@@ -20,7 +20,7 @@ import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.util.media.Media;
-import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
@@ -35,8 +35,7 @@ public class CadastroTccController extends CommonsController {
 	private TCC newTcc = new TCC();
 	private List<Usuario> orientadores = new UsuarioBusiness().getOrientadores();
 	private Map<String, String> errors = new HashMap<String, String>();
-	private static final String SAVE_PATH = Executions.getCurrent()
-			.getDesktop().getWebApp().getRealPath("/")
+	private static final String SAVE_PATH = Sessions.getCurrent().getWebApp().getRealPath("/")
 			+ "/files/";
 
 	public TCC getNewTcc() {
@@ -59,6 +58,9 @@ public class CadastroTccController extends CommonsController {
 	public void upload(@BindingParam("evt") UploadEvent evt,
 			@BindingParam("lbl") Label lbl) {
 		Media media = evt.getMedia();
+		if (!media.getName().contains("pdf")) {
+			Messagebox.show("Este não é um arquivo válido! Apenas PDF são aceitos.");
+		}
 
 		BufferedInputStream in = null;
 		BufferedOutputStream out = null;
