@@ -12,31 +12,35 @@
 			<auxhead>
 				<auxheader colspan="2">
 					<div>
-						<div style="float:left">
+						<hlayout
+							style="float:left; line-height:20px;">
+							<label value="Pesquisar: " />
 							<textbox id="filtro"
 								value="@bind(vm.filterString)" />
+							<label value="Ano: "
+								style="margin-left:10px;" />
+							<combobox id="cmbYear" width="150px"
+								readonly="true" model="@load(vm.years)"
+								value="@load(filterYear)" selectedItem="@bind(vm.filterYear)">
+								<template name="model">
+									<comboitem label="@load(each)" />
+								</template>
+							</combobox>
 							<button label="Filtrar" height="21px;"
-								width="60px" onClick="@command('filtra')" />
-						</div>
-						<hlayout style="float:right;">
-							<label value="Curso: " />
-							<combobox id="cmbCurso" width="150px" readonly="true"
-								model="@load(vm.cursos)" value="Selecione um Curso"
-								selectedItem="@bind(vm.curso)"
+								width="60px" onClick="@command('filtra')"
+								style="margin-left:20px;" />
+						</hlayout>
+						<hlayout
+							style="float:right; line-height:20px;">
+							<label value="Curso: "
+								style="margin-left=10px" />
+							<combobox id="cmbCurso" width="150px"
+								readonly="true" model="@load(vm.cursos)"
+								value="Selecione um Curso" selectedItem="@bind(vm.curso)"
 								onChange="@command('changeCurso')">
 								<template name="model">
 									<comboitem
 										label="@load(each.nomeCurso)" />
-								</template>
-							</combobox>
-							<label value="Ano: " />
-							<combobox id="cmbYear" width="150px" readonly="true"
-								model="@load(vm.years)" value="Selecione um ano"
-								selectedItem="@bind(vm.filterYear)"
-								onChange="@command('filterYear')">
-								<template name="model">
-									<comboitem
-										label="@load(each)" />
 								</template>
 							</combobox>
 						</hlayout>
@@ -58,6 +62,8 @@
 								<label value="Resumo"
 									style="font-size: 14px; font-weight: bold; text-align: justify; display: block;" />
 								<label value="@load(each.resumoTCC)" />
+								<!-- <label value="Ano: " style="font-weight:bold;"/>
+								<label onCreate="@command('getEachTccYear', tcc=each)" /> -->
 								<label value="Orientador"
 									style="font-size: 14px; font-weight: bold; text-align: justify; display: block;" />
 								<label

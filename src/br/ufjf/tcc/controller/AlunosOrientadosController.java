@@ -12,9 +12,9 @@ public class AlunosOrientadosController extends CommonsController {
 	private List<Usuario> usuarios = new UsuarioBusiness().getOrientados(getUsuario());
 
 	@Init
-	public void init() {	// Initialize
+	public void init() {
 		System.out.println(getUsuario().getIdUsuario());
-		selected = usuarios.get(0); // Selected First One
+		selected = usuarios.get(0);
 	}
 
 	public List<Usuario> getUsuarios() {

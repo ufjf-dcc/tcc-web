@@ -94,8 +94,10 @@
 
 				</rows>
 			</grid>
-			<button label="Cadastrar" onClick="@command('submit')"
-				width="75px" style="margin-top:5px" />
+			<div align="center">
+				<button label="Cadastrar" onClick="@command('submit')"
+					width="75px" style="margin-top:5px" />
+			</div>
 		</window>
 	</div>
 </zk>

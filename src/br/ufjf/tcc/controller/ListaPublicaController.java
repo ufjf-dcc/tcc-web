@@ -4,7 +4,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import org.zkoss.bind.BindUtils;
@@ -13,6 +12,7 @@ import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zhtml.Filedownload;
 import org.zkoss.zk.ui.Sessions;
+import org.zkoss.zul.Label;
 
 import br.ufjf.tcc.business.CursoBusiness;
 import br.ufjf.tcc.business.TCCBusiness;
@@ -23,12 +23,12 @@ public class ListaPublicaController extends CommonsController {
 
 	private Curso curso = null;
 	private List<Curso> cursos = this.getAllCursos();
-	private List<Integer> years;
+	private List<String> years;
 	private String emptyMessage = "Selecione um curso na caixa acima.";
 	private List<TCC> tccsByCurso = null;
 	private List<TCC> filterTccs = tccsByCurso;
 	private String filterString = "";
-	private int filterYear = 0;
+	private String filterYear = "Todos";
 
 	public String getEmptyMessage() {
 		return emptyMessage;
@@ -46,28 +46,31 @@ public class ListaPublicaController extends CommonsController {
 		this.curso = curso;
 	}
 
-	public List<Integer> getYears() {
+	public List<String> getYears() {
 		return years;
 	}
 
 	public void updateYears() {
-		years = new ArrayList<Integer>();
-		for (TCC tcc : filterTccs) {
-			Calendar cal = Calendar.getInstance();
-			cal.setTimeInMillis(tcc.getDataEnvioFinal().getTime());
-			int year = cal.get(Calendar.YEAR);
-			if (!years.contains(year))
-				years.add(year);
-		}
+		years = new ArrayList<String>();
+		if (tccsByCurso != null && tccsByCurso.size() > 0) {
+			for (TCC tcc : tccsByCurso) {
+				Calendar cal = Calendar.getInstance();
+				cal.setTimeInMillis(tcc.getDataEnvioFinal().getTime());
+				int year = cal.get(Calendar.YEAR);
+				if (!years.contains("" + year))
+					years.add("" + year);
+			}
 
-		Collections.sort(years);
+			Collections.sort(years);
+		}
+		years.add(0, "Todos");
 	}
 
-	public int getFilterYear() {
+	public String getFilterYear() {
 		return filterYear;
 	}
 
-	public void setFilterYear(int filterYear) {
+	public void setFilterYear(String filterYear) {
 		this.filterYear = filterYear;
 	}
 
@@ -81,7 +84,7 @@ public class ListaPublicaController extends CommonsController {
 		return cursoss;
 	}
 
-	@NotifyChange({"emptyMessage", "years"})
+	@NotifyChange({ "emptyMessage", "years", "filterYear" })
 	@Command
 	public void changeCurso() {
 		if (curso.getIdCurso() > 0) {
@@ -93,16 +96,18 @@ public class ListaPublicaController extends CommonsController {
 				emptyMessage = "Sem resultados para seu filtro no curso de "
 						+ curso.getNomeCurso();
 				filterTccs = tccsByCurso;
-				updateYears();
+				
 			}
 		} else {
 			emptyMessage = "Selecione um curso na caixa acima.";
-			filterTccs = tccsByCurso = null;
-			years = new ArrayList<Integer>();
+			tccsByCurso = null;
 		}
+		updateYears();
+		if (!years.contains(filterYear))
+			filterYear = "Todos";
+		
 		this.filtra();
 		BindUtils.postNotifyChange(null, null, this, "filterTccs");
-		BindUtils.postNotifyChange(null, null, this, "years");
 	}
 
 	public List<TCC> getFilterTccs() {
@@ -116,47 +121,42 @@ public class ListaPublicaController extends CommonsController {
 	public void setFilterString(String filterString) {
 		this.filterString = filterString;
 	}
-
-	@NotifyChange({ "filterTccs", "years" })
+	
+	public String getTccYear(@BindingParam("tcc") TCC tcc) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(tcc.getDataEnvioFinal().getTime());
+		return "" + cal.get(Calendar.YEAR);
+	}
+	
 	@Command
-	public void filtra() {
-		String filter = filterString.toLowerCase().trim();
-		if (filter != "" && tccsByCurso != null) {
-			List<TCC> temp = new ArrayList<TCC>();
-			for (Iterator<TCC> i = tccsByCurso.iterator(); i.hasNext();) {
-				TCC tmp = i.next();
-				if (tmp.getNomeTCC().toLowerCase().contains(filter)
-						|| tmp.getAluno().getNomeUsuario().toLowerCase()
-								.contains(filter)
-						|| tmp.getOrientador().getNomeUsuario().toLowerCase()
-								.contains(filter)
-						|| tmp.getPalavrasChave().toLowerCase()
-								.contains(filter)
-						|| tmp.getResumoTCC().toLowerCase().contains(filter)) {
-					temp.add(tmp);
-				}
-			}
-
-			filterTccs = temp;
-			updateYears();
-		} else {
-			filterTccs = tccsByCurso;
-		}
+	public String getEachTccYear(@BindingParam("tcc") TCC tcc, @BindingParam("lbl") Label lbl) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(tcc.getDataEnvioFinal().getTime());
+		return "" + cal.get(Calendar.YEAR);
 	}
 
 	@NotifyChange("filterTccs")
 	@Command
-	public void filterYear() {
+	public void filtra() {
+		String filter = filterString.toLowerCase().trim();
 		if (tccsByCurso != null) {
-			filterTccs = new ArrayList<TCC>();
+			List<TCC> temp = new ArrayList<TCC>();
 			for (TCC tcc : tccsByCurso) {
-				Calendar cal = Calendar.getInstance();
-				cal.setTimeInMillis(tcc.getDataEnvioFinal().getTime());
-				int year = cal.get(Calendar.YEAR);
-				if (year == filterYear) {
-					filterTccs.add(tcc);
-				}
+				if ((filterYear == "Todos" || filterYear
+						.contains(getTccYear(tcc)))
+						&& (filter == "" || (tcc.getNomeTCC().toLowerCase()
+								.contains(filter)
+								|| tcc.getAluno().getNomeUsuario()
+										.toLowerCase().contains(filter)
+								|| tcc.getOrientador().getNomeUsuario()
+										.toLowerCase().contains(filter)
+								|| tcc.getPalavrasChave().toLowerCase()
+										.contains(filter) || tcc.getResumoTCC()
+								.toLowerCase().contains(filter))))
+					temp.add(tcc);
 			}
+
+			filterTccs = temp;
 		} else {
 			filterTccs = tccsByCurso;
 		}
