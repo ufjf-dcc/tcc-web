@@ -60,8 +60,7 @@ public class ListaPublicaController extends CommonsController {
 				if (!years.contains("" + year))
 					years.add("" + year);
 			}
-
-			Collections.sort(years);
+			Collections.sort(years, Collections.reverseOrder());
 		}
 		years.add(0, "Todos");
 	}
@@ -96,7 +95,7 @@ public class ListaPublicaController extends CommonsController {
 				emptyMessage = "Sem resultados para seu filtro no curso de "
 						+ curso.getNomeCurso();
 				filterTccs = tccsByCurso;
-				
+
 			}
 		} else {
 			emptyMessage = "Selecione um curso na caixa acima.";
@@ -105,7 +104,7 @@ public class ListaPublicaController extends CommonsController {
 		updateYears();
 		if (!years.contains(filterYear))
 			filterYear = "Todos";
-		
+
 		this.filtra();
 		BindUtils.postNotifyChange(null, null, this, "filterTccs");
 	}
@@ -121,15 +120,16 @@ public class ListaPublicaController extends CommonsController {
 	public void setFilterString(String filterString) {
 		this.filterString = filterString;
 	}
-	
+
 	public String getTccYear(@BindingParam("tcc") TCC tcc) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(tcc.getDataEnvioFinal().getTime());
 		return "" + cal.get(Calendar.YEAR);
 	}
-	
+
 	@Command
-	public String getEachTccYear(@BindingParam("tcc") TCC tcc, @BindingParam("lbl") Label lbl) {
+	public String getEachTccYear(@BindingParam("tcc") TCC tcc,
+			@BindingParam("lbl") Label lbl) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(tcc.getDataEnvioFinal().getTime());
 		return "" + cal.get(Calendar.YEAR);
@@ -171,10 +171,11 @@ public class ListaPublicaController extends CommonsController {
 
 	@Command
 	public void downloadExtra(@BindingParam("tcc") TCC tcc) {
-		InputStream is = Sessions.getCurrent().getWebApp()
-				.getResourceAsStream("files/" + tcc.getArquivoExtraTCCFinal());
-		Filedownload.save(is, "application/x-rar-compressed", tcc.getNomeTCC()
-				+ ".rar");
+		if (tcc.getArquivoExtraTCCFinal() != null && tcc.getArquivoExtraTCCFinal() != "") {
+			InputStream is = Sessions.getCurrent().getWebApp()
+					.getResourceAsStream("files/" + tcc.getArquivoExtraTCCFinal());
+			Filedownload.save(is, "application/x-rar-compressed",tcc.getNomeTCC() + ".rar");
+		}
 	}
 
 }
