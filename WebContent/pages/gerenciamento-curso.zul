@@ -3,7 +3,8 @@
 <zk>
 	<style src="/style.css" />
 	<div apply="org.zkoss.bind.BindComposer"
-		viewModel="@id('vm') @init('br.ufjf.tcc.controller.GerenciamentoCursoController')">
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.GerenciamentoCursoController')"
+		class="centerGrid">
 		<include src="@load(vm.menu)" />
 		<grid id="courseGrid"
 			model="@load(vm.cursos) @template(each.editingStatus ? 'editable' : 'noneditable')"

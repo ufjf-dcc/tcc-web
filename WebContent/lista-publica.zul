@@ -2,15 +2,16 @@
 <zk>
 	<style src="/style.css" />
 	<div apply="org.zkoss.bind.BindComposer"
-		viewModel="@id('vm') @init('br.ufjf.tcc.controller.ListaPublicaController')">
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.ListaPublicaController')"
+		class="publicList">
 		<grid model="@load(vm.filterTccs) @template('lista')"
 			emptyMessage="@load(vm.emptyMessage)" mold="paging" pageSize="20">
 			<auxhead sclass="text-center">
 				<auxheader label="Lista Pública de Monografias"
-					colspan="2" />
+					colspan="4" />
 			</auxhead>
 			<auxhead>
-				<auxheader colspan="2">
+				<auxheader colspan="4">
 					<div>
 						<hlayout
 							style="float:left; line-height:20px;">
@@ -48,15 +49,15 @@
 				</auxheader>
 			</auxhead>
 			<columns>
-				<column hflex="6" label="NomeTCC" sort="auto(nomeTCC)" />
-				<column hflex="2" label="Autor"
-					sort="auto(aluno.nomeUsuario)" />
+				<column hflex="13" label="NomeTCC" sort="auto(nomeTCC)" />
+				<column hflex="4" label="Autor" sort="auto(aluno.nomeUsuario)" />
+				<column hflex="1" label=""/>
+				<column hflex="1" label=""/>
 			</columns>
 			<template name="lista">
-				<row tooltip="${each.idTCC}, position=at_pointer"
-					style="cursor:pointer">
+				<row>
 					<div>
-						<label value="@load(each.nomeTCC)" />
+						<label value="@load(each.nomeTCC)" tooltip="${each.idTCC}, position=at_pointer"/>
 						<popup id="${each.idTCC}">
 							<vlayout width="550px">
 								<label value="Resumo"
@@ -73,21 +74,14 @@
 									style="font-size: 14px; font-weight: bold; text-align: justify; display: block;" />
 								<label
 									value="@load(each.palavrasChave)" />
-								<space height="20px" />
-								<hlayout>
-									<button label="Dowload PDF"
-										onClick="@command('downloadPDF', tcc=each)" width="265px"
-										height="30px" />
-									<button
-										visible="@load(not empty each.arquivoExtraTCCFinal)"
-										label="Dowload Arquivos"
-										onClick="@command('downloadExtra', tcc=each)" width="265px"
-										height="30px" />
-								</hlayout>
 							</vlayout>
 						</popup>
 					</div>
-					<label value="@load(each.aluno.nomeUsuario)" />
+					<label value="@load(each.aluno.nomeUsuario)" tooltip="${each.idTCC}, position=at_pointer"/>
+					<image src="/img/pdf.png"
+							onClick="@command('downloadPDF', tcc=each)"/>
+					<image src="@load(not empty each.arquivoExtraTCCFinal ? '/img/rar.png' : '/img/norar.png')"
+							onClick="@command('downloadExtra', tcc=each)" />
 				</row>
 			</template>
 		</grid>
