@@ -6,6 +6,7 @@
 			<menuitem label="Home" href="/pages/home.zul" />
 			<menuitem label="Gerenciar usuários" href="/pages/gerenciamento-usuario.zul" />
 			<menuitem label="Gerenciar cursos" href="/pages/gerenciamento-curso.zul" />
+			<menuitem label="Gerenciar permissões" href="/pages/gerenciamento-permissoes.zul" />
 			<menuitem label="Sair" onClick="@command('sair')" />
 		</menubar>
 	</div>

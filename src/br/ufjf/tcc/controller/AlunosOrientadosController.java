@@ -9,12 +9,13 @@ import br.ufjf.tcc.model.Usuario;
 
 public class AlunosOrientadosController extends CommonsController {
 	private Usuario selected;
-	private List<Usuario> usuarios = new UsuarioBusiness().getOrientados(getUsuario());
+	private List<Usuario> usuarios = new UsuarioBusiness()
+			.getOrientados(getUsuario());
 
 	@Init
 	public void init() {
-		System.out.println(getUsuario().getIdUsuario());
-		selected = usuarios.get(0);
+		if (usuarios.size() > 0)
+			selected = usuarios.get(0);
 	}
 
 	public List<Usuario> getUsuarios() {

@@ -14,6 +14,7 @@ public class TipoUsuarioDAO extends GenericoDAO implements ITipoUsuarioDAO {
 		try {
 			Query query = getSession().createQuery("select t, p from TipoUsuario t inner join t.permissoes p");
 
+			@SuppressWarnings({ "unchecked", "unused" })
 			List<Object[]> resultado = query.list();
 
 			getSession().close();
@@ -23,6 +24,21 @@ public class TipoUsuarioDAO extends GenericoDAO implements ITipoUsuarioDAO {
 			e.printStackTrace();
 		}
 
+		return null;
+	}
+	
+	@SuppressWarnings("unused")
+	@Override
+	public TipoUsuario update(TipoUsuario tipoUsuario) {
+		try {
+			getSession().update(tipoUsuario);
+			int aux = tipoUsuario.getPermissoes().size();
+			getSession().close();
+			return tipoUsuario;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return null;
 	}
 }

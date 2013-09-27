@@ -16,54 +16,51 @@ import br.ufjf.tcc.model.Usuario;
 import br.ufjf.tcc.persistent.impl.UsuarioDAO;
 
 public class UsuarioBusiness {
-	public Map<String,String> errors = new HashMap<String, String>();
-	
-	//validação dos formulários
-	public boolean validate(Usuario usuario) {
-		errors.clear();		
-		
+	public Map<String, String> errors = new HashMap<String, String>();
+	public static final int ADICAO = 0, EDICAO = 1;
+
+	// validação dos formulários
+	public boolean validate(Usuario usuario, int action) {
+		errors.clear();
+
 		validarNome(usuario.getNomeUsuario());
-		validarMatricula(usuario.getMatricula());
+		validarMatricula(usuario.getMatricula(), action);
 		validarEmail(usuario.getEmail());
-		
-		if (errors.size() == 0)
-			return !jaExiste(usuario.getMatricula()) ? true : false;
-			
-		return false;
+
+		return errors.size() == 0 ? true : false;
 	}
-	
+
 	public void validarNome(String nomeUsuario) {
-		if(nomeUsuario == null)
+		if (nomeUsuario == null)
 			errors.put("nomeUsuario", "Informe o nome");
-		else
-			if(nomeUsuario.trim().length() == 0)
-				errors.put("nomeUsuario", "Informe o nome");
+		else if (nomeUsuario.trim().length() == 0)
+			errors.put("nomeUsuario", "Informe o nome");
 	}
-	
-	public void validarMatricula(String matricula) {
-		if(matricula == null)
+
+	public void validarMatricula(String matricula, int action) {
+		if (matricula == null)
 			errors.put("matricula", "Informe a matrícula");
-		else
-			if(matricula.trim().length() == 0)
-				errors.put("matricula", "Informe a matrícula");
+		else if (matricula.trim().length() == 0)
+			errors.put("matricula", "Informe a matrícula");
+		else if (action == ADICAO)
+			jaExiste(matricula);
 	}
-	
+
 	public void validarEmail(String email) {
-		if(email == null)
+		if (email == null)
 			errors.put("email", "Informe o e-mail");
-		else
-			if(email.trim().length() == 0)
-				errors.put("email", "Informe o e-mail");
-			else
-				if(email == null || !email.matches(".+@.+\\.[a-z]+"))
-					errors.put("email", "E-mail inválido");
+		else if (email.trim().length() == 0)
+			errors.put("email", "Informe o e-mail");
+		else if (email == null || !email.matches(".+@.+\\.[a-z]+"))
+			errors.put("email", "E-mail inválido");
 	}
-	
-	//comunicação com o CursoDAO
+
+	// comunicação com o CursoDAO
 	public boolean login(String matricula, String senha)
 			throws HibernateException, Exception {
 		UsuarioDAO usuarioDAO = new UsuarioDAO();
-		Usuario usuario = usuarioDAO.retornaUsuario(matricula, this.encripta(senha));
+		Usuario usuario = usuarioDAO.retornaUsuario(matricula,
+				this.encripta(senha));
 
 		if (usuario != null) {
 			SessionManager.setAttribute("usuario", usuario);
@@ -99,56 +96,57 @@ public class UsuarioBusiness {
 			return senha;
 		}
 	}
-	
+
 	public List<Usuario> getTodosUsuarios() {
 		UsuarioDAO usuarioDAO = new UsuarioDAO();
 		List<Usuario> resultados = usuarioDAO.getTodosUsuarios();
 
 		return resultados;
 	}
-	
+
 	public List<Permissoes> getPermissoes(Usuario usuario) {
 		UsuarioDAO usuarioDAO = new UsuarioDAO();
 		return usuarioDAO.getPermissoes(usuario);
 	}
-	
+
 	public List<Usuario> getOrientadores() {
 		UsuarioDAO usuarioDAO = new UsuarioDAO();
 		return usuarioDAO.getOrientadores();
 	}
-	
+
 	public List<Usuario> getOrientados(Usuario usuario) {
 		UsuarioDAO usuarioDAO = new UsuarioDAO();
 		return usuarioDAO.getOrientados(usuario);
 	}
-	
+
 	public List<Usuario> buscar(String expressão) {
 		UsuarioDAO usuarioDAO = new UsuarioDAO();
 		return usuarioDAO.buscar(expressão);
 	}
-	
+
 	public boolean editar(Usuario usuario) {
 		UsuarioDAO usuarioDAO = new UsuarioDAO();
 		return usuarioDAO.editar(usuario);
 	}
-	
+
 	public boolean salvar(Usuario usuario) {
 		UsuarioDAO usuarioDAO = new UsuarioDAO();
 		return usuarioDAO.salvar(usuario);
 	}
-	
+
 	public boolean exclui(Usuario usuario) {
 		UsuarioDAO usuarioDAO = new UsuarioDAO();
 		return usuarioDAO.exclui(usuario);
 	}
-	
+
 	public boolean jaExiste(String matricula) {
 		UsuarioDAO usuarioDAO = new UsuarioDAO();
 		boolean jaExiste = usuarioDAO.jaExiste(matricula);
-		if (jaExiste) errors.put("matricula", "Já existe um usuário com esta matrícula");
+		if (jaExiste)
+			errors.put("matricula", "Já existe um usuário com esta matrícula");
 		return jaExiste;
 	}
-	
+
 	public Usuario update(Usuario usuario) {
 		UsuarioDAO usuarioDAO = new UsuarioDAO();
 		return usuarioDAO.update(usuario);

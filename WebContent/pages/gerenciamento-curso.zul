@@ -5,7 +5,7 @@
 	<div apply="org.zkoss.bind.BindComposer"
 		viewModel="@id('vm') @init('br.ufjf.tcc.controller.GerenciamentoCursoController')">
 		<include src="@load(vm.menu)" />
-		<grid id="curseGrid"
+		<grid id="courseGrid"
 			model="@load(vm.cursos) @template(each.editingStatus ? 'editable' : 'noneditable')"
 			mold="paging" pageSize="20">
 			<auxhead sclass="text-center">
@@ -37,9 +37,18 @@
 			</columns>
 			<template name="editable">
 				<row>
-					<label value="@load(each.idCurso)" />
-					<textbox
-						value="@load(each.nomeCurso) @save(each.nomeCurso, before='confirm')" />
+					<div>
+						<textbox
+							value="@load(each.idCurso) @save(each.idCurso, before='confirm')" />
+						<label class="error"
+							value="@load(vm.errors['idCurso'])" />
+					</div>
+					<div>
+						<textbox
+							value="@load(each.nomeCurso) @save(each.nomeCurso, before='confirm')" />
+						<label class="error"
+							value="@load(vm.errors['nomeCurso'])" />
+					</div>
 					<div>
 						<button image="/img/confirm.gif"
 							onClick="@command('confirm', curso=each)" />
@@ -64,7 +73,7 @@
 		<window id="addCurso" title="Cadastrar Curso" visible="false"
 			width="300px" border="normal" position="center,center"
 			closable="true"
-			onClose="self.visible = false; event.stopPropagation();">
+			onClose="self.setVisible(false); event.stopPropagation();">
 			<grid>
 				<columns>
 					<column hflex="1" />

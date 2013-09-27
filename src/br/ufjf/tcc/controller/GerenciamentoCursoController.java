@@ -45,9 +45,16 @@ public class GerenciamentoCursoController extends CommonsController {
 
 	@Command
 	public void confirm(@BindingParam("curso") Curso curso) {
+		if (cursoBusiness.validate(curso, CursoBusiness.EDICAO)) {
+			if (!cursoBusiness.editar(curso))
+				Messagebox.show("Não foi possível editar o curso.", "Erro",
+						Messagebox.OK, Messagebox.ERROR);
 		changeEditableStatus(curso);
-		cursoBusiness.editar(curso);
 		refreshRowTemplate(curso);
+		} else {
+			this.errors = cursoBusiness.errors;
+			BindUtils.postNotifyChange(null, null, this, "errors");
+		}
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -128,7 +135,7 @@ public class GerenciamentoCursoController extends CommonsController {
 
 	@Command
 	public void submit() {
-		if (cursoBusiness.validate(novoCurso)) {
+		if (cursoBusiness.validate(novoCurso, CursoBusiness.ADICAO)) {
 			if (cursoBusiness.salvar(novoCurso)) {
 				allCursos.add(novoCurso);
 				this.filtra();

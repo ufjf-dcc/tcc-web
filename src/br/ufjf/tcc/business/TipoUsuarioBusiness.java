@@ -17,10 +17,20 @@ public class TipoUsuarioBusiness {
 		return resultados;
 	}
 	
+	public TipoUsuario update(TipoUsuario tipoUsuario) {
+		TipoUsuarioDAO tipoUsuarioDAO = new TipoUsuarioDAO();
+		return tipoUsuarioDAO.update(tipoUsuario);
+	}
+	
 	public TipoUsuario getTipoUsuario(int id) {
 		TipoUsuarioDAO tipoUsuarioDAO = new TipoUsuarioDAO();
 		TipoUsuario resultado = (TipoUsuario) tipoUsuarioDAO.procuraId(id, TipoUsuario.class);
 		return resultado;
+	}
+	
+	public boolean editar(TipoUsuario tipoUsuario) {
+		TipoUsuarioDAO tipoUsuarioDAO = new TipoUsuarioDAO();
+		return tipoUsuarioDAO.editar(tipoUsuario);
 	}
 
 }

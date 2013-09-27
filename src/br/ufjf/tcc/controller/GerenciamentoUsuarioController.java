@@ -70,9 +70,16 @@ public class GerenciamentoUsuarioController extends CommonsController {
 
 	@Command
 	public void confirm(@BindingParam("usuario") Usuario usuario) {
-		changeEditableStatus(usuario);
-		usuarioBusiness.editar(usuario);
-		refreshRowTemplate(usuario);
+		if (usuarioBusiness.validate(usuario, UsuarioBusiness.EDICAO)) {
+			if (!usuarioBusiness.editar(usuario))
+				Messagebox.show("Não foi possível editar o usuário.", "Erro",
+						Messagebox.OK, Messagebox.ERROR);
+			changeEditableStatus(usuario);
+			refreshRowTemplate(usuario);
+		} else {
+			this.errors = usuarioBusiness.errors;
+			BindUtils.postNotifyChange(null, null, this, "errors");
+		}
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -158,7 +165,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 	public void submit() {
 		// implementar senha aleatória
 		novoUsuario.setSenha(usuarioBusiness.encripta("123"));
-		if (usuarioBusiness.validate(novoUsuario)) {
+		if (usuarioBusiness.validate(novoUsuario, UsuarioBusiness.ADICAO)) {
 			if (usuarioBusiness.salvar(novoUsuario)) {
 				allUsuarios.add(novoUsuario);
 				this.filtra();
