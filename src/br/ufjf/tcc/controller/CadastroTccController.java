@@ -126,6 +126,9 @@ public class CadastroTccController extends CommonsController {
 		} else {
 			this.errors = tccBusiness.errors;
 			BindUtils.postNotifyChange(null, null, this, "errors");
+			if (errors.containsKey("data"))
+				Messagebox.show("O prazo já expirou!", "Prazo",
+						Messagebox.OK, Messagebox.EXCLAMATION);
 		}
 	}
 

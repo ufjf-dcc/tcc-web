@@ -128,11 +128,11 @@ public class ListaPublicaController extends CommonsController {
 	}
 
 	@Command
-	public String getEachTccYear(@BindingParam("tcc") TCC tcc,
+	public void getEachTccYear(@BindingParam("tcc") TCC tcc,
 			@BindingParam("lbl") Label lbl) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(tcc.getDataEnvioFinal().getTime());
-		return "" + cal.get(Calendar.YEAR);
+		lbl.setValue("" + cal.get(Calendar.YEAR));
 	}
 
 	@NotifyChange("filterTccs")
