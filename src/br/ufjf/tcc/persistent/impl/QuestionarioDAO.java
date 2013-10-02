@@ -13,6 +13,7 @@ import br.ufjf.tcc.persistent.IQuestionarioDAO;
 
 public class QuestionarioDAO extends GenericoDAO implements IQuestionarioDAO {
 
+	@Override
 	public Questionario getCurrentQuestionaryByCurso(Curso curso) {
 		Questionario questionary = null;
 		try {

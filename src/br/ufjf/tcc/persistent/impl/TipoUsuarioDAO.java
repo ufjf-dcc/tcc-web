@@ -10,6 +10,7 @@ import br.ufjf.tcc.persistent.ITipoUsuarioDAO;
 
 public class TipoUsuarioDAO extends GenericoDAO implements ITipoUsuarioDAO {
 
+	@Override
 	public List<TipoUsuario> teste() {
 		try {
 			Query query = getSession().createQuery("select t, p from TipoUsuario t inner join t.permissoes p");

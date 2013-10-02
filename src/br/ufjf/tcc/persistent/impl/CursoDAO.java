@@ -11,7 +11,8 @@ import br.ufjf.tcc.persistent.HibernateUtil;
 import br.ufjf.tcc.persistent.ICursoDAO;
 
 public class CursoDAO extends GenericoDAO implements ICursoDAO {
-
+	
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<Curso> buscar(String expressão) {
 		System.out.println(expressão);
@@ -31,6 +32,7 @@ public class CursoDAO extends GenericoDAO implements ICursoDAO {
 		return cursos;
 	}
 	
+	@Override
 	public boolean jaExiste (int idCurso) {
 		try {
 			Query query = getSession().createQuery("select c from Curso c where c.idCurso = :idCurso");

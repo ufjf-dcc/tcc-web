@@ -15,7 +15,8 @@ import br.ufjf.tcc.persistent.HibernateUtil;
 import br.ufjf.tcc.persistent.IUsuarioDAO;
 
 public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
-
+	
+	@Override
 	public Usuario retornaUsuario(String matricula, String senha) {
 		try {
 			Query query = getSession()
@@ -37,7 +38,8 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 
 		return null;
 	}
-
+	
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<Usuario> getTodosUsuarios() {
 		try {
@@ -58,7 +60,8 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 
 		return null;
 	}
-
+	
+	@Override
 	public boolean jaExiste(String matricula) {
 		try {
 			Query query = getSession().createQuery(
@@ -77,7 +80,8 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 
 		return false;
 	}
-
+	
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<Usuario> buscar(String expressão) {
 		System.out.println(expressão);
@@ -97,7 +101,8 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 		session.close();
 		return usuarios;
 	}
-
+	
+	@Override
 	public List<Permissoes> getPermissoes(Usuario usuario) {
 		try {
 			getSession().update(usuario);
@@ -115,7 +120,8 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 
 		return null;
 	}
-
+	
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<Usuario> getOrientadores() {
 		try {
@@ -135,7 +141,8 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 
 		return null;
 	}
-
+	
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<Usuario> getOrientados(Usuario orientador) {
 		try {

@@ -12,6 +12,7 @@ import br.ufjf.tcc.persistent.ITCCDAO;
 @SuppressWarnings("unchecked")
 public class TCCDAO extends GenericoDAO implements ITCCDAO {
 
+	@Override
 	public List<TCC> getPublicListByCurso(Curso curso) {
 		try {
 			Query query = getSession().createQuery("select t from TCC as t join fetch t.aluno as a join fetch t.orientador WHERE  t.dataEnvioFinal > 0 AND a.curso = :curso");
@@ -31,6 +32,7 @@ public class TCCDAO extends GenericoDAO implements ITCCDAO {
 		return null;
 	}
 	
+	@Override
 	public List<TCC> getAll() {
 		List<TCC> results = null;
 		

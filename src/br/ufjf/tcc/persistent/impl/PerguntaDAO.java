@@ -11,6 +11,7 @@ import br.ufjf.tcc.persistent.IPerguntaDAO;
 
 public class PerguntaDAO extends GenericoDAO implements IPerguntaDAO {
 	
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<Pergunta> getQuestionsByQuestionary (Questionario questionary) {
 		List<Pergunta> questions = null;

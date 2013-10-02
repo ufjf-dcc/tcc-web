@@ -11,6 +11,7 @@ import br.ufjf.tcc.persistent.ICalendarioSemestreDAO;
 
 public class CalendarioSemestreDAO extends GenericoDAO implements ICalendarioSemestreDAO {
 	
+	@Override
 	public CalendarioSemestre getCurrentCalendarByCurso (Curso curso) {
 		try {
 			CalendarioSemestre currentCalendar = null;			
