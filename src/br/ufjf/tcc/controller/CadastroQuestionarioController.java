@@ -11,6 +11,7 @@ import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zul.Checkbox;
 
+import br.ufjf.tcc.business.CalendarioSemestreBusiness;
 import br.ufjf.tcc.business.CursoBusiness;
 import br.ufjf.tcc.business.PerguntaBusiness;
 import br.ufjf.tcc.business.QuestionarioBusiness;
@@ -65,8 +66,8 @@ public class CadastroQuestionarioController extends CommonsController {
 		Curso curso = questionary.getCurso();
 		if (curso != null) {
 			DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-			CalendarioSemestre currentCalendar = new CursoBusiness()
-					.getCurrentCalendar(curso);
+			CalendarioSemestre currentCalendar = new CalendarioSemestreBusiness()
+					.getCurrentCalendarByCurso(curso);
 			if (currentCalendar != null) {
 				currentSemester = dateFormat.format(currentCalendar
 						.getInicioSemestre())

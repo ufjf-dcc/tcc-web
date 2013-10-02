@@ -42,7 +42,7 @@ public class TCCBusiness {
 	
 	//Exemplo para verificar se está dentro do prazo de envio de TCCs
 	public void validateDate(TCC tcc) {
-		Date finalDateSemester = new CursoBusiness().getCurrentCalendar(tcc.getAluno().getCurso()).getFinalSemestre();
+		Date finalDateSemester = new CalendarioSemestreBusiness().getCurrentCalendarByCurso(tcc.getAluno().getCurso()).getFinalSemestre();
 		if (Days.daysBetween(new DateTime(new Date()), new DateTime(finalDateSemester)).getDays() > 90)
 			errors.put("data", "O prazo já expirou!");
 	}
@@ -51,10 +51,21 @@ public class TCCBusiness {
 		TCCDAO tccDao = new TCCDAO();
 		return tccDao.getPublicListByCurso(curso);
 	}
+	
+	//teste
+	public List<TCC> getAll() {
+		TCCDAO tccDao = new TCCDAO();
+		return tccDao.getAll();
+	}
 
 	public boolean save(TCC tcc) {
 		TCCDAO tccDao = new TCCDAO();
 		return tccDao.salvar(tcc);
+	}
+	
+	public boolean edit(TCC tcc) {
+		TCCDAO tccDao = new TCCDAO();
+		return tccDao.editar(tcc);
 	}
 
 }

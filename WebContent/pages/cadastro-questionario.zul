@@ -60,7 +60,7 @@ margin-top:-125px; left:50%; margin-left:-250px;">
 									value="Pergunta ${forEachStatus.index + 1}: " />
 								<textbox value="@bind(each.pergunta)"
 									width="95%" />
-								<button label="X"
+								<button image="/img/delete.png"
 									onClick="@command('removeQuestion', question=each)" />
 							</row>
 						</template>

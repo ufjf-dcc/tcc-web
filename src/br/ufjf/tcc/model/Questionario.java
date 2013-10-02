@@ -38,7 +38,7 @@ public class Questionario implements Serializable {
 	@Column(name = "idQuestionario", unique = true, nullable = false)
 	@GeneratedValue(generator = "increment")
 	@GenericGenerator(name = "increment", strategy = "increment")
-	private int idResposta;
+	private int idQuestionario;
 
 	/**
 	 * Campo com a situação do questionario(ativo ou inativo). Relaciona com a
@@ -81,12 +81,12 @@ public class Questionario implements Serializable {
 	@JoinColumn(name = "idCalendarioSemestre", nullable = false)
 	private CalendarioSemestre calendarioSemestre;
 
-	public int getIdResposta() {
-		return idResposta;
+	public int getIdQuestionario() {
+		return idQuestionario;
 	}
 
-	public void setIdResposta(int idResposta) {
-		this.idResposta = idResposta;
+	public void setIdQuestionario(int idQuestionario) {
+		this.idQuestionario = idQuestionario;
 	}
 
 	public boolean isAtivo() {

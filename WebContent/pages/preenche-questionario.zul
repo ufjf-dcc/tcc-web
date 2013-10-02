@@ -1,0 +1,32 @@
+<zk>
+	<window title="Cadastrar Respostas" width="500px" border="normal"
+		position="center,center" closable="true"
+		apply="org.zkoss.bind.BindComposer"
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.PreencheQuestionarioController')">
+		<grid model="@load(vm.qas)" style="margin:10px;">
+			<columns>
+				<column />
+				<column width="125px"/>
+			</columns>
+			<template name="model">
+				<row>
+					<hlayout>
+						<label
+							value="Pergunta ${forEachStatus.index + 1}: " />
+						<label value="@bind(each.question.pergunta)" />
+					</hlayout>
+					<hlayout>
+						<label value="Resposta: " />
+						<textbox value="@bind(each.answer.resposta)"
+							width="95%" />
+					</hlayout>
+				</row>
+			</template>
+		</grid>
+		<div align="center">
+			<button label="Cadastrar Respostas"
+				onClick="@command('submit', checkbox=ativo)"
+				style="margin-bottom:10px;" />
+		</div>
+	</window>
+</zk>

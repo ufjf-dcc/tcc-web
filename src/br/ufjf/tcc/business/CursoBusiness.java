@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import br.ufjf.tcc.model.CalendarioSemestre;
 import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.persistent.impl.CursoDAO;
 
@@ -46,11 +45,6 @@ public class CursoBusiness {
 		}
 
 		return resultados;
-	}
-	
-	public CalendarioSemestre getCurrentCalendar(Curso curso) {
-		CursoDAO cursoDAO = new CursoDAO();
-		return cursoDAO.getCurrentCalendar(curso);
 	}
 
 	public List<Curso> buscar(String expressão) {

@@ -1,0 +1,19 @@
+<?page title="Lista de Monografias"?>
+<zk>
+	<style src="/style.css" />
+	<div apply="org.zkoss.bind.BindComposer"
+		viewModel="@id('vm') @init('br.ufjf.tcc.teste.ListaTCCController')">
+		<grid model="@load(vm.tccs) @template('lista')" mold="paging" pageSize="20">
+			<columns>
+				<column hflex="13" label="NomeTCC" sort="auto(nomeTCC)" />
+				<column hflex="1" label="" />
+			</columns>
+			<template name="lista">
+				<row>
+					<label value="@load(each.nomeTCC)" />
+					<button label="Cadastrar respostas" onClick="@command('answer', tcc=each)" />
+				</row>
+			</template>
+		</grid>
+	</div>
+</zk>
