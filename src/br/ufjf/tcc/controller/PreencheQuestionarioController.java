@@ -14,11 +14,9 @@ import br.ufjf.tcc.business.PerguntaBusiness;
 import br.ufjf.tcc.business.QuestionarioBusiness;
 import br.ufjf.tcc.business.RespostaBusiness;
 import br.ufjf.tcc.business.TCCBusiness;
-import br.ufjf.tcc.business.UsuarioBusiness;
 import br.ufjf.tcc.model.Pergunta;
 import br.ufjf.tcc.model.Resposta;
 import br.ufjf.tcc.model.TCC;
-import br.ufjf.tcc.model.Usuario;
 
 public class PreencheQuestionarioController extends CommonsController {
 	private List<QuestionAnswer> qas = new ArrayList<QuestionAnswer>();
@@ -33,11 +31,9 @@ public class PreencheQuestionarioController extends CommonsController {
 	public void init(@ExecutionArgParam("tcc") TCC tcc) {
 		this.tcc = tcc;
 
-		Usuario aluno = new UsuarioBusiness().update(tcc.getAluno());
-
 		questions = new PerguntaBusiness()
 				.getQuestionsByQuestionary(new QuestionarioBusiness()
-						.getCurrentQuestionaryByCurso(aluno.getCurso()));
+						.getCurrentQuestionaryByCurso(tcc.getAluno().getCurso()));
 
 		for (Pergunta question : questions) {
 			Resposta answer = new Resposta();

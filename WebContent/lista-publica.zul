@@ -63,8 +63,10 @@
 								<label value="Resumo"
 									style="font-size: 14px; font-weight: bold; text-align: justify; display: block;" />
 								<label value="@load(each.resumoTCC)" />
-								<label value="Ano: " style="font-weight:bold;"/>
-								<label onCreate="@command('getEachTccYear', tcc=each)" />
+								<hlayout>
+									<label value="Ano: " style="font-weight:bold;"/>
+									<label onCreate="@command('getEachTccYear', tcc=each, lbl=self)" />
+								</hlayout>
 								<label value="Orientador"
 									style="font-size: 14px; font-weight: bold; text-align: justify; display: block;" />
 								<label
