@@ -1,81 +1,73 @@
-<?page title="Cadastrar Questionário" contentType="text/html;charset=UTF-8"?>
-<?init class="br.ufjf.tcc.controller.AuthController"?>
 <zk>
-	<style src="/widgets/grid/inline_row_editing/style.css" />
-	<div
-		style="position:absolute; top:50%;
-margin-top:-125px; left:50%; margin-left:-250px;">
-		<include src="@bind(vm.menu)" />
-		<window title="Cadastrar Questionário" width="500px"
-			border="normal" position="center,center" closable="false"
-			apply="org.zkoss.bind.BindComposer"
-			viewModel="@id('vm') @init('br.ufjf.tcc.controller.CadastroQuestionarioController')">
+	<window id="cadquest" title="Cadastrar Questionário" width="500px" border="normal"
+		position="center,center" closable="true"
+		apply="org.zkoss.bind.BindComposer"
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.CadastroQuestionarioController')">
 
-			<vlayout style="margin:10px;">
+		<vlayout style="margin:10px;">
 
-				<tablelayout columns="3" width="100%"
-					style="margin-bottom:10px;">
+			<tablelayout columns="3" width="100%"
+				style="margin-bottom:10px;">
 
-					<tablechildren>
-						<vlayout>
-							<label value="Curso:" />
-							<combobox width="200px" readonly="true"
-								value="@load(each.curso.nomeCurso ne null ? each.curso.nomeCurso : 'Nenhum')"
-								model="@load(vm.cursos)"
-								selectedItem="@bind(vm.questionary.curso)"
-								onSelect="@command('semester')">
-								<template name="model">
-									<comboitem
-										label="@load(each.nomeCurso)" />
-								</template>
-							</combobox>
-						</vlayout>
-					</tablechildren>
+				<tablechildren>
+					<vlayout>
+						<label value="Curso:" />
+						<combobox width="200px" readonly="true"
+							value="@load(each.curso.nomeCurso ne null ? each.curso.nomeCurso : 'Nenhum')"
+							model="@load(vm.cursos)"
+							selectedItem="@bind(vm.questionary.curso)"
+							onSelect="@command('semester')">
+							<template name="model">
+								<comboitem
+									label="@load(each.nomeCurso)" />
+							</template>
+						</combobox>
+					</vlayout>
+				</tablechildren>
 
-					<tablechildren>
-						<vlayout>
-							<label value="Semestre atual: " />
-							<label value="@load(vm.currentSemester)" />
-						</vlayout>
-					</tablechildren>
+				<tablechildren>
+					<vlayout>
+						<label value="Semestre atual: " />
+						<label value="@load(vm.currentSemester)" />
+					</vlayout>
+				</tablechildren>
 
-					<tablechildren style="float:right;">
-						<checkbox id="ativo" label="Ativo"
-							style="margin-right:20px;" />
-					</tablechildren>
+				<tablechildren style="float:right;">
+					<checkbox id="ativo" label="Ativo"
+						style="margin-right:20px;" />
+				</tablechildren>
 
-				</tablelayout>
+			</tablelayout>
 
-				<groupbox title="Perguntas">
-					<grid model="@load(vm.questions)"
-						style="margin-left:5px; margin-right:5px;">
-						<columns>
-							<column width="100px" />
-							<column />
-							<column width="50px" />
-						</columns>
-						<template name="model">
-							<row>
-								<label
-									value="Pergunta ${forEachStatus.index + 1}: " />
-								<textbox value="@bind(each.pergunta)"
-									width="95%" />
-								<button image="/img/delete.png"
-									onClick="@command('removeQuestion', question=each)" />
-							</row>
-						</template>
-					</grid>
-					<div align="center">
-						<button label="Adicionar pergunta"
-							onClick="@command('addQuestion')" style="margin-top:5px;" />
-					</div>
-				</groupbox>
+			<groupbox title="Perguntas">
+				<grid model="@load(vm.questions)"
+					style="margin-left:5px; margin-right:5px;">
+					<columns>
+						<column width="100px" />
+						<column />
+						<column width="50px" />
+					</columns>
+					<template name="model">
+						<row>
+							<label
+								value="Pergunta ${forEachStatus.index + 1}: " />
+							<textbox value="@bind(each.pergunta)"
+								width="95%" />
+							<button image="/img/delete.png"
+								onClick="@command('removeQuestion', question=each)" />
+						</row>
+					</template>
+				</grid>
 				<div align="center">
-					<button label="Cadastrar Questionário"
-						onClick="@command('submit', checkbox=ativo)"
-						style="margin-top:15px;" />
+					<button label="Adicionar pergunta"
+						onClick="@command('addQuestion')" style="margin-top:5px;" />
 				</div>
-			</vlayout>
-		</window>
-	</div>
+			</groupbox>
+			<div align="center">
+				<button label="Cadastrar Questionário"
+					onClick="@command('submit', checkbox=ativo, window=cadquest)"
+					style="margin-top:15px;" />
+			</div>
+		</vlayout>
+	</window>
 </zk>

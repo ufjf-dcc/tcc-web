@@ -32,6 +32,21 @@ public class TCCDAO extends GenericoDAO implements ITCCDAO {
 		return null;
 	}
 	
+	public List<TCC> getTCCsNotConceptualized() {
+		List<TCC> results = null;
+		
+		try {
+			Query query = getSession().createQuery("select t from TCC as t join fetch t.aluno as a join fetch t.orientador WHERE t.conceitoFinal = -1");
+			results = query.list();
+			getSession().close();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return results;
+	}
+	
 	@Override
 	public List<TCC> getAll() {
 		List<TCC> results = null;

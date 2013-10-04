@@ -10,6 +10,8 @@ import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Window;
 
 import br.ufjf.tcc.business.CalendarioSemestreBusiness;
 import br.ufjf.tcc.business.CursoBusiness;
@@ -94,7 +96,7 @@ public class CadastroQuestionarioController extends CommonsController {
 	}
 
 	@Command
-	public void submit(@BindingParam("checkbox") Checkbox ckb) {
+	public void submit(@BindingParam("checkbox") Checkbox ckb, @BindingParam("window") Window window) {
 		questionary.setCalendarioSemestre(currentCalendar);
 		questionary.setPerguntas(questions);
 		questionary.setAtivo(ckb.isChecked());
@@ -108,5 +110,8 @@ public class CadastroQuestionarioController extends CommonsController {
 				perguntaBusiness.save(question);
 			}
 		}
+		
+		Messagebox.show("Questionário cadastrado.");
+		window.detach();
 	}
 }

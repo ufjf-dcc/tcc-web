@@ -24,6 +24,7 @@ import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Window;
 
 import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.business.UsuarioBusiness;
@@ -60,6 +61,7 @@ public class CadastroTccController extends CommonsController {
 		Media media = evt.getMedia();
 		if (!media.getName().contains("pdf")) {
 			Messagebox.show("Este não é um arquivo válido! Apenas PDF são aceitos.");
+			return;
 		}
 
 		BufferedInputStream in = null;
@@ -110,7 +112,7 @@ public class CadastroTccController extends CommonsController {
 	}
 
 	@Command("submit")
-	public void submit() {
+	public void submit(@BindingParam("window") Window window) {
 		TCCBusiness tccBusiness = new TCCBusiness();
 		newTcc.setDataEnvioBanca(new Timestamp(new Date().getTime()));
 		newTcc.setAluno(getUsuario());
@@ -118,6 +120,7 @@ public class CadastroTccController extends CommonsController {
 			if (tccBusiness.save(newTcc)) {
 				Messagebox.show("\"" + newTcc.getNomeTCC() + "\" cadastrado com sucesso!");
 				limpa();
+				window.detach();
 			} else {
 				Messagebox.show("TCC não cadastrado!", "Erro",
 						Messagebox.OK, Messagebox.ERROR);

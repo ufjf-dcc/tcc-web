@@ -1,0 +1,63 @@
+<?page title="Home"?>
+<?init class="br.ufjf.tcc.controller.AuthController"?>
+<zk>
+	<style src="/style.css" />
+	<div apply="org.zkoss.bind.BindComposer"
+		viewModel="@id('vm') @init('br.ufjf.tcc.teste.HomeBancaController')">
+		<include src="@load(vm.menu)" />
+		<hlayout spacing="0" vflex="1" height="100%">
+
+			<grid hflex="1" vflex="1" style="margin:10px">
+				<columns>
+					<column>
+						<div align="center" >
+							<hlayout>
+								<label value="Bem-vindo(a), " style="font-weight:bold;" />
+								<label
+									value="@load(vm.usuario.nomeUsuario)" style="font-weight:bold;" />
+							</hlayout>
+						</div>
+					</column>
+				</columns>
+				<rows>
+					<row>
+						<label
+							value="Clique em 'cadastrar respostas', ao lado, para preencher o quesionário e calcular o conceito final de um TCC." />
+					</row>
+					<row>
+						<vlayout width="300px"
+							style="margin-bottom:10px;">
+							<label
+								value="Você pode criar um novo questionário clicando no botão abaixo: " />
+							<button label="Cadastrar questionário"
+								onClick="@command('createQuestionary')" />
+						</vlayout>
+					</row>
+				</rows>
+			</grid>
+
+			<grid model="@load(vm.tccs) @template('lista')"
+				mold="paging" vflex="1" hflex="3" pageSize="10" style="margin:10px">
+				<auxhead sclass="text-center">
+					<auxheader label="TCCs ainda não avalidadas"
+						colspan="3" />
+				</auxhead>
+				<columns>
+					<column hflex="8" label="Nome do TCC"
+						sort="auto(nomeTCC)" />
+					<column hflex="4" label="Autor" sort="auto(aluno.nomeUsuario)" />
+					<column width="150px" label="Ação" />
+				</columns>
+				<template name="lista">
+					<row>
+						<label value="@load(each.nomeTCC)" />
+						<label value="@load(each.aluno.nomeUsuario)" />
+						<button label="Cadastrar respostas"
+							onClick="@command('answer', tcc=each)" />
+					</row>
+				</template>
+			</grid>
+		</hlayout>
+		Página provisória e inacabada exibida para administradores e coordenadores.
+	</div>
+</zk>

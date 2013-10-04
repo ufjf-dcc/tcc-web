@@ -3,10 +3,17 @@
 		viewModel="@id('hf') @init('br.ufjf.tcc.controller.MenuController')"
 		form="@id('fx') @load(hf.usuario)">
 		<menubar id="menubar" width="100%">
-			<menuitem label="Home" href="/pages/home.zul" />
-			<menuitem label="Gerenciar usuários" href="/pages/gerenciamento-usuario.zul" />
-			<menuitem label="Gerenciar cursos" href="/pages/gerenciamento-curso.zul" />
-			<menuitem label="Gerenciar permissões" href="/pages/gerenciamento-permissoes.zul" />
+			<menuitem label="Home" href="/tests/home.zul" />
+			<menu label="Gerenciar...">
+				<menupopup>
+					<menuitem label="Usuários"
+						href="/pages/gerenciamento-usuario.zul" />
+					<menuitem label="Cursos"
+						href="/pages/gerenciamento-curso.zul" />
+					<menuitem label="Permissões"
+						href="/pages/gerenciamento-permissoes.zul" />
+				</menupopup>
+			</menu>
 			<menuitem label="Sair" onClick="@command('sair')" />
 		</menubar>
 	</div>

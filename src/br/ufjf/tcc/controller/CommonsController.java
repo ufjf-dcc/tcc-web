@@ -37,5 +37,15 @@ public class CommonsController {
 			return "/templates/menu-prof.zul";
 		return "/templates/menu-aluno.zul";
 	}
+	
+	public void redirectHome () {
+		int tipoUsuario = getUsuario().getTipoUsuario().getIdTipoUsuario();
+		String page = "/pages/home.zul";
+		if (tipoUsuario == 4)
+			page = "/tests/home.zul";
+		if (tipoUsuario == 1)
+			page = "/tests/home-aluno.zul";
+		Executions.sendRedirect(page);
+	}
 
 }

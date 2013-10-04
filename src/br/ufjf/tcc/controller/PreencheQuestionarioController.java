@@ -9,6 +9,7 @@ import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Window;
 
 import br.ufjf.tcc.business.PerguntaBusiness;
 import br.ufjf.tcc.business.QuestionarioBusiness;
@@ -43,7 +44,7 @@ public class PreencheQuestionarioController extends CommonsController {
 	}
 
 	@Command
-	public void submit(@BindingParam("checkbox") Checkbox ckb) {
+	public void submit(@BindingParam("checkbox") Checkbox ckb, @BindingParam("window") Window window) {
 		RespostaBusiness respostaBusiness = new RespostaBusiness();
 		float media = 0;
 		for (int i = 0; i < qas.size(); i++) {
@@ -57,6 +58,7 @@ public class PreencheQuestionarioController extends CommonsController {
 		new TCCBusiness().edit(tcc);
 
 		Messagebox.show("Conceito final: " + media);
+		window.detach();
 	}
 
 	public class QuestionAnswer {

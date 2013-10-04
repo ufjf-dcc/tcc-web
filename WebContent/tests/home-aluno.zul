@@ -1,0 +1,37 @@
+<?page title="Home"?>
+<?init class="br.ufjf.tcc.controller.AuthController"?>
+<zk>
+	<style src="/style.css" />
+	<div apply="org.zkoss.bind.BindComposer"
+		viewModel="@id('vm') @init('br.ufjf.tcc.teste.HomeAlunoController')">
+		<include src="@load(vm.menu)" />
+		<grid model="@load(vm.dates) @template('prazos')" width="500px"
+			style="margin:10px auto">
+			<auxhead sclass="text-center">
+				<auxheader colspan="3">
+					<hlayout>
+						<label value="Bem-vindo(a), "
+							style="font-weight:bold;" />
+						<label value="@load(vm.usuario.nomeUsuario)"
+							style="font-weight:bold;" />
+					</hlayout>
+				</auxheader>
+			</auxhead>
+			<columns>
+				<column label="Data" hflex="1" />
+				<column label="Descrição" hflex="3" />
+				<column hflex="1" />
+			</columns>
+			<template name="prazos">
+				<row>
+					<label value="@load(each.date)" style="@load(each.isCurrent ? 'font-weight:bold;' : '')" />
+					<label value="@load(each.description)" style="@load(each.isCurrent ? 'font-weight:bold; color:#dee132;' : '')" />
+					<button label="@load(each.action)"
+						onClick="@command('action', date=each)"
+						visible="@load(each.isCurrent)" />
+				</row>
+			</template>
+		</grid>
+	</div>
+		Página provisória e inacabada exibida para alunos.
+</zk>

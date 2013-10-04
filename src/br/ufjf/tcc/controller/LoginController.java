@@ -10,7 +10,7 @@ import br.ufjf.tcc.business.UsuarioBusiness;
 import br.ufjf.tcc.library.SessionManager;
 import br.ufjf.tcc.model.Usuario;
 
-public class LoginController {
+public class LoginController extends CommonsController {
 
 	private Usuario usuarioForm = new Usuario();
 	private UsuarioBusiness usuarioBusiness;
@@ -32,7 +32,7 @@ public class LoginController {
 			usuarioBusiness = new UsuarioBusiness();
 			if (usuarioBusiness.login(usuarioForm.getMatricula(),
 					usuarioForm.getSenha())) {
-				Executions.sendRedirect("/pages/home.zul");
+				redirectHome();
 			} else {
 				Messagebox.show("Usuário ou Senha inválidos!", "Falha no Login",
 						Messagebox.OK, Messagebox.ERROR);

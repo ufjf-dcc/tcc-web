@@ -1,6 +1,6 @@
 
 <zk>
-	<window title="Cadastrar Respostas" width="500px" border="normal"
+	<window id="prquest" title="Cadastrar Respostas" width="500px" border="normal"
 		position="center,center" closable="true"
 		apply="org.zkoss.bind.BindComposer"
 		viewModel="@id('vm') @init('br.ufjf.tcc.controller.PreencheQuestionarioController')">
@@ -26,7 +26,7 @@
 		</grid>
 		<div align="center">
 			<button label="Cadastrar Respostas"
-				onClick="@command('submit', checkbox=ativo)"
+				onClick="@command('submit', checkbox=ativo, window=prquest)"
 				style="margin-bottom:10px;" />
 		</div>
 	</window>

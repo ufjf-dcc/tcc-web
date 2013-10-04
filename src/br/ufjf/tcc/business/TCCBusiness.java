@@ -28,22 +28,24 @@ public class TCCBusiness {
 	}
 
 	public void validateName(String nomeTCC) {
-		if(nomeTCC == null)
+		if (nomeTCC == null)
 			errors.put("nomeTCC", "Informe o nome");
-		else
-			if(nomeTCC.trim().length() == 0)
-				errors.put("nomeTCC", "Informe o nome");
+		else if (nomeTCC.trim().length() == 0)
+			errors.put("nomeTCC", "Informe o nome");
 	}
 
 	public void validateOrientador(Usuario orientador) {
 		if (orientador == null)
 			errors.put("orientador", "Informe o orientador");
 	}
-	
-	//Exemplo para verificar se está dentro do prazo de envio de TCCs
+
+	// Exemplo para verificar se está dentro do prazo de envio de TCCs
 	public void validateDate(TCC tcc) {
-		Date finalDateSemester = new CalendarioSemestreBusiness().getCurrentCalendarByCurso(tcc.getAluno().getCurso()).getFinalSemestre();
-		if (Days.daysBetween(new DateTime(new Date()), new DateTime(finalDateSemester)).getDays() > 90)
+		Date finalDateSemester = new CalendarioSemestreBusiness()
+				.getCurrentCalendarByCurso(tcc.getAluno().getCurso())
+				.getFinalSemestre();
+		if (Days.daysBetween(new DateTime(new Date()),
+				new DateTime(finalDateSemester)).getDays() > 90)
 			errors.put("data", "O prazo já expirou!");
 	}
 
@@ -51,18 +53,23 @@ public class TCCBusiness {
 		TCCDAO tccDao = new TCCDAO();
 		return tccDao.getPublicListByCurso(curso);
 	}
-	
-	//teste
+
 	public List<TCC> getAll() {
 		TCCDAO tccDao = new TCCDAO();
 		return tccDao.getAll();
+	}
+
+	// teste
+	public List<TCC> getTCCsNotConceptualized() {
+		TCCDAO tccDao = new TCCDAO();
+		return tccDao.getTCCsNotConceptualized();
 	}
 
 	public boolean save(TCC tcc) {
 		TCCDAO tccDao = new TCCDAO();
 		return tccDao.salvar(tcc);
 	}
-	
+
 	public boolean edit(TCC tcc) {
 		TCCDAO tccDao = new TCCDAO();
 		return tccDao.editar(tcc);
