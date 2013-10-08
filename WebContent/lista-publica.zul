@@ -2,10 +2,10 @@
 <zk>
 	<style src="/style.css" />
 	<div apply="org.zkoss.bind.BindComposer"
-		viewModel="@id('vm') @init('br.ufjf.tcc.controller.ListaPublicaController')"
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.ListaPublicaController')" height="100%"
 		class="publicList">
 		<grid model="@load(vm.filterTccs) @template('lista')"
-			emptyMessage="@load(vm.emptyMessage)" mold="paging" pageSize="20">
+			emptyMessage="@load(vm.emptyMessage)" mold="paging" autopaging="true" vflex="true" >
 			<auxhead sclass="text-center">
 				<auxheader label="Lista Pública de Monografias"
 					colspan="4" />
@@ -51,8 +51,8 @@
 			<columns>
 				<column hflex="13" label="NomeTCC" sort="auto(nomeTCC)" />
 				<column hflex="4" label="Autor" sort="auto(aluno.nomeUsuario)" />
-				<column hflex="1" label=""/>
-				<column hflex="1" label=""/>
+				<column width="75px" label="PDF"/>
+				<column width="75px" label="Extras"/>
 			</columns>
 			<template name="lista">
 				<row>

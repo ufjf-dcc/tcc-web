@@ -3,12 +3,12 @@
 <zk>
 	<style src="/style.css" />
 	<div apply="org.zkoss.bind.BindComposer"
-		viewModel="@id('vm') @init('br.ufjf.tcc.controller.GerenciamentoUsuarioController')"
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.GerenciamentoUsuarioController')" height="100%"
 		class="centerGrid">
 		<include src="@load(vm.menu)" />
-		<grid id="userGrid"
+		<grid
 			model="@load(vm.usuarios) @template(each.editingStatus ? 'editable' : 'noneditable')"
-			mold="paging" pageSize="20">
+			mold="paging" autopaging="true" vflex="true" >
 			<auxhead sclass="text-center">
 				<auxheader label="Usuários cadastrados no sistema"
 					colspan="8" />

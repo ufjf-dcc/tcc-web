@@ -2,36 +2,59 @@
 <?init class="br.ufjf.tcc.controller.AuthController"?>
 <zk>
 	<style src="/style.css" />
-	<div apply="org.zkoss.bind.BindComposer"
+	<div apply="org.zkoss.bind.BindComposer" align="center"
 		viewModel="@id('vm') @init('br.ufjf.tcc.teste.HomeAlunoController')">
 		<include src="@load(vm.menu)" />
-		<grid model="@load(vm.dates) @template('prazos')" width="500px"
-			style="margin:10px auto">
-			<auxhead sclass="text-center">
-				<auxheader colspan="3">
-					<hlayout>
-						<label value="Bem-vindo(a), "
-							style="font-weight:bold;" />
-						<label value="@load(vm.usuario.nomeUsuario)"
-							style="font-weight:bold;" />
-					</hlayout>
-				</auxheader>
-			</auxhead>
-			<columns>
-				<column label="Data" hflex="1" />
-				<column label="Descrição" hflex="3" />
-				<column hflex="1" />
-			</columns>
-			<template name="prazos">
-				<row>
-					<label value="@load(each.date)" style="@load(each.isCurrent ? 'font-weight:bold;' : '')" />
-					<label value="@load(each.description)" style="@load(each.isCurrent ? 'font-weight:bold; color:#dee132;' : '')" />
-					<button label="@load(each.action)"
-						onClick="@command('action', date=each)"
-						visible="@load(each.isCurrent)" />
-				</row>
-			</template>
-		</grid>
+		<vlayout spacing="0" width="550px">
+
+			<grid style="margin:10px">
+				<columns>
+					<column>
+						<div align="center">
+							<hlayout>
+								<label value="Bem-vindo(a), "
+									style="font-weight:bold;" />
+								<label
+									value="@load(vm.usuario.nomeUsuario)"
+									style="font-weight:bold;" />
+							</hlayout>
+						</div>
+					</column>
+				</columns>
+				<rows>
+					<row>
+						<div align="center">
+							<label
+								value="Fique atento aos prazos abaixo." />
+						</div>
+					</row>
+				</rows>
+			</grid>
+
+			<grid 
+				model="@load(vm.dates) @template('prazos')"
+				style="margin:10px">
+				<auxhead sclass="text-center">
+					<auxheader colspan="3" label="Prazos" />
+				</auxhead>
+				<columns>
+					<column label="Data" hflex="1" />
+					<column label="Descrição" hflex="3" />
+					<column label="Ação" hflex="1" />
+				</columns>
+				<template name="prazos">
+					<row>
+						<label value="@load(each.date)"
+							style="@load(each.isCurrent ? 'font-weight:bold;' : '')" />
+						<label value="@load(each.description)"
+							style="@load(each.isCurrent ? 'font-weight:bold; color:#dee132;' : '')" />
+						<button label="@load(each.action)"
+							onClick="@command('action', date=each)"
+							disabled="@load(not each.isCurrent)" />
+					</row>
+				</template>
+			</grid>
+		</vlayout>
 	</div>
-		Página provisória e inacabada exibida para alunos.
+	Página provisória e inacabada exibida para alunos.
 </zk>

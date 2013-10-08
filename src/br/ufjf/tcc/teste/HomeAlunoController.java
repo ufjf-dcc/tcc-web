@@ -42,13 +42,13 @@ public class HomeAlunoController extends CommonsController {
 				"Prazo para envio de TCC", "Enviar TCC", false));
 
 		DateTime date1 = finalDate.minusDays(60);
-		dates.add(new CustomDate(fmt.print(date1), "Prazo 1", "", false));
+		dates.add(new CustomDate(fmt.print(date1), "Prazo 1", "Botão 1", false));
 
 		DateTime date2 = finalDate.minusDays(30);
-		dates.add(new CustomDate(fmt.print(date2), "Prazo 2", "", false));
+		dates.add(new CustomDate(fmt.print(date2), "Prazo 2", "Botão 2", false));
 
 		DateTime date3 = finalDate.minusDays(10);
-		dates.add(new CustomDate(fmt.print(date3), "Prazo 3", "", false));
+		dates.add(new CustomDate(fmt.print(date3), "Prazo 3", "Botão 3", false));
 
 		DateTime currentDay = new DateTime(new Date());
 
