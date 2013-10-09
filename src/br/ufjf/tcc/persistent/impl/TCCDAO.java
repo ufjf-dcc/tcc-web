@@ -67,9 +67,9 @@ public class TCCDAO extends GenericoDAO implements ITCCDAO {
 	@Override
 	public TCC update(TCC tcc, boolean aluno, boolean orientador, boolean participacoes) {
 		/*
-		 * Dando update no usuário e solicitando os dados "extras", faz
+		 * Dando update no TCC e solicitando os dados "extras", faz
 		 * com que eles sejam "carregados" do banco, retornando o
-		 * usuário com todas as informações desejadas.
+		 * TCC com todas as informações desejadas.
 		 */
 		try {
 			getSession().update(tcc);

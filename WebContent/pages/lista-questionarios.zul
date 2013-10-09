@@ -1,0 +1,17 @@
+<zk>
+	<window id="listquest" title="Questionários anteriores"
+		width="300px" border="normal" position="center,center" closable="true"
+		apply="org.zkoss.bind.BindComposer"
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.ListaQuestionariosController', cmb=cmbCurso)">
+
+		<grid model="@load(vm.questionaries)"
+			style="margin-left:5px; margin-right:5px;">
+			<template name="model">
+				<row onClick="@command('select', quest=each, window=listquest)"> 
+					<label
+						value="@load(each.idQuestionario)" />
+				</row>
+			</template>
+		</grid>
+	</window>
+</zk>

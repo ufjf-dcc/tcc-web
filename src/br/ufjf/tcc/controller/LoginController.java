@@ -3,7 +3,6 @@ package br.ufjf.tcc.controller;
 import org.hibernate.HibernateException;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.Messagebox;
 
 import br.ufjf.tcc.business.UsuarioBusiness;
@@ -20,7 +19,7 @@ public class LoginController extends CommonsController {
 		Usuario usuario = (Usuario) SessionManager.getAttribute("usuario");
 		usuarioBusiness = new UsuarioBusiness();
 		if (usuarioBusiness.checaLogin(usuario)) {
-			Executions.sendRedirect("/pages/home.zul");
+			redirectHome();
 			return;
 		}
 	}

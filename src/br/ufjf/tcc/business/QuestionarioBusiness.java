@@ -51,6 +51,11 @@ public class QuestionarioBusiness {
 		return questionarioDAO.getCurrentQuestionaryByCurso(curso);
 	}
 	
+	public List<Questionario> getAllByCurso(Curso curso) {
+		QuestionarioDAO questionarioDAO = new QuestionarioDAO();
+		return questionarioDAO.getAllByCurso(curso);
+	}
+	
 	public boolean isQuestionaryUsed(Questionario questionario) {
 		RespostaBusiness respostaBusiness = new RespostaBusiness();
 		List<Resposta> respostas = respostaBusiness.getAll();
@@ -60,6 +65,11 @@ public class QuestionarioBusiness {
 		}
 		
 		return false;
+	}
+	
+	public Questionario update(Questionario questionario, boolean curso, boolean calendario) {
+		QuestionarioDAO questionarioDAO = new QuestionarioDAO();
+		return questionarioDAO.update(questionario, curso, calendario);
 	}
 
 }

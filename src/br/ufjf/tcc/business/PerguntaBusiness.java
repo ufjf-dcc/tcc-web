@@ -12,8 +12,18 @@ public class PerguntaBusiness {
 		PerguntaDAO perguntaDAO = new PerguntaDAO();
 		return perguntaDAO.salvar(pergunta);
 	}
-	
-	public List<Pergunta> getQuestionsByQuestionary (Questionario questionary) {
+
+	public boolean delete(Pergunta pergunta) {
+		PerguntaDAO perguntaDAO = new PerguntaDAO();
+		return perguntaDAO.exclui(pergunta);
+	}
+
+	public boolean saveOrEdit(Pergunta pergunta) {
+		PerguntaDAO perguntaDAO = new PerguntaDAO();
+		return perguntaDAO.salvaOuEdita(pergunta);
+	}
+
+	public List<Pergunta> getQuestionsByQuestionary(Questionario questionary) {
 		PerguntaDAO perguntaDAO = new PerguntaDAO();
 		return perguntaDAO.getQuestionsByQuestionary(questionary);
 	}

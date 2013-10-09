@@ -13,7 +13,6 @@ import org.zkoss.zul.Window;
 import br.ufjf.tcc.business.QuestionarioBusiness;
 import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.business.UsuarioBusiness;
-import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.model.Participacao;
 import br.ufjf.tcc.model.Questionario;
 import br.ufjf.tcc.model.TCC;
@@ -40,13 +39,12 @@ public class HomeProfessorController extends CommonsController {
 			}
 		}
 		
-		QuestionarioBusiness questionarioBusiness = new QuestionarioBusiness();		
-		currentQuestionary = questionarioBusiness.getCurrentQuestionaryByCurso(professor.getCurso());
+		currentQuestionary = new QuestionarioBusiness().getCurrentQuestionaryByCurso(professor.getCurso());
 		
 		if (currentQuestionary == null)
 			currentQuestionaryExists = false;
 		
-		currentQuestionaryUsed = questionarioBusiness.isQuestionaryUsed(currentQuestionary);
+		currentQuestionaryUsed = new QuestionarioBusiness().isQuestionaryUsed(currentQuestionary);
 	}
 
 	public List<TCC> getTccs() {
@@ -67,8 +65,26 @@ public class HomeProfessorController extends CommonsController {
 
 	@Command
 	public void createQuestionary() {
-		Map<String, Curso> map = new HashMap<String, Curso>();
+		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("curso", professor.getCurso());
+		map.put("editing", false);
+		final Window dialog = (Window) Executions.createComponents("/pages/cadastro-questionario.zul",null , map);
+		dialog.doModal();
+	}
+	
+	@Command
+	public void createQuestionaryFromOld() {
+		final Window dialog = (Window) Executions.createComponents("/pages/lista-questionarios.zul",null , null);
+		dialog.doModal();
+	}
+	
+	@Command
+	public void editQuestionary() {
+		new QuestionarioBusiness().update(currentQuestionary, true, true);
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("quest", currentQuestionary);
+		map.put("editing", true);
 		final Window dialog = (Window) Executions.createComponents("/pages/cadastro-questionario.zul",null , map);
 		dialog.doModal();
 	}

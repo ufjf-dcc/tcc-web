@@ -30,12 +30,12 @@ import br.ufjf.tcc.model.Usuario;
 public class CadastroQuestionarioController extends CommonsController {
 	private Questionario questionary = new Questionario();
 	QuestionarioBusiness questionarioBusiness = new QuestionarioBusiness();
-	private List<Pergunta> questions = new ArrayList<Pergunta>();
+	private List<Pergunta> questions = new ArrayList<Pergunta>(), questionsToDelete = new ArrayList<Pergunta>();
 	private List<Curso> cursos = new CursoBusiness().getCursos();
 	private String currentSemester = "?";
 	private CalendarioSemestre currentCalendar;
 	private Map<String, String> errors = new HashMap<String, String>();
-	private boolean admin = getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ADMINISTRADOR;
+	private boolean admin = getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ADMINISTRADOR, editing;
 
 	public String getCurrentSemester() {
 		return currentSemester;
@@ -68,24 +68,33 @@ public class CadastroQuestionarioController extends CommonsController {
 	public Map<String, String> getErrors() {
 		return errors;
 	}
-	
+
 	public boolean isAdmin() {
 		return admin;
 	}
 
 	@Init
-	public void init(@ExecutionArgParam("curso") Curso curso, @BindingParam("cmb") Combobox cmb) {
-		if (curso != null) {
-			questionary.setCurso(curso);
-		}
+	public void init(@ExecutionArgParam("curso") Curso curso,
+			@ExecutionArgParam("quest") Questionario q, @ExecutionArgParam("editing") boolean editing,
+			@BindingParam("cmb") Combobox cmb) {
+		this.editing = editing;
 		
-		questions.add(new Pergunta());
+		if (q != null) {
+			questionary = q;
+			semester();
+			questions = new PerguntaBusiness().getQuestionsByQuestionary(q);
+		} else {
+			if (curso != null)
+				questionary.setCurso(curso);
+
+			questions.add(new Pergunta());
+		}
 	}
 
 	@NotifyChange("currentSemester")
 	@Command
 	public void semester() {
-		//Mostra o semestre atual
+		// Mostra o semestre atual
 		Curso curso = questionary.getCurso();
 		if (curso != null) {
 			DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -114,6 +123,8 @@ public class CadastroQuestionarioController extends CommonsController {
 	@Command
 	public void removeQuestion(@BindingParam("question") Pergunta question) {
 		questions.remove(question);
+		if (editing)
+			questionsToDelete.add(question);
 	}
 
 	@Command
@@ -123,7 +134,20 @@ public class CadastroQuestionarioController extends CommonsController {
 		questionary.setAtivo(true);
 		QuestionarioBusiness questionarioBusiness = new QuestionarioBusiness();
 		if (questionarioBusiness.validate(questionary)) {
-			if (questionarioBusiness.save(questionary)) {
+			if (editing) {
+				PerguntaBusiness perguntaBusiness = new PerguntaBusiness();
+				for (Pergunta question : questions)
+					if (question.getPergunta() != null)
+						perguntaBusiness.saveOrEdit(question);
+				
+				for (Pergunta question : questionsToDelete)
+					if (question.getPergunta() != null)
+						perguntaBusiness.delete(question);
+
+				Messagebox.show("Questionário atualizado.");
+				window.detach();
+				limpa();
+			} else if (questionarioBusiness.save(questionary)) {
 				PerguntaBusiness perguntaBusiness = new PerguntaBusiness();
 				for (Pergunta question : questions) {
 					if (question.getPergunta() != null) {
@@ -141,7 +165,7 @@ public class CadastroQuestionarioController extends CommonsController {
 						Messagebox.OK, Messagebox.ERROR);
 				clearErrors();
 			}
-				
+
 		} else {
 			this.errors = questionarioBusiness.errors;
 			BindUtils.postNotifyChange(null, null, this, "errors");

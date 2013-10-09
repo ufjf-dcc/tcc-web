@@ -42,5 +42,49 @@ public class QuestionarioDAO extends GenericoDAO implements IQuestionarioDAO {
 
 		return questionary;
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Questionario> getAllByCurso(Curso curso) {
+		List<Questionario> results = null;
+		try {
+			Query query = getSession().createQuery(
+					"select q from Questionario q where q.curso = :curso");
+			query.setParameter("curso", curso);
+			
+			results = query.list();
+
+			getSession().close();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return results;
+	}
+	
+	@SuppressWarnings("unused")
+	@Override
+	public Questionario update(Questionario questionario, boolean curso, boolean calendario) {
+		/*
+		 * Dando update no questionário e solicitando os dados "extras", faz
+		 * com que eles sejam "carregados" do banco, retornando o
+		 * questionário com todas as informações desejadas.
+		 */
+		try {
+			getSession().update(questionario);
+			int aux = -1;
+			
+			if (curso) aux = questionario.getCurso().getIdCurso();
+			if (calendario) aux = questionario.getCalendarioSemestre().getIdCalendarioSemestre();
+			
+			getSession().close();
+			return questionario;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 }
