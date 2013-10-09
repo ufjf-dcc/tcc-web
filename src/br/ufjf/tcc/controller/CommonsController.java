@@ -1,6 +1,8 @@
 package br.ufjf.tcc.controller;
 
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zul.Messagebox;
 
 import br.ufjf.tcc.library.SessionManager;
 import br.ufjf.tcc.model.Usuario;
@@ -23,8 +25,18 @@ public class CommonsController {
 		return true;
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void paginaProibida() {
-		Executions.sendRedirect("/home.zul");
+		Messagebox.show(
+				"Você não tem permissão para acessar esta página. ", "Acesso negado",
+				Messagebox.OK, Messagebox.EXCLAMATION,
+				new org.zkoss.zk.ui.event.EventListener() {
+					public void onEvent(Event e) {
+						if (Messagebox.ON_OK.equals(e.getName())) {								
+							redirectHome();
+						}
+					}
+				});
 	}
 
 	public String getMenu() {
@@ -39,12 +51,19 @@ public class CommonsController {
 	}
 	
 	public void redirectHome () {
-		int tipoUsuario = getUsuario().getTipoUsuario().getIdTipoUsuario();
-		String page = "/pages/home.zul";
-		if (tipoUsuario == 4)
-			page = "/tests/home.zul";
-		if (tipoUsuario == 1)
+		int tipoUsuario = getUsuario().getTipoUsuario().getIdTipoUsuario();		
+		String page;
+		
+		switch (tipoUsuario) {
+		case 4:
+		case 3:
+		case 2:
+			page = "/pages/home-professor.zul";
+			break;
+		default:
 			page = "/tests/home-aluno.zul";
+		}
+			
 		Executions.sendRedirect(page);
 	}
 

@@ -52,7 +52,7 @@ public class TCCDAO extends GenericoDAO implements ITCCDAO {
 		List<TCC> results = null;
 		
 		try {
-			Query query = getSession().createQuery("select t from TCC as t join fetch t.aluno as a join fetch t.orientador");
+			Query query = getSession().createQuery("SELECT t FROM TCC AS t");
 			results = query.list();
 			getSession().close();
 
@@ -61,6 +61,31 @@ public class TCCDAO extends GenericoDAO implements ITCCDAO {
 		}
 
 		return results;
+	}
+	
+	@SuppressWarnings("unused")
+	@Override
+	public TCC update(TCC tcc, boolean aluno, boolean orientador, boolean participacoes) {
+		/*
+		 * Dando update no usuário e solicitando os dados "extras", faz
+		 * com que eles sejam "carregados" do banco, retornando o
+		 * usuário com todas as informações desejadas.
+		 */
+		try {
+			getSession().update(tcc);
+			int aux = -1;
+			
+			if (aluno) aux = tcc.getAluno().getIdUsuario();
+			if (orientador) aux = tcc.getOrientador().getIdUsuario();
+			if (participacoes) aux = tcc.getParticipacoes().get(0).getIdParticipacao();
+			
+			getSession().close();
+			return tcc;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }

@@ -147,9 +147,9 @@ public class UsuarioBusiness {
 		return jaExiste;
 	}
 
-	public Usuario update(Usuario usuario) {
+	public Usuario update(Usuario usuario, boolean curso, boolean tipo, boolean participacoes) {
 		UsuarioDAO usuarioDAO = new UsuarioDAO();
-		return usuarioDAO.update(usuario);
+		return usuarioDAO.update(usuario, curso, tipo, participacoes);
 	}
 
 }

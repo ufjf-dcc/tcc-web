@@ -2,7 +2,7 @@
 	<window id="cadquest" title="Cadastrar Questionário" width="500px"
 		border="normal" position="center,center" closable="true"
 		apply="org.zkoss.bind.BindComposer"
-		viewModel="@id('vm') @init('br.ufjf.tcc.controller.CadastroQuestionarioController')">
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.CadastroQuestionarioController', cmb=cmbCurso)">
 
 		<vlayout style="margin:10px;">
 
@@ -12,11 +12,12 @@
 				<tablechildren>
 					<vlayout>
 						<label value="Curso:" />
-						<combobox width="200px" readonly="true"
-							value="@load(each.curso.nomeCurso ne null ? each.curso.nomeCurso : 'Nenhum')"
+						<combobox id="cmbCurso" width="200px" readonly="true"
+							value="@bind(vm.questionary.curso.nomeCurso)"
 							model="@load(vm.cursos)"
 							selectedItem="@bind(vm.questionary.curso)"
-							onSelect="@command('semester')">
+							onSelect="@command('semester')"
+							disabled="@load(not vm.admin)" >
 							<template name="model">
 								<comboitem
 									label="@load(each.nomeCurso)" />

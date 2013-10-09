@@ -39,7 +39,7 @@
 			</grid>
 
 			<grid model="@load(vm.tccs) @template('lista')" hflex="3"
-				mold="paging" pagingPosition="both" style="margin:10px; margin-bottom:30px" autopaging="true" vflex="true">
+				mold="paging" autopaging="true" vflex="true" style="margin:10px; margin-bottom:30px">
 				<auxhead sclass="text-center">
 					<auxheader label="TCCs ainda não avalidadas"
 						colspan="3" />

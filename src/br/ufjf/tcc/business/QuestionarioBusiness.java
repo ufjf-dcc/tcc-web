@@ -7,6 +7,7 @@ import java.util.Map;
 import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.model.Pergunta;
 import br.ufjf.tcc.model.Questionario;
+import br.ufjf.tcc.model.Resposta;
 import br.ufjf.tcc.persistent.impl.QuestionarioDAO;
 
 public class QuestionarioBusiness {
@@ -48,6 +49,17 @@ public class QuestionarioBusiness {
 	public Questionario getCurrentQuestionaryByCurso(Curso curso) {
 		QuestionarioDAO questionarioDAO = new QuestionarioDAO();
 		return questionarioDAO.getCurrentQuestionaryByCurso(curso);
+	}
+	
+	public boolean isQuestionaryUsed(Questionario questionario) {
+		RespostaBusiness respostaBusiness = new RespostaBusiness();
+		List<Resposta> respostas = respostaBusiness.getAll();
+		for (int i = respostas.size(); i > 0; i--) {
+			if (respostas.get(i-1).getPergunta().getQuestionario().getIdQuestionario() == questionario.getIdQuestionario())
+				return true;
+		}
+		
+		return false;
 	}
 
 }

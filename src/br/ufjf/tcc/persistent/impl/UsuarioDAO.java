@@ -15,7 +15,7 @@ import br.ufjf.tcc.persistent.HibernateUtil;
 import br.ufjf.tcc.persistent.IUsuarioDAO;
 
 public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
-	
+
 	@Override
 	public Usuario retornaUsuario(String matricula, String senha) {
 		try {
@@ -38,7 +38,7 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 
 		return null;
 	}
-	
+
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<Usuario> getTodosUsuarios() {
@@ -60,7 +60,7 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 
 		return null;
 	}
-	
+
 	@Override
 	public boolean jaExiste(String matricula) {
 		try {
@@ -80,7 +80,7 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 
 		return false;
 	}
-	
+
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<Usuario> buscar(String expressão) {
@@ -101,7 +101,7 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 		session.close();
 		return usuarios;
 	}
-	
+
 	@Override
 	public List<Permissoes> getPermissoes(Usuario usuario) {
 		try {
@@ -120,7 +120,7 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 
 		return null;
 	}
-	
+
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<Usuario> getOrientadores() {
@@ -130,7 +130,7 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 							"select u from Usuario as u where u.tipoUsuario.idTipoUsuario = :professor OR u.tipoUsuario.idTipoUsuario = :coordenador");
 			query.setParameter("professor", Usuario.PROFESSOR);
 			query.setParameter("coordenador", Usuario.COORDENADOR);
-			
+
 			List<Usuario> usuarios = query.list();
 			getSession().close();
 			return usuarios;
@@ -141,7 +141,7 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 
 		return null;
 	}
-	
+
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<Usuario> getOrientados(Usuario orientador) {
@@ -168,16 +168,20 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 
 	@SuppressWarnings("unused")
 	@Override
-	public Usuario update(Usuario usuario) {
+	public Usuario update(Usuario usuario, boolean curso, boolean tipo, boolean participacoes) {
 		/*
-		 * Dando update no usuário e solicitando os IDs do tipo e do curso, faz
-		 * com que o Tipo e o Curso sejam "carregados" do banco, retornando o
-		 * usuário com todas as informações.
+		 * Dando update no usuário e solicitando os dados "extras", faz
+		 * com que eles sejam "carregados" do banco, retornando o
+		 * usuário com todas as informações desejadas.
 		 */
 		try {
 			getSession().update(usuario);
-			int auxTipo = usuario.getTipoUsuario().getIdTipoUsuario();
-			int auxCurso = usuario.getCurso().getIdCurso();
+			int aux = -1;
+			
+			if (tipo) aux = usuario.getTipoUsuario().getIdTipoUsuario();
+			if (curso) aux = usuario.getCurso().getIdCurso();
+			if (participacoes) aux = usuario.getParticipacoes().get(0).getIdParticipacao();
+			
 			getSession().close();
 			return usuario;
 		} catch (Exception e) {

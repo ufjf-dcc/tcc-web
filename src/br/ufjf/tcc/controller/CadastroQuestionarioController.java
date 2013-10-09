@@ -10,10 +10,10 @@ import java.util.Map;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
+import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
-import org.zkoss.zul.Div;
-import org.zkoss.zul.Label;
+import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
@@ -25,6 +25,7 @@ import br.ufjf.tcc.model.CalendarioSemestre;
 import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.model.Pergunta;
 import br.ufjf.tcc.model.Questionario;
+import br.ufjf.tcc.model.Usuario;
 
 public class CadastroQuestionarioController extends CommonsController {
 	private Questionario questionary = new Questionario();
@@ -34,6 +35,7 @@ public class CadastroQuestionarioController extends CommonsController {
 	private String currentSemester = "?";
 	private CalendarioSemestre currentCalendar;
 	private Map<String, String> errors = new HashMap<String, String>();
+	private boolean admin = getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ADMINISTRADOR;
 
 	public String getCurrentSemester() {
 		return currentSemester;
@@ -66,9 +68,17 @@ public class CadastroQuestionarioController extends CommonsController {
 	public Map<String, String> getErrors() {
 		return errors;
 	}
+	
+	public boolean isAdmin() {
+		return admin;
+	}
 
 	@Init
-	public void init() {
+	public void init(@ExecutionArgParam("curso") Curso curso, @BindingParam("cmb") Combobox cmb) {
+		if (curso != null) {
+			questionary.setCurso(curso);
+		}
+		
 		questions.add(new Pergunta());
 	}
 
