@@ -1,9 +1,8 @@
 package br.ufjf.tcc.business;
 
 import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import jonelo.jacksum.JacksumAPI;
 import jonelo.jacksum.algorithm.AbstractChecksum;
@@ -16,7 +15,7 @@ import br.ufjf.tcc.model.Usuario;
 import br.ufjf.tcc.persistent.impl.UsuarioDAO;
 
 public class UsuarioBusiness {
-	public Map<String, String> errors = new HashMap<String, String>();
+	public List<String> errors = new ArrayList<String>();
 	public static final int ADICAO = 0, EDICAO = 1;
 
 	// validação dos formulários
@@ -32,30 +31,30 @@ public class UsuarioBusiness {
 
 	public void validarNome(String nomeUsuario) {
 		if (nomeUsuario == null)
-			errors.put("nomeUsuario", "Informe o nome");
+			errors.add("É necessário informar o nome;\n");
 		else if (nomeUsuario.trim().length() == 0)
-			errors.put("nomeUsuario", "Informe o nome");
+			errors.add("É necessário informar o nome;\n");
 	}
 
 	public void validarMatricula(String matricula, int action) {
 		if (matricula == null)
-			errors.put("matricula", "Informe a matrícula");
+			errors.add("É necessário informar a matrícula;\n");
 		else if (matricula.trim().length() == 0)
-			errors.put("matricula", "Informe a matrícula");
+			errors.add("É necessário informar a matrícula;\n");
 		else if (action == ADICAO)
 			jaExiste(matricula);
 	}
 
 	public void validarEmail(String email) {
 		if (email == null)
-			errors.put("email", "Informe o e-mail");
+			errors.add("É necessário informar o e-mail;\n");
 		else if (email.trim().length() == 0)
-			errors.put("email", "Informe o e-mail");
+			errors.add("É necessário informar o e-mail;\n");
 		else if (email == null || !email.matches(".+@.+\\.[a-z]+"))
-			errors.put("email", "E-mail inválido");
+			errors.add("Informe um e-mail válido;\n");
 	}
 
-	// comunicação com o CursoDAO
+	// comunicação com o UsuarioDAO
 	public boolean login(String matricula, String senha)
 			throws HibernateException, Exception {
 		UsuarioDAO usuarioDAO = new UsuarioDAO();
@@ -143,7 +142,7 @@ public class UsuarioBusiness {
 		UsuarioDAO usuarioDAO = new UsuarioDAO();
 		boolean jaExiste = usuarioDAO.jaExiste(matricula);
 		if (jaExiste)
-			errors.put("matricula", "Já existe um usuário com esta matrícula");
+			errors.add("Já existe um usuário com a matrícula informada.");
 		return jaExiste;
 	}
 

@@ -1,10 +1,8 @@
 package br.ufjf.tcc.controller;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.hibernate.HibernateException;
 import org.zkoss.bind.BindUtils;
@@ -25,7 +23,6 @@ public class GerenciamentoCursoController extends CommonsController {
 	private List<Curso> allCursos = cursoBusiness.getCursos();
 	private List<Curso> cursos = allCursos;
 	private String filterString = "";
-	private Map<String, String> errors = new HashMap<String, String>();
 
 	@Init
 	public void init() throws HibernateException, Exception {
@@ -49,11 +46,17 @@ public class GerenciamentoCursoController extends CommonsController {
 			if (!cursoBusiness.editar(curso))
 				Messagebox.show("Não foi possível editar o curso.", "Erro",
 						Messagebox.OK, Messagebox.ERROR);
-		changeEditableStatus(curso);
-		refreshRowTemplate(curso);
+			changeEditableStatus(curso);
+			refreshRowTemplate(curso);
 		} else {
-			this.errors = cursoBusiness.errors;
+			String errorMessage = "";
+			for (String error : cursoBusiness.errors)
+				errorMessage += error;
+			Messagebox.show(errorMessage, "Dados insuficientes / inválidos",
+					Messagebox.OK, Messagebox.ERROR);
 			BindUtils.postNotifyChange(null, null, this, "errors");
+			errorMessage = "";
+			clearErrors();
 		}
 	}
 
@@ -122,15 +125,11 @@ public class GerenciamentoCursoController extends CommonsController {
 	@Command
 	public void addCurso(@BindingParam("window") Window window) {
 		this.limpa();
-		window.doOverlapped();
+		window.doModal();
 	}
 
 	public Curso getNovoCurso() {
 		return this.novoCurso;
-	}
-
-	public Map<String, String> getErrors() {
-		return this.errors;
 	}
 
 	@Command
@@ -149,8 +148,14 @@ public class GerenciamentoCursoController extends CommonsController {
 				clearErrors();
 			}
 		} else {
-			this.errors = cursoBusiness.errors;
+			String errorMessage = "";
+			for (String error : cursoBusiness.errors)
+				errorMessage += error;
+			Messagebox.show(errorMessage, "Dados insuficientes / inválidos",
+					Messagebox.OK, Messagebox.ERROR);
 			BindUtils.postNotifyChange(null, null, this, "errors");
+			errorMessage = "";
+			clearErrors();
 		}
 	}
 
@@ -161,7 +166,7 @@ public class GerenciamentoCursoController extends CommonsController {
 	}
 
 	public void clearErrors() {
-		errors.clear();
+		cursoBusiness.errors.clear();
 		BindUtils.postNotifyChange(null, null, this, "errors");
 	}
 

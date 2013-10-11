@@ -1,15 +1,13 @@
 package br.ufjf.tcc.business;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.persistent.impl.CursoDAO;
 
 public class CursoBusiness {
-	public Map<String, String> errors = new HashMap<String, String>();
+	public List<String> errors = new ArrayList<String>();
 	public static final int ADICAO = 0, EDICAO = 1;
 
 	// validação dos formulários
@@ -24,16 +22,16 @@ public class CursoBusiness {
 
 	public void validateCode(int codigoCurso, int action) {
 		if (codigoCurso <= 0)
-			errors.put("idCurso", "O código deve ser maior que zero");
+			errors.add("O código do curso deve ser maior que zero;\n");
 		else if (action == ADICAO)
 			jaExiste(codigoCurso);
 	}
 
 	public void validateName(String nomeCurso) {
 		if (nomeCurso == null)
-			errors.put("nomeCurso", "Informe o nome");
+			errors.add("É necessário informar o nome do curso;\n");
 		else if (nomeCurso.trim().length() == 0)
-			errors.put("nomeCurso", "Informe o nome");
+			errors.add("É necessário informar o nome do curso;\n");
 	}
 
 	// comunicação com o CursoDAO
@@ -71,7 +69,7 @@ public class CursoBusiness {
 		CursoDAO cursoDAO = new CursoDAO();
 		boolean resultado = cursoDAO.jaExiste(codigoCurso);
 		if (resultado)
-			errors.put("idCurso", "Já existe um curso com este código");
+			errors.add("Já existe um curso com este código.\n");
 		return resultado;
 	}
 

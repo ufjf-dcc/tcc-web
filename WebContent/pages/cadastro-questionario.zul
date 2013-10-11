@@ -1,8 +1,8 @@
 <zk>
 	<window id="cadquest" title="Cadastrar Questionário" width="500px"
-		border="normal" position="center,center" closable="true"
-		apply="org.zkoss.bind.BindComposer"
-		viewModel="@id('vm') @init('br.ufjf.tcc.controller.CadastroQuestionarioController', cmb=cmbCurso)">
+		border="normal" position="center,top" style="margin-top: 100px;"
+		closable="true" apply="org.zkoss.bind.BindComposer"
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.CadastroQuestionarioController', cmbCurso=cmbCurso)">
 
 		<vlayout style="margin:10px;">
 
@@ -12,32 +12,29 @@
 				<tablechildren>
 					<vlayout>
 						<label value="Curso:" />
-						<combobox id="cmbCurso" width="200px" readonly="true"
-							value="@bind(vm.questionary.curso.nomeCurso)"
+						<combobox id="cmbCurso" width="200px"
+							readonly="true" value="@bind(vm.questionary.curso.nomeCurso)"
 							model="@load(vm.cursos)"
 							selectedItem="@bind(vm.questionary.curso)"
-							onSelect="@command('semester')"
-							disabled="@load(not vm.admin)" >
+							onSelect="@command('semester')" disabled="@load(not vm.admin)">
 							<template name="model">
 								<comboitem
 									label="@load(each.nomeCurso)" />
 							</template>
 						</combobox>
-						<label class="error"
-							value="@load(vm.errors['curso'])" />
 					</vlayout>
 				</tablechildren>
 
 				<tablechildren>
 					<vlayout>
-						<label value="Semestre atual: " />
+						<label value="Semestre atual do curso: " />
 						<label value="@load(vm.currentSemester)" />
 					</vlayout>
 				</tablechildren>
 
 				<tablechildren style="float:right;">
 					<checkbox id="ativo" label="Ativo"
-						style="margin-right:20px;" checked="true" disabled="true"/>
+						style="margin-right:20px;" checked="true" disabled="true" />
 				</tablechildren>
 
 			</tablelayout>
@@ -62,10 +59,8 @@
 							</row>
 						</template>
 					</grid>
-	
+
 					<div align="center">
-						<label class="error"
-							value="@load(vm.errors['perguntas'])" />
 						<button label="Adicionar pergunta"
 							onClick="@command('addQuestion')" style="margin-top:5px;" />
 					</div>

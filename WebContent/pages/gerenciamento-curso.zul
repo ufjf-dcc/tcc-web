@@ -3,8 +3,8 @@
 <zk>
 	<style src="/style.css" />
 	<div apply="org.zkoss.bind.BindComposer"
-		viewModel="@id('vm') @init('br.ufjf.tcc.controller.GerenciamentoCursoController')" height="100%"
-		class="centerGrid">
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.GerenciamentoCursoController')"
+		height="100%" class="centerGrid">
 		<include src="@load(vm.menu)" />
 		<grid id="courseGrid"
 			model="@load(vm.cursos) @template(each.editingStatus ? 'editable' : 'noneditable')"
@@ -38,18 +38,10 @@
 			</columns>
 			<template name="editable">
 				<row>
-					<div>
-						<textbox
-							value="@load(each.idCurso) @save(each.idCurso, before='confirm')" />
-						<label class="error"
-							value="@load(vm.errors['idCurso'])" />
-					</div>
-					<div>
-						<textbox
-							value="@load(each.nomeCurso) @save(each.nomeCurso, before='confirm')" />
-						<label class="error"
-							value="@load(vm.errors['nomeCurso'])" />
-					</div>
+					<textbox
+						value="@load(each.idCurso) @save(each.idCurso, before='confirm')" />
+					<textbox
+						value="@load(each.nomeCurso) @save(each.nomeCurso, before='confirm')" />
 					<div>
 						<button image="/img/confirm.gif"
 							onClick="@command('confirm', curso=each)" />
@@ -72,7 +64,7 @@
 			</template>
 		</grid>
 		<window id="addCurso" title="Cadastrar Curso" visible="false"
-			width="300px" border="normal" position="center,center"
+			width="350px" border="normal" position="center,center"
 			closable="true"
 			onClose="self.setVisible(false); event.stopPropagation();">
 			<grid>
@@ -82,24 +74,16 @@
 				</columns>
 				<rows>
 					<row>
-						<label value="Id do Curso:" />
-						<div>
-							<textbox
-								value="@load(vm.novoCurso.idCurso) @save(vm.novoCurso.idCurso, before='submit')"
-								tabindex="1" id="idCurso" />
-							<label class="error"
-								value="@load(vm.errors['idCurso'])" />
-						</div>
+						<label value="Id do Curso (> 0):" />
+						<textbox
+							value="@load(vm.novoCurso.idCurso) @save(vm.novoCurso.idCurso, before='submit')"
+							tabindex="1" id="idCurso" width="100%" />
 					</row>
 					<row>
-						<label value="Nome do Curso:" />
-						<div>
-							<textbox
-								value="@load(vm.novoCurso.nomeCurso) @save(vm.novoCurso.nomeCurso, before='submit')"
-								tabindex="2" id="nomeCurso" />
-							<label class="error"
-								value="@load(vm.errors['nomeCurso'])" />
-						</div>
+						<label value="Nome do Curso:*" />
+						<textbox
+							value="@load(vm.novoCurso.nomeCurso) @save(vm.novoCurso.nomeCurso, before='submit')"
+							tabindex="2" id="nomeCurso" width="100%" />
 					</row>
 
 				</rows>

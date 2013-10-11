@@ -1,9 +1,9 @@
 <?page title="Cadastro de TCC" contentType="text/html;charset=UTF-8"?>
 <?init class="br.ufjf.tcc.controller.AuthController"?>
 <zk>
-	<window id="cadtcc" title="Cadastrar TCC" width="300px" border="normal"
-		position="center,center" closable="true"
-		apply="org.zkoss.bind.BindComposer"
+	<window id="cadtcc" title="Cadastrar TCC" width="300px"
+		border="normal" position="center,top" style="margin-top: 100px;"
+		closable="true" apply="org.zkoss.bind.BindComposer"
 		viewModel="@id('vm') @init('br.ufjf.tcc.controller.CadastroTccController')"
 		form="@id('tcc') @load(vm.newTcc) @save(vm.newTcc, before='submit')">
 		<grid>
@@ -64,8 +64,9 @@
 			</rows>
 		</grid>
 		<div align="center">
-			<button label="Cadastrar" onClick="@command('submit', window=cadtcc)"
-				width="75px" style="margin-top:5px" />
+			<button label="Cadastrar"
+				onClick="@command('submit', window=cadtcc)" width="75px"
+				style="margin-top:5px" />
 		</div>
 	</window>
 </zk>

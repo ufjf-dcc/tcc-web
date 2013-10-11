@@ -1,10 +1,8 @@
 package br.ufjf.tcc.controller;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.hibernate.HibernateException;
 import org.zkoss.bind.BindUtils;
@@ -32,7 +30,6 @@ public class GerenciamentoUsuarioController extends CommonsController {
 	private List<Curso> cursos = this.getAllCursos();
 	private String filterString = "";
 	private Usuario novoUsuario;
-	private Map<String, String> errors = new HashMap<String, String>();
 
 	@Init
 	public void init() throws HibernateException, Exception {
@@ -77,8 +74,14 @@ public class GerenciamentoUsuarioController extends CommonsController {
 			changeEditableStatus(usuario);
 			refreshRowTemplate(usuario);
 		} else {
-			this.errors = usuarioBusiness.errors;
+			String errorMessage = "";
+			for (String error : usuarioBusiness.errors)
+				errorMessage += error;
+			Messagebox.show(errorMessage, "Dados insuficientes / inválidos",
+					Messagebox.OK, Messagebox.ERROR);
 			BindUtils.postNotifyChange(null, null, this, "errors");
+			errorMessage = "";
+			clearErrors();
 		}
 	}
 
@@ -150,15 +153,11 @@ public class GerenciamentoUsuarioController extends CommonsController {
 	@Command
 	public void addUsuario(@BindingParam("window") Window window) {
 		this.limpa();
-		window.doOverlapped();
+		window.doModal();
 	}
 
 	public Usuario getNovoUsuario() {
 		return this.novoUsuario;
-	}
-
-	public Map<String, String> getErrors() {
-		return this.errors;
 	}
 
 	@Command
@@ -179,8 +178,14 @@ public class GerenciamentoUsuarioController extends CommonsController {
 				clearErrors();
 			}
 		} else {
-			this.errors = usuarioBusiness.errors;
+			String errorMessage = "";
+			for (String error : usuarioBusiness.errors)
+				errorMessage += error;
+			Messagebox.show(errorMessage, "Dados insuficientes / inválidos",
+					Messagebox.OK, Messagebox.ERROR);
 			BindUtils.postNotifyChange(null, null, this, "errors");
+			errorMessage = "";
+			clearErrors();
 		}
 	}
 
@@ -191,7 +196,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 	}
 
 	public void clearErrors() {
-		errors.clear();
+		usuarioBusiness.errors.clear();
 		BindUtils.postNotifyChange(null, null, this, "errors");
 	}
 }

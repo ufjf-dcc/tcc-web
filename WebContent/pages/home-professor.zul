@@ -53,12 +53,14 @@
 						sort="auto(tcc.nomeTCC)" />
 					<column label="Data de Apresentação" hflex="1"
 						sort="auto(tcc.dataApresentacao)" />
+					<column label="Ação" hflex="1" />
 				</columns>
 				<template name="tccs">
 					<row>
 						<label value="@load(each.aluno.nomeUsuario)" />
 						<label value="@load(each.nomeTCC)" />
 						<label value="@load(each.dataApresentacao)" />
+						<button label="Consultar..." onClick="@command('consult')"/>
 					</row>
 				</template>
 			</grid>

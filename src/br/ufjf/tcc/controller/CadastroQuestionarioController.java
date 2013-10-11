@@ -3,9 +3,7 @@ package br.ufjf.tcc.controller;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
@@ -34,7 +32,6 @@ public class CadastroQuestionarioController extends CommonsController {
 	private List<Curso> cursos = new CursoBusiness().getCursos();
 	private String currentSemester = "?";
 	private CalendarioSemestre currentCalendar;
-	private Map<String, String> errors = new HashMap<String, String>();
 	private boolean admin = getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ADMINISTRADOR, editing;
 
 	public String getCurrentSemester() {
@@ -65,10 +62,6 @@ public class CadastroQuestionarioController extends CommonsController {
 		this.cursos = cursos;
 	}
 
-	public Map<String, String> getErrors() {
-		return errors;
-	}
-
 	public boolean isAdmin() {
 		return admin;
 	}
@@ -76,7 +69,7 @@ public class CadastroQuestionarioController extends CommonsController {
 	@Init
 	public void init(@ExecutionArgParam("curso") Curso curso,
 			@ExecutionArgParam("quest") Questionario q, @ExecutionArgParam("editing") boolean editing,
-			@BindingParam("cmb") Combobox cmb) {
+			@BindingParam("cmb") Combobox cmbCurso) {
 		this.editing = editing;
 		
 		if (q != null) {
@@ -84,8 +77,10 @@ public class CadastroQuestionarioController extends CommonsController {
 			semester();
 			questions = new PerguntaBusiness().getQuestionsByQuestionary(q);
 		} else {
-			if (curso != null)
+			if (curso != null) {
 				questionary.setCurso(curso);
+				//cmbCurso.setText(getUsuario().getCurso().getNomeCurso());
+			}
 
 			questions.add(new Pergunta());
 		}
@@ -103,7 +98,7 @@ public class CadastroQuestionarioController extends CommonsController {
 			if (currentCalendar != null) {
 				currentSemester = dateFormat.format(currentCalendar
 						.getInicioSemestre())
-						+ " - "
+						+ " a "
 						+ dateFormat.format(currentCalendar.getFinalSemestre());
 				this.currentCalendar = currentCalendar;
 				return;
@@ -167,8 +162,14 @@ public class CadastroQuestionarioController extends CommonsController {
 			}
 
 		} else {
-			this.errors = questionarioBusiness.errors;
+			String errorMessage = "";
+			for (String error : questionarioBusiness.errors)
+				errorMessage += error;
+			Messagebox.show(errorMessage, "Dados insuficientes / inválidos",
+					Messagebox.OK, Messagebox.ERROR);
 			BindUtils.postNotifyChange(null, null, this, "errors");
+			errorMessage = "";
+			clearErrors();
 		}
 
 	}
@@ -180,7 +181,7 @@ public class CadastroQuestionarioController extends CommonsController {
 	}
 
 	public void clearErrors() {
-		errors.clear();
+		questionarioBusiness.errors.clear();
 		BindUtils.postNotifyChange(null, null, this, "errors");
 	}
 }

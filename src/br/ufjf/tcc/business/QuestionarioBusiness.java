@@ -1,8 +1,7 @@
 package br.ufjf.tcc.business;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.model.Pergunta;
@@ -11,7 +10,7 @@ import br.ufjf.tcc.model.Resposta;
 import br.ufjf.tcc.persistent.impl.QuestionarioDAO;
 
 public class QuestionarioBusiness {
-	public Map<String, String> errors = new HashMap<String, String>();
+	public List<String> errors = new ArrayList<String>();
 
 	// validação dos formulários
 	public boolean validate(Questionario questionary) {
@@ -25,19 +24,19 @@ public class QuestionarioBusiness {
 
 	public void validateCurso(Curso curso) {
 		if (curso == null)
-			errors.put("curso", "Selecione um curso");
+			errors.add("É necessário selecionar um curso");
 	}
 
 	public void validatePerguntas(List<Pergunta> questions) {
 		if (questions.size() > 0)
 			for(Pergunta p : questions) {
 					if (p.getPergunta() == null || p.getPergunta().trim().length() == 0) {
-						errors.put("perguntas", "Você não pode deixar perguntas em branco.");
+						errors.add("Você não pode deixar perguntas em branco.");
 						break;
 					}
 			}
 		else
-			errors.put("perguntas", "Você deve criar ao menos uma pergunta.");
+			errors.add("Você deve criar ao menos uma pergunta.");
 	}
 
 	// comunicação com o QuestionarioDAO
