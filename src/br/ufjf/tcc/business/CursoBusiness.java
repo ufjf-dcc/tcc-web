@@ -17,7 +17,7 @@ public class CursoBusiness {
 		validateCode(curso.getIdCurso(), action);
 		validateName(curso.getNomeCurso());
 
-		return errors.size() == 0 ? true : false;
+		return errors.size() == 0;
 	}
 
 	public void validateCode(int codigoCurso, int action) {

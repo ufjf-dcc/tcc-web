@@ -1,13 +1,20 @@
 package br.ufjf.tcc.controller;
 
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zul.Button;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Window;
 
 import br.ufjf.tcc.business.QuestionarioBusiness;
@@ -62,7 +69,13 @@ public class HomeProfessorController extends CommonsController {
 	public boolean isCurrentQuestionaryUsed() {
 		return currentQuestionaryUsed;
 	}
-
+	
+	@Command
+	public void getTCCDateApresentacao(@BindingParam("tcc") TCC tcc, @BindingParam("lbl") Label lbl) {
+		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy, hh:mm");
+		lbl.setValue(dateFormat.format(tcc.getDataApresentacao()));
+	}
+	
 	@Command
 	public void createQuestionary() {
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -74,7 +87,7 @@ public class HomeProfessorController extends CommonsController {
 	
 	@Command
 	public void createQuestionaryFromOld() {
-		final Window dialog = (Window) Executions.createComponents("/pages/lista-questionarios.zul",null , null);
+		final Window dialog = (Window) Executions.createComponents("/pages/lista-questionarios.zul", null , null);
 		dialog.doModal();
 	}
 	
@@ -85,8 +98,20 @@ public class HomeProfessorController extends CommonsController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("quest", currentQuestionary);
 		map.put("editing", true);
-		final Window dialog = (Window) Executions.createComponents("/pages/cadastro-questionario.zul",null , map);
+		final Window dialog = (Window) Executions.createComponents("/pages/cadastro-questionario.zul", null , map);
 		dialog.doModal();
+	}
+	
+	@Command
+	public void canAnswerTCC(@BindingParam("tcc") TCC tcc, @BindingParam("btn") Button btn) {
+		btn.setDisabled(tcc.getDataApresentacao().after(new Timestamp(new Date().getTime())));
+	}
+	
+	@Command
+	public void answerTCC(@BindingParam("tcc") TCC tcc) {
+		Map<String, TCC> map = new HashMap<String, TCC>();
+		map.put("tcc", tcc);
+		((Window) Executions.createComponents("/pages/preenche-questionario.zul", null, map)).doModal();
 	}
 	
 }

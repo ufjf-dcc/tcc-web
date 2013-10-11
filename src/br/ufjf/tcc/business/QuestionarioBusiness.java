@@ -19,7 +19,7 @@ public class QuestionarioBusiness {
 		validateCurso(questionary.getCurso());
 		validatePerguntas(questionary.getPerguntas());
 
-		return errors.size() == 0 ? true : false;
+		return errors.size() == 0;
 	}
 
 	public void validateCurso(Curso curso) {

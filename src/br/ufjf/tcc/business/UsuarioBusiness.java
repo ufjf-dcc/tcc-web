@@ -26,7 +26,7 @@ public class UsuarioBusiness {
 		validarMatricula(usuario.getMatricula(), action);
 		validarEmail(usuario.getEmail());
 
-		return errors.size() == 0 ? true : false;
+		return errors.size() == 0;
 	}
 
 	public void validarNome(String nomeUsuario) {

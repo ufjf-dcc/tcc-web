@@ -43,7 +43,7 @@
 				style="margin:10px" width="700px" mold="paging" autopaging="true"
 				vflex="true">
 				<auxhead sclass="text-center">
-					<auxheader colspan="3"
+					<auxheader colspan="4"
 						label="TCCs com sua participação" />
 				</auxhead>
 				<columns>
@@ -59,8 +59,12 @@
 					<row>
 						<label value="@load(each.aluno.nomeUsuario)" />
 						<label value="@load(each.nomeTCC)" />
-						<label value="@load(each.dataApresentacao)" />
-						<button label="Consultar..." onClick="@command('consult')"/>
+						<label onCreate="@command('getTCCDateApresentacao', tcc=each, lbl=self)" />
+						<div align="center">
+							<button label="Responder"
+								onClick="@command('answerTCC', tcc=each)"
+								onCreate="@command('canAnswerTCC', tcc=each, btn=self)" />
+						</div>
 					</row>
 				</template>
 			</grid>
