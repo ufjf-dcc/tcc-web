@@ -1,7 +1,8 @@
 package br.ufjf.tcc.persistent.impl;
 
 import java.util.Date;
-import java.util.List;
+
+import org.hibernate.Query;
 
 import br.ufjf.tcc.model.CalendarioSemestre;
 import br.ufjf.tcc.model.Curso;
@@ -13,17 +14,16 @@ public class CalendarioSemestreDAO extends GenericoDAO implements ICalendarioSem
 	
 	@Override
 	public CalendarioSemestre getCurrentCalendarByCurso (Curso curso) {
-		try {
-			CalendarioSemestre currentCalendar = null;			
-			Date currentDate = new Date();			
-			getSession().update(curso);
-			List<CalendarioSemestre> calendars = curso.getCalendarios();
-			for (CalendarioSemestre calendar : calendars) {
-				if (calendar.getFinalSemestre().after(currentDate)) {
-					currentCalendar = calendar;
-					break;
-				}
-			}
+		CalendarioSemestre currentCalendar = null;
+		try {	
+			Date currentDay = new Date();			
+			Query query = getSession()
+					.createQuery(
+							"SELECT c FROM CalendarioSemestre AS c WHERE c.curso = :curso AND c.inicioSemestre <= :currentDay AND c.finalSemestre >= :currentDay");
+			query.setParameter("currentDay", currentDay);
+			query.setParameter("curso", curso);
+			
+			currentCalendar = (CalendarioSemestre) query.uniqueResult();
 			
 			getSession().close();
 			return currentCalendar;
@@ -32,7 +32,7 @@ public class CalendarioSemestreDAO extends GenericoDAO implements ICalendarioSem
 			e.printStackTrace();
 		}
 		
-		return null;
+		return currentCalendar;
 	}
 
 }

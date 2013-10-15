@@ -6,6 +6,7 @@ import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
+import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.model.Permissoes;
 import br.ufjf.tcc.model.TCC;
 import br.ufjf.tcc.model.TipoUsuario;
@@ -41,12 +42,35 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<Usuario> getTodosUsuarios() {
+	public List<Usuario> getAll() {
 		try {
 			Query query = getSession()
 					.createQuery(
 							"select u from Usuario as u left join fetch u.curso join fetch u.tipoUsuario ORDER BY u.idUsuario");
 
+			List<Usuario> resultados = query.list();
+
+			getSession().close();
+
+			if (resultados != null)
+				return resultados;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<Usuario> getAllByCurso(Curso curso) {
+		try {
+			Query query = getSession()
+					.createQuery(
+							"SELECT u FROM Usuario AS u LEFT JOIN FETCH u.curso JOIN FETCH u.tipoUsuario WHERE u.curso = :curso ORDER BY u.idUsuario");
+			query.setParameter("curso", curso);
+			
 			List<Usuario> resultados = query.list();
 
 			getSession().close();

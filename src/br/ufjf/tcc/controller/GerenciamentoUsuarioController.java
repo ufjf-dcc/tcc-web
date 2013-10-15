@@ -1,7 +1,6 @@
 package br.ufjf.tcc.controller;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.hibernate.HibernateException;
@@ -9,7 +8,6 @@ import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
-import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
@@ -23,8 +21,8 @@ import br.ufjf.tcc.model.Usuario;
 
 public class GerenciamentoUsuarioController extends CommonsController {
 	private UsuarioBusiness usuarioBusiness = new UsuarioBusiness();
-	private List<Usuario> allUsuarios = usuarioBusiness.getTodosUsuarios();
-	private List<Usuario> usuarios = allUsuarios;
+	private List<Usuario> allUsuarios;
+	private List<Usuario> filterUsuarios;
 	private List<TipoUsuario> tiposUsuario = (new TipoUsuarioBusiness())
 			.getTiposUsuarios();
 	private List<Curso> cursos = this.getAllCursos();
@@ -35,6 +33,12 @@ public class GerenciamentoUsuarioController extends CommonsController {
 	public void init() throws HibernateException, Exception {
 		if (!checaPermissao("guc__"))
 			super.paginaProibida();
+		if (getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ADMINISTRADOR)
+			allUsuarios = usuarioBusiness.getAll();
+		else if (getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.COORDENADOR)
+			allUsuarios = usuarioBusiness.getAllByCurso(getUsuario().getCurso());
+			
+		filterUsuarios = allUsuarios;
 	}
 
 	private List<Curso> getAllCursos() {
@@ -55,8 +59,8 @@ public class GerenciamentoUsuarioController extends CommonsController {
 		return this.cursos;
 	}
 
-	public List<Usuario> getUsuarios() {
-		return usuarios;
+	public List<Usuario> getFilterUsuarios() {
+		return filterUsuarios;
 	}
 
 	@Command
@@ -114,9 +118,9 @@ public class GerenciamentoUsuarioController extends CommonsController {
 	}
 
 	public void removeFromList(Usuario usuario) {
-		usuarios.remove(usuario);
+		filterUsuarios.remove(usuario);
 		allUsuarios.remove(usuario);
-		BindUtils.postNotifyChange(null, null, this, "usuarios");
+		BindUtils.postNotifyChange(null, null, this, "filterUsuarios");
 	}
 
 	public void refreshRowTemplate(Usuario usuario) {
@@ -131,23 +135,20 @@ public class GerenciamentoUsuarioController extends CommonsController {
 		this.filterString = filterString;
 	}
 
-	@NotifyChange("usuarios")
 	@Command
 	public void filtra() {
-		List<Usuario> temp = new ArrayList<Usuario>();
 		String filter = filterString.toLowerCase().trim();
-		for (Iterator<Usuario> i = allUsuarios.iterator(); i.hasNext();) {
-			Usuario tmp = i.next();
-			if (tmp.getNomeUsuario().toLowerCase().contains(filter)
-					|| tmp.getEmail().toLowerCase().contains(filter)
-					|| tmp.getMatricula().toLowerCase().contains(filter)
-					|| (tmp.getCurso() != null && tmp.getCurso().getNomeCurso()
+		filterUsuarios = new ArrayList<Usuario>();
+		for (Usuario u : allUsuarios) {
+			if (u.getNomeUsuario().toLowerCase().contains(filter)
+					|| u.getEmail().toLowerCase().contains(filter)
+					|| u.getMatricula().toLowerCase().contains(filter)
+					|| (u.getCurso() != null && u.getCurso().getNomeCurso()
 							.toLowerCase().contains(filter))) {
-				temp.add(tmp);
+				filterUsuarios.add(u);
 			}
 		}
-
-		usuarios = temp;
+		BindUtils.postNotifyChange(null, null, this, "filterUsuarios");
 	}
 
 	@Command
@@ -168,7 +169,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 			if (usuarioBusiness.salvar(novoUsuario)) {
 				allUsuarios.add(novoUsuario);
 				this.filtra();
-				BindUtils.postNotifyChange(null, null, this, "usuarios");
+				BindUtils.postNotifyChange(null, null, this, "filterUsuarios");
 				Messagebox.show("Usuário adicionado com sucesso!", "Sucesso",
 						Messagebox.OK, Messagebox.EXCLAMATION);
 				this.limpa();

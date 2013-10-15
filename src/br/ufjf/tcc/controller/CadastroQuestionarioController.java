@@ -11,7 +11,6 @@ import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
-import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
@@ -68,8 +67,7 @@ public class CadastroQuestionarioController extends CommonsController {
 
 	@Init
 	public void init(@ExecutionArgParam("curso") Curso curso,
-			@ExecutionArgParam("quest") Questionario q, @ExecutionArgParam("editing") boolean editing,
-			@BindingParam("cmb") Combobox cmbCurso) {
+			@ExecutionArgParam("quest") Questionario q, @ExecutionArgParam("editing") boolean editing) {
 		this.editing = editing;
 		
 		if (q != null) {
@@ -79,11 +77,12 @@ public class CadastroQuestionarioController extends CommonsController {
 		} else {
 			if (curso != null) {
 				questionary.setCurso(curso);
-				//cmbCurso.setText(getUsuario().getCurso().getNomeCurso());
+				semester();
 			}
 
 			questions.add(new Pergunta());
 		}
+		
 	}
 
 	@NotifyChange("currentSemester")

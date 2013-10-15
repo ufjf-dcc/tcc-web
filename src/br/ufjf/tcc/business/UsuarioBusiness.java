@@ -10,6 +10,7 @@ import jonelo.jacksum.algorithm.AbstractChecksum;
 import org.hibernate.HibernateException;
 
 import br.ufjf.tcc.library.SessionManager;
+import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.model.Permissoes;
 import br.ufjf.tcc.model.Usuario;
 import br.ufjf.tcc.persistent.impl.UsuarioDAO;
@@ -96,11 +97,14 @@ public class UsuarioBusiness {
 		}
 	}
 
-	public List<Usuario> getTodosUsuarios() {
+	public List<Usuario> getAll() {
 		UsuarioDAO usuarioDAO = new UsuarioDAO();
-		List<Usuario> resultados = usuarioDAO.getTodosUsuarios();
-
-		return resultados;
+		return usuarioDAO.getAll();
+	}
+	
+	public List<Usuario> getAllByCurso(Curso curso) {
+		UsuarioDAO usuarioDAO = new UsuarioDAO();
+		return usuarioDAO.getAllByCurso(curso);
 	}
 
 	public List<Permissoes> getPermissoes(Usuario usuario) {

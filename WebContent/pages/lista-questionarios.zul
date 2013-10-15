@@ -1,11 +1,11 @@
 <zk>
-	<window id="listquest" title="Questionários anteriores"
+	<window id="listquest" title="Questionários"
 		width="300px" border="normal" position="center,top"
 		style="margin-top: 100px;" closable="true"
 		apply="org.zkoss.bind.BindComposer"
 		viewModel="@id('vm') @init('br.ufjf.tcc.controller.ListaQuestionariosController', cmb=cmbCurso)">
 
-		<grid model="@load(vm.questionaries)">
+		<grid model="@load(vm.questionaries)" emptyMessage="Não existem questionários antigos">
 			<template name="model">
 				<row
 					onClick="@command('select', quest=each, window=listquest)">
