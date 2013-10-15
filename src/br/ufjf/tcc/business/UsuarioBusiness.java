@@ -6,9 +6,6 @@ import java.util.List;
 
 import jonelo.jacksum.JacksumAPI;
 import jonelo.jacksum.algorithm.AbstractChecksum;
-
-import org.hibernate.HibernateException;
-
 import br.ufjf.tcc.library.SessionManager;
 import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.model.Permissoes;
@@ -31,33 +28,26 @@ public class UsuarioBusiness {
 	}
 
 	public void validarNome(String nomeUsuario) {
-		if (nomeUsuario == null)
-			errors.add("É necessário informar o nome;\n");
-		else if (nomeUsuario.trim().length() == 0)
+		if (nomeUsuario == null || nomeUsuario.trim().length() == 0)
 			errors.add("É necessário informar o nome;\n");
 	}
 
 	public void validarMatricula(String matricula, int action) {
-		if (matricula == null)
-			errors.add("É necessário informar a matrícula;\n");
-		else if (matricula.trim().length() == 0)
+		if (matricula == null || matricula.trim().length() == 0)
 			errors.add("É necessário informar a matrícula;\n");
 		else if (action == ADICAO)
 			jaExiste(matricula);
 	}
 
 	public void validarEmail(String email) {
-		if (email == null)
-			errors.add("É necessário informar o e-mail;\n");
-		else if (email.trim().length() == 0)
+		if (email == null || email.trim().length() == 0)
 			errors.add("É necessário informar o e-mail;\n");
 		else if (email == null || !email.matches(".+@.+\\.[a-z]+"))
 			errors.add("Informe um e-mail válido;\n");
 	}
 
 	// comunicação com o UsuarioDAO
-	public boolean login(String matricula, String senha)
-			throws HibernateException, Exception {
+	public boolean login(String matricula, String senha) {
 		UsuarioDAO usuarioDAO = new UsuarioDAO();
 		Usuario usuario = usuarioDAO.retornaUsuario(matricula,
 				this.encripta(senha));
@@ -70,8 +60,7 @@ public class UsuarioBusiness {
 		return false;
 	}
 
-	public boolean checaLogin(Usuario usuario) throws HibernateException,
-			Exception {
+	public boolean checaLogin(Usuario usuario) {
 		if (usuario != null) {
 			UsuarioDAO usuarioDAO = new UsuarioDAO();
 			usuario = usuarioDAO.retornaUsuario(usuario.getMatricula(),
@@ -101,7 +90,7 @@ public class UsuarioBusiness {
 		UsuarioDAO usuarioDAO = new UsuarioDAO();
 		return usuarioDAO.getAll();
 	}
-	
+
 	public List<Usuario> getAllByCurso(Curso curso) {
 		UsuarioDAO usuarioDAO = new UsuarioDAO();
 		return usuarioDAO.getAllByCurso(curso);
@@ -150,7 +139,8 @@ public class UsuarioBusiness {
 		return jaExiste;
 	}
 
-	public Usuario update(Usuario usuario, boolean curso, boolean tipo, boolean participacoes) {
+	public Usuario update(Usuario usuario, boolean curso, boolean tipo,
+			boolean participacoes) {
 		UsuarioDAO usuarioDAO = new UsuarioDAO();
 		return usuarioDAO.update(usuario, curso, tipo, participacoes);
 	}

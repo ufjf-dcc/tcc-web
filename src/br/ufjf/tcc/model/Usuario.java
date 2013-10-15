@@ -236,4 +236,19 @@ public class Usuario implements Serializable {
 		this.editingStatus = editingStatus;
 	}
 
+	public void copy(Usuario another) {
+		this.idUsuario = another.idUsuario;
+		this.matricula = another.matricula;
+		this.senha = another.senha;
+		this.email = another.email;
+		this.nomeUsuario = another.nomeUsuario;
+		this.titulacao = another.titulacao;
+		this.tipoUsuario = another.tipoUsuario;
+		this.curso = another.curso;
+		this.tcc = another.tcc;
+		this.orienta = another.orienta;
+		this.participacoes = another.participacoes;
+		this.editingStatus = another.editingStatus;
+	}
+	
 }

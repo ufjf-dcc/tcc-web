@@ -1,7 +1,9 @@
 package br.ufjf.tcc.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.hibernate.HibernateException;
 import org.zkoss.bind.BindUtils;
@@ -23,6 +25,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 	private UsuarioBusiness usuarioBusiness = new UsuarioBusiness();
 	private List<Usuario> allUsuarios;
 	private List<Usuario> filterUsuarios;
+	private Map<Integer, Usuario> editTemp = new HashMap<Integer, Usuario>();
 	private List<TipoUsuario> tiposUsuario = (new TipoUsuarioBusiness())
 			.getTiposUsuarios();
 	private List<Curso> cursos = this.getAllCursos();
@@ -36,8 +39,9 @@ public class GerenciamentoUsuarioController extends CommonsController {
 		if (getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ADMINISTRADOR)
 			allUsuarios = usuarioBusiness.getAll();
 		else if (getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.COORDENADOR)
-			allUsuarios = usuarioBusiness.getAllByCurso(getUsuario().getCurso());
-			
+			allUsuarios = usuarioBusiness
+					.getAllByCurso(getUsuario().getCurso());
+
 		filterUsuarios = allUsuarios;
 	}
 
@@ -65,7 +69,16 @@ public class GerenciamentoUsuarioController extends CommonsController {
 
 	@Command
 	public void changeEditableStatus(@BindingParam("usuario") Usuario usuario) {
-		usuario.setEditingStatus(!usuario.getEditingStatus());
+		if (!usuario.getEditingStatus()) {
+			Usuario temp = new Usuario();
+			temp.copy(usuario);
+			editTemp.put(usuario.getIdUsuario(), temp);
+			usuario.setEditingStatus(true);
+		} else {
+			usuario.copy(editTemp.get(usuario.getIdUsuario()));
+			editTemp.remove(usuario.getIdUsuario());
+			usuario.setEditingStatus(false);
+		}
 		refreshRowTemplate(usuario);
 	}
 
@@ -75,7 +88,8 @@ public class GerenciamentoUsuarioController extends CommonsController {
 			if (!usuarioBusiness.editar(usuario))
 				Messagebox.show("Não foi possível editar o usuário.", "Erro",
 						Messagebox.OK, Messagebox.ERROR);
-			changeEditableStatus(usuario);
+			editTemp.remove(usuario.getIdUsuario());
+			usuario.setEditingStatus(false);
 			refreshRowTemplate(usuario);
 		} else {
 			String errorMessage = "";
@@ -84,7 +98,6 @@ public class GerenciamentoUsuarioController extends CommonsController {
 			Messagebox.show(errorMessage, "Dados insuficientes / inválidos",
 					Messagebox.OK, Messagebox.ERROR);
 			BindUtils.postNotifyChange(null, null, this, "errors");
-			errorMessage = "";
 			clearErrors();
 		}
 	}
@@ -185,7 +198,6 @@ public class GerenciamentoUsuarioController extends CommonsController {
 			Messagebox.show(errorMessage, "Dados insuficientes / inválidos",
 					Messagebox.OK, Messagebox.ERROR);
 			BindUtils.postNotifyChange(null, null, this, "errors");
-			errorMessage = "";
 			clearErrors();
 		}
 	}
