@@ -49,7 +49,7 @@ public class QuestionarioDAO extends GenericoDAO implements IQuestionarioDAO {
 		List<Questionario> results = null;
 		try {
 			Query query = getSession().createQuery(
-					"select q from Questionario q where q.curso = :curso");
+					"SELECT q FROM Questionario q JOIN FETCH q.calendarioSemestre WHERE q.curso = :curso");
 			query.setParameter("curso", curso);
 			
 			results = query.list();
