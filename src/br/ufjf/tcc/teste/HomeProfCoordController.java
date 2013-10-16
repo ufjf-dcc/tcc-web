@@ -37,7 +37,6 @@ import br.ufjf.tcc.model.Usuario;
 
 public class HomeProfCoordController extends CommonsController {
 	private List<TCC> tccs = new ArrayList<TCC>();
-	private Usuario professor = null;
 	private Questionario currentQuestionary;
 	private boolean currentQuestionaryExists = true,
 			currentQuestionaryUsed = true;
@@ -58,34 +57,29 @@ public class HomeProfCoordController extends CommonsController {
 	@Init
 	public void init() {
 		if (getUsuario().getTipoUsuario().getIdTipoUsuario() < Usuario.PROFESSOR
-				&& !checaPermissao("hc__"))
+				&& !checaPermissao("hpc__"))
 			super.paginaProibida();
-
 		else {
-			professor = getUsuario();
+			Usuario professor = getUsuario();
 			new UsuarioBusiness().update(professor, true, false, true);
 			for (Participacao p : professor.getParticipacoes()) {
 				new TCCBusiness().update(p.getTcc(), true, true, false);
 				tccs.add(p.getTcc());
 			}
+
+			currentQuestionary = new QuestionarioBusiness()
+					.getCurrentQuestionaryByCurso(professor.getCurso());
+
+			if (currentQuestionary == null)
+				currentQuestionaryExists = false;
+
+			currentQuestionaryUsed = new QuestionarioBusiness()
+					.isQuestionaryUsed(currentQuestionary);
 		}
-
-		currentQuestionary = new QuestionarioBusiness()
-				.getCurrentQuestionaryByCurso(professor.getCurso());
-
-		if (currentQuestionary == null)
-			currentQuestionaryExists = false;
-
-		currentQuestionaryUsed = new QuestionarioBusiness()
-				.isQuestionaryUsed(currentQuestionary);
 	}
 
 	public List<TCC> getTccs() {
 		return tccs;
-	}
-
-	public Usuario getProfessor() {
-		return professor;
 	}
 
 	public boolean isCurrentQuestionaryExists() {
@@ -127,7 +121,7 @@ public class HomeProfCoordController extends CommonsController {
 	public boolean isAdmin() {
 		return admin;
 	}
-	
+
 	public List<Questionario> getQuestionaries() {
 		return questionaries;
 	}
@@ -163,7 +157,8 @@ public class HomeProfCoordController extends CommonsController {
 	}
 
 	@Command
-	public void createQuestionaryFromOld(@BindingParam("window") Window listquest) {
+	public void createQuestionaryFromOld(
+			@BindingParam("window") Window listquest) {
 		listquest.doModal();
 	}
 

@@ -21,15 +21,15 @@
 				model="@load(vm.permissions)" style="margin:10px"
 				autopaging="true">
 				<listhead>
-					<listheader label="Código" align="center" />
-					<listheader label="Descrição" align="center" />
-					<listheader label="(Des)Ativada" align="center" />
+					<listheader label="Código" align="center" hflex="1" />
+					<listheader label="Descrição" align="center" hflex="5" />
+					<listheader label="(Des)Ativada" align="center" hflex="1" />
 				</listhead>
 				<template name="model" var="permission">
 					<listitem>
 						<listcell
 							label="@load(permission.nomePermissao)" />
-						<listcell label="Descrição" />
+						<listcell label="Descrição da permissão" />
 						<listcell>
 							<checkbox onCreate="@command('verify', permissionName=permission.nomePermissao, checkbox=self)"
 							onCheck="@command('edit', permission=permission, checkbox=self)" />

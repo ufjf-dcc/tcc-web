@@ -26,12 +26,15 @@ public class QuestionarioDAO extends GenericoDAO implements IQuestionarioDAO {
 
 			CalendarioSemestre currentCalendar = new CalendarioSemestreBusiness()
 					.getCurrentCalendarByCurso(curso);
+			System.out.println("cal "+currentCalendar.getIdCalendarioSemestre());
 
 			for (Questionario q : results) {
+				System.out.println("quest "+q.getCalendarioSemestre().getIdCalendarioSemestre());
 				if (q.getCalendarioSemestre().getIdCalendarioSemestre() == currentCalendar
-						.getIdCalendarioSemestre())
+						.getIdCalendarioSemestre()) {
 					questionary = q;
-				break;
+					break;
+				}
 			}
 
 			getSession().close();

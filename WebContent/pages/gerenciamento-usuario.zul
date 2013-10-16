@@ -45,19 +45,19 @@
 			</columns>
 			<template name="editable">
 				<row>
-					<label value="@load(each.idUsuario)" />
+					<label value="@load(each.idUsuario)" width="100%" />
 
 					<textbox
-						value="@load(each.matricula) @save(each.matricula, before='confirm')" />
+						value="@load(each.matricula) @save(each.matricula, before='confirm')" width="100%" />
 
 					<textbox
-						value="@load(each.nomeUsuario) @save(each.nomeUsuario, before='confirm')" />
+						value="@load(each.nomeUsuario) @save(each.nomeUsuario, before='confirm')" width="100%" />
 
 					<textbox
-						value="@load(each.email) @save(each.email, before='confirm')" />
+						value="@load(each.email) @save(each.email, before='confirm')" width="100%" />
 
 
-					<combobox width="150px" readonly="true"
+					<combobox readonly="true" width="100%"
 						value="@load(each.curso.nomeCurso ne null ? each.curso.nomeCurso : 'Nenhum')"
 						model="@load(vm.cursos)"
 						selectedItem="@load(each.curso) @save(each.curso, before='confirm')">
@@ -67,9 +67,9 @@
 					</combobox>
 
 					<textbox
-						value="@load(each.titulacao) @save(each.titulacao, before='confirm')" />
+						value="@load(each.titulacao) @save(each.titulacao, before='confirm')" width="100%" />
 
-					<combobox width="150px" readonly="true"
+					<combobox readonly="true" width="100%"
 						value="@load(each.tipoUsuario.nomeTipoUsuario)"
 						model="@load(vm.tiposUsuario)"
 						selectedItem="@bind(each.tipoUsuario)">

@@ -15,26 +15,26 @@
 				<rows>
 					<row
 						visible="@load(vm.currentQuestionaryExists ? 'false' : 'true')">
-						<vlayout>
+						<div align="center">
 							<label
 								value="O seu curso ainda não possui um questionário para o semestre atual." />
 							<hlayout>
 								<button label="Criar"
 									onClick="@command('createQuestionary')" />
 								<button
-									label="Criar a partir de um antigo"
+									label="Criar a partir de antigo"
 									onClick="@command('createQuestionaryFromOld')" />
 							</hlayout>
-						</vlayout>
+						</div>
 					</row>
 					<row
 						visible="@load(vm.currentQuestionaryExists ? (vm.currentQuestionaryUsed ? 'false' : 'true') : 'false')">
-						<vlayout>
+						<div align="center">
 							<label
 								value="Como o questionário atual ainda não foi utilizado, você pode editá-lo." />
 							<button label="Editar questionário"
 								onClick="@command('editQuestionary')" />
-						</vlayout>
+						</div>
 					</row>
 				</rows>
 			</grid>
@@ -49,11 +49,11 @@
 				<columns>
 					<column label="Aluno" hflex="1"
 						sort="auto(tcc.aluno.nomeUsuario)" />
-					<column label="Nome" hflex="3"
+					<column label="Nome" hflex="2"
 						sort="auto(tcc.nomeTCC)" />
 					<column label="Data de Apresentação" hflex="1"
 						sort="auto(tcc.dataApresentacao)" />
-					<column label="Ação" hflex="1" />
+					<column label="Ação" width="100px" />
 				</columns>
 				<template name="tccs">
 					<row>

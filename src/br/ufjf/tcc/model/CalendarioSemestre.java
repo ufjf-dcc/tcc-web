@@ -64,7 +64,7 @@ public class CalendarioSemestre implements Serializable {
 	 * {@code @Column(name = "nomeCalendarioSemestre", nullable = false)}.
 	 */
 	@Column(name = "nomeCalendarioSemestre", nullable = false)
-	private int nomeCalendarioSemestre;
+	private String nomeCalendarioSemestre;
 
 	/**
 	 * Relacionamento N para 1 entre CalendarioSemestre e Curso. Mapeando
@@ -112,11 +112,11 @@ public class CalendarioSemestre implements Serializable {
 		this.finalSemestre = finalSemestre;
 	}
 
-	public int getNomeCalendarioSemestre() {
+	public String getNomeCalendarioSemestre() {
 		return nomeCalendarioSemestre;
 	}
 
-	public void setNomeCalendarioSemestre(int nomeCalendarioSemestre) {
+	public void setNomeCalendarioSemestre(String nomeCalendarioSemestre) {
 		this.nomeCalendarioSemestre = nomeCalendarioSemestre;
 	}
 

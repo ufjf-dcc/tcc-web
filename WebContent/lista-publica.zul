@@ -112,7 +112,8 @@
 			ser, por exemplo:
 			<ul><li>Autor ou orientador;</li>
 			<li>Nome do TCC;</li>
-			<li>Palavra-chave.</li>
+			<li>Palavra-chave;</li>
+			<li>Conteúdo dos resumos.</li>
 			<ul>]]>
 		</html>
 	</popup>
