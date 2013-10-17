@@ -63,8 +63,8 @@
 				<column hflex="13" label="NomeTCC" sort="auto(nomeTCC)" />
 				<column hflex="4" label="Autor"
 					sort="auto(aluno.nomeUsuario)" />
-				<column width="75px" label="PDF" />
-				<column width="75px" label="Extras" />
+				<column hflex="1" label="PDF" />
+				<column hflex="1" label="Extras" />
 			</columns>
 			<template name="lista">
 				<row>

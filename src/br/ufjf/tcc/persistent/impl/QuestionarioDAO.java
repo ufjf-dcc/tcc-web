@@ -1,11 +1,10 @@
 package br.ufjf.tcc.persistent.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Query;
 
-import br.ufjf.tcc.business.CalendarioSemestreBusiness;
-import br.ufjf.tcc.model.CalendarioSemestre;
 import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.model.Questionario;
 import br.ufjf.tcc.persistent.GenericoDAO;
@@ -17,25 +16,13 @@ public class QuestionarioDAO extends GenericoDAO implements IQuestionarioDAO {
 	public Questionario getCurrentQuestionaryByCurso(Curso curso) {
 		Questionario questionary = null;
 		try {
+			Date currentDay = new Date();
 			Query query = getSession().createQuery(
-					"select q from Questionario q where q.curso = :curso");
+					"SELECT q FROM Questionario q JOIN FETCH q.calendarioSemestre as c WHERE q.curso = :curso  AND c.inicioSemestre <= :currentDay AND c.finalSemestre >= :currentDay");
+			query.setParameter("currentDay", currentDay);
 			query.setParameter("curso", curso);
 
-			@SuppressWarnings("unchecked")
-			List<Questionario> results = query.list();
-
-			CalendarioSemestre currentCalendar = new CalendarioSemestreBusiness()
-					.getCurrentCalendarByCurso(curso);
-			System.out.println("cal "+currentCalendar.getIdCalendarioSemestre());
-
-			for (Questionario q : results) {
-				System.out.println("quest "+q.getCalendarioSemestre().getIdCalendarioSemestre());
-				if (q.getCalendarioSemestre().getIdCalendarioSemestre() == currentCalendar
-						.getIdCalendarioSemestre()) {
-					questionary = q;
-					break;
-				}
-			}
+			questionary = (Questionario) query.uniqueResult();
 
 			getSession().close();
 
