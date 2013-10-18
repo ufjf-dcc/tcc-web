@@ -15,7 +15,6 @@ public class CursoDAO extends GenericoDAO implements ICursoDAO {
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<Curso> buscar(String expressão) {
-		System.out.println(expressão);
 		Session session = null;
 		try {
 			session = HibernateUtil.getInstance();

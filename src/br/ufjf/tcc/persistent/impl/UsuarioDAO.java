@@ -108,7 +108,6 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<Usuario> buscar(String expressão) {
-		System.out.println(expressão);
 		Session session = null;
 		try {
 			session = HibernateUtil.getInstance();

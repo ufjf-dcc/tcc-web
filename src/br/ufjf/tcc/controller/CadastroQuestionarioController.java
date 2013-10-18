@@ -120,6 +120,24 @@ public class CadastroQuestionarioController extends CommonsController {
 		if (editing)
 			questionsToDelete.add(question);
 	}
+	
+	@NotifyChange("questions")
+	@Command
+	public void questionUp (@BindingParam("question") Pergunta question) {		
+		int index = questions.indexOf(question);
+		Pergunta aux = questions.get(index-1);
+		questions.set(index-1, question);
+		questions.set(index, aux);
+	}
+	
+	@NotifyChange("questions")
+	@Command
+	public void questionDown (@BindingParam("question") Pergunta question) {		
+		int index = questions.indexOf(question);
+		Pergunta aux = questions.get(index+1);
+		questions.set(index+1, question);
+		questions.set(index, aux);
+	}
 
 	@Command
 	public void submit(@BindingParam("window") Window window) {

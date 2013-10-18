@@ -55,6 +55,14 @@ public class Pergunta implements Serializable {
 	 */
 	@Column(name = "ordem", nullable = false)
 	private int ordem;
+	
+	/**
+	 * Campo com o valor da pergunta. Relaciona com a coluna {@code valor} do
+	 * banco através da anotação
+	 * {@code @Column(name = "valor", nullable = false)}.
+	 */
+	@Column(name = "valor", nullable = false)
+	private int valor;
 
 	/**
 	 * Relacionamento N para 1 entre Pergunta e Questionario. Mapeando
@@ -99,6 +107,14 @@ public class Pergunta implements Serializable {
 
 	public void setOrdem(int ordem) {
 		this.ordem = ordem;
+	}
+	
+	public int getValor() {
+		return valor;
+	}
+
+	public void setValor(int valor) {
+		this.valor = valor;
 	}
 
 	public Questionario getQuestionario() {
