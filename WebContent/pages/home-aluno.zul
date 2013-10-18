@@ -3,7 +3,7 @@
 <zk>
 	<style src="/style.css" />
 	<div apply="org.zkoss.bind.BindComposer" align="center"
-		viewModel="@id('vm') @init('br.ufjf.tcc.teste.HomeAlunoController')">
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.HomeAlunoController')">
 		<include src="@load(vm.menu)" />
 		<vlayout spacing="0" width="550px">
 
@@ -47,7 +47,7 @@
 						<label value="@load(each.date)"
 							style="@load(each.isCurrent ? 'font-weight:bold;' : '')" />
 						<label value="@load(each.description)"
-							style="@load(each.isCurrent ? 'font-weight:bold; color:#dee132;' : '')" />
+							style="@load(each.isCurrent ? 'font-weight:bold;' : '')" />
 						<button label="@load(each.action)"
 							onClick="@command('action', date=each)"
 							disabled="@load(not each.isCurrent)" />
@@ -56,5 +56,4 @@
 			</grid>
 		</vlayout>
 	</div>
-	Página provisória e inacabada exibida para alunos.
 </zk>

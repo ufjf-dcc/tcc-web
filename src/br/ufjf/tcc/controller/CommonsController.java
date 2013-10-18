@@ -61,7 +61,7 @@ public class CommonsController {
 			page = "/pages/home-professor.zul";
 			break;
 		default:
-			page = "/tests/home-aluno.zul";
+			page = "/pages/home-aluno.zul";
 		}
 			
 		Executions.sendRedirect(page);

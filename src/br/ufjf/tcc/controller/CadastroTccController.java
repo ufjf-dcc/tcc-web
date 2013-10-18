@@ -12,9 +12,16 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Properties;
+
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
@@ -34,9 +41,10 @@ import br.ufjf.tcc.model.Usuario;
 public class CadastroTccController extends CommonsController {
 
 	private TCC newTcc = new TCC();
-	private List<Usuario> orientadores = new UsuarioBusiness().getOrientadores();
-	private Map<String, String> errors = new HashMap<String, String>();
-	private static final String SAVE_PATH = Sessions.getCurrent().getWebApp().getRealPath("/")
+	private List<Usuario> orientadores = new UsuarioBusiness()
+			.getOrientadores();
+	private static final String SAVE_PATH = Sessions.getCurrent().getWebApp()
+			.getRealPath("/")
 			+ "/files/";
 
 	public TCC getNewTcc() {
@@ -50,17 +58,14 @@ public class CadastroTccController extends CommonsController {
 	public List<Usuario> getOrientadores() {
 		return orientadores;
 	}
-	
-	public Map<String, String> getErrors() {
-		return this.errors;
-	}
 
 	@Command("upload")
 	public void upload(@BindingParam("evt") UploadEvent evt,
 			@BindingParam("lbl") Label lbl) {
 		Media media = evt.getMedia();
 		if (!media.getName().contains("pdf")) {
-			Messagebox.show("Este não é um arquivo válido! Apenas PDF são aceitos.");
+			Messagebox
+					.show("Este não é um arquivo válido! Apenas PDF são aceitos.");
 			return;
 		}
 
@@ -76,10 +81,10 @@ public class CadastroTccController extends CommonsController {
 				baseDir.mkdirs();
 			}
 
-			String newFileName = encriptFile(""+System.currentTimeMillis());
+			String newFileName = encriptFile("" + System.currentTimeMillis());
 			if (newFileName != null) {
 				newTcc.setArquivoTCCBanca(newFileName);
-				
+
 				File file = new File(SAVE_PATH + newFileName);
 
 				OutputStream fout = new FileOutputStream(file);
@@ -118,20 +123,57 @@ public class CadastroTccController extends CommonsController {
 		newTcc.setAluno(getUsuario());
 		if (tccBusiness.validate(newTcc)) {
 			if (tccBusiness.save(newTcc)) {
-				Messagebox.show("\"" + newTcc.getNomeTCC() + "\" cadastrado com sucesso!");
-				limpa();
+				sendMail();
+				Messagebox.show("\"" + newTcc.getNomeTCC()
+						+ "\" cadastrado com sucesso!\nUma mensagem de confirmação foi enviada para o seu e-mail.");
+				limpa(tccBusiness);
 				window.detach();
 			} else {
-				Messagebox.show("TCC não cadastrado!", "Erro",
-						Messagebox.OK, Messagebox.ERROR);
-				clearErrors();
+				Messagebox.show("Devido a um erro, o TCC não foi cadastrado.",
+						"Erro", Messagebox.OK, Messagebox.ERROR);
 			}
 		} else {
-			this.errors = tccBusiness.errors;
-			BindUtils.postNotifyChange(null, null, this, "errors");
-			if (errors.containsKey("data"))
-				Messagebox.show("O prazo já expirou!", "Prazo",
-						Messagebox.OK, Messagebox.EXCLAMATION);
+			String errorMessage = "";
+			for (String error : tccBusiness.errors)
+				errorMessage += error;
+			Messagebox.show(errorMessage, "Dados insuficientes / inválidos",
+					Messagebox.OK, Messagebox.ERROR);
+			clearErrors(tccBusiness);
+		}
+	}
+
+	public void sendMail() {
+		final String username = "email";
+		final String password = "senha";
+
+		Properties props = new Properties();
+		props.put("mail.smtp.auth", "true");
+		props.put("mail.smtp.starttls.enable", "true");
+		props.put("mail.smtp.host", "smtp.gmail.com");
+		props.put("mail.smtp.port", "587");
+
+		Session session = Session.getInstance(props,
+				new javax.mail.Authenticator() {
+					protected PasswordAuthentication getPasswordAuthentication() {
+						return new PasswordAuthentication(username, password);
+					}
+				});
+
+		try {
+			Message message = new MimeMessage(session);
+			message.setFrom(new InternetAddress("jorge.smrr@gmail.com"));
+			message.setRecipients(Message.RecipientType.TO,
+					InternetAddress.parse("alu@no, orien@tador"));
+			message.setSubject("Confirmação de envio de TCC");
+			message.setText("Prezado(a) " + newTcc.getAluno().getNomeUsuario() + ",\n\n"
+					+ "Você enviou o TCC \"" + newTcc.getNomeTCC() + "\" com sucesso para o nosso sistema.\n\n"
+					+ "Atenciosamente,\n"
+					+ "(...)");
+
+			Transport.send(message);
+
+		} catch (MessagingException e) {
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -147,16 +189,15 @@ public class CadastroTccController extends CommonsController {
 
 		return null;
 	}
-	
-	public void limpa() {
-		clearErrors();
+
+	public void limpa(TCCBusiness tccBusiness) {
+		clearErrors(tccBusiness);
 		newTcc = new TCC();
 		BindUtils.postNotifyChange(null, null, this, "newTcc");
 	}
-	
-	public void clearErrors() {
-		errors.clear();
-		BindUtils.postNotifyChange(null, null, this, "errors");
+
+	public void clearErrors(TCCBusiness tccBusiness) {
+		tccBusiness.errors.clear();
 	}
 
 }

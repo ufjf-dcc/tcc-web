@@ -1,4 +1,4 @@
-package br.ufjf.tcc.teste;
+package br.ufjf.tcc.controller;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,7 +14,6 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.Window;
 
 import br.ufjf.tcc.business.CalendarioSemestreBusiness;
-import br.ufjf.tcc.controller.CommonsController;
 import br.ufjf.tcc.model.CalendarioSemestre;
 
 public class HomeAlunoController extends CommonsController {

@@ -1,9 +1,8 @@
 package br.ufjf.tcc.business;
 
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.joda.time.DateTime;
 import org.joda.time.Days;
@@ -14,29 +13,30 @@ import br.ufjf.tcc.model.Usuario;
 import br.ufjf.tcc.persistent.impl.TCCDAO;
 
 public class TCCBusiness {
-	public Map<String, String> errors = new HashMap<String, String>();
+	public List<String> errors = new ArrayList<String>();
 
 	// validação dos formulários
 	public boolean validate(TCC tcc) {
 		errors.clear();
 
+		validateDate(tcc);
 		validateName(tcc.getNomeTCC());
 		validateOrientador(tcc.getOrientador());
-		validateDate(tcc);
+		validateFile(tcc.getArquivoTCCBanca());
 
 		return errors.size() == 0 ? true : false;
 	}
 
 	public void validateName(String nomeTCC) {
 		if (nomeTCC == null)
-			errors.put("nomeTCC", "Informe o nome");
+			errors.add("Informe o nome do TCC;\n");
 		else if (nomeTCC.trim().length() == 0)
-			errors.put("nomeTCC", "Informe o nome");
+			errors.add("Informe o nome do TCC;\n");
 	}
 
 	public void validateOrientador(Usuario orientador) {
 		if (orientador == null)
-			errors.put("orientador", "Informe o orientador");
+			errors.add("Informe o seu orientador;\n");
 	}
 
 	// Exemplo para verificar se está dentro do prazo de envio de TCCs
@@ -46,7 +46,12 @@ public class TCCBusiness {
 				.getFinalSemestre();
 		if (Days.daysBetween(new DateTime(new Date()),
 				new DateTime(finalDateSemester)).getDays() > 90)
-			errors.put("data", "O prazo já expirou!");
+			errors.add("O prazo para o envio já expirou!\n");
+	}
+	
+	public void validateFile(String fileName) {
+		if (fileName == null || fileName.trim().length() == 0)
+			errors.add("Envie o arquivo do TCC (PDF);\n");
 	}
 
 	public List<TCC> getPublicListByCurso(Curso curso) {

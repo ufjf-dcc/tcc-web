@@ -54,8 +54,6 @@ public class GerenciamentoCursoController extends CommonsController {
 				errorMessage += error;
 			Messagebox.show(errorMessage, "Dados insuficientes / inválidos",
 					Messagebox.OK, Messagebox.ERROR);
-			BindUtils.postNotifyChange(null, null, this, "errors");
-			errorMessage = "";
 			clearErrors();
 		}
 	}
@@ -153,8 +151,6 @@ public class GerenciamentoCursoController extends CommonsController {
 				errorMessage += error;
 			Messagebox.show(errorMessage, "Dados insuficientes / inválidos",
 					Messagebox.OK, Messagebox.ERROR);
-			BindUtils.postNotifyChange(null, null, this, "errors");
-			errorMessage = "";
 			clearErrors();
 		}
 	}
@@ -167,7 +163,6 @@ public class GerenciamentoCursoController extends CommonsController {
 
 	public void clearErrors() {
 		cursoBusiness.errors.clear();
-		BindUtils.postNotifyChange(null, null, this, "errors");
 	}
 
 }

@@ -2,8 +2,8 @@
 <?init class="br.ufjf.tcc.controller.AuthController"?>
 <zk>
 	<window id="cadtcc" title="Cadastrar TCC" width="300px"
-		border="normal" position="center,top" style="margin-top: 100px;"
-		closable="true" apply="org.zkoss.bind.BindComposer"
+		border="normal" position="center,center" closable="true"
+		apply="org.zkoss.bind.BindComposer"
 		viewModel="@id('vm') @init('br.ufjf.tcc.controller.CadastroTccController')"
 		form="@id('tcc') @load(vm.newTcc) @save(vm.newTcc, before='submit')">
 		<grid>
@@ -17,8 +17,6 @@
 					<div>
 						<textbox value="@bind(tcc.nomeTCC)"
 							width="100%" />
-						<label class="error"
-							value="@load(vm.errors['nomeTCC'])" />
 					</div>
 				</row>
 				<row>
@@ -28,18 +26,13 @@
 				</row>
 				<row>
 					<label value="Orientador: " />
-					<div>
-						<combobox id="cmbOrientadores" width="100%"
-							model="@load(vm.orientadores)" readonly="true"
-							selectedItem="@load(vm.newTcc.orientador) @save(vm.newTcc.orientador, before='submit')">
-							<template name="model">
-								<comboitem
-									label="@load(each.nomeUsuario)" />
-							</template>
-						</combobox>
-						<label class="error"
-							value="@load(vm.errors['orientador'])" />
-					</div>
+					<combobox id="cmbOrientadores" width="100%"
+						model="@load(vm.orientadores)" readonly="true"
+						selectedItem="@load(vm.newTcc.orientador) @save(vm.newTcc.orientador, before='submit')">
+						<template name="model">
+							<comboitem label="@load(each.nomeUsuario)" />
+						</template>
+					</combobox>
 				</row>
 				<row>
 					<label value="Resumo: " />

@@ -97,7 +97,6 @@ public class GerenciamentoUsuarioController extends CommonsController {
 				errorMessage += error;
 			Messagebox.show(errorMessage, "Dados insuficientes / inválidos",
 					Messagebox.OK, Messagebox.ERROR);
-			BindUtils.postNotifyChange(null, null, this, "errors");
 			clearErrors();
 		}
 	}
@@ -197,7 +196,6 @@ public class GerenciamentoUsuarioController extends CommonsController {
 				errorMessage += error;
 			Messagebox.show(errorMessage, "Dados insuficientes / inválidos",
 					Messagebox.OK, Messagebox.ERROR);
-			BindUtils.postNotifyChange(null, null, this, "errors");
 			clearErrors();
 		}
 	}
@@ -210,6 +208,5 @@ public class GerenciamentoUsuarioController extends CommonsController {
 
 	public void clearErrors() {
 		usuarioBusiness.errors.clear();
-		BindUtils.postNotifyChange(null, null, this, "errors");
 	}
 }
