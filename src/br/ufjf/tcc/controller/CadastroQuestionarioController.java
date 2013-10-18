@@ -184,8 +184,6 @@ public class CadastroQuestionarioController extends CommonsController {
 				errorMessage += error;
 			Messagebox.show(errorMessage, "Dados insuficientes / inválidos",
 					Messagebox.OK, Messagebox.ERROR);
-			BindUtils.postNotifyChange(null, null, this, "errors");
-			errorMessage = "";
 			clearErrors();
 		}
 
@@ -199,6 +197,5 @@ public class CadastroQuestionarioController extends CommonsController {
 
 	public void clearErrors() {
 		questionarioBusiness.errors.clear();
-		BindUtils.postNotifyChange(null, null, this, "errors");
 	}
 }

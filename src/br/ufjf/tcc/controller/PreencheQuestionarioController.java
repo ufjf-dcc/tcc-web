@@ -7,7 +7,6 @@ import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
-import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
@@ -20,71 +19,55 @@ import br.ufjf.tcc.model.Resposta;
 import br.ufjf.tcc.model.TCC;
 
 public class PreencheQuestionarioController extends CommonsController {
-	private List<QuestionAnswer> qas = new ArrayList<QuestionAnswer>();
-	private List<Pergunta> questions;
+	private List<Resposta> answers = new ArrayList<Resposta>();
 	private TCC tcc;
-
-	public List<QuestionAnswer> getQas() {
-		return qas;
-	}
 
 	@Init
 	public void init(@ExecutionArgParam("tcc") TCC tcc) {
 		this.tcc = tcc;
 
-		questions = new PerguntaBusiness()
+		List<Pergunta> questions = new PerguntaBusiness()
 				.getQuestionsByQuestionary(new QuestionarioBusiness()
 						.getCurrentQuestionaryByCurso(tcc.getAluno().getCurso()));
 
 		for (Pergunta question : questions) {
 			Resposta answer = new Resposta();
 			answer.setPergunta(question);
-			qas.add(new QuestionAnswer(question, answer));
+			answers.add(answer);
 		}
+	}
+	
+	public List<Resposta> getAnswers() {
+		return answers;
 	}
 
 	@Command
-	public void submit(@BindingParam("checkbox") Checkbox ckb, @BindingParam("window") Window window) {
+	public void submit(@BindingParam("window") Window window) {
 		RespostaBusiness respostaBusiness = new RespostaBusiness();
-		float media = 0;
-		for (int i = 0; i < qas.size(); i++) {
-			Resposta answer = qas.get(i).answer;
-			media += answer.getResposta();
-			respostaBusiness.save(answer);
+		float sum = 0;
+		for (Resposta a : answers) {
+			if (respostaBusiness.validate(a)) {
+				sum += a.getResposta();
+				respostaBusiness.save(a);
+			} else {
+				String errorMessage = "";
+				for (String error : respostaBusiness.errors)
+					errorMessage += error;
+				Messagebox.show(errorMessage, "Dados insuficientes / inválidos",
+						Messagebox.OK, Messagebox.ERROR);
+				clearErrors(respostaBusiness);
+				return;
+			}
 		}
 
-		media /= qas.size();
-		tcc.setConceitoFinal(media);
+		tcc.setConceitoFinal(sum);
 		new TCCBusiness().edit(tcc);
 
-		Messagebox.show("Conceito final: " + media);
+		Messagebox.show("Conceito final: " + sum);
 		window.detach();
 	}
-
-	public class QuestionAnswer {
-		private Pergunta question;
-		private Resposta answer;
-
-		protected QuestionAnswer(Pergunta q, Resposta a) {
-			this.question = q;
-			this.answer = a;
-		}
-
-		public Pergunta getQuestion() {
-			return question;
-		}
-
-		public void setQuestion(Pergunta question) {
-			this.question = question;
-		}
-
-		public Resposta getAnswer() {
-			return answer;
-		}
-
-		public void setAnswer(Resposta answer) {
-			this.answer = answer;
-		}
-
+	
+	public void clearErrors(RespostaBusiness respostaBusiness) {
+		respostaBusiness.errors.clear();
 	}
 }

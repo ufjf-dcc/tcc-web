@@ -1,24 +1,26 @@
-
 <zk>
-	<window id="prquest" title="Cadastrar Respostas" width="500px" border="normal"
-		position="center,center" closable="true"
+	<window id="prquest" title="Cadastrar Respostas" width="500px"
+		border="normal" position="center,center" closable="true"
 		apply="org.zkoss.bind.BindComposer"
 		viewModel="@id('vm') @init('br.ufjf.tcc.controller.PreencheQuestionarioController')">
-		<grid model="@load(vm.qas)" style="margin:10px;">
+		<grid model="@load(vm.answers)" style="margin:10px;">
 			<columns>
 				<column />
-				<column width="125px"/>
+				<column width="125px" />
 			</columns>
 			<template name="model">
 				<row>
 					<hlayout>
 						<label
 							value="Pergunta ${forEachStatus.index + 1}: " />
-						<label value="@bind(each.question.pergunta)" />
+						<label value="@load(each.pergunta.pergunta)" />
+						<label value=" (" />
+						<label value="@load(each.pergunta.valor)" />
+						<label value=" pts )" />
 					</hlayout>
 					<hlayout>
 						<label value="Resposta: " />
-						<textbox value="@bind(each.answer.resposta)"
+						<textbox value="@bind(each.resposta)"
 							width="95%" />
 					</hlayout>
 				</row>
@@ -26,7 +28,7 @@
 		</grid>
 		<div align="center">
 			<button label="Cadastrar Respostas"
-				onClick="@command('submit', checkbox=ativo, window=prquest)"
+				onClick="@command('submit', window=prquest)"
 				style="margin-bottom:10px;" />
 		</div>
 	</window>
