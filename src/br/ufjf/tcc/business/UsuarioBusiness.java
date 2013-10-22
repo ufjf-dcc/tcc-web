@@ -47,7 +47,9 @@ public class UsuarioBusiness {
 	}
 	
 	public void validatePasswords(String password, String retype) {
-        if(password == null || retype == null || (!password.equals(retype))) {
+		if (password == null || password.trim().length() == 0 || retype == null || retype.trim().length() == 0)
+			errors.add("A senha não pode estar em branco;\n");
+        if((!password.equals(retype))) {
         	errors.add("As senhas não são iguais. Tente novamente.\n");
         }
     }
@@ -149,6 +151,11 @@ public class UsuarioBusiness {
 			boolean participacoes) {
 		UsuarioDAO usuarioDAO = new UsuarioDAO();
 		return usuarioDAO.update(usuario, curso, tipo, participacoes);
+	}
+	
+	public Usuario getByEmailAndMatricula(String email, String matricula) {
+		UsuarioDAO usuarioDAO = new UsuarioDAO();
+		return usuarioDAO.getByEmailAndMatricula(email, matricula);
 	}
 
 }

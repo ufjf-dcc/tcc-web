@@ -10,6 +10,7 @@ import br.ufjf.tcc.model.Usuario;
 
 public interface IUsuarioDAO {
 	public Usuario retornaUsuario(String matricula, String senha) throws HibernateException, Exception;
+	public Usuario getByEmailAndMatricula(String email, String matricula);
 	public List<Usuario> getAll();
 	public List<Usuario> getAllByCurso(Curso curso);
 	public boolean jaExiste (String matricula);

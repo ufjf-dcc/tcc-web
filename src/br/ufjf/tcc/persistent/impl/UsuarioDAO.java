@@ -39,6 +39,29 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 
 		return null;
 	}
+	
+	@Override
+	public Usuario getByEmailAndMatricula(String email, String matricula) {
+		try {
+			Query query = getSession()
+					.createQuery(
+							"select u from Usuario as u where u.email = :email AND u.matricula = :matricula");
+			query.setParameter("email", email);
+			query.setParameter("matricula", matricula);
+
+			Usuario resultado = (Usuario) query.uniqueResult();
+
+			getSession().close();
+
+			if (resultado != null)
+				return resultado;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
 
 	@Override
 	@SuppressWarnings("unchecked")

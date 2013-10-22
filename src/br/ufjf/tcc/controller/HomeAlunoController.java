@@ -32,33 +32,38 @@ public class HomeAlunoController extends CommonsController {
 		CalendarioSemestre currentCalendar = new CalendarioSemestreBusiness()
 				.getCurrentCalendarByCurso(getUsuario().getCurso());
 
-		DateTime finalDate = new DateTime(currentCalendar.getFinalSemestre());
+		if (currentCalendar != null) {
+			DateTime finalDate = new DateTime(currentCalendar.getFinalSemestre());
 
-		DateTimeFormatter fmt = DateTimeFormat.forPattern("dd/MM/yyyy");
+			DateTimeFormatter fmt = DateTimeFormat.forPattern("dd/MM/yyyy");
 
-		DateTime date0 = finalDate.minusDays(90);
-		dates.add(new CustomDate(fmt.print(date0),
-				"Prazo para envio de TCC", "Enviar TCC", false));
+			DateTime date0 = finalDate.minusDays(90);
+			dates.add(new CustomDate(fmt.print(date0),
+					"Prazo para envio de TCC", "Enviar TCC", false));
 
-		DateTime date1 = finalDate.minusDays(60);
-		dates.add(new CustomDate(fmt.print(date1), "Prazo 1", "Botão 1", false));
+			DateTime date1 = finalDate.minusDays(60);
+			dates.add(new CustomDate(fmt.print(date1), "Prazo 1", "Botão 1",
+					false));
 
-		DateTime date2 = finalDate.minusDays(30);
-		dates.add(new CustomDate(fmt.print(date2), "Prazo 2", "Botão 2", false));
+			DateTime date2 = finalDate.minusDays(30);
+			dates.add(new CustomDate(fmt.print(date2), "Prazo 2", "Botão 2",
+					false));
 
-		DateTime date3 = finalDate.minusDays(10);
-		dates.add(new CustomDate(fmt.print(date3), "Prazo 3", "Botão 3", false));
+			DateTime date3 = finalDate.minusDays(10);
+			dates.add(new CustomDate(fmt.print(date3), "Prazo 3", "Botão 3",
+					false));
 
-		DateTime currentDay = new DateTime(new Date());
+			DateTime currentDay = new DateTime(new Date());
 
-		if (currentDay.isAfter(date3))
-			dates.get(3).setIsCurrent(true);
-		else if (currentDay.isAfter(date2))
-			dates.get(2).setIsCurrent(true);
-		else if (currentDay.isAfter(date1))
-			dates.get(1).setIsCurrent(true);
-		else
-			dates.get(0).setIsCurrent(true);
+			if (currentDay.isAfter(date3))
+				dates.get(3).setIsCurrent(true);
+			else if (currentDay.isAfter(date2))
+				dates.get(2).setIsCurrent(true);
+			else if (currentDay.isAfter(date1))
+				dates.get(1).setIsCurrent(true);
+			else
+				dates.get(0).setIsCurrent(true);
+		}
 	}
 
 	@Command

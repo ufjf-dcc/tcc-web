@@ -12,6 +12,7 @@ import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
@@ -189,13 +190,23 @@ public class GerenciamentoUsuarioController extends CommonsController {
 		if (usuarioBusiness.validate(newUsuario, UsuarioBusiness.ADICAO)) {
 			String newPassword = generatePassword();
 			newUsuario.setSenha(usuarioBusiness.encripta(newPassword));
-			if (usuarioBusiness.salvar(newUsuario)) {
+			if (usuarioBusiness.salvar(newUsuario)) {				
+				if (!sendMail(newPassword)) {
+					Messagebox
+					.show("O sistema não conseguiu enviar o e-mail de confirmação. Tente novamente.",
+							"Erro", Messagebox.OK,
+							Messagebox.ERROR);
+					usuarioBusiness.exclui(newUsuario);
+					return;
+				}
+					
+				Messagebox
+						.show("Usuário adicionado com sucesso! Um e-mail de confirmação foi enviado.",
+								"Sucesso", Messagebox.OK,
+								Messagebox.INFORMATION);
 				allUsuarios.add(newUsuario);
 				this.filtra();
 				BindUtils.postNotifyChange(null, null, this, "filterUsuarios");
-				sendMail(newPassword);
-				Messagebox.show("Usuário adicionado com sucesso! Um e-mail de confirmação foi enviado.", "Sucesso",
-						Messagebox.OK, Messagebox.EXCLAMATION);
 				this.limpa();
 			} else {
 				Messagebox.show("Usuário não foi adicionado!", "Erro",
@@ -221,10 +232,10 @@ public class GerenciamentoUsuarioController extends CommonsController {
 	public void clearErrors() {
 		usuarioBusiness.errors.clear();
 	}
-	
-	public void sendMail(String newPassword) {
-		final String mailUsername = "ttest4318@gmail.com";
-		final String mailPassword = "t1c2c3t4";
+
+	public boolean sendMail(String newPassword) {
+		final String mailUsername = "email";
+		final String mailPassword = "senha";
 
 		Properties props = new Properties();
 		props.put("mail.smtp.auth", "true");
@@ -235,43 +246,47 @@ public class GerenciamentoUsuarioController extends CommonsController {
 		Session session = Session.getInstance(props,
 				new javax.mail.Authenticator() {
 					protected PasswordAuthentication getPasswordAuthentication() {
-						return new PasswordAuthentication(mailUsername, mailPassword);
+						return new PasswordAuthentication(mailUsername,
+								mailPassword);
 					}
 				});
 
+		Message message = new MimeMessage(session);
 		try {
-			Message message = new MimeMessage(session);
 			message.setFrom(new InternetAddress("ttest4318@gmail.com"));
 			message.setRecipients(Message.RecipientType.TO,
 					InternetAddress.parse(newUsuario.getEmail()));
 			message.setSubject("Confirmação de cadastro");
-			message.setText("Prezado(a) " + newUsuario.getNomeUsuario() + ",\n\n"
+			message.setText("Prezado(a) "
+					+ newUsuario.getNomeUsuario()
+					+ ",\n\n"
 					+ "Você foi cadastrado no sistema de envio de TCCs da UFJF. "
 					+ "Segue, abaixo, a sua senha de acesso. "
 					+ "Recomendamos que a altere no primeiro acesso ao sistema.\n"
-					+ newPassword + "\n\n"
-					+ "Atenciosamente,\n"
-					+ "(...)");
+					+ newPassword + "\n\n" + "Atenciosamente,\n" + "(...)");
 
 			Transport.send(message);
-
+			return true;
+		} catch (AddressException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} catch (MessagingException e) {
-			throw new RuntimeException(e);
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		return false;
 	}
 
 	private String generatePassword() {
-		final String charset = "!@#$%^&*()" +
-    	        "0123456789" +
-    	        "abcdefghijklmnopqrstuvwxyz" +
-    	        "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    	
-        Random rand = new Random(System.currentTimeMillis());
-        StringBuffer sb = new StringBuffer();
-        for (int i = 0; i <= 10; i++ ) { //gera uma senha de 10 caracteres
-            int pos = rand.nextInt(charset.length());
-            sb.append(charset.charAt(pos));
-        }
-        return sb.toString();
+		final String charset = "!@#$%^&*()" + "0123456789"
+				+ "abcdefghijklmnopqrstuvwxyz" + "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+		Random rand = new Random(System.currentTimeMillis());
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i <= 10; i++) { // gera uma senha de 10 caracteres
+			int pos = rand.nextInt(charset.length());
+			sb.append(charset.charAt(pos));
+		}
+		return sb.toString();
 	}
 }

@@ -1,49 +1,71 @@
 <?page title="Login"?>
 <zk>
-	<div
+	<div align="center" apply="org.zkoss.bind.BindComposer"
+		viewModel="@id('lf') @init('br.ufjf.tcc.controller.LoginController')"
+		form="@id('fx') @load(lf.usuarioForm) @save(lf.usuarioForm, before='submit')"
+		id="loginForm"
 		style="position:absolute; top:50%;
 margin-top:-92px; left:50%; margin-left:-150px;">
-		<div align="center" apply="org.zkoss.bind.BindComposer"
-			viewModel="@id('lf') @init('br.ufjf.tcc.controller.LoginController')"
-			form="@id('fx') @load(lf.usuarioForm) @save(lf.usuarioForm, before='submit')"
-			id="loginForm">
-			<panel title="Login" height="183px" width="300px"
-				border="normal">
-				<panelchildren>
-					<grid>
-						<columns>
-							<column hflex="1" />
-							<column hflex="2" />
-						</columns>
-						<rows>
-							<row>
-								<label value="Matricula: " />
-								<textbox value="@bind(fx.matricula)"
-									 id="loginMatricula" />
-							</row>
-							<row>
-								<label value="Senha " />
-								<textbox value="@bind(fx.senha)"
-									type="password" id="loginSenha" />
-							</row>
-						</rows>
-					</grid>
-					<grid>
-						<rows>
-							<row>
-								<button label="Efetuar login"
-						onClick="@command('submit')" width="100%" height="30px" />
-							</row>
-							<row>
-								<button label="Lista Pública de Monografias"
-						width="100%" height="30px" href="/lista-publica.zul"
+		<panel title="Login" width="300px" border="normal">
+			<panelchildren>
+				<grid>
+					<columns>
+						<column hflex="1" />
+						<column hflex="2" />
+					</columns>
+					<rows>
+						<row>
+							<label value="Matricula: " />
+							<textbox value="@bind(fx.matricula)"
+								id="loginMatricula" width="95%" />
+						</row>
+						<row>
+							<label value="Senha " />
+							<textbox value="@bind(fx.senha)"
+								type="password" id="loginSenha" width="95%" />
+						</row>
+					</rows>
+				</grid>
+				<vlayout>
+					<hlayout style="margin:5px;">
+						<button label="Efetuar login"
+							onClick="@command('submit')" hflex="1" />
+						<button label="Esqueci a senha..."
+							onClick="@command('forgotPassword', window=forgot)" hflex="1" />
+					</hlayout>
+					<button label="Lista Pública de Monografias"
+						href="/lista-publica.zul" style="margin-bottom:5px;"
 						target="_blank" />
-							</row>
-						</rows>
-					</grid>
-				</panelchildren>
-			</panel>
-
-		</div>
+				</vlayout>
+			</panelchildren>
+		</panel>
+		<window id="forgot" title="Esqueceu a senha?" visible="false"
+			width="350px" border="normal" position="center,center"
+			closable="true"
+			onClose="self.setVisible(false); event.stopPropagation();">
+			<label
+				value="Digite o seu e-mail e matrícula para que possamos lhe enviar uma nova senha:" />
+			<grid>
+				<columns>
+					<column width="70px" />
+					<column />
+				</columns>
+				<rows>
+					<row>
+						<label value="E-mail:" />
+						<textbox id="email" width="100%" />
+					</row>
+					<row>
+						<label value="Matrícula:" />
+						<textbox id="matricula" width="100%" />
+					</row>
+				</rows>
+			</grid>
+			<div align="center">
+				<button label="Enviar"
+					onClick="@command('sendMail', email=email.value, matricula=matricula.value, window=forgot)"
+					width="75px" style="margin-top:5px" />
+			</div>
+		</window>
 	</div>
 </zk>

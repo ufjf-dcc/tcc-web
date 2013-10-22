@@ -1,7 +1,7 @@
 <?page title="Confirmação de Cadastro" contentType="text/html;charset=UTF-8"?>
 <?init class="br.ufjf.tcc.controller.AuthController"?>
 <zk>
-	<window id="settings" title="Configurações da Conta" width="300px"
+	<window id="settings" title="Configurações da Conta" width="350px"
 		border="normal" position="center,center" closable="true"
 		apply="org.zkoss.bind.BindComposer"
 		viewModel="@id('vm') @init('br.ufjf.tcc.controller.ConfiguracoesController')">
@@ -18,7 +18,7 @@
 				</row>
 			</rows>
 		</grid>
-		<div align="center">
+		<div align="center" style="margin-top:3px;">
 			<button label="Salvar"
 				onClick="@command('updateSettings', pswd1=pswd1.value, pswd2=pswd2.value, window=settings)" />
 		</div>
