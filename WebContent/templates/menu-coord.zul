@@ -4,9 +4,14 @@
 		form="@id('fx') @load(hf.usuario)">
 		<menubar id="menubar" width="100%">
 			<menuitem label="Home" href="/pages/home-professor.zul" />
-			<menuitem label="Alunos orientados" href="/pages/alunos-orientados.zul" />
-			<menuitem label="Gerenciar alunos do curso" href="/pages/gerenciamento-usuario.zul" />
-			<menuitem label="Cadastrar questionário" href="/pages/cadastro-questionario.zul" />
+			<menuitem label="Alunos orientados"
+				href="/pages/alunos-orientados.zul" />
+			<menuitem label="Gerenciar alunos do curso"
+				href="/pages/gerenciamento-usuario.zul" />
+			<menuitem label="Cadastrar questionário"
+				href="/pages/cadastro-questionario.zul" />
+			<menuitem label="Configurações"
+				onClick="@command('settings')" />
 			<menuitem label="Sair" onClick="@command('sair')" />
 		</menubar>
 	</div>

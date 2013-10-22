@@ -51,10 +51,9 @@ public class CommonsController {
 	}
 	
 	public void redirectHome () {
-		int tipoUsuario = getUsuario().getTipoUsuario().getIdTipoUsuario();		
 		String page;
 		
-		switch (tipoUsuario) {
+		switch (getUsuario().getTipoUsuario().getIdTipoUsuario()) {
 		case 4:
 		case 3:
 		case 2:

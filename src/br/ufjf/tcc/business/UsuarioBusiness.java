@@ -45,6 +45,12 @@ public class UsuarioBusiness {
 		else if (email == null || !email.matches(".+@.+\\.[a-z]+"))
 			errors.add("Informe um e-mail válido;\n");
 	}
+	
+	public void validatePasswords(String password, String retype) {
+        if(password == null || retype == null || (!password.equals(retype))) {
+        	errors.add("As senhas não são iguais. Tente novamente.\n");
+        }
+    }
 
 	// comunicação com o UsuarioDAO
 	public boolean login(String matricula, String senha) {

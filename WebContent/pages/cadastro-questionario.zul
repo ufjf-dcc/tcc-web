@@ -2,7 +2,7 @@
 	<window id="cadquest" title="Cadastrar Questionário" width="600px"
 		border="normal" position="center,center" closable="true"
 		apply="org.zkoss.bind.BindComposer"
-		viewModel="@id('vm') @init('br.ufjf.tcc.controller.CadastroQuestionarioController', cmbCurso=cmbCurso)">
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.CadastroQuestionarioController')">
 
 		<vlayout style="margin:10px;">
 

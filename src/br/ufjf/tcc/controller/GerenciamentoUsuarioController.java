@@ -4,6 +4,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
+import java.util.Random;
+
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 import org.hibernate.HibernateException;
 import org.zkoss.bind.BindUtils;
@@ -30,7 +40,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 			.getTiposUsuarios();
 	private List<Curso> cursos = this.getAllCursos();
 	private String filterString = "";
-	private Usuario novoUsuario;
+	private Usuario newUsuario;
 
 	@Init
 	public void init() throws HibernateException, Exception {
@@ -169,20 +179,22 @@ public class GerenciamentoUsuarioController extends CommonsController {
 		window.doModal();
 	}
 
-	public Usuario getNovoUsuario() {
-		return this.novoUsuario;
+	public Usuario getNewUsuario() {
+		return this.newUsuario;
 	}
 
 	@Command
 	public void submit() {
-		// implementar senha aleatória
-		novoUsuario.setSenha(usuarioBusiness.encripta("123"));
-		if (usuarioBusiness.validate(novoUsuario, UsuarioBusiness.ADICAO)) {
-			if (usuarioBusiness.salvar(novoUsuario)) {
-				allUsuarios.add(novoUsuario);
+		newUsuario.setSenha(usuarioBusiness.encripta("123"));
+		if (usuarioBusiness.validate(newUsuario, UsuarioBusiness.ADICAO)) {
+			String newPassword = generatePassword();
+			newUsuario.setSenha(usuarioBusiness.encripta(newPassword));
+			if (usuarioBusiness.salvar(newUsuario)) {
+				allUsuarios.add(newUsuario);
 				this.filtra();
 				BindUtils.postNotifyChange(null, null, this, "filterUsuarios");
-				Messagebox.show("Usuário adicionado com sucesso!", "Sucesso",
+				sendMail(newPassword);
+				Messagebox.show("Usuário adicionado com sucesso! Um e-mail de confirmação foi enviado.", "Sucesso",
 						Messagebox.OK, Messagebox.EXCLAMATION);
 				this.limpa();
 			} else {
@@ -202,11 +214,64 @@ public class GerenciamentoUsuarioController extends CommonsController {
 
 	public void limpa() {
 		clearErrors();
-		novoUsuario = new Usuario();
-		BindUtils.postNotifyChange(null, null, this, "novoUsuario");
+		newUsuario = new Usuario();
+		BindUtils.postNotifyChange(null, null, this, "newUsuario");
 	}
 
 	public void clearErrors() {
 		usuarioBusiness.errors.clear();
+	}
+	
+	public void sendMail(String newPassword) {
+		final String mailUsername = "ttest4318@gmail.com";
+		final String mailPassword = "t1c2c3t4";
+
+		Properties props = new Properties();
+		props.put("mail.smtp.auth", "true");
+		props.put("mail.smtp.starttls.enable", "true");
+		props.put("mail.smtp.host", "smtp.gmail.com");
+		props.put("mail.smtp.port", "587");
+
+		Session session = Session.getInstance(props,
+				new javax.mail.Authenticator() {
+					protected PasswordAuthentication getPasswordAuthentication() {
+						return new PasswordAuthentication(mailUsername, mailPassword);
+					}
+				});
+
+		try {
+			Message message = new MimeMessage(session);
+			message.setFrom(new InternetAddress("ttest4318@gmail.com"));
+			message.setRecipients(Message.RecipientType.TO,
+					InternetAddress.parse(newUsuario.getEmail()));
+			message.setSubject("Confirmação de cadastro");
+			message.setText("Prezado(a) " + newUsuario.getNomeUsuario() + ",\n\n"
+					+ "Você foi cadastrado no sistema de envio de TCCs da UFJF. "
+					+ "Segue, abaixo, a sua senha de acesso. "
+					+ "Recomendamos que a altere no primeiro acesso ao sistema.\n"
+					+ newPassword + "\n\n"
+					+ "Atenciosamente,\n"
+					+ "(...)");
+
+			Transport.send(message);
+
+		} catch (MessagingException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private String generatePassword() {
+		final String charset = "!@#$%^&*()" +
+    	        "0123456789" +
+    	        "abcdefghijklmnopqrstuvwxyz" +
+    	        "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    	
+        Random rand = new Random(System.currentTimeMillis());
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i <= 10; i++ ) { //gera uma senha de 10 caracteres
+            int pos = rand.nextInt(charset.length());
+            sb.append(charset.charAt(pos));
+        }
+        return sb.toString();
 	}
 }
