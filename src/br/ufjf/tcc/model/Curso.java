@@ -7,10 +7,13 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import org.hibernate.annotations.GenericGenerator;
 
 /**
  * DTO da Tabela {@code Curso} contém os atributos e relacionamentos da mesma.
@@ -31,8 +34,18 @@ public class Curso implements Serializable {
 	 */
 	@Id
 	@Column(name = "idCurso", unique = true, nullable = false)
+	@GeneratedValue(generator = "increment")
+	@GenericGenerator(name = "increment", strategy = "increment")
 	private int idCurso;
 
+	/**
+	 * Campo com o nome do curso. Relaciona com a coluna {@code nomeCurso} do
+	 * banco através da anotação
+	 * {@code @Column(name = "codigoCurso", length = 80, nullable = false)}.
+	 */
+	@Column(name = "codigoCurso", length = 50, nullable = false)
+	private String codigoCurso;
+	
 	/**
 	 * Campo com o nome do curso. Relaciona com a coluna {@code nomeCurso} do
 	 * banco através da anotação
@@ -81,13 +94,21 @@ public class Curso implements Serializable {
 	public void setIdCurso(int idCurso) {
 		this.idCurso = idCurso;
 	}
-
+	
 	public String getNomeCurso() {
 		return nomeCurso;
 	}
 
 	public void setNomeCurso(String nomeCurso) {
 		this.nomeCurso = nomeCurso;
+	}
+
+	public String getCodigoCurso() {
+		return codigoCurso;
+	}
+
+	public void setCodigoCurso(String codigoCurso) {
+		this.codigoCurso = codigoCurso;
 	}
 
 	public List<Usuario> getUsuarios() {

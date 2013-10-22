@@ -32,10 +32,10 @@ public class CursoDAO extends GenericoDAO implements ICursoDAO {
 	}
 	
 	@Override
-	public boolean jaExiste (int idCurso) {
+	public boolean jaExiste (String codigoCurso) {
 		try {
-			Query query = getSession().createQuery("select c from Curso c where c.idCurso = :idCurso");
-			query.setParameter("idCurso", idCurso);
+			Query query = getSession().createQuery("select c from Curso c where c.codigoCurso = :codigoCurso");
+			query.setParameter("codigoCurso", codigoCurso);
 			
 			boolean resultado = query.list().size() > 0 ? true : false;
 			

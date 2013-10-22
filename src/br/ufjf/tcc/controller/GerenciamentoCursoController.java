@@ -1,7 +1,6 @@
 package br.ufjf.tcc.controller;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.hibernate.HibernateException;
@@ -9,7 +8,6 @@ import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
-import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
@@ -105,19 +103,16 @@ public class GerenciamentoCursoController extends CommonsController {
 		this.filterString = filterString;
 	}
 
-	@NotifyChange("cursos")
 	@Command
 	public void filtra() {
-		List<Curso> temp = new ArrayList<Curso>();
+		cursos = new ArrayList<Curso>();
 		String filter = filterString.toLowerCase().trim();
-		for (Iterator<Curso> i = allCursos.iterator(); i.hasNext();) {
-			Curso tmp = i.next();
-			if (tmp.getNomeCurso().toLowerCase().contains(filter)) {
-				temp.add(tmp);
+		for (Curso c : allCursos) {
+			if (c.getNomeCurso().toLowerCase().contains(filter)) {
+				cursos.add(c);
 			}
 		}
-
-		cursos = temp;
+		BindUtils.postNotifyChange(null, null, this, "cursos");
 	}
 
 	@Command

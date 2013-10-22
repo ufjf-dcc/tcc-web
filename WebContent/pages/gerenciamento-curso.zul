@@ -39,7 +39,7 @@
 			<template name="editable">
 				<row>
 					<textbox
-						value="@load(each.idCurso) @save(each.idCurso, before='confirm')" />
+						value="@load(each.codigoCurso) @save(each.codigoCurso, before='confirm')" />
 					<textbox
 						value="@load(each.nomeCurso) @save(each.nomeCurso, before='confirm')" />
 					<div>
@@ -52,7 +52,7 @@
 			</template>
 			<template name="noneditable">
 				<row>
-					<label value="@load(each.idCurso)" />
+					<label value="@load(each.codigoCurso)" />
 					<label value="@load(each.nomeCurso)" />
 					<div>
 						<button image="/img/edit.gif"
@@ -74,10 +74,10 @@
 				</columns>
 				<rows>
 					<row>
-						<label value="Id do Curso (> 0):" />
+						<label value="Código do Curso:" />
 						<textbox
-							value="@load(vm.novoCurso.idCurso) @save(vm.novoCurso.idCurso, before='submit')"
-							tabindex="1" id="idCurso" width="100%" />
+							value="@load(vm.novoCurso.codigoCurso) @save(vm.novoCurso.codigoCurso, before='submit')"
+							tabindex="1" id="codigoCurso" width="100%" />
 					</row>
 					<row>
 						<label value="Nome do Curso:*" />

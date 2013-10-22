@@ -6,5 +6,5 @@ import br.ufjf.tcc.model.Curso;
 
 public interface ICursoDAO {
 	public List<Curso> buscar(String expressão);	
-	public boolean jaExiste (int idCurso);
+	public boolean jaExiste (String codigoCurso);
 }

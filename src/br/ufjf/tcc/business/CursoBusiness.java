@@ -14,23 +14,21 @@ public class CursoBusiness {
 	public boolean validate(Curso curso, int action) {
 		errors.clear();
 
-		validateCode(curso.getIdCurso(), action);
+		validateCode(curso.getCodigoCurso(), action);
 		validateName(curso.getNomeCurso());
 
 		return errors.size() == 0;
 	}
 
-	public void validateCode(int codigoCurso, int action) {
-		if (codigoCurso <= 0)
-			errors.add("O código do curso deve ser maior que zero;\n");
+	public void validateCode(String codigoCurso, int action) {
+		if (codigoCurso == null || codigoCurso.trim().length() == 0)
+			errors.add("É necessário informar o código do curso;\n");
 		else if (action == ADICAO)
 			jaExiste(codigoCurso);
 	}
 
 	public void validateName(String nomeCurso) {
-		if (nomeCurso == null)
-			errors.add("É necessário informar o nome do curso;\n");
-		else if (nomeCurso.trim().length() == 0)
+		if (nomeCurso == null || nomeCurso.trim().length() == 0)
 			errors.add("É necessário informar o nome do curso;\n");
 	}
 
@@ -65,7 +63,7 @@ public class CursoBusiness {
 		return cursoDAO.exclui(curso);
 	}
 
-	public boolean jaExiste(int codigoCurso) {
+	public boolean jaExiste(String codigoCurso) {
 		CursoDAO cursoDAO = new CursoDAO();
 		boolean resultado = cursoDAO.jaExiste(codigoCurso);
 		if (resultado)
