@@ -1,0 +1,83 @@
+<?page title="PDF" contentType="text/html;charset=UTF-8"?>
+<?script content="zk.useStack='auto'" ?>
+<zk>
+	<style src="/style.css" />
+	<div apply="org.zkoss.bind.BindComposer"
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.VisualizaTCCController')"
+		height="100%">
+		<div align="center">
+			<menubar>
+				<menuitem label="Voltar" href="/lista-publica.zul" />
+				<menuitem label="Sair" onClick="@command('logout')" />
+			</menubar>
+		</div>
+		<hlayout spacing="0">
+			<vlayout visible="false" hflex="1" style="margin:15px">
+				<label value="Informações gerais:"
+					style="font-size: 18px; font-weight: bold; text-align: justify; display: block;" />
+				<label value="Resumo"
+					style="font-size: 14px; font-weight: bold; text-align: justify; display: block;" />
+				<label value="@load(tcc.resumoTCC)" />
+				<hlayout>
+					<label value="Ano: " style="font-weight:bold;" />
+					<label onCreate="@command('getTccYear', lbl=self)" />
+				</hlayout>
+				<label value="Orientador"
+					style="font-size: 14px; font-weight: bold; text-align: justify; display: block;" />
+				<label value="@load(tcc.orientador.nomeUsuario)" />
+				<label value="Palavras-chave"
+					visible="@load(not empty tcc.palavrasChave)"
+					style="font-size: 14px; font-weight: bold; text-align: justify; display: block;" />
+				<label value="@load(tcc.palavrasChave)" />
+				<hlayout style="cursor: pointer"
+					onClick="@command('downloadPDF', tcc=each)">
+					<image src="/img/pdf.png" />
+					<label value="Download PDF"
+						style="font-size: 14px; font-weight: bold;" />
+				</hlayout>
+				<hlayout style="cursor: pointer"
+					onClick="@command('downloadExtra', tcc=each)">
+					<image
+						src="@load(not empty each.arquivoExtraTCCFinal ? '/img/rar.png' : '/img/norar.png')" />
+					<label value="Download arquivos extras"
+						style="font-size: 14px; font-weight: bold;" />
+				</hlayout>
+			</vlayout>
+			<vlayout hflex="1"
+				visible="@load(vm.tccNeedsAnswer and vm.userCanAnswer ? 'true' : 'false')">
+				<grid model="@load(vm.answers)" style="margin:10px;">
+					<columns>
+						<column />
+						<column width="125px" />
+					</columns>
+					<template name="model">
+						<row>
+							<hlayout>
+								<label
+									value="Pergunta ${forEachStatus.index + 1}: " />
+								<label
+									value="@load(each.pergunta.pergunta)" />
+								<label value=" (" />
+								<label
+									value="@load(each.pergunta.valor)" />
+								<label value=" pts )" />
+							</hlayout>
+							<hlayout>
+								<label value="Resposta: " />
+								<textbox value="@bind(each.resposta)"
+									width="95%" />
+							</hlayout>
+						</row>
+					</template>
+				</grid>
+				<div align="center">
+					<button label="Cadastrar Respostas"
+						onClick="@command('submit', window=prquest)"
+						style="margin-bottom:10px;" />
+				</div>
+			</vlayout>
+			<iframe hflex="2" autohide="true" height="100%"
+				onCreate="@command('showTCC', iframe=self)" />
+		</hlayout>
+	</div>
+</zk>

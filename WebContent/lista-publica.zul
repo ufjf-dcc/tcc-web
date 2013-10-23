@@ -96,31 +96,32 @@
 					</div>
 					<label value="@load(each.aluno.nomeUsuario)"
 						tooltip="${each.idTCC}, position=at_pointer" />
-					<image src="/img/pdf.png"
+					<image src="/img/pdf.png" style="cursor: pointer"
 						onClick="@command('downloadPDF', tcc=each)" />
-					<image
+					<image style="cursor: pointer"
 						src="@load(not empty each.arquivoExtraTCCFinal ? '/img/rar.png' : '/img/norar.png')"
 						onClick="@command('downloadExtra', tcc=each)" />
 				</row>
 			</template>
 		</grid>
 	</div>
-	<popup id="filterHelp" >
+	<popup id="filterHelp">
 		<html>
-			<![CDATA[ Permite filtrar a lista de TCCs 
-			com o termo e o ano <br> escolhidos. O termo pode 
-			ser, por exemplo:
-			<ul><li>Autor ou orientador;</li>
-			<li>Nome do TCC;</li>
-			<li>Palavra-chave;</li>
-			<li>Conteúdo dos resumos.</li>
+			
+			<![CDATA[ Permite filtrar a lista de TCCs com o termo e o
+			ano <br> escolhidos. O termo pode ser, por exemplo:
+			<ul><li>Autor ou orientador;</li> <li>Nome do TCC;</li>
+			<li>Palavra-chave;</li> <li>Conteúdo dos resumos.</li>
 			<ul>]]>
+			
 		</html>
 	</popup>
-	<popup id="cursoHelp" >
+	<popup id="cursoHelp">
 		<html>
-			<![CDATA[ Permite filtrar a lista de TCCs <br>
-			com o curso desejado.]]>
+			
+			<![CDATA[ Permite filtrar a lista de TCCs <br> com o curso
+			desejado.]]>
+			
 		</html>
 	</popup>
 </zk>

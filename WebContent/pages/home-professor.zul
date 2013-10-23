@@ -56,13 +56,13 @@
 					<column label="Ação" width="100px" />
 				</columns>
 				<template name="tccs">
-					<row>
+					<row onClick="@command('showTCC', tcc=each)">
 						<label value="@load(each.aluno.nomeUsuario)" />
 						<label value="@load(each.nomeTCC)" />
 						<label onCreate="@command('getTCCDateApresentacao', tcc=each, lbl=self)" />
 						<div align="center">
-							<button label="Responder"
-								onClick="@command('answerTCC', tcc=each)"
+							<button label="Detalhes"
+								onClick="@command('showTCC', tcc=each)"
 								onCreate="@command('canAnswerTCC', tcc=each, btn=self)" />
 						</div>
 					</row>

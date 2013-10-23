@@ -20,6 +20,7 @@ import org.zkoss.zul.Window;
 import br.ufjf.tcc.business.QuestionarioBusiness;
 import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.business.UsuarioBusiness;
+import br.ufjf.tcc.library.SessionManager;
 import br.ufjf.tcc.model.Participacao;
 import br.ufjf.tcc.model.Questionario;
 import br.ufjf.tcc.model.TCC;
@@ -40,8 +41,10 @@ public class HomeProfessorController extends CommonsController {
 		else {
 			professor = getUsuario();
 			new UsuarioBusiness().update(professor, true, false, true);
-			for (Participacao p : professor.getParticipacoes()) {
+			List<Participacao> participacoes = professor.getParticipacoes();
+			for (Participacao p : participacoes) {
 				new TCCBusiness().update(p.getTcc(), true, true, false);
+				p.getTcc().setParticipacoes(participacoes);
 				tccs.add(p.getTcc());
 			}
 		}
@@ -108,10 +111,9 @@ public class HomeProfessorController extends CommonsController {
 	}
 	
 	@Command
-	public void answerTCC(@BindingParam("tcc") TCC tcc) {
-		Map<String, TCC> map = new HashMap<String, TCC>();
-		map.put("tcc", tcc);
-		((Window) Executions.createComponents("/pages/preenche-questionario.zul", null, map)).doModal();
+	public void showTCC(@BindingParam("tcc") TCC tcc) {
+		SessionManager.setAttribute("tcc", tcc);
+		Executions.sendRedirect("/pages/visualiza-tcc.zul");
 	}
 	
 }
