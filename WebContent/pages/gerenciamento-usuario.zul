@@ -37,10 +37,10 @@
 				<column hflex="2" label="Email" sort="auto(email)" />
 				<column hflex="2" label="Curso"
 					sort="auto(curso.nomeCurso)" />
-				<column hflex="1" label="Titulação"
-					sort="auto(titulacao)" />
 				<column label="Tipo"
 					sort="auto(tipoUsuario.nomeTipoUsuario)" />
+				<column hflex="1" label="Titulação"
+					sort="auto(titulacao)" />
 				<column width="100px" label="Editar" />
 			</columns>
 			<template name="editable">
@@ -63,25 +63,28 @@
 					<combobox readonly="true" width="100%"
 						value="@load(each.curso.nomeCurso ne null ? each.curso.nomeCurso : 'Nenhum')"
 						model="@load(vm.cursos)"
-						selectedItem="@load(each.curso) @save(each.curso, before='confirm')">
+						selectedItem="@load(each.curso) @save(each.curso, before='confirm')"
+						disabled="@load(each.tipoUsuario.idTipoUsuario eq 2)">
 						<template name="model">
 							<comboitem label="@load(each.nomeCurso)" />
 						</template>
 					</combobox>
 
-					<textbox
-						value="@load(each.titulacao) @save(each.titulacao, before='confirm')"
-						width="100%" />
-
 					<combobox readonly="true" width="100%"
 						value="@load(each.tipoUsuario.nomeTipoUsuario)"
 						model="@load(vm.tiposUsuario)"
-						selectedItem="@bind(each.tipoUsuario)">
+						selectedItem="@bind(each.tipoUsuario)"
+						onSelect="@command('selectTipo', cmbTipo=self)">
 						<template name="model">
 							<comboitem
 								label="@load(each.nomeTipoUsuario)" />
 						</template>
 					</combobox>
+
+					<textbox
+						value="@load(each.titulacao) @save(each.titulacao, before='confirm')"
+						width="100%"
+						disabled="@load(each.tipoUsuario.idTipoUsuario eq 1)" />
 
 					<div>
 						<button image="/img/confirm.gif"
@@ -99,9 +102,9 @@
 					<label value="@load(each.email)" />
 					<label
 						value="@load(each.curso.nomeCurso ne null ? each.curso.nomeCurso : 'Nenhum')" />
-					<label value="@load(each.titulacao)" />
 					<label
 						value="@load(each.tipoUsuario.nomeTipoUsuario)" />
+					<label value="@load(each.titulacao)" />
 					<div>
 						<button image="/img/edit.gif"
 							onClick="@command('changeEditableStatus', usuario=each)" />
@@ -125,14 +128,21 @@
 						<label value="Nome do Usuário:*" />
 						<textbox
 							value="@load(vm.newUsuario.nomeUsuario) @save(vm.newUsuario.nomeUsuario, before='submit')"
-							tabindex="1" id="nomeUsuario" width="100%" />
+							tabindex="1" width="100%" />
 					</row>
 
 					<row>
 						<label value="Matrícula/Siape:*" />
 						<textbox
 							value="@load(vm.newUsuario.matricula) @save(vm.newUsuario.matricula, before='submit')"
-							tabindex="1" id="matricula" width="100%" />
+							tabindex="1" width="100%" />
+					</row>
+
+					<row>
+						<label value="Email:*" />
+						<textbox
+							value="@load(vm.newUsuario.email) @save(vm.newUsuario.email, before='submit')"
+							tabindex="1" width="100%" />
 					</row>
 
 					<row>
@@ -140,26 +150,21 @@
 						<combobox id="cmbCurso" width="100%"
 							readonly="true" model="@load(vm.cursos)"
 							value="@load(vm.newUsuario.curso.nomeCurso ne null ? vm.newUsuario.curso.nomeCurso : 'Nenhum')"
-							selectedItem="@load(vm.newUsuario.curso) @save(vm.newUsuario.curso, before='submit')">
+							selectedItem="@load(vm.newUsuario.curso) @save(vm.newUsuario.curso, before='submit')"
+							disabled="@load(each.tipoUsuario.idTipoUsuario eq 2)">
 							<template name="model">
 								<comboitem
 									label="@load(each.nomeCurso)" />
 							</template>
 						</combobox>
 					</row>
-
-					<row>
-						<label value="Email:*" />
-						<textbox
-							value="@load(vm.newUsuario.email) @save(vm.newUsuario.email, before='submit')"
-							tabindex="1" id="email" width="100%" />
-					</row>
-
+					
 					<row>
 						<label value="Titulação:" />
-						<textbox
+						<textbox id="txtTitulacao"
 							value="@load(vm.newUsuario.titulacao) @save(vm.newUsuario.titulacao, before='submit')"
-							tabindex="1" id="titulacao" width="100%" />
+							tabindex="1" width="100%"
+							disabled="@load(each.tipoUsuario.idTipoUsuario eq 1)" />
 					</row>
 
 					<row>
@@ -167,7 +172,8 @@
 						<combobox id="cmbTipoUsuario" width="100%"
 							readonly="true" model="@load(vm.tiposUsuario)"
 							value="@load(vm.newUsuario.tipoUsuario.nomeTipoUsuario ne null ? vm.newUsuario.tipoUsuario.nomeTipoUsuario : 'Aluno')"
-							selectedItem="@load(vm.newUsuario.tipoUsuario) @save(vm.newUsuario.tipoUsuario, before='submit')">
+							selectedItem="@load(vm.newUsuario.tipoUsuario) @save(vm.newUsuario.tipoUsuario, before='submit')"
+							onSelect="@command('selectTipo', cmbTipo=self, cmbCurso=cmbCurso, txtTitulacao=txtTitulacao)">
 							<template name="model">
 								<comboitem
 									label="@load(each.nomeTipoUsuario)" />

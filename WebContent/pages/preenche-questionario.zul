@@ -2,7 +2,8 @@
 	<window id="prquest" title="Cadastrar Respostas" width="500px"
 		border="normal" position="center,center" closable="true"
 		apply="org.zkoss.bind.BindComposer"
-		viewModel="@id('vm') @init('br.ufjf.tcc.controller.PreencheQuestionarioController')">
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.PreencheQuestionarioController')"
+		onClose="self.setVisible(false); event.stopPropagation();" >
 		<grid model="@load(vm.answers)" style="margin:10px;">
 			<columns>
 				<column />

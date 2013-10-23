@@ -22,7 +22,9 @@ import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
 import br.ufjf.tcc.business.CursoBusiness;
@@ -43,6 +45,10 @@ public class GerenciamentoUsuarioController extends CommonsController {
 	private String filterString = "";
 	private Usuario newUsuario;
 
+	/*
+	 * Se o usuário logado for Administrador, mostra todos os usuários. Se for
+	 * Coordenador, mostra apenas os de seu curso.
+	 */
 	@Init
 	public void init() throws HibernateException, Exception {
 		if (!checaPermissao("guc__"))
@@ -56,6 +62,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 		filterUsuarios = allUsuarios;
 	}
 
+	/* Método para fornecer a lista de curso às Combobox de curso. */
 	private List<Curso> getAllCursos() {
 		List<Curso> cursoss = new ArrayList<Curso>();
 		Curso empty = new Curso();
@@ -93,6 +100,10 @@ public class GerenciamentoUsuarioController extends CommonsController {
 		refreshRowTemplate(usuario);
 	}
 
+	/*
+	 * Comando para concluir a edição de um usuário na grid. Mostra mensagem(s)
+	 * de erro caso não consiga salvar no banco e/ou os dados sejam inválidos.
+	 */
 	@Command
 	public void confirm(@BindingParam("usuario") Usuario usuario) {
 		if (usuarioBusiness.validate(usuario, UsuarioBusiness.EDICAO)) {
@@ -110,6 +121,27 @@ public class GerenciamentoUsuarioController extends CommonsController {
 					Messagebox.OK, Messagebox.ERROR);
 			clearErrors();
 		}
+	}
+
+	/*
+	 * Comando para quando o tipo de usuário é alterado em uma Combobox. Se for
+	 * Professor, desabilita a opção de selecionar o curso. Se for aluno,
+	 * desabilita a opção de informar a titulação.
+	 */
+	@Command
+	public void selectTipo(@BindingParam("cmbTipo") Combobox cmbTipo,
+			@BindingParam("cmbCurso") Combobox cmbCurso,
+			@BindingParam("txtTitulacao") Textbox txtTitulacao) {
+		if (cmbCurso == null || txtTitulacao == null) {
+			((Combobox) cmbTipo.getPreviousSibling()).setDisabled(cmbTipo
+					.getValue().contains("Professor"));
+			((Combobox) cmbTipo.getPreviousSibling()).setDisabled(cmbTipo
+					.getValue().contains("Aluno"));
+		} else {
+			cmbCurso.setDisabled(cmbTipo.getValue().contains("Professor"));
+			txtTitulacao.setDisabled(cmbTipo.getValue().contains("Aluno"));
+		}
+		System.out.println(cmbTipo.getValue());
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -140,6 +172,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 				});
 	}
 
+	/* Método para atualizar a grid após a exclusão de um usuário. */
 	public void removeFromList(Usuario usuario) {
 		filterUsuarios.remove(usuario);
 		allUsuarios.remove(usuario);
@@ -158,6 +191,10 @@ public class GerenciamentoUsuarioController extends CommonsController {
 		this.filterString = filterString;
 	}
 
+	/*
+	 * Filtra a grid buscando usuários que contenham a expressão de busca em
+	 * algum de seus atributos.
+	 */
 	@Command
 	public void filtra() {
 		String filter = filterString.toLowerCase().trim();
@@ -174,6 +211,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 		BindUtils.postNotifyChange(null, null, this, "filterUsuarios");
 	}
 
+	/* Abre a janela de cadastro de usuários. */
 	@Command
 	public void addUsuario(@BindingParam("window") Window window) {
 		this.limpa();
@@ -184,22 +222,27 @@ public class GerenciamentoUsuarioController extends CommonsController {
 		return this.newUsuario;
 	}
 
+	/*
+	 * Conclui o cadastro de usuários. Mostra um erro caso não consiga salvar no
+	 * banco de dados e/ou caso os dados sejam inválidos. Se o usuário é salvo
+	 * no sistema, um e-mail é enviado com a senha provisória. Se houver erro no
+	 * envio do e-mail, exclui o usuário cadastrado e notifica o usuário logado.
+	 */
 	@Command
 	public void submit() {
 		newUsuario.setSenha(usuarioBusiness.encripta("123"));
 		if (usuarioBusiness.validate(newUsuario, UsuarioBusiness.ADICAO)) {
 			String newPassword = generatePassword();
 			newUsuario.setSenha(usuarioBusiness.encripta(newPassword));
-			if (usuarioBusiness.salvar(newUsuario)) {				
+			if (usuarioBusiness.salvar(newUsuario)) {
 				if (!sendMail(newPassword)) {
 					Messagebox
-					.show("O sistema não conseguiu enviar o e-mail de confirmação. Tente novamente.",
-							"Erro", Messagebox.OK,
-							Messagebox.ERROR);
+							.show("O sistema não conseguiu enviar o e-mail de confirmação. Tente novamente.",
+									"Erro", Messagebox.OK, Messagebox.ERROR);
 					usuarioBusiness.exclui(newUsuario);
 					return;
 				}
-					
+
 				Messagebox
 						.show("Usuário adicionado com sucesso! Um e-mail de confirmação foi enviado.",
 								"Sucesso", Messagebox.OK,
@@ -223,16 +266,22 @@ public class GerenciamentoUsuarioController extends CommonsController {
 		}
 	}
 
+	/* Limpa os erros de validação e os dados do novo usuário. */
 	public void limpa() {
 		clearErrors();
 		newUsuario = new Usuario();
 		BindUtils.postNotifyChange(null, null, this, "newUsuario");
 	}
 
+	/* Limpa os erros de validação. */
 	public void clearErrors() {
 		usuarioBusiness.errors.clear();
 	}
 
+	/*
+	 * Envia um e-mail com a senha provisória para o usuário recém-cadastrado
+	 * usando o SMTP do Gmail.
+	 */
 	public boolean sendMail(String newPassword) {
 		final String mailUsername = "email";
 		final String mailPassword = "senha";
@@ -277,13 +326,14 @@ public class GerenciamentoUsuarioController extends CommonsController {
 		return false;
 	}
 
+	/* Método para gerar a senha provisória (10 caracteres aleatórios). */
 	private String generatePassword() {
 		final String charset = "!@#$%^&*()" + "0123456789"
 				+ "abcdefghijklmnopqrstuvwxyz" + "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 		Random rand = new Random(System.currentTimeMillis());
 		StringBuffer sb = new StringBuffer();
-		for (int i = 0; i <= 10; i++) { // gera uma senha de 10 caracteres
+		for (int i = 0; i <= 10; i++) {
 			int pos = rand.nextInt(charset.length());
 			sb.append(charset.charAt(pos));
 		}
