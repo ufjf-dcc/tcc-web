@@ -46,7 +46,7 @@
 							<row>
 								<label
 									value="Pergunta ${forEachStatus.index + 1}: " />
-								<textbox value="@bind(each.pergunta)"
+								<textbox value="@bind(each.titulo)"
 									width="100%" />
 								<hlayout>
 									<label value="Valor: " />

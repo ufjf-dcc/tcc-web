@@ -50,14 +50,14 @@ public class TipoUsuario implements Serializable {
 	private String nomeTipoUsuario;
 
 	/**
-	 * Relacionamento N para N entre TipoUsuario e Permissoes. Mapeando
+	 * Relacionamento N para N entre TipoUsuario e Permissao. Mapeando
 	 * {@link Permissao} na variável {@code permissoes} e retorno do tipo
 	 * {@code LAZY} que indica que não será carregado automáticamente este dado
 	 * quando retornarmos o {@link TipoUsuario}.
 	 * 
 	 */
 	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "TipoUsuario_Permissoes", joinColumns = { @JoinColumn(name = "idTipoUsuario", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "idPermissao", nullable = false, updatable = false) })
+	@JoinTable(name = "TipoUsuario_Permissao", joinColumns = { @JoinColumn(name = "idTipoUsuario", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "idPermissao", nullable = false, updatable = false) })
 	private List<Permissao> permissoes = new ArrayList<Permissao>();
 
 	/**

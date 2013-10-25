@@ -79,10 +79,5 @@ public class TCCBusiness {
 		TCCDAO tccDao = new TCCDAO();
 		return tccDao.editar(tcc);
 	}
-	
-	public TCC update(TCC tcc, boolean aluno, boolean orientador, boolean participacoes) {
-		TCCDAO tccDao = new TCCDAO();
-		return tccDao.update(tcc, aluno, orientador, participacoes);
-	}
 
 }

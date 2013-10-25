@@ -14,50 +14,40 @@ import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Iframe;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Vlayout;
 import org.zkoss.zul.Window;
 
 import br.ufjf.tcc.business.PerguntaBusiness;
 import br.ufjf.tcc.business.QuestionarioBusiness;
 import br.ufjf.tcc.business.RespostaBusiness;
 import br.ufjf.tcc.business.TCCBusiness;
-import br.ufjf.tcc.library.SessionManager;
-import br.ufjf.tcc.model.Participacao;
 import br.ufjf.tcc.model.Pergunta;
 import br.ufjf.tcc.model.Resposta;
 import br.ufjf.tcc.model.TCC;
 
 public class VisualizaTCCController extends CommonsController {
 	private TCC tcc;
-	private boolean userCanAnswer = true;
-	private boolean tccNeedsAnswer = true;
+	private boolean answerTcc = false;
 	private List<Resposta> answers = new ArrayList<Resposta>();
+	private Vlayout informacoes, ficha;
 
 	@Init
 	public void init() {
-		this.tcc = (TCC) SessionManager.getAttribute("tcc");
+		tcc = (TCC) Sessions.getCurrent().getAttribute("tcc");
+		answerTcc = (Boolean) Sessions.getCurrent().getAttribute("answerTcc");
 
-		tccNeedsAnswer = tcc.getConceitoFinal() == -1;
-		if (tccNeedsAnswer) {
-			for (Participacao p : tcc.getParticipacoes())
-				if (p.getProfessor().getIdUsuario() == getUsuario()
-						.getIdUsuario()) {
-					userCanAnswer = true;
-					break;
-				}
-			if (userCanAnswer) {
-				List<Pergunta> questions = new PerguntaBusiness()
-						.getQuestionsByQuestionary(new QuestionarioBusiness()
-								.getCurrentQuestionaryByCurso(tcc.getAluno()
-										.getCurso()));
+		if (answerTcc) {
+			List<Pergunta> questions = new PerguntaBusiness()
+					.getQuestionsByQuestionary(new QuestionarioBusiness()
+							.getCurrentQuestionaryByCurso(tcc.getAluno()
+									.getCurso()));
 
-				for (Pergunta question : questions) {
-					Resposta answer = new Resposta();
-					answer.setPergunta(question);
-					answers.add(answer);
-				}
+			for (Pergunta question : questions) {
+				Resposta answer = new Resposta();
+				answer.setPergunta(question);
+				answers.add(answer);
 			}
 		}
-
 	}
 
 	public TCC getTcc() {
@@ -68,24 +58,46 @@ public class VisualizaTCCController extends CommonsController {
 		this.tcc = tcc;
 	}
 
-	public boolean isUserCanAnswer() {
-		return userCanAnswer;
+	public boolean isAnswerTcc() {
+		return answerTcc;
 	}
 
-	public void setUserCanAnswer(boolean userCanAnswer) {
-		this.userCanAnswer = userCanAnswer;
+	public void setAnswerTcc(boolean answerTcc) {
+		this.answerTcc = answerTcc;
 	}
 
-	public boolean isTccNeedsAnswer() {
-		return tccNeedsAnswer;
-	}
-
-	public void setTccNeedsAnswer(boolean tccNeedsAnswer) {
-		this.tccNeedsAnswer = tccNeedsAnswer;
-	}
-	
 	public List<Resposta> getAnswers() {
 		return answers;
+	}
+
+	public Vlayout getInformacoes() {
+		return informacoes;
+	}
+
+	@Command
+	public void setInformacoes(@BindingParam("vlayout") Vlayout informacoes) {
+		this.informacoes = informacoes;
+	}
+
+	public Vlayout getFicha() {
+		return ficha;
+	}
+
+	@Command
+	public void setFicha(@BindingParam("vlayout") Vlayout ficha) {
+		this.ficha = ficha;
+	}
+
+	@Command
+	public void showInfo() {
+		ficha.setVisible(false);
+		informacoes.setVisible(true);
+	}
+
+	@Command
+	public void showFicha() {
+		informacoes.setVisible(false);
+		ficha.setVisible(true);
 	}
 
 	@Command
@@ -130,7 +142,7 @@ public class VisualizaTCCController extends CommonsController {
 	public void logout() {
 		new MenuController().sair();
 	}
-	
+
 	@Command
 	public void submit(@BindingParam("window") Window window) {
 		RespostaBusiness respostaBusiness = new RespostaBusiness();
@@ -143,8 +155,9 @@ public class VisualizaTCCController extends CommonsController {
 				String errorMessage = "";
 				for (String error : respostaBusiness.errors)
 					errorMessage += error;
-				Messagebox.show(errorMessage, "Dados insuficientes / inválidos",
-						Messagebox.OK, Messagebox.ERROR);
+				Messagebox.show(errorMessage,
+						"Dados insuficientes / inválidos", Messagebox.OK,
+						Messagebox.ERROR);
 				clearErrors(respostaBusiness);
 				return;
 			}
@@ -156,7 +169,7 @@ public class VisualizaTCCController extends CommonsController {
 		Messagebox.show("Conceito final: " + sum);
 		window.detach();
 	}
-	
+
 	public void clearErrors(RespostaBusiness respostaBusiness) {
 		respostaBusiness.errors.clear();
 	}

@@ -15,12 +15,12 @@ import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 
 /**
- * DTO da Tabela {@code Permissoes} contém os atributos e relacionamentos da
+ * DTO da Tabela {@code Permissao} contém os atributos e relacionamentos da
  * mesma.
  * 
  */
 @Entity
-@Table(name = "Permissoes")
+@Table(name = "Permissao")
 public class Permissao implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -47,7 +47,7 @@ public class Permissao implements Serializable {
 	private String nomePermissao;
 
 	/**
-	 * Relacionamento N para N entre Permissoes e TipoUsuario. Mapeada em
+	 * Relacionamento N para N entre Permissao e TipoUsuario. Mapeada em
 	 * {@link TipoUsuario} pela variável {@code permissoes} e retorno do tipo
 	 * {@code LAZY} que indica que não será carregado automáticamente este dado
 	 * quando retornarmos as {@link Permissao} .
