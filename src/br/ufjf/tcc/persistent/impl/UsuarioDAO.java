@@ -7,7 +7,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 
 import br.ufjf.tcc.model.Curso;
-import br.ufjf.tcc.model.Permissoes;
+import br.ufjf.tcc.model.Permissao;
 import br.ufjf.tcc.model.TCC;
 import br.ufjf.tcc.model.TipoUsuario;
 import br.ufjf.tcc.model.Usuario;
@@ -149,7 +149,7 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 	}
 
 	@Override
-	public List<Permissoes> getPermissoes(Usuario usuario) {
+	public List<Permissao> getPermissoes(Usuario usuario) {
 		try {
 			getSession().update(usuario);
 			Query query = getSession()

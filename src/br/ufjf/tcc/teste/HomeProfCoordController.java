@@ -231,11 +231,11 @@ public class HomeProfCoordController extends CommonsController {
 			if (editing) {
 				PerguntaBusiness perguntaBusiness = new PerguntaBusiness();
 				for (Pergunta question : questions)
-					if (question.getPergunta() != null)
+					if (question.getTitulo() != null)
 						perguntaBusiness.saveOrEdit(question);
 
 				for (Pergunta question : questionsToDelete)
-					if (question.getPergunta() != null)
+					if (question.getTitulo() != null)
 						perguntaBusiness.delete(question);
 
 				Messagebox.show("Questionário atualizado.");
@@ -244,7 +244,7 @@ public class HomeProfCoordController extends CommonsController {
 			} else if (questionarioBusiness.save(newQuestionary)) {
 				PerguntaBusiness perguntaBusiness = new PerguntaBusiness();
 				for (Pergunta question : questions) {
-					if (question.getPergunta() != null) {
+					if (question.getTitulo() != null) {
 						question.setOrdem(questions.indexOf(question));
 						question.setQuestionario(newQuestionary);
 						perguntaBusiness.save(question);

@@ -1,66 +1,55 @@
 <?page title="Cadastro de TCC" contentType="text/html;charset=UTF-8"?>
 <?init class="br.ufjf.tcc.controller.AuthController"?>
 <zk>
-	<window id="cadtcc" title="Cadastrar TCC" width="300px"
+	<window id="cadtcc" title="Cadastrar TCC" width="600px"
 		border="normal" position="center,center" closable="true"
 		apply="org.zkoss.bind.BindComposer"
 		viewModel="@id('vm') @init('br.ufjf.tcc.controller.CadastroTccController')"
 		form="@id('tcc') @load(vm.newTcc) @save(vm.newTcc, before='submit')"
-		onClose="self.setVisible(false); event.stopPropagation();" >
-		<grid>
-			<columns>
-				<column hflex="1" />
-				<column hflex="2" />
-			</columns>
-			<rows>
-				<row>
-					<label value="Nome do TCC: " />
-					<div>
-						<textbox value="@bind(tcc.nomeTCC)"
-							width="100%" />
-					</div>
-				</row>
-				<row>
-					<label value="Autor: " />
-					<textbox value="@load(vm.usuario.nomeUsuario)"
-						disabled="true" width="100%" />
-				</row>
-				<row>
-					<label value="Orientador: " />
-					<combobox id="cmbOrientadores" width="100%"
-						model="@load(vm.orientadores)" readonly="true"
-						selectedItem="@load(vm.newTcc.orientador) @save(vm.newTcc.orientador, before='submit')">
-						<template name="model">
-							<comboitem label="@load(each.nomeUsuario)" />
-						</template>
-					</combobox>
-				</row>
-				<row>
-					<label value="Resumo: " />
-					<textbox value="@bind(tcc.resumoTCC)" rows="6"
-						width="100%" />
-				</row>
-				<row>
-					<label value="Palavras-chave: " />
-					<textbox value="@bind(tcc.palavrasChave)"
-						width="100%" />
-				</row>
-				<row>
-					<label value="Arquivo (PDF): " />
-					<vlayout>
-						<button label="Selecionar arquivo..."
-							upload="true"
-							onUpload="@command('upload', evt=event, lbl=fileStatus)" />
-						<label id="fileStatus"
-							value="Aguardando arquivo..." />
-					</vlayout>
-				</row>
-			</rows>
-		</grid>
-		<div align="center">
-			<button label="Cadastrar"
-				onClick="@command('submit', window=cadtcc)" width="75px"
-				style="margin-top:5px" />
-		</div>
+		onClose="self.setVisible(false); event.stopPropagation();">
+
+		<hlayout style="margin:5px;line-height:20px;">
+			<label value="Nome do TCC: " />
+			<textbox value="@bind(tcc.nomeTCC)" hflex="1" />
+		</hlayout>
+
+		<hlayout style="margin:5px;line-height:20px;">
+			<label value="Autor: " />
+			<textbox value="@load(vm.usuario.nomeUsuario)"
+				disabled="true" hflex="1" />
+			<separator orient="vertical" spacing="10px" />
+
+			<label value="Orientador: " />
+			<combobox id="cmbOrientadores" hflex="1"
+				model="@load(vm.orientadores)" readonly="true"
+				selectedItem="@load(vm.newTcc.orientador) @save(vm.newTcc.orientador, before='submit')">
+				<template name="model">
+					<comboitem label="@load(each.nomeUsuario)" />
+				</template>
+			</combobox>
+		</hlayout>
+
+		<hlayout style="margin:5px;line-height:20px;">
+			<label value="Palavras-chave: " />
+			<textbox value="@bind(tcc.palavrasChave)" hflex="1" />
+		</hlayout>
+
+		<label value="Resumo: " style="margin:5px;" />
+		<textbox value="@bind(tcc.resumoTCC)" rows="12" width="560px" style="margin:5px;" />
+
+		<hlayout style="margin:5px;line-height:20px;">
+			<vlayout hflex="1">
+				<label value="Arquivo (PDF): " />
+				<button label="Selecionar arquivo..." upload="true"
+					onUpload="@command('upload', button=self, evt=event)" />
+				<label id="fileStatus" />
+			</vlayout>
+
+			<div hflex="1" align="right">
+				<button label="Cadastrar"
+					onClick="@command('submit', window=cadtcc)" width="75px"
+					style="margin-top:5px" />
+			</div>
+		</hlayout>
 	</window>
 </zk>

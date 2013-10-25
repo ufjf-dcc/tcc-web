@@ -21,7 +21,7 @@ import org.hibernate.annotations.GenericGenerator;
  */
 @Entity
 @Table(name = "Permissoes")
-public class Permissoes implements Serializable {
+public class Permissao implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -50,7 +50,7 @@ public class Permissoes implements Serializable {
 	 * Relacionamento N para N entre Permissoes e TipoUsuario. Mapeada em
 	 * {@link TipoUsuario} pela variável {@code permissoes} e retorno do tipo
 	 * {@code LAZY} que indica que não será carregado automáticamente este dado
-	 * quando retornarmos as {@link Permissoes} .
+	 * quando retornarmos as {@link Permissao} .
 	 * 
 	 */
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "permissoes")

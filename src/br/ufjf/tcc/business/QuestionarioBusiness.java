@@ -30,8 +30,8 @@ public class QuestionarioBusiness {
 	public void validatePerguntas(List<Pergunta> questions) {
 		if (questions.size() > 0)
 			for (Pergunta p : questions) {
-				if (p.getPergunta() == null
-						|| p.getPergunta().trim().length() == 0) {
+				if (p.getTitulo() == null
+						|| p.getTitulo().trim().length() == 0) {
 					errors.add("Você não pode deixar perguntas em branco;\n");
 					break;
 				}

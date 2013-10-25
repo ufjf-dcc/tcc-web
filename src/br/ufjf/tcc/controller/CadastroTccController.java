@@ -29,6 +29,7 @@ import org.zkoss.bind.annotation.Command;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.UploadEvent;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
@@ -61,11 +62,12 @@ public class CadastroTccController extends CommonsController {
 
 	@Command("upload")
 	public void upload(@BindingParam("evt") UploadEvent evt,
-			@BindingParam("lbl") Label lbl) {
+			@BindingParam("button") Button button) {
 		Media media = evt.getMedia();
 		if (!media.getName().contains("pdf")) {
 			Messagebox
-					.show("Este não é um arquivo válido! Apenas PDF são aceitos.");
+					.show("Este não é um arquivo válido! Apenas PDF são aceitos.", "Formato inválido",
+							Messagebox.OK, Messagebox.INFORMATION);
 			return;
 		}
 
@@ -95,7 +97,7 @@ public class CadastroTccController extends CommonsController {
 					out.write(buffer, 0, ch);
 					ch = in.read(buffer);
 				}
-				lbl.setValue("Arquivo \"" + media.getName() + "\" enviado.");
+				((Label) button.getNextSibling()).setValue("Arquivo \"" + media.getName() + "\" enviado.");
 			}
 		} catch (IOException e) {
 			throw new RuntimeException(e);

@@ -137,7 +137,7 @@ public class VisualizaTCCController extends CommonsController {
 		float sum = 0;
 		for (Resposta a : answers) {
 			if (respostaBusiness.validate(a)) {
-				sum += a.getResposta();
+				sum += a.getNota();
 				respostaBusiness.save(a);
 			} else {
 				String errorMessage = "";

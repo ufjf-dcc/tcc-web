@@ -5,7 +5,7 @@ import java.util.List;
 import org.hibernate.HibernateException;
 
 import br.ufjf.tcc.model.Curso;
-import br.ufjf.tcc.model.Permissoes;
+import br.ufjf.tcc.model.Permissao;
 import br.ufjf.tcc.model.Usuario;
 
 public interface IUsuarioDAO {
@@ -16,7 +16,7 @@ public interface IUsuarioDAO {
 	public boolean jaExiste (String matricula);
 	public Usuario update(Usuario usuario, boolean curso, boolean tipo, boolean participacoes);
 	public List<Usuario> buscar(String expressão);
-	public List<Permissoes> getPermissoes(Usuario usuario);
+	public List<Permissao> getPermissoes(Usuario usuario);
 	public List<Usuario> getOrientadores();
 	public List<Usuario> getOrientados(Usuario usuario);
 }

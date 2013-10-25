@@ -13,7 +13,7 @@ public class RespostaBusiness {
 	public boolean validate(Resposta answer) {
 		errors.clear();
 
-		if (answer.getResposta() < 0 || answer.getResposta() > answer.getPergunta().getValor())
+		if (answer.getNota() < 0 || answer.getNota() > answer.getPergunta().getValor())
 			errors.add("Verifique o valor dado para a pergunta " + (answer.getPergunta().getOrdem() + 1) + ";\n");
 
 		return errors.size() == 0;

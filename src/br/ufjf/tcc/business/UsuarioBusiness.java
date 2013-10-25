@@ -8,7 +8,7 @@ import jonelo.jacksum.JacksumAPI;
 import jonelo.jacksum.algorithm.AbstractChecksum;
 import br.ufjf.tcc.library.SessionManager;
 import br.ufjf.tcc.model.Curso;
-import br.ufjf.tcc.model.Permissoes;
+import br.ufjf.tcc.model.Permissao;
 import br.ufjf.tcc.model.Usuario;
 import br.ufjf.tcc.persistent.impl.UsuarioDAO;
 
@@ -104,7 +104,7 @@ public class UsuarioBusiness {
 		return usuarioDAO.getAllByCurso(curso);
 	}
 
-	public List<Permissoes> getPermissoes(Usuario usuario) {
+	public List<Permissao> getPermissoes(Usuario usuario) {
 		UsuarioDAO usuarioDAO = new UsuarioDAO();
 		return usuarioDAO.getPermissoes(usuario);
 	}
