@@ -142,4 +142,15 @@ public class Curso implements Serializable {
 	public void setEditingStatus(boolean editingStatus) {
 		this.editingStatus = editingStatus;
 	}
+
+	public void copy(Curso another) {
+		this.idCurso = another.idCurso;
+		this.codigoCurso = another.codigoCurso;
+		this.nomeCurso = another.nomeCurso;
+		this.usuarios = another.usuarios;
+		this.questionarios = another.questionarios;
+		this.calendarios = another.calendarios;
+		this.editingStatus = another.editingStatus;
+	}
+	
 }

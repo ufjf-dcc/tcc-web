@@ -108,8 +108,7 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 		return null;
 	}
 
-	@Override
-	public boolean jaExiste(String matricula) {
+	public boolean jaExiste(String matricula, String oldMatricula) {
 		try {
 			Query query = getSession().createQuery(
 					"select u from Usuario u where u.matricula = :matricula");

@@ -1,7 +1,9 @@
 package br.ufjf.tcc.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.hibernate.HibernateException;
 import org.zkoss.bind.BindUtils;
@@ -18,6 +20,7 @@ import br.ufjf.tcc.model.Curso;
 public class GerenciamentoCursoController extends CommonsController {
 	private CursoBusiness cursoBusiness = new CursoBusiness();
 	private Curso novoCurso;
+	private Map<Integer, Curso> editTemp = new HashMap<Integer, Curso>();
 	private List<Curso> allCursos = cursoBusiness.getCursos();
 	private List<Curso> cursos = allCursos;
 	private String filterString = "";
@@ -34,17 +37,27 @@ public class GerenciamentoCursoController extends CommonsController {
 
 	@Command
 	public void changeEditableStatus(@BindingParam("curso") Curso curso) {
-		curso.setEditingStatus(!curso.getEditingStatus());
+		if (!curso.getEditingStatus()) {
+			Curso temp = new Curso();
+			temp.copy(curso);
+			editTemp.put(curso.getIdCurso(), temp);
+			curso.setEditingStatus(true);
+		} else {
+			curso.copy(editTemp.get(curso.getIdCurso()));
+			editTemp.remove(curso.getIdCurso());
+			curso.setEditingStatus(false);
+		}
 		refreshRowTemplate(curso);
 	}
 
 	@Command
 	public void confirm(@BindingParam("curso") Curso curso) {
-		if (cursoBusiness.validate(curso, CursoBusiness.EDICAO)) {
+		if (cursoBusiness.validate(curso, null)) {
 			if (!cursoBusiness.editar(curso))
 				Messagebox.show("Não foi possível editar o curso.", "Erro",
 						Messagebox.OK, Messagebox.ERROR);
-			changeEditableStatus(curso);
+			editTemp.remove(curso.getIdCurso());
+			curso.setEditingStatus(false);
 			refreshRowTemplate(curso);
 		} else {
 			String errorMessage = "";
@@ -127,7 +140,7 @@ public class GerenciamentoCursoController extends CommonsController {
 
 	@Command
 	public void submit() {
-		if (cursoBusiness.validate(novoCurso, CursoBusiness.ADICAO)) {
+		if (cursoBusiness.validate(novoCurso, null)) {
 			if (cursoBusiness.salvar(novoCurso)) {
 				allCursos.add(novoCurso);
 				this.filtra();

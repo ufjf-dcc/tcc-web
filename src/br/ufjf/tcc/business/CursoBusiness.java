@@ -11,20 +11,20 @@ public class CursoBusiness {
 	public static final int ADICAO = 0, EDICAO = 1;
 
 	// validação dos formulários
-	public boolean validate(Curso curso, int action) {
+	public boolean validate(Curso curso, String oldCodigo) {
 		errors.clear();
 
-		validateCode(curso.getCodigoCurso(), action);
+		validateCode(curso.getCodigoCurso(), oldCodigo);
 		validateName(curso.getNomeCurso());
 
 		return errors.size() == 0;
 	}
 
-	public void validateCode(String codigoCurso, int action) {
+	public void validateCode(String codigoCurso, String oldCodigo) {
 		if (codigoCurso == null || codigoCurso.trim().length() == 0)
 			errors.add("É necessário informar o código do curso;\n");
-		else if (action == ADICAO)
-			jaExiste(codigoCurso);
+		else
+			jaExiste(codigoCurso, oldCodigo);
 	}
 
 	public void validateName(String nomeCurso) {
@@ -58,9 +58,9 @@ public class CursoBusiness {
 		return cursoDAO.exclui(curso);
 	}
 
-	public boolean jaExiste(String codigoCurso) {
+	public boolean jaExiste(String codigoCurso, String oldCodigo) {
 		CursoDAO cursoDAO = new CursoDAO();
-		boolean resultado = cursoDAO.jaExiste(codigoCurso);
+		boolean resultado = cursoDAO.jaExiste(codigoCurso, oldCodigo);
 		if (resultado)
 			errors.add("Já existe um curso com este código.\n");
 		return resultado;
