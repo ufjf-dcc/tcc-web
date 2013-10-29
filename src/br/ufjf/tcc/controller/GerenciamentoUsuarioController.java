@@ -96,7 +96,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 	 */
 	@Command
 	public void confirm(@BindingParam("usuario") Usuario usuario) {
-		if (usuarioBusiness.validate(usuario, UsuarioBusiness.EDICAO)) {
+		if (usuarioBusiness.validate(usuario, null)) {
 			if (!usuarioBusiness.editar(usuario))
 				Messagebox.show("Não foi possível editar o usuário.", "Erro",
 						Messagebox.OK, Messagebox.ERROR);
@@ -220,8 +220,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 	 */
 	@Command
 	public void submit() {
-		newUsuario.setSenha(usuarioBusiness.encripta("123"));
-		if (usuarioBusiness.validate(newUsuario, UsuarioBusiness.ADICAO)) {
+		if (usuarioBusiness.validate(newUsuario, null)) {
 			String newPassword = usuarioBusiness.generatePassword();
 			newUsuario.setSenha(usuarioBusiness.encripta(newPassword));
 			if (usuarioBusiness.salvar(newUsuario)) {

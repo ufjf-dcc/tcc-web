@@ -15,14 +15,13 @@ import br.ufjf.tcc.persistent.impl.UsuarioDAO;
 
 public class UsuarioBusiness {
 	public List<String> errors = new ArrayList<String>();
-	public static final int ADICAO = 0, EDICAO = 1;
 
 	// validação dos formulários
-	public boolean validate(Usuario usuario, int action) {
+	public boolean validate(Usuario usuario, String oldMatricula) {
 		errors.clear();
 
 		validarNome(usuario.getNomeUsuario());
-		validarMatricula(usuario.getMatricula(), action);
+		validarMatricula(usuario.getMatricula(), oldMatricula);
 		validateEmail(usuario.getEmail(), null);
 
 		return errors.size() == 0;
@@ -33,11 +32,11 @@ public class UsuarioBusiness {
 			errors.add("É necessário informar o nome;\n");
 	}
 
-	public void validarMatricula(String matricula, int action) {
+	public void validarMatricula(String matricula, String oldMatricula) {
 		if (matricula == null || matricula.trim().length() == 0)
 			errors.add("É necessário informar a matrícula;\n");
-		else if (action == ADICAO)
-			jaExiste(matricula);
+		else
+			jaExiste(matricula, oldMatricula);
 	}
 
 	public void validateEmail(String email, String retype) {
@@ -157,9 +156,9 @@ public class UsuarioBusiness {
 		return usuarioDAO.exclui(usuario);
 	}
 
-	public boolean jaExiste(String matricula) {
+	public boolean jaExiste(String matricula, String oldMatricula) {
 		UsuarioDAO usuarioDAO = new UsuarioDAO();
-		boolean jaExiste = usuarioDAO.jaExiste(matricula);
+		boolean jaExiste = usuarioDAO.jaExiste(matricula, oldMatricula);
 		if (jaExiste)
 			errors.add("Já existe um usuário com a matrícula informada.");
 		return jaExiste;
