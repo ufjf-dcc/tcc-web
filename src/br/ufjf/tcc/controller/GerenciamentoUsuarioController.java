@@ -4,17 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
-import java.util.Random;
-
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 
 import org.hibernate.HibernateException;
 import org.zkoss.bind.BindUtils;
@@ -30,6 +19,7 @@ import org.zkoss.zul.Window;
 import br.ufjf.tcc.business.CursoBusiness;
 import br.ufjf.tcc.business.TipoUsuarioBusiness;
 import br.ufjf.tcc.business.UsuarioBusiness;
+import br.ufjf.tcc.library.SendMail;
 import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.model.TipoUsuario;
 import br.ufjf.tcc.model.Usuario;
@@ -232,10 +222,10 @@ public class GerenciamentoUsuarioController extends CommonsController {
 	public void submit() {
 		newUsuario.setSenha(usuarioBusiness.encripta("123"));
 		if (usuarioBusiness.validate(newUsuario, UsuarioBusiness.ADICAO)) {
-			String newPassword = generatePassword();
+			String newPassword = usuarioBusiness.generatePassword();
 			newUsuario.setSenha(usuarioBusiness.encripta(newPassword));
 			if (usuarioBusiness.salvar(newUsuario)) {
-				if (!sendMail(newPassword)) {
+				if (!new SendMail().onSubmitUser(newUsuario, newPassword)) {
 					Messagebox
 							.show("O sistema não conseguiu enviar o e-mail de confirmação. Tente novamente.",
 									"Erro", Messagebox.OK, Messagebox.ERROR);
@@ -276,67 +266,5 @@ public class GerenciamentoUsuarioController extends CommonsController {
 	/* Limpa os erros de validação. */
 	public void clearErrors() {
 		usuarioBusiness.errors.clear();
-	}
-
-	/*
-	 * Envia um e-mail com a senha provisória para o usuário recém-cadastrado
-	 * usando o SMTP do Gmail.
-	 */
-	public boolean sendMail(String newPassword) {
-		final String mailUsername = "email";
-		final String mailPassword = "senha";
-
-		Properties props = new Properties();
-		props.put("mail.smtp.auth", "true");
-		props.put("mail.smtp.starttls.enable", "true");
-		props.put("mail.smtp.host", "smtp.gmail.com");
-		props.put("mail.smtp.port", "587");
-
-		Session session = Session.getInstance(props,
-				new javax.mail.Authenticator() {
-					protected PasswordAuthentication getPasswordAuthentication() {
-						return new PasswordAuthentication(mailUsername,
-								mailPassword);
-					}
-				});
-
-		Message message = new MimeMessage(session);
-		try {
-			message.setFrom(new InternetAddress("ttest4318@gmail.com"));
-			message.setRecipients(Message.RecipientType.TO,
-					InternetAddress.parse(newUsuario.getEmail()));
-			message.setSubject("Confirmação de cadastro");
-			message.setText("Prezado(a) "
-					+ newUsuario.getNomeUsuario()
-					+ ",\n\n"
-					+ "Você foi cadastrado no sistema de envio de TCCs da UFJF. "
-					+ "Segue, abaixo, a sua senha de acesso. "
-					+ "Recomendamos que a altere no primeiro acesso ao sistema.\n"
-					+ newPassword + "\n\n" + "Atenciosamente,\n" + "(...)");
-
-			Transport.send(message);
-			return true;
-		} catch (AddressException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (MessagingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return false;
-	}
-
-	/* Método para gerar a senha provisória (10 caracteres aleatórios). */
-	private String generatePassword() {
-		final String charset = "!@#$%^&*()" + "0123456789"
-				+ "abcdefghijklmnopqrstuvwxyz" + "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-		Random rand = new Random(System.currentTimeMillis());
-		StringBuffer sb = new StringBuffer();
-		for (int i = 0; i <= 10; i++) {
-			int pos = rand.nextInt(charset.length());
-			sb.append(charset.charAt(pos));
-		}
-		return sb.toString();
 	}
 }

@@ -7,43 +7,36 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
-import java.util.Properties;
-
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
+import org.zkoss.util.media.AMedia;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.UploadEvent;
-import org.zkoss.zul.Button;
-import org.zkoss.zul.Label;
+import org.zkoss.zul.Iframe;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
 import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.business.UsuarioBusiness;
+import br.ufjf.tcc.library.SendMail;
 import br.ufjf.tcc.model.TCC;
 import br.ufjf.tcc.model.Usuario;
 
 public class CadastroTccController extends CommonsController {
 
 	private TCC newTcc = new TCC();
+	private TCCBusiness tccBusiness = new TCCBusiness();
 	private List<Usuario> orientadores = new UsuarioBusiness()
 			.getOrientadores();
+	
+	private Iframe iframe;
+	private Media media = null;
 	private static final String SAVE_PATH = Sessions.getCurrent().getWebApp()
 			.getRealPath("/")
 			+ "/files/";
@@ -60,17 +53,33 @@ public class CadastroTccController extends CommonsController {
 		return orientadores;
 	}
 
+	public Iframe getIframe() {
+		return iframe;
+	}
+
+	@Command
+	public void setIframe(@BindingParam("iframe") Iframe iframe) {
+		this.iframe = iframe;
+	}
+
 	@Command("upload")
-	public void upload(@BindingParam("evt") UploadEvent evt,
-			@BindingParam("button") Button button) {
-		Media media = evt.getMedia();
-		if (!media.getName().contains("pdf")) {
-			Messagebox
-					.show("Este não é um arquivo válido! Apenas PDF são aceitos.", "Formato inválido",
-							Messagebox.OK, Messagebox.INFORMATION);
+	public void upload(@BindingParam("evt") UploadEvent evt) {
+		Media auxMedia = evt.getMedia();
+		if (!auxMedia.getName().contains(".pdf")) {
+			Messagebox.show(
+					"Este não é um arquivo válido! Apenas PDF são aceitos.",
+					"Formato inválido", Messagebox.OK, Messagebox.INFORMATION);
+			media = null;
 			return;
 		}
+		media = auxMedia;
+		final AMedia tccFile = new AMedia(newTcc.getNomeTCC(), "pdf",
+				"application/pdf", media.getStreamData());
+		iframe.setContent(tccFile);
+	}
 
+	@Command
+	public void saveFile() {
 		BufferedInputStream in = null;
 		BufferedOutputStream out = null;
 		try {
@@ -83,7 +92,7 @@ public class CadastroTccController extends CommonsController {
 				baseDir.mkdirs();
 			}
 
-			String newFileName = encriptFile("" + System.currentTimeMillis());
+			String newFileName = tccBusiness.encriptFileName();
 			if (newFileName != null) {
 				newTcc.setArquivoTCCBanca(newFileName);
 
@@ -97,7 +106,6 @@ public class CadastroTccController extends CommonsController {
 					out.write(buffer, 0, ch);
 					ch = in.read(buffer);
 				}
-				((Label) button.getNextSibling()).setValue("Arquivo \"" + media.getName() + "\" enviado.");
 			}
 		} catch (IOException e) {
 			throw new RuntimeException(e);
@@ -120,14 +128,20 @@ public class CadastroTccController extends CommonsController {
 
 	@Command("submit")
 	public void submit(@BindingParam("window") Window window) {
-		TCCBusiness tccBusiness = new TCCBusiness();
 		newTcc.setDataEnvioBanca(new Timestamp(new Date().getTime()));
 		newTcc.setAluno(getUsuario());
+		if (media != null)
+			saveFile();
+		else
+			Messagebox
+					.show("Você não enviou o arquivo de TCC. Lembre-se de enviá-lo depois.");
 		if (tccBusiness.validate(newTcc)) {
 			if (tccBusiness.save(newTcc)) {
-				sendMail();
-				Messagebox.show("\"" + newTcc.getNomeTCC()
-						+ "\" cadastrado com sucesso!\nUma mensagem de confirmação foi enviada para o seu e-mail.");
+				new SendMail().onSubmitTCC(newTcc);
+				Messagebox
+						.show("\""
+								+ newTcc.getNomeTCC()
+								+ "\" cadastrado com sucesso!\nUma mensagem de confirmação foi enviada para o seu e-mail.");
 				limpa(tccBusiness);
 				window.detach();
 			} else {
@@ -142,54 +156,6 @@ public class CadastroTccController extends CommonsController {
 					Messagebox.OK, Messagebox.ERROR);
 			clearErrors(tccBusiness);
 		}
-	}
-
-	public void sendMail() {
-		final String username = "email";
-		final String password = "senha";
-
-		Properties props = new Properties();
-		props.put("mail.smtp.auth", "true");
-		props.put("mail.smtp.starttls.enable", "true");
-		props.put("mail.smtp.host", "smtp.gmail.com");
-		props.put("mail.smtp.port", "587");
-
-		Session session = Session.getInstance(props,
-				new javax.mail.Authenticator() {
-					protected PasswordAuthentication getPasswordAuthentication() {
-						return new PasswordAuthentication(username, password);
-					}
-				});
-
-		try {
-			Message message = new MimeMessage(session);
-			message.setFrom(new InternetAddress("jorge.smrr@gmail.com"));
-			message.setRecipients(Message.RecipientType.TO,
-					InternetAddress.parse("alu@no, orien@tador"));
-			message.setSubject("Confirmação de envio de TCC");
-			message.setText("Prezado(a) " + newTcc.getAluno().getNomeUsuario() + ",\n\n"
-					+ "Você enviou o TCC \"" + newTcc.getNomeTCC() + "\" com sucesso para o nosso sistema.\n\n"
-					+ "Atenciosamente,\n"
-					+ "(...)");
-
-			Transport.send(message);
-
-		} catch (MessagingException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	public static String encriptFile(String currentTime) {
-
-		try {
-			MessageDigest m = MessageDigest.getInstance("MD5");
-			m.update(currentTime.getBytes(), 0, currentTime.length());
-			return new BigInteger(1, m.digest()).toString(16);
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		}
-
-		return null;
 	}
 
 	public void limpa(TCCBusiness tccBusiness) {

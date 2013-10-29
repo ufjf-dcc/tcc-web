@@ -11,7 +11,6 @@ import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zul.Window;
 
 import br.ufjf.tcc.business.CalendarioSemestreBusiness;
 import br.ufjf.tcc.model.CalendarioSemestre;
@@ -37,7 +36,7 @@ public class HomeAlunoController extends CommonsController {
 
 			DateTimeFormatter fmt = DateTimeFormat.forPattern("dd/MM/yyyy");
 
-			DateTime date0 = finalDate.minusDays(90);
+			DateTime date0 = finalDate.minusDays(CalendarioSemestre.PRAZO_ENVIO_TCC);
 			dates.add(new CustomDate(fmt.print(date0),
 					"Prazo para envio de TCC", "Enviar TCC", false));
 
@@ -69,9 +68,7 @@ public class HomeAlunoController extends CommonsController {
 	@Command
 	public void action(@BindingParam("date") CustomDate date) {
 		if (date.action == "Enviar TCC") {
-			final Window dialog = (Window) Executions.createComponents(
-					"/pages/cadastro-tcc.zul", null, null);
-			dialog.doModal();
+			Executions.sendRedirect("/pages/cadastro-tcc.zul");
 		}
 	}
 

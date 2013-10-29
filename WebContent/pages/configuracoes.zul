@@ -16,11 +16,19 @@
 					<label value="Re-digite a nova senha: " />
 					<textbox id="pswd2" width="100%" />
 				</row>
+				<row>
+					<label value="Novo e-mail: " />
+					<textbox id="email1" width="100%" />
+				</row>
+				<row>
+					<label value="Re-digite o novo e-mail: " />
+					<textbox id="email2" width="100%" />
+				</row>
 			</rows>
 		</grid>
 		<div align="center" style="margin-top:3px;">
 			<button label="Salvar"
-				onClick="@command('updateSettings', pswd1=pswd1.value, pswd2=pswd2.value, window=settings)" />
+				onClick="@command('updateSettings', pswd1=pswd1.value, pswd2=pswd2.value, email1=email1.value, email2=email2.value, window=settings)" />
 		</div>
 	</window>
 </zk>

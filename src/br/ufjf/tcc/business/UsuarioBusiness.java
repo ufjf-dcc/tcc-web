@@ -3,6 +3,7 @@ package br.ufjf.tcc.business;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import jonelo.jacksum.JacksumAPI;
 import jonelo.jacksum.algorithm.AbstractChecksum;
@@ -22,7 +23,7 @@ public class UsuarioBusiness {
 
 		validarNome(usuario.getNomeUsuario());
 		validarMatricula(usuario.getMatricula(), action);
-		validarEmail(usuario.getEmail());
+		validateEmail(usuario.getEmail(), null);
 
 		return errors.size() == 0;
 	}
@@ -39,11 +40,14 @@ public class UsuarioBusiness {
 			jaExiste(matricula);
 	}
 
-	public void validarEmail(String email) {
+	public void validateEmail(String email, String retype) {
 		if (email == null || email.trim().length() == 0)
 			errors.add("É necessário informar o e-mail;\n");
 		else if (email == null || !email.matches(".+@.+\\.[a-z]+"))
 			errors.add("Informe um e-mail válido;\n");
+		if (retype != null)
+			if (!email.equals(retype))
+				errors.add("Os emails não são iguais. Tente novamente.\n");
 	}
 	
 	public void validatePasswords(String password, String retype) {
@@ -92,6 +96,20 @@ public class UsuarioBusiness {
 			ns.printStackTrace();
 			return senha;
 		}
+	}
+	
+	/* Método para gerar a senha provisória (10 caracteres aleatórios). */
+	public String generatePassword() {
+		final String charset = "!@#$%^&*()" + "0123456789"
+				+ "abcdefghijklmnopqrstuvwxyz" + "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+		Random rand = new Random(System.currentTimeMillis());
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i <= 10; i++) {
+			int pos = rand.nextInt(charset.length());
+			sb.append(charset.charAt(pos));
+		}
+		return sb.toString();
 	}
 
 	public List<Usuario> getAll() {
