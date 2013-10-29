@@ -173,7 +173,7 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 		try {
 			Query query = getSession()
 					.createQuery(
-							"select u from Usuario as u where u.tipoUsuario.idTipoUsuario = :professor OR u.tipoUsuario.idTipoUsuario = :coordenador");
+							"SELECT u FROM Usuario as u WHERE u.tipoUsuario.idTipoUsuario = :professor OR u.tipoUsuario.idTipoUsuario = :coordenador ORDER BY u.nomeUsuario");
 			query.setParameter("professor", Usuario.PROFESSOR);
 			query.setParameter("coordenador", Usuario.COORDENADOR);
 

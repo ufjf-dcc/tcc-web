@@ -35,12 +35,7 @@ public class CursoBusiness {
 	// comunicação com o CursoDAO
 	public List<Curso> getCursos() {
 		CursoDAO cursoDAO = new CursoDAO();
-		List<Curso> resultados = new ArrayList<Curso>();
-		for (Object curso : cursoDAO.procuraTodos(Curso.class, -1, -1)) {
-			resultados.add((Curso) curso);
-		}
-
-		return resultados;
+		return cursoDAO.getAllCursos();
 	}
 
 	public List<Curso> buscar(String expressão) {

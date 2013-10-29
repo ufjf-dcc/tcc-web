@@ -79,7 +79,9 @@ public class ListaPublicaController extends CommonsController {
 		empty.setIdCurso(0);
 		empty.setNomeCurso("Selecione um Curso");
 		cursoss.add(empty);
-		cursoss.addAll((new CursoBusiness()).getCursos());
+		List<Curso> cursos = (new CursoBusiness()).getCursos();
+		if(cursos != null)		
+			cursoss.addAll(cursos);
 		return cursoss;
 	}
 

@@ -15,7 +15,7 @@
 				<auxheader colspan="4">
 					<div>
 						<hlayout
-							style="float:left; line-height:20px;">
+							style="float:left;">
 							<label value="Pesquisar: " />
 							<textbox id="filtro"
 								value="@bind(vm.filterString)" />
@@ -32,7 +32,7 @@
 							</combobox>
 							<separator orient="vertical" spacing="3px" />
 
-							<button label="Filtrar" height="21px;"
+							<button label="Filtrar"
 								width="60px" onClick="@command('filtra')"
 								style="margin-left:20px;" />
 

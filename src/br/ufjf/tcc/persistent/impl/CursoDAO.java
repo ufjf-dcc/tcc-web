@@ -26,6 +26,21 @@ public class CursoDAO extends GenericoDAO implements ICursoDAO {
 
 		return null;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Curso> getAllCursos() {
+		try {
+			Query query = getSession().createQuery("SELECT c FROM Curso as c ORDER BY c.nomeCurso");
+			List<Curso> cursos = query.list();
+			getSession().close();
+			
+			return cursos;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
 
 	@Override
 	public boolean jaExiste(String codigoCurso) {
