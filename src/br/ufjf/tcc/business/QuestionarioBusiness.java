@@ -10,7 +10,21 @@ import br.ufjf.tcc.model.Resposta;
 import br.ufjf.tcc.persistent.impl.QuestionarioDAO;
 
 public class QuestionarioBusiness {
-	public List<String> errors = new ArrayList<String>();
+	private List<String> errors;
+	private QuestionarioDAO questionarioDAO;
+
+	public QuestionarioBusiness() {
+		this.errors = new ArrayList<String>();
+		this.questionarioDAO = new QuestionarioDAO();
+	}
+
+	public List<String> getErrors() {
+		return errors;
+	}
+	
+	public void clearErrors(){
+		this.errors.clear();
+	}
 
 	// validação dos formulários
 	public boolean validate(Questionario questionary) {
@@ -30,8 +44,7 @@ public class QuestionarioBusiness {
 	public void validatePerguntas(List<Pergunta> questions) {
 		if (questions.size() > 0)
 			for (Pergunta p : questions) {
-				if (p.getTitulo() == null
-						|| p.getTitulo().trim().length() == 0) {
+				if (p.getTitulo() == null || p.getTitulo().trim().length() == 0) {
 					errors.add("Você não pode deixar perguntas em branco;\n");
 					break;
 				}
@@ -53,17 +66,14 @@ public class QuestionarioBusiness {
 
 	// comunicação com o QuestionarioDAO
 	public boolean save(Questionario questionario) {
-		QuestionarioDAO questionarioDAO = new QuestionarioDAO();
 		return questionarioDAO.salvar(questionario);
 	}
 
 	public Questionario getCurrentQuestionaryByCurso(Curso curso) {
-		QuestionarioDAO questionarioDAO = new QuestionarioDAO();
 		return questionarioDAO.getCurrentQuestionaryByCurso(curso);
 	}
 
 	public List<Questionario> getAllByCurso(Curso curso) {
-		QuestionarioDAO questionarioDAO = new QuestionarioDAO();
 		return questionarioDAO.getAllByCurso(curso);
 	}
 
@@ -81,7 +91,6 @@ public class QuestionarioBusiness {
 
 	public Questionario update(Questionario questionario, boolean curso,
 			boolean calendario) {
-		QuestionarioDAO questionarioDAO = new QuestionarioDAO();
 		return questionarioDAO.update(questionario, curso, calendario);
 	}
 

@@ -2,8 +2,7 @@
 	<window id="cadquest" title="Cadastrar Questionário" width="600px"
 		border="normal" position="center,center" closable="true"
 		apply="org.zkoss.bind.BindComposer"
-		viewModel="@id('vm') @init('br.ufjf.tcc.controller.CadastroQuestionarioController')"
-		onClose="self.setVisible(false); event.stopPropagation();" >
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.CadastroQuestionarioController')" >
 
 		<vlayout style="margin:10px;">
 
@@ -29,7 +28,7 @@
 				</div>
 
 				<checkbox id="ativo" label="Ativo" hflex="1"
-					style="margin-right:20px;" checked="true" disabled="true" />
+					checked="true" disabled="true" />
 			</hlayout>
 
 			<div id="questForm">

@@ -5,9 +5,13 @@ import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.persistent.impl.CalendarioSemestreDAO;
 
 public class CalendarioSemestreBusiness {
-	
+	private CalendarioSemestreDAO calendarioSemestreDAO;
+
+	public CalendarioSemestreBusiness() {
+		this.calendarioSemestreDAO = new CalendarioSemestreDAO();
+	}
+
 	public CalendarioSemestre getCurrentCalendarByCurso(Curso curso) {
-		CalendarioSemestreDAO calendarioSemestreDAO = new CalendarioSemestreDAO();
 		return calendarioSemestreDAO.getCurrentCalendarByCurso(curso);
 	}
 

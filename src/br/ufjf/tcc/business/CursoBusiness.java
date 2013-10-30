@@ -7,8 +7,21 @@ import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.persistent.impl.CursoDAO;
 
 public class CursoBusiness {
-	public List<String> errors = new ArrayList<String>();
-	public static final int ADICAO = 0, EDICAO = 1;
+	private List<String> errors;
+	private CursoDAO cursoDAO;
+
+	public CursoBusiness() {
+		this.errors = new ArrayList<String>();
+		this.cursoDAO = new CursoDAO();
+	}
+
+	public List<String> getErrors() {
+		return errors;
+	}
+	
+	public void clearErrors(){
+		this.errors.clear();
+	}
 
 	// validação dos formulários
 	public boolean validate(Curso curso, String oldCodigo) {
@@ -34,32 +47,26 @@ public class CursoBusiness {
 
 	// comunicação com o CursoDAO
 	public List<Curso> getCursos() {
-		CursoDAO cursoDAO = new CursoDAO();
 		return cursoDAO.getAllCursos();
 	}
 
 	public List<Curso> buscar(String expressão) {
-		CursoDAO cursoDAO = new CursoDAO();
 		return cursoDAO.buscar(expressão);
 	}
 
 	public boolean editar(Curso curso) {
-		CursoDAO cursoDAO = new CursoDAO();
 		return cursoDAO.editar(curso);
 	}
 
 	public boolean salvar(Curso curso) {
-		CursoDAO cursoDAO = new CursoDAO();
 		return cursoDAO.salvar(curso);
 	}
 
 	public boolean exclui(Curso curso) {
-		CursoDAO cursoDAO = new CursoDAO();
 		return cursoDAO.exclui(curso);
 	}
 
 	public boolean jaExiste(String codigoCurso, String oldCodigo) {
-		CursoDAO cursoDAO = new CursoDAO();
 		boolean resultado = cursoDAO.jaExiste(codigoCurso, oldCodigo);
 		if (resultado)
 			errors.add("Já existe um curso com este código.\n");

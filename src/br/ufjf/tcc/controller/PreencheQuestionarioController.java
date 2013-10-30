@@ -51,11 +51,11 @@ public class PreencheQuestionarioController extends CommonsController {
 				respostaBusiness.save(a);
 			} else {
 				String errorMessage = "";
-				for (String error : respostaBusiness.errors)
+				for (String error : respostaBusiness.getErrors())
 					errorMessage += error;
 				Messagebox.show(errorMessage, "Dados insuficientes / inválidos",
 						Messagebox.OK, Messagebox.ERROR);
-				clearErrors(respostaBusiness);
+				respostaBusiness.clearErrors();
 				return;
 			}
 		}
@@ -65,9 +65,5 @@ public class PreencheQuestionarioController extends CommonsController {
 
 		Messagebox.show("Conceito final: " + sum);
 		window.detach();
-	}
-	
-	public void clearErrors(RespostaBusiness respostaBusiness) {
-		respostaBusiness.errors.clear();
 	}
 }

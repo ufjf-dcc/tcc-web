@@ -11,6 +11,7 @@ import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zhtml.Filedownload;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Label;
 
@@ -166,9 +167,9 @@ public class ListaPublicaController extends CommonsController {
 
 	@Command
 	public void downloadPDF(@BindingParam("tcc") TCC tcc) {
-		InputStream is = Sessions.getCurrent().getWebApp()
-				.getResourceAsStream("files/" + tcc.getArquivoTCCFinal());
-		Filedownload.save(is, "application/pdf", tcc.getNomeTCC() + ".pdf");
+		Sessions.getCurrent().setAttribute("tcc", tcc);
+		Sessions.getCurrent().setAttribute("answerTcc", false);
+		Executions.sendRedirect("/pages/visualiza-tcc.zul");
 	}
 
 	@Command

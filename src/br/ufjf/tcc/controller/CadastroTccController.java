@@ -204,22 +204,18 @@ public class CadastroTccController extends CommonsController {
 			}
 		} else {
 			String errorMessage = "";
-			for (String error : tccBusiness.errors)
+			for (String error : tccBusiness.getErrors())
 				errorMessage += error;
 			Messagebox.show(errorMessage, "Dados insuficientes / inválidos",
 					Messagebox.OK, Messagebox.ERROR);
-			clearErrors(tccBusiness);
+			tccBusiness.clearErrors();
 		}
 	}
 
 	public void limpa(TCCBusiness tccBusiness) {
-		clearErrors(tccBusiness);
+		tccBusiness.clearErrors();
 		newTcc = new TCC();
 		BindUtils.postNotifyChange(null, null, this, "newTcc");
-	}
-
-	public void clearErrors(TCCBusiness tccBusiness) {
-		tccBusiness.errors.clear();
 	}
 
 }

@@ -18,7 +18,7 @@ public class GerenciamentoPermissoesController extends CommonsController {
 	private TipoUsuarioBusiness tipoUsuarioBusiness = new TipoUsuarioBusiness();
 	private List<TipoUsuario> types = tipoUsuarioBusiness.getTiposUsuarios();
 	private List<Permissao> permissions = new PermissaoBusiness()
-			.getPermissoes();
+			.getAll();
 
 	@Init
 	public void init() {

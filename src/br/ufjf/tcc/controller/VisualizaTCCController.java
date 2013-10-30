@@ -15,7 +15,6 @@ import org.zkoss.zul.Iframe;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Vlayout;
-import org.zkoss.zul.Window;
 
 import br.ufjf.tcc.business.PerguntaBusiness;
 import br.ufjf.tcc.business.QuestionarioBusiness;
@@ -144,7 +143,7 @@ public class VisualizaTCCController extends CommonsController {
 	}
 
 	@Command
-	public void submit(@BindingParam("window") Window window) {
+	public void submit() {
 		RespostaBusiness respostaBusiness = new RespostaBusiness();
 		float sum = 0;
 		for (Resposta a : answers) {
@@ -153,12 +152,12 @@ public class VisualizaTCCController extends CommonsController {
 				respostaBusiness.save(a);
 			} else {
 				String errorMessage = "";
-				for (String error : respostaBusiness.errors)
+				for (String error : respostaBusiness.getErrors())
 					errorMessage += error;
 				Messagebox.show(errorMessage,
 						"Dados insuficientes / inválidos", Messagebox.OK,
 						Messagebox.ERROR);
-				clearErrors(respostaBusiness);
+				respostaBusiness.clearErrors();
 				return;
 			}
 		}
@@ -167,10 +166,5 @@ public class VisualizaTCCController extends CommonsController {
 		new TCCBusiness().edit(tcc);
 
 		Messagebox.show("Conceito final: " + sum);
-		window.detach();
-	}
-
-	public void clearErrors(RespostaBusiness respostaBusiness) {
-		respostaBusiness.errors.clear();
 	}
 }

@@ -14,7 +14,21 @@ import br.ufjf.tcc.model.Usuario;
 import br.ufjf.tcc.persistent.impl.UsuarioDAO;
 
 public class UsuarioBusiness {
+	private UsuarioDAO usuarioDAO;
 	public List<String> errors = new ArrayList<String>();
+
+	public UsuarioBusiness() {
+		this.errors = new ArrayList<String>();
+		this.usuarioDAO = new UsuarioDAO();
+	}
+
+	public List<String> getErrors() {
+		return errors;
+	}
+	
+	public void clearErrors(){
+		this.errors.clear();
+	}
 
 	// validação dos formulários
 	public boolean validate(Usuario usuario, String oldMatricula) {
@@ -48,18 +62,18 @@ public class UsuarioBusiness {
 			if (!email.equals(retype))
 				errors.add("Os emails não são iguais. Tente novamente.\n");
 	}
-	
+
 	public void validatePasswords(String password, String retype) {
-		if (password == null || password.trim().length() == 0 || retype == null || retype.trim().length() == 0)
+		if (password == null || password.trim().length() == 0 || retype == null
+				|| retype.trim().length() == 0)
 			errors.add("A senha não pode estar em branco;\n");
-        if((!password.equals(retype))) {
-        	errors.add("As senhas não são iguais. Tente novamente.\n");
-        }
-    }
+		if ((!password.equals(retype))) {
+			errors.add("As senhas não são iguais. Tente novamente.\n");
+		}
+	}
 
 	// comunicação com o UsuarioDAO
 	public boolean login(String matricula, String senha) {
-		UsuarioDAO usuarioDAO = new UsuarioDAO();
 		Usuario usuario = usuarioDAO.retornaUsuario(matricula,
 				this.encripta(senha));
 
@@ -73,7 +87,6 @@ public class UsuarioBusiness {
 
 	public boolean checaLogin(Usuario usuario) {
 		if (usuario != null) {
-			UsuarioDAO usuarioDAO = new UsuarioDAO();
 			usuario = usuarioDAO.retornaUsuario(usuario.getMatricula(),
 					usuario.getSenha());
 
@@ -96,7 +109,7 @@ public class UsuarioBusiness {
 			return senha;
 		}
 	}
-	
+
 	/* Método para gerar a senha provisória (10 caracteres aleatórios). */
 	public String generatePassword() {
 		final String charset = "!@#$%^&*()" + "0123456789"
@@ -112,66 +125,55 @@ public class UsuarioBusiness {
 	}
 
 	public List<Usuario> getAll() {
-		UsuarioDAO usuarioDAO = new UsuarioDAO();
 		return usuarioDAO.getAll();
 	}
 
 	public List<Usuario> getAllByCurso(Curso curso) {
-		UsuarioDAO usuarioDAO = new UsuarioDAO();
 		return usuarioDAO.getAllByCurso(curso);
 	}
 
 	public List<Permissao> getPermissoes(Usuario usuario) {
-		UsuarioDAO usuarioDAO = new UsuarioDAO();
 		return usuarioDAO.getPermissoes(usuario);
 	}
 
 	public List<Usuario> getOrientadores() {
-		UsuarioDAO usuarioDAO = new UsuarioDAO();
 		return usuarioDAO.getOrientadores();
 	}
 
 	public List<Usuario> getOrientados(Usuario usuario) {
-		UsuarioDAO usuarioDAO = new UsuarioDAO();
 		return usuarioDAO.getOrientados(usuario);
 	}
 
 	public List<Usuario> buscar(String expressão) {
-		UsuarioDAO usuarioDAO = new UsuarioDAO();
 		return usuarioDAO.buscar(expressão);
 	}
 
 	public boolean editar(Usuario usuario) {
-		UsuarioDAO usuarioDAO = new UsuarioDAO();
 		return usuarioDAO.editar(usuario);
 	}
 
 	public boolean salvar(Usuario usuario) {
-		UsuarioDAO usuarioDAO = new UsuarioDAO();
 		return usuarioDAO.salvar(usuario);
 	}
 
 	public boolean exclui(Usuario usuario) {
-		UsuarioDAO usuarioDAO = new UsuarioDAO();
 		return usuarioDAO.exclui(usuario);
 	}
 
 	public boolean jaExiste(String matricula, String oldMatricula) {
-		UsuarioDAO usuarioDAO = new UsuarioDAO();
-		boolean jaExiste = usuarioDAO.jaExiste(matricula, oldMatricula);
-		if (jaExiste)
+		if (usuarioDAO.jaExiste(matricula, oldMatricula)) {
 			errors.add("Já existe um usuário com a matrícula informada.");
-		return jaExiste;
+			return true;
+		} else
+			return false;
 	}
 
 	public Usuario update(Usuario usuario, boolean curso, boolean tipo,
 			boolean participacoes) {
-		UsuarioDAO usuarioDAO = new UsuarioDAO();
 		return usuarioDAO.update(usuario, curso, tipo, participacoes);
 	}
-	
+
 	public Usuario getByEmailAndMatricula(String email, String matricula) {
-		UsuarioDAO usuarioDAO = new UsuarioDAO();
 		return usuarioDAO.getByEmailAndMatricula(email, matricula);
 	}
 

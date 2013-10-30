@@ -12,7 +12,21 @@ import br.ufjf.tcc.model.Usuario;
 import br.ufjf.tcc.persistent.impl.TCCDAO;
 
 public class TCCBusiness {
-	public List<String> errors = new ArrayList<String>();
+	private List<String> errors;
+	private TCCDAO tccDao;
+
+	public TCCBusiness() {
+		this.tccDao = new TCCDAO();
+		this.errors = new ArrayList<String>();
+	}
+
+	public List<String> getErrors() {
+		return errors;
+	}
+	
+	public void clearErrors(){
+		this.errors.clear();
+	}
 
 	// validação dos formulários
 	public boolean validate(TCC tcc) {
@@ -36,40 +50,30 @@ public class TCCBusiness {
 		if (orientador == null)
 			errors.add("Informe o seu orientador;\n");
 	}
-	
+
 	public void validateFile(String fileName) {
 		if (fileName == null || fileName.trim().length() == 0)
 			errors.add("Envie o arquivo do TCC (PDF);\n");
 	}
 
+	// Comunicação com o TCCDAO
 	public List<TCC> getPublicListByCurso(Curso curso) {
-		TCCDAO tccDao = new TCCDAO();
 		return tccDao.getPublicListByCurso(curso);
 	}
 
 	public List<TCC> getAll() {
-		TCCDAO tccDao = new TCCDAO();
 		return tccDao.getAll();
 	}
 
-	// teste
-	public List<TCC> getTCCsNotConceptualized() {
-		TCCDAO tccDao = new TCCDAO();
-		return tccDao.getTCCsNotConceptualized();
-	}
-
 	public boolean save(TCC tcc) {
-		TCCDAO tccDao = new TCCDAO();
 		return tccDao.salvar(tcc);
 	}
 
 	public boolean edit(TCC tcc) {
-		TCCDAO tccDao = new TCCDAO();
 		return tccDao.editar(tcc);
 	}
-	
-	public String encriptFileName() {
 
+	public String encriptFileName() {
 		try {
 			MessageDigest m = MessageDigest.getInstance("MD5");
 			String currentTime = "" + System.currentTimeMillis();

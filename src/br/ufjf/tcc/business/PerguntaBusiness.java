@@ -7,24 +7,25 @@ import br.ufjf.tcc.model.Questionario;
 import br.ufjf.tcc.persistent.impl.PerguntaDAO;
 
 public class PerguntaBusiness {
+	private PerguntaDAO perguntaDAO;
+
+	public PerguntaBusiness() {
+		this.perguntaDAO = new PerguntaDAO();
+	}
 
 	public boolean save(Pergunta pergunta) {
-		PerguntaDAO perguntaDAO = new PerguntaDAO();
 		return perguntaDAO.salvar(pergunta);
 	}
 
 	public boolean delete(Pergunta pergunta) {
-		PerguntaDAO perguntaDAO = new PerguntaDAO();
 		return perguntaDAO.exclui(pergunta);
 	}
 
 	public boolean saveOrEdit(Pergunta pergunta) {
-		PerguntaDAO perguntaDAO = new PerguntaDAO();
 		return perguntaDAO.salvaOuEdita(pergunta);
 	}
 
 	public List<Pergunta> getQuestionsByQuestionary(Questionario questionary) {
-		PerguntaDAO perguntaDAO = new PerguntaDAO();
 		return perguntaDAO.getQuestionsByQuestionary(questionary);
 	}
 

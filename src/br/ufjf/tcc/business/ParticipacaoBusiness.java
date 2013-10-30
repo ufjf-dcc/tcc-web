@@ -7,9 +7,14 @@ import br.ufjf.tcc.model.Usuario;
 import br.ufjf.tcc.persistent.impl.ParticipacaoDAO;
 
 public class ParticipacaoBusiness {
+	private ParticipacaoDAO participacaoDAO;
+
+	public ParticipacaoBusiness() {
+		this.participacaoDAO = new ParticipacaoDAO();
+	}
 
 	public List<Participacao> getParticipacoesByProfessor(Usuario professor) {
-		return new ParticipacaoDAO().getParticipacoesByProfessor(professor);
+		return participacaoDAO.getParticipacoesByProfessor(professor);
 	}
 
 }

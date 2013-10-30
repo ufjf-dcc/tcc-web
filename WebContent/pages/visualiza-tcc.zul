@@ -7,7 +7,7 @@
 		height="100%">
 		<div align="center">
 			<menubar>
-				<menuitem label="Voltar" href="/lista-publica.zul" />
+				<menuitem label="Voltar" href="javascript:history.back()" />
 				<menuitem label="Sair" onClick="@command('logout')" />
 			</menubar>
 		</div>
@@ -25,33 +25,34 @@
 					<label value="Informações gerais:"
 						style="font-size: 18px; font-weight: bold; text-align: justify; display: block;" />
 					<label value="Autor"
-						style="font-size: 14px; font-weight: bold; text-align: justify; display: block;" />
+						style="font-size: 14px; font-weight: bold; text-align: justify; display: block; margin-top:5px" />
 					<label value="@load(tcc.aluno.nomeUsuario)" />
 					<label value="Orientador"
-						style="font-size: 14px; font-weight: bold; text-align: justify; display: block;" />
+						style="font-size: 14px; font-weight: bold; text-align: justify; display: block; margin-top:5px" />
 					<label value="@load(tcc.orientador.nomeUsuario)" />
 					<label value="Resumo"
-						style="font-size: 14px; font-weight: bold; text-align: justify; display: block;" />
+						style="font-size: 14px; font-weight: bold; text-align: justify; display: block; margin-top:5px" />
 					<label value="@load(tcc.resumoTCC)" />
-					<hlayout>
+					<hlayout style="margin-top:5px">
 						<label value="Ano: " style="font-weight:bold;" />
 						<label
 							onCreate="@command('getTccYear', lbl=self)" />
 					</hlayout>
 					<label value="Palavras-chave"
 						visible="@load(not empty tcc.palavrasChave)"
-						style="font-size: 14px; font-weight: bold; text-align: justify; display: block;" />
+						style="font-size: 14px; font-weight: bold; text-align: justify; display: block; margin-top:5px" />
 					<label value="@load(tcc.palavrasChave)" />
-					<hlayout style="cursor: pointer"
+					<hlayout style="cursor: pointer; margin-top:5px"
 						onClick="@command('downloadPDF', tcc=each)">
 						<image src="/img/pdf.png" />
 						<label value="Download PDF"
 							style="font-size: 14px; font-weight: bold;" />
 					</hlayout>
-					<hlayout style="cursor: pointer"
+					<hlayout style="cursor: pointer; margin-top:5px"
+						visible="@load(not empty tcc.arquivoExtraTCCFinal ? 'true' : 'false')"
 						onClick="@command('downloadExtra', tcc=each)">
 						<image
-							src="@load(not empty each.arquivoExtraTCCFinal ? '/img/rar.png' : '/img/norar.png')" />
+							src="/img/rar.png" />
 						<label value="Download arquivos extras"
 							style="font-size: 14px; font-weight: bold;" />
 					</hlayout>

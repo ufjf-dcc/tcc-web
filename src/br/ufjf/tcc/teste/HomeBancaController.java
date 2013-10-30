@@ -14,7 +14,7 @@ import br.ufjf.tcc.controller.CommonsController;
 import br.ufjf.tcc.model.TCC;
 
 public class HomeBancaController extends CommonsController {
-	private List<TCC> tccs = new TCCBusiness().getTCCsNotConceptualized();
+	private List<TCC> tccs = new TCCBusiness().getAll();
 
 	public List<TCC> getTccs() {
 		return tccs;
