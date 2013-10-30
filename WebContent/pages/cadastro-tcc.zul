@@ -45,20 +45,19 @@
 					width="560px" style="margin:5px;" />
 
 				<hlayout style="margin:5px;line-height:20px;">
-					<vlayout hflex="1">
-						<label value="Arquivo (PDF): " />
-						<button label="Selecionar arquivo..."
-							upload="true"
-							onUpload="@command('upload', button=self, evt=event)" />
-						<label id="fileStatus" />
-					</vlayout>
-
-					<div hflex="1" align="right">
-						<button label="Cadastrar"
-							onClick="@command('submit', window=cadtcc)" width="75px"
-							style="margin-top:5px" />
-					</div>
+					<button hflex="1"
+						label="Selecionar arquivo (PDF)..." upload="true"
+						onUpload="@command('upload', button=self, evt=event)" />
+					<button hflex="1"
+						label="Selecionar arquivo extra..." upload="true"
+						onUpload="@command('extraUpload', button=self, evt=event)" />
 				</hlayout>
+
+				<div hflex="1" align="center" style="margin-top:10px">
+					<button label="Cadastrar"
+						onClick="@command('submit', window=cadtcc)" width="75px"
+						style="margin-top:5px" />
+				</div>
 			</vlayout>
 			<iframe hflex="2" autohide="true" height="100%"
 				onCreate="@command('setIframe', iframe=self)" />

@@ -82,7 +82,15 @@ public class TCC implements Serializable {
 	
 	/**
 	 * Campo com o arquivo extra final do TCC. Relaciona com a coluna
-	 * {@code arquivoTCCFinal} do banco através da anotação
+	 * {@code arquivoExtraTCCBanca} do banco através da anotação
+	 * {@code @Column(name = "arquivoExtraTCCBanca", length = 255, nullable = true)}.
+	 */
+	@Column(name = "arquivoExtraTCCBanca", length = 255, nullable = true)
+	private String arquivoExtraTCCBanca;
+	
+	/**
+	 * Campo com o arquivo extra final do TCC. Relaciona com a coluna
+	 * {@code arquivoExtraTCCFinal} do banco através da anotação
 	 * {@code @Column(name = "arquivoExtraTCCFinal", length = 255, nullable = true)}.
 	 */
 	@Column(name = "arquivoExtraTCCFinal", length = 255, nullable = true)
@@ -198,6 +206,14 @@ public class TCC implements Serializable {
 
 	public void setArquivoTCCFinal(String arquivoTCCFinal) {
 		this.arquivoTCCFinal = arquivoTCCFinal;
+	}
+
+	public String getArquivoExtraTCCBanca() {
+		return arquivoExtraTCCBanca;
+	}
+
+	public void setArquivoExtraTCCBanca(String arquivoExtraTCCBanca) {
+		this.arquivoExtraTCCBanca = arquivoExtraTCCBanca;
 	}
 
 	public String getArquivoExtraTCCFinal() {
