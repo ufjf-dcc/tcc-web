@@ -20,6 +20,7 @@ import br.ufjf.tcc.business.PerguntaBusiness;
 import br.ufjf.tcc.business.QuestionarioBusiness;
 import br.ufjf.tcc.business.RespostaBusiness;
 import br.ufjf.tcc.business.TCCBusiness;
+import br.ufjf.tcc.model.Participacao;
 import br.ufjf.tcc.model.Pergunta;
 import br.ufjf.tcc.model.Resposta;
 import br.ufjf.tcc.model.TCC;
@@ -40,10 +41,17 @@ public class VisualizaTCCController extends CommonsController {
 					.getQuestionsByQuestionary(new QuestionarioBusiness()
 							.getCurrentQuestionaryByCurso(tcc.getAluno()
 									.getCurso()));
+			
+			Participacao p = null;
+			for(Participacao aux : getUsuario().getParticipacoes()){
+				if (aux.getTcc().getIdTCC() == tcc.getIdTCC())
+					p = aux;
+			}
 
 			for (Pergunta question : questions) {
 				Resposta answer = new Resposta();
 				answer.setPergunta(question);
+				answer.setParticipacao(p);
 				answers.add(answer);
 			}
 		}
@@ -143,13 +151,15 @@ public class VisualizaTCCController extends CommonsController {
 	}
 
 	@Command
-	public void submit() {
+	public void submitFicha() {
 		RespostaBusiness respostaBusiness = new RespostaBusiness();
 		float sum = 0;
 		for (Resposta a : answers) {
 			if (respostaBusiness.validate(a)) {
 				sum += a.getNota();
-				respostaBusiness.save(a);
+				if (!respostaBusiness.save(a))
+					Messagebox.show("Respostas não salvas.", "Erro",
+							Messagebox.OK, Messagebox.ERROR);
 			} else {
 				String errorMessage = "";
 				for (String error : respostaBusiness.getErrors())

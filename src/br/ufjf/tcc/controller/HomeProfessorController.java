@@ -27,7 +27,6 @@ import br.ufjf.tcc.model.Usuario;
 
 public class HomeProfessorController extends CommonsController {
 	private List<TCC> tccs = new ArrayList<TCC>();
-	private Usuario professor = null;
 	private Questionario currentQuestionary;
 	private boolean currentQuestionaryExists = true,
 			currentQuestionaryUsed = true;
@@ -43,16 +42,15 @@ public class HomeProfessorController extends CommonsController {
 			super.paginaProibida();
 
 		else {
-			professor = getUsuario();
-			professor.setParticipacoes(new ParticipacaoBusiness()
-					.getParticipacoesByProfessor(professor));
-			for (Participacao p : professor.getParticipacoes()) {
+			getUsuario().setParticipacoes(new ParticipacaoBusiness()
+					.getParticipacoesByProfessor(getUsuario()));
+			for (Participacao p : getUsuario().getParticipacoes()) {
 				tccs.add(p.getTcc());
 			}
 		}
 
 		currentQuestionary = new QuestionarioBusiness()
-				.getCurrentQuestionaryByCurso(professor.getCurso());
+				.getCurrentQuestionaryByCurso(getUsuario().getCurso());
 
 		if (currentQuestionary == null)
 			currentQuestionaryExists = false;
@@ -63,10 +61,6 @@ public class HomeProfessorController extends CommonsController {
 
 	public List<TCC> getTccs() {
 		return tccs;
-	}
-
-	public Usuario getProfessor() {
-		return professor;
 	}
 
 	public boolean isCurrentQuestionaryExists() {
@@ -88,7 +82,7 @@ public class HomeProfessorController extends CommonsController {
 	@Command
 	public void createQuestionary() {
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("curso", professor.getCurso());
+		map.put("curso", getUsuario().getCurso());
 		map.put("editing", false);
 		final Window dialog = (Window) Executions.createComponents(
 				"/pages/cadastro-questionario.zul", null, map);

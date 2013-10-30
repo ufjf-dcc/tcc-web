@@ -21,8 +21,8 @@ public class QuestionarioBusiness {
 	public List<String> getErrors() {
 		return errors;
 	}
-	
-	public void clearErrors(){
+
+	public void clearErrors() {
 		this.errors.clear();
 	}
 
@@ -78,15 +78,9 @@ public class QuestionarioBusiness {
 	}
 
 	public boolean isQuestionaryUsed(Questionario questionario) {
-		RespostaBusiness respostaBusiness = new RespostaBusiness();
-		List<Resposta> respostas = respostaBusiness.getAll();
-		for (int i = respostas.size(); i > 0; i--) {
-			if (respostas.get(i - 1).getPergunta().getQuestionario()
-					.getIdQuestionario() == questionario.getIdQuestionario())
-				return true;
-		}
-
-		return false;
+		List<Resposta> q = new RespostaBusiness()
+				.getAnswersFromQuestionary(questionario);
+		return q.size() > 0;
 	}
 
 	public Questionario update(Questionario questionario, boolean curso,

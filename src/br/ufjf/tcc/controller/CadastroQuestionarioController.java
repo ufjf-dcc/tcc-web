@@ -27,11 +27,13 @@ import br.ufjf.tcc.model.Usuario;
 public class CadastroQuestionarioController extends CommonsController {
 	private Questionario questionary = new Questionario();
 	QuestionarioBusiness questionarioBusiness = new QuestionarioBusiness();
-	private List<Pergunta> questions = new ArrayList<Pergunta>(), questionsToDelete = new ArrayList<Pergunta>();
+	private List<Pergunta> questions = new ArrayList<Pergunta>(),
+			questionsToDelete = new ArrayList<Pergunta>();
 	private List<Curso> cursos = new CursoBusiness().getCursos();
 	private String currentSemester = "?";
 	private CalendarioSemestre currentCalendar;
-	private boolean admin = getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ADMINISTRADOR, editing;
+	private boolean admin = getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ADMINISTRADOR,
+			editing;
 
 	public String getCurrentSemester() {
 		return currentSemester;
@@ -67,9 +69,10 @@ public class CadastroQuestionarioController extends CommonsController {
 
 	@Init
 	public void init(@ExecutionArgParam("curso") Curso curso,
-			@ExecutionArgParam("quest") Questionario q, @ExecutionArgParam("editing") boolean editing) {
+			@ExecutionArgParam("quest") Questionario q,
+			@ExecutionArgParam("editing") boolean editing) {
 		this.editing = editing;
-		
+
 		if (q != null) {
 			questionary = q;
 			semester();
@@ -82,7 +85,7 @@ public class CadastroQuestionarioController extends CommonsController {
 
 			questions.add(new Pergunta());
 		}
-		
+
 	}
 
 	@NotifyChange("currentSemester")
@@ -120,25 +123,29 @@ public class CadastroQuestionarioController extends CommonsController {
 		if (editing)
 			questionsToDelete.add(question);
 	}
-	
+
 	@NotifyChange("questions")
 	@Command
-	public void questionUp (@BindingParam("question") Pergunta question) {		
+	public void questionUp(@BindingParam("question") Pergunta question) {
 		int index = questions.indexOf(question);
-		Pergunta aux = questions.get(index-1);
-		questions.set(index-1, question);
-		questions.set(index, aux);
-	}
-	
-	@NotifyChange("questions")
-	@Command
-	public void questionDown (@BindingParam("question") Pergunta question) {		
-		int index = questions.indexOf(question);
-		Pergunta aux = questions.get(index+1);
-		questions.set(index+1, question);
+		Pergunta aux = questions.get(index - 1);
+		questions.set(index - 1, question);
 		questions.set(index, aux);
 	}
 
+	@NotifyChange("questions")
+	@Command
+	public void questionDown(@BindingParam("question") Pergunta question) {
+		int index = questions.indexOf(question);
+		Pergunta aux = questions.get(index + 1);
+		questions.set(index + 1, question);
+		questions.set(index, aux);
+	}
+
+	/*
+	 * Salva ou atualiza o questionário do semestre atual. Se estiver editando o
+	 * quetionário, só salva as alterações das perguntas.
+	 */
 	@Command
 	public void submit(@BindingParam("window") Window window) {
 		questionary.setCalendarioSemestre(currentCalendar);
@@ -148,15 +155,25 @@ public class CadastroQuestionarioController extends CommonsController {
 		if (questionarioBusiness.validate(questionary)) {
 			if (editing) {
 				PerguntaBusiness perguntaBusiness = new PerguntaBusiness();
-				for (Pergunta question : questions)
-					if (question.getTitulo() != null)
-						perguntaBusiness.saveOrEdit(question);
-				
-				for (Pergunta question : questionsToDelete)
-					if (question.getTitulo() != null)
-						perguntaBusiness.delete(question);
+				for (Pergunta question : questions) {
+					question.setOrdem(questions.indexOf(question));
+					question.setQuestionario(questionary);
+					if (!perguntaBusiness.saveOrEdit(question)) {
+						Messagebox
+								.show("Questionário não foi atualizado! (perguntas não foram salvas)",
+										"Erro", Messagebox.OK, Messagebox.ERROR);
+						return;
+					}
+				}
 
-				Messagebox.show("Questionário atualizado.");
+				for (Pergunta question : questionsToDelete)
+					if (!perguntaBusiness.delete(question))
+						Messagebox
+								.show("Questionário não foi atualizado! (antigas perguntas não puderam ser excluídas)",
+										"Erro", Messagebox.OK, Messagebox.ERROR);
+
+				Messagebox.show("Questionário atualizado.", "Sucesso",
+						Messagebox.OK, Messagebox.INFORMATION);
 				window.detach();
 				limpa();
 			} else if (questionarioBusiness.save(questionary)) {

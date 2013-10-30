@@ -87,7 +87,7 @@
 					</grid>
 					<div align="center">
 						<button label="Cadastrar Respostas"
-							onClick="@command('submit', window=prquest)"
+							onClick="@command('submitFicha', window=prquest)"
 							style="margin-bottom:10px;" />
 					</div>
 				</vlayout>

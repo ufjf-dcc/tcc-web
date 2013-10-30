@@ -3,6 +3,7 @@ package br.ufjf.tcc.business;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.ufjf.tcc.model.Questionario;
 import br.ufjf.tcc.model.Resposta;
 import br.ufjf.tcc.persistent.impl.RespostaDAO;
 
@@ -40,6 +41,10 @@ public class RespostaBusiness {
 
 	public List<Resposta> getAll() {
 		return respostaDAO.getAll();
+	}
+	
+	public List<Resposta> getAnswersFromQuestionary(Questionario questionary) {
+		return respostaDAO.getAnswersFromQuestionary(questionary);
 	}
 
 }
