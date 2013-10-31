@@ -22,7 +22,7 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 		try {
 			Query query = getSession()
 					.createQuery(
-							"select u from Usuario as u left join fetch u.curso join fetch u.tipoUsuario where u.matricula = :matricula AND u.senha = :senha");
+							"SELECT u FROM Usuario AS u LEFT JOIN FETCH u.curso JOIN FETCH u.tipoUsuario LEFT JOIN FETCH u.tcc WHERE u.matricula = :matricula AND u.senha = :senha");
 			query.setParameter("matricula", matricula);
 			query.setParameter("senha", senha);
 
@@ -110,8 +110,13 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 
 	public boolean jaExiste(String matricula, String oldMatricula) {
 		try {
-			Query query = getSession().createQuery(
-					"select u from Usuario u where u.matricula = :matricula");
+			Query query;
+			if(oldMatricula != null){
+				query = getSession().createQuery("SELECT u FROM Usuario u WHERE u.matricula = :matricula AND u.matricula != :oldMatricula");
+				query.setParameter("oldMatricula", oldMatricula);
+			} else
+				query = getSession().createQuery("SELECT u FROM Usuario u WHERE u.matricula = :matricula");
+			
 			query.setParameter("matricula", matricula);
 
 			boolean resultado = query.list().size() > 0 ? true : false;

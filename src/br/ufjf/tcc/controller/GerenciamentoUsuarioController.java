@@ -96,7 +96,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 	 */
 	@Command
 	public void confirm(@BindingParam("usuario") Usuario usuario) {
-		if (usuarioBusiness.validate(usuario, null)) {
+		if (usuarioBusiness.validate(usuario, editTemp.get(usuario.getIdUsuario()).getMatricula())) {
 			if (!usuarioBusiness.editar(usuario))
 				Messagebox.show("Não foi possível editar o usuário.", "Erro",
 						Messagebox.OK, Messagebox.ERROR);
@@ -131,7 +131,6 @@ public class GerenciamentoUsuarioController extends CommonsController {
 			cmbCurso.setDisabled(cmbTipo.getValue().contains("Professor"));
 			txtTitulacao.setDisabled(cmbTipo.getValue().contains("Aluno"));
 		}
-		System.out.println(cmbTipo.getValue());
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

@@ -4,44 +4,34 @@
 	<style src="/style.css" />
 	<div apply="org.zkoss.bind.BindComposer"
 		viewModel="@id('vm') @init('br.ufjf.tcc.controller.CadastroTccController')"
-		form="@id('tcc') @load(vm.newTcc) @save(vm.newTcc, before='submit')"
+		form="@id('tcc') @load(vm.usuario.tcc[0]) @save(vm.usuario.tcc[0], before='submit')"
 		height="100%">
-		<div align="center">
-			<menubar>
-				<menuitem label="Voltar" href="/lista-publica.zul" />
-				<menuitem label="Sair" onClick="@command('logout')" />
-			</menubar>
-		</div>
-		<hlayout style="background-color:#efefef;">
+		<include src="@load(vm.menu)" />
+		<hlayout style="background-color:#efefef;" height="96%">
 			<vlayout hflex="1" style="margin:15px">
 				<hlayout style="margin:5px;line-height:20px;">
 					<label value="Nome do TCC: " />
-					<textbox value="@bind(tcc.nomeTCC)" hflex="1" />
+					<textbox value="@load(tcc.nomeTCC)" hflex="1" />
 				</hlayout>
 
 				<hlayout style="margin:5px;line-height:20px;">
 					<label value="Autor: " />
-					<textbox value="@load(vm.usuario.nomeUsuario)"
+					<textbox value="@load(tcc.aluno.nomeUsuario)"
 						disabled="true" hflex="1" />
 					<separator orient="vertical" spacing="10px" />
 
 					<label value="Orientador: " />
-					<combobox id="cmbOrientadores" hflex="1"
-						model="@load(vm.orientadores)" readonly="true"
-						selectedItem="@load(vm.newTcc.orientador) @save(vm.newTcc.orientador, before='submit')">
-						<template name="model">
-							<comboitem label="@load(each.nomeUsuario)" />
-						</template>
-					</combobox>
+					<textbox value="@load(tcc.orientador.nomeUsuario)"
+						disabled="true" hflex="1" />
 				</hlayout>
 
 				<hlayout style="margin:5px;line-height:20px;">
 					<label value="Palavras-chave: " />
-					<textbox value="@bind(tcc.palavrasChave)" hflex="1" />
+					<textbox value="@load(tcc.palavrasChave)" hflex="1" />
 				</hlayout>
 
 				<label value="Resumo: " style="margin:5px;" />
-				<textbox value="@bind(tcc.resumoTCC)" rows="12"
+				<textbox value="@load(tcc.resumoTCC)" rows="12"
 					width="560px" style="margin:5px;" />
 
 				<hlayout style="margin:5px;line-height:20px;">
@@ -59,8 +49,8 @@
 						style="margin-top:5px" />
 				</div>
 			</vlayout>
-			<iframe hflex="2" autohide="true" height="100%"
-				onCreate="@command('setIframe', iframe=self)" />
+			<iframe hflex="2" vflex="100" autohide="true" height="100%"
+				onCreate="@command('showTCC', iframe=self)" />
 		</hlayout>
 	</div>
 </zk>

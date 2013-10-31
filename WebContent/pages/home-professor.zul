@@ -36,13 +36,6 @@
 								onClick="@command('editQuestionary')" />
 						</div>
 					</row>
-					<row
-						visible="@load(not vm.currentQuestionaryExists or vm.currentQuestionaryUsed ? 'true' : 'false')">
-						<div align="center">
-							<label
-								value="Nada pendente por aqui..." />
-						</div>
-					</row>
 				</rows>
 			</grid>
 

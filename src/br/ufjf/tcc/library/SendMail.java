@@ -16,8 +16,8 @@ import br.ufjf.tcc.model.TCC;
 import br.ufjf.tcc.model.Usuario;
 
 public class SendMail {
-	private final String username = "email";
-	private final String password = "senha";
+	private final String username = "ttest4318@gmail.com";
+	private final String password = "tcc12345";
 	private Properties props;
 	private Message message;
 	

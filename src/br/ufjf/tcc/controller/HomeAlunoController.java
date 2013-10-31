@@ -7,16 +7,25 @@ import java.util.List;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Window;
 
 import br.ufjf.tcc.business.CalendarioSemestreBusiness;
+import br.ufjf.tcc.business.TCCBusiness;
+import br.ufjf.tcc.business.UsuarioBusiness;
 import br.ufjf.tcc.model.CalendarioSemestre;
+import br.ufjf.tcc.model.TCC;
+import br.ufjf.tcc.model.Usuario;
 
 public class HomeAlunoController extends CommonsController {
 	private List<CustomDate> dates = new ArrayList<CustomDate>();
+	private TCC newTcc = new TCC();
+	private List<Usuario> orientadores;
 
 	public List<CustomDate> getDates() {
 		return dates;
@@ -32,13 +41,17 @@ public class HomeAlunoController extends CommonsController {
 				.getCurrentCalendarByCurso(getUsuario().getCurso());
 
 		if (currentCalendar != null) {
-			DateTime finalDate = new DateTime(currentCalendar.getFinalSemestre());
+			DateTime finalDate = new DateTime(
+					currentCalendar.getFinalSemestre());
 
 			DateTimeFormatter fmt = DateTimeFormat.forPattern("dd/MM/yyyy");
 
-			DateTime date0 = finalDate.minusDays(CalendarioSemestre.PRAZO_ENVIO_TCC);
+			DateTime date0 = finalDate
+					.minusDays(CalendarioSemestre.PRAZO_ENVIO_TCC);
 			dates.add(new CustomDate(fmt.print(date0),
-					"Prazo para envio de TCC", "Enviar TCC", false));
+					"Prazo para envio de TCC",
+					(getUsuario().getTcc().size() != 0 ? "Editar TCC"
+							: "Criar TCC"), false));
 
 			DateTime date1 = finalDate.minusDays(60);
 			dates.add(new CustomDate(fmt.print(date1), "Prazo 1", "Botão 1",
@@ -66,10 +79,39 @@ public class HomeAlunoController extends CommonsController {
 	}
 
 	@Command
-	public void action(@BindingParam("date") CustomDate date) {
-		if (date.action == "Enviar TCC") {
+	public void action(@BindingParam("date") CustomDate date, @BindingParam("window") Window window) {
+		if (date.action == "Editar TCC") {
 			Executions.sendRedirect("/pages/cadastro-tcc.zul");
+		} else if (date.action == "Criar TCC") {
+			if(orientadores == null){
+				orientadores = new UsuarioBusiness().getOrientadores();
+				BindUtils.postNotifyChange(null, null, this, "orientadores");
+			}
+			window.doModal();
 		}
+	}
+
+	@Command("submit")
+	public void submit() {
+		TCCBusiness tccBusiness = new TCCBusiness();
+		newTcc.setAluno(getUsuario());
+		if (tccBusiness.save(newTcc)) {
+			Executions.sendRedirect("/pages/cadastro-tcc.zul");
+		} else {
+			Messagebox.show("Devido a um erro, o TCC não foi criado.",
+					"Erro", Messagebox.OK, Messagebox.ERROR);
+		}
+	}
+	public TCC getNewTcc() {
+		return newTcc;
+	}
+
+	public void setNewTcc(TCC newTcc) {
+		this.newTcc = newTcc;
+	}
+
+	public List<Usuario> getOrientadores() {
+		return orientadores;
 	}
 
 	public static class CustomDate {

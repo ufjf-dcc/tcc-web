@@ -52,7 +52,7 @@ public class TCCBusiness {
 	}
 
 	public void validateFile(String fileName) {
-		if (fileName == null || fileName.trim().length() == 0)
+		if (fileName != null && fileName.trim().length() != 0)
 			errors.add("Envie o arquivo do TCC (PDF);\n");
 	}
 
@@ -63,6 +63,10 @@ public class TCCBusiness {
 
 	public List<TCC> getAll() {
 		return tccDao.getAll();
+	}
+	
+	public List<TCC> getTCCByUser(Usuario usuario) {
+		return tccDao.getTCCByUser(usuario);
 	}
 
 	public boolean save(TCC tcc) {

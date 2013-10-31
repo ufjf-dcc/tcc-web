@@ -128,7 +128,7 @@ public class LoginController extends CommonsController {
 			Transport.send(message);
 			
 			Messagebox
-			.show("Um e-mail com a nova senha fopi enviado para " + user.getEmail() + ".",
+			.show("Um e-mail com a nova senha foi enviado para " + user.getEmail() + ".",
 					"Verifique o seu e-mail", Messagebox.OK,
 					Messagebox.INFORMATION);
 

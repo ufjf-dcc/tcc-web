@@ -44,8 +44,13 @@ public class CursoDAO extends GenericoDAO implements ICursoDAO {
 
 	public boolean jaExiste(String codigoCurso, String oldCodigo) {
 		try {
-			Query query = getSession().createQuery(
-					"select c from Curso c where c.codigoCurso = :codigoCurso");
+			Query query;
+			if(oldCodigo != null){
+				query = getSession().createQuery("SELECT c FROM Curso c WHERE c.codigoCurso = :codigoCurso AND c.codigoCurso != :oldCodigo");
+				query.setParameter("oldCodigo", oldCodigo);
+			} else
+				query = getSession().createQuery("SELECT c FROM Curso c WHERE c.codigoCurso = :codigoCurso");
+
 			query.setParameter("codigoCurso", codigoCurso);
 
 			boolean resultado = query.list().size() > 0 ? true : false;

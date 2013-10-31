@@ -4,7 +4,7 @@
 	<style src="/style.css" />
 	<div apply="org.zkoss.bind.BindComposer"
 		viewModel="@id('vm') @init('br.ufjf.tcc.controller.GerenciamentoUsuarioController')"
-		height="100%" class="centerGrid">
+		height="100%">
 		<include src="@load(vm.menu)" />
 		<grid
 			model="@load(vm.filterUsuarios) @template(each.editingStatus ? 'editable' : 'noneditable')"
@@ -164,7 +164,7 @@
 						<textbox id="txtTitulacao"
 							value="@load(vm.newUsuario.titulacao) @save(vm.newUsuario.titulacao, before='submit')"
 							tabindex="1" width="100%"
-							disabled="@load(each.tipoUsuario.idTipoUsuario eq 1)" />
+							disabled="true" />
 					</row>
 
 					<row>

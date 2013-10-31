@@ -52,7 +52,7 @@ public class GerenciamentoCursoController extends CommonsController {
 
 	@Command
 	public void confirm(@BindingParam("curso") Curso curso) {
-		if (cursoBusiness.validate(curso, null)) {
+		if (cursoBusiness.validate(curso, editTemp.get(curso.getIdCurso()).getCodigoCurso())) {
 			if (!cursoBusiness.editar(curso))
 				Messagebox.show("Não foi possível editar o curso.", "Erro",
 						Messagebox.OK, Messagebox.ERROR);

@@ -49,11 +49,38 @@
 						<label value="@load(each.description)"
 							style="@load(each.isCurrent ? 'font-weight:bold;' : '')" />
 						<button label="@load(each.action)"
-							onClick="@command('action', date=each)"
+							onClick="@command('action', date=each, window=criarTCC)"
 							disabled="@load(not each.isCurrent)" />
 					</row>
 				</template>
 			</grid>
 		</vlayout>
+		<window id="criarTCC" title="Criar TCC"
+			visible="false" width="400px" border="normal"
+			position="center,center" closable="true"
+			onClose="self.setVisible(false); event.stopPropagation();">
+			<grid>
+				<columns>
+					<column width="160px" />
+					<column />
+				</columns>
+				<rows>
+					<row>
+						<label value="Selecione o Orientador: " />
+						<combobox id="cmbOrientadores" hflex="1"
+							model="@load(vm.orientadores)" readonly="true"
+							selectedItem="@load(vm.newTcc.orientador) @save(vm.newTcc.orientador, before='submit')">
+							<template name="model">
+								<comboitem label="@load(each.nomeUsuario)" />
+							</template>
+						</combobox>
+					</row>
+				</rows>
+			</grid>
+			<div align="center">
+				<button label="Criar" onClick="@command('submit')"
+					width="75px" style="margin-top:5px" />
+			</div>
+		</window>
 	</div>
 </zk>

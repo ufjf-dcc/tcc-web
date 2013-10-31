@@ -11,9 +11,9 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
-import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
+import org.zkoss.bind.annotation.Init;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Sessions;
@@ -23,7 +23,7 @@ import org.zkoss.zul.Messagebox;
 
 import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.business.UsuarioBusiness;
-import br.ufjf.tcc.library.SendMail;
+import br.ufjf.tcc.library.SessionManager;
 import br.ufjf.tcc.model.TCC;
 import br.ufjf.tcc.model.Usuario;
 
@@ -40,6 +40,22 @@ public class CadastroTccController extends CommonsController {
 			.getRealPath("/")
 			+ "/files/";
 
+	@Init
+	public void init() {
+		getUsuario().setTcc(tccBusiness.getTCCByUser(getUsuario()));
+		SessionManager.setAttribute("usuario", getUsuario());
+	}
+	
+	@Command
+	public void showTCC(@BindingParam("iframe") Iframe report) {
+		InputStream is = Sessions.getCurrent().getWebApp()
+				.getResourceAsStream("files/modelo.pdf");
+
+		final AMedia amedia = new AMedia("PDFReference16.pdf", "pdf",
+				"application/pdf", is);
+		report.setContent(amedia);
+	}
+	
 	public TCC getNewTcc() {
 		return newTcc;
 	}
@@ -192,12 +208,12 @@ public class CadastroTccController extends CommonsController {
 			saveExtraFile();
 		if (tccBusiness.validate(newTcc)) {
 			if (tccBusiness.save(newTcc)) {
-				new SendMail().onSubmitTCC(newTcc);
+				//new SendMail().onSubmitTCC(newTcc);
 				Messagebox
 						.show("\""
 								+ newTcc.getNomeTCC()
 								+ "\" cadastrado com sucesso!\nUma mensagem de confirmação foi enviada para o seu e-mail.");
-				limpa(tccBusiness);
+				tccBusiness.clearErrors();
 			} else {
 				Messagebox.show("Devido a um erro, o TCC não foi cadastrado.",
 						"Erro", Messagebox.OK, Messagebox.ERROR);
@@ -210,12 +226,6 @@ public class CadastroTccController extends CommonsController {
 					Messagebox.OK, Messagebox.ERROR);
 			tccBusiness.clearErrors();
 		}
-	}
-
-	public void limpa(TCCBusiness tccBusiness) {
-		tccBusiness.clearErrors();
-		newTcc = new TCC();
-		BindUtils.postNotifyChange(null, null, this, "newTcc");
 	}
 
 }

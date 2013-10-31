@@ -1,17 +1,13 @@
 <?page title="PDF" contentType="text/html;charset=UTF-8"?>
+<?init class="br.ufjf.tcc.controller.AuthController"?>
 <?script content="zk.useStack='auto'" ?>
 <zk>
 	<style src="/style.css" />
 	<div apply="org.zkoss.bind.BindComposer"
 		viewModel="@id('vm') @init('br.ufjf.tcc.controller.VisualizaTCCController')"
 		height="100%">
-		<div align="center">
-			<menubar>
-				<menuitem label="Voltar" href="javascript:history.back()" />
-				<menuitem label="Sair" onClick="@command('logout')" />
-			</menubar>
-		</div>
-		<hlayout style="background-color:#efefef;">
+		<include src="@load(vm.menu)" />
+		<hlayout style="background-color:#efefef;"  height="96%">
 			<vlayout hflex="1" style="margin:15px">
 				<hlayout style="margin-bottom:15px;background-color:#efefef;"
 					visible="@load(vm.answerTcc ? 'true' : 'false')">
@@ -92,7 +88,7 @@
 					</div>
 				</vlayout>
 			</vlayout>
-			<iframe hflex="2" autohide="true" height="100%"
+			<iframe hflex="2" vflex="100" autohide="true" height="100%"
 				onCreate="@command('showTCC', iframe=self)" />
 		</hlayout>
 	</div>

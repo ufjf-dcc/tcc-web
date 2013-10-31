@@ -67,10 +67,11 @@ public class CursoBusiness {
 	}
 
 	public boolean jaExiste(String codigoCurso, String oldCodigo) {
-		boolean resultado = cursoDAO.jaExiste(codigoCurso, oldCodigo);
-		if (resultado)
+		if (cursoDAO.jaExiste(codigoCurso, oldCodigo)){
 			errors.add("Já existe um curso com este código.\n");
-		return resultado;
+			return true;
+		}
+		return false;
 	}
 
 }

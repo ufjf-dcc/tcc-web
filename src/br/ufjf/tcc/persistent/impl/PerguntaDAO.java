@@ -17,7 +17,7 @@ public class PerguntaDAO extends GenericoDAO implements IPerguntaDAO {
 		List<Pergunta> questions = null;
 		try {
 			Query query = getSession().createQuery(
-					"select p from Pergunta p where p.questionario = :questionario");
+					"SELECT p FROM Pergunta p WHERE p.questionario = :questionario ORDER BY p.ordem");
 			query.setParameter("questionario", questionary);
 			
 			questions = query.list();

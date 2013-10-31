@@ -6,6 +6,7 @@ import org.hibernate.Query;
 
 import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.model.TCC;
+import br.ufjf.tcc.model.Usuario;
 import br.ufjf.tcc.persistent.GenericoDAO;
 import br.ufjf.tcc.persistent.ITCCDAO;
 
@@ -17,6 +18,25 @@ public class TCCDAO extends GenericoDAO implements ITCCDAO {
 		try {
 			Query query = getSession().createQuery("select t from TCC as t join fetch t.aluno as a join fetch t.orientador WHERE  t.dataEnvioFinal > 0 AND a.curso = :curso");
 			query.setParameter("curso", curso);
+
+			List<TCC> resultados = query.list();
+
+			getSession().close();
+
+			if (resultados != null)
+				return resultados;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+	
+	public List<TCC> getTCCByUser(Usuario usuario) {
+		try {
+			Query query = getSession().createQuery("SELECT t FROM TCC AS t JOIN FETCH t.aluno AS a JOIN FETCH t.orientador WHERE t.aluno = :aluno");
+			query.setParameter("aluno", usuario);
 
 			List<TCC> resultados = query.list();
 
