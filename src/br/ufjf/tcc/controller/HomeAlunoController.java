@@ -51,7 +51,7 @@ public class HomeAlunoController extends CommonsController {
 			dates.add(new CustomDate(fmt.print(date0),
 					"Prazo para envio de TCC",
 					(getUsuario().getTcc().size() != 0 ? "Editar TCC"
-							: "Criar TCC"), false));
+							: "Registrar TCC"), false));
 
 			DateTime date1 = finalDate.minusDays(60);
 			dates.add(new CustomDate(fmt.print(date1), "Prazo 1", "Botão 1",
@@ -82,7 +82,7 @@ public class HomeAlunoController extends CommonsController {
 	public void action(@BindingParam("date") CustomDate date, @BindingParam("window") Window window) {
 		if (date.action == "Editar TCC") {
 			Executions.sendRedirect("/pages/cadastro-tcc.zul");
-		} else if (date.action == "Criar TCC") {
+		} else if (date.action == "Registrar TCC") {
 			if(orientadores == null){
 				orientadores = new UsuarioBusiness().getOrientadores();
 				BindUtils.postNotifyChange(null, null, this, "orientadores");

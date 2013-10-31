@@ -49,13 +49,13 @@
 						<label value="@load(each.description)"
 							style="@load(each.isCurrent ? 'font-weight:bold;' : '')" />
 						<button label="@load(each.action)"
-							onClick="@command('action', date=each, window=criarTCC)"
+							onClick="@command('action', date=each, window=registrarTCC)"
 							disabled="@load(not each.isCurrent)" />
 					</row>
 				</template>
 			</grid>
 		</vlayout>
-		<window id="criarTCC" title="Criar TCC"
+		<window id="registrarTCC" title="Registrar TCC"
 			visible="false" width="400px" border="normal"
 			position="center,center" closable="true"
 			onClose="self.setVisible(false); event.stopPropagation();">
@@ -78,7 +78,7 @@
 				</rows>
 			</grid>
 			<div align="center">
-				<button label="Criar" onClick="@command('submit')"
+				<button label="Registrar" onClick="@command('submit')"
 					width="75px" style="margin-top:5px" />
 			</div>
 		</window>

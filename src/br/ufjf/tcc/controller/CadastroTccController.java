@@ -8,9 +8,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
@@ -18,6 +20,8 @@ import org.zkoss.util.media.AMedia;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.UploadEvent;
+import org.zkoss.zul.Button;
+import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Iframe;
 import org.zkoss.zul.Messagebox;
 
@@ -29,11 +33,9 @@ import br.ufjf.tcc.model.Usuario;
 
 public class CadastroTccController extends CommonsController {
 
-	private TCC newTcc = new TCC();
 	private TCCBusiness tccBusiness = new TCCBusiness();
-	private List<Usuario> orientadores = new UsuarioBusiness()
-			.getOrientadores();
-	
+	private List<Usuario> orientadores = new ArrayList<Usuario>();
+	private TCC tcc;
 	private Iframe iframe;
 	private Media media = null, extraMedia = null;
 	private static final String SAVE_PATH = Sessions.getCurrent().getWebApp()
@@ -44,24 +46,26 @@ public class CadastroTccController extends CommonsController {
 	public void init() {
 		getUsuario().setTcc(tccBusiness.getTCCByUser(getUsuario()));
 		SessionManager.setAttribute("usuario", getUsuario());
+		tcc = getUsuario().getTcc().get(0);
+		orientadores.add(tcc.getOrientador());
 	}
-	
+
+	public TCC getTcc() {
+		return tcc;
+	}
+
+	public void setTcc(TCC tcc) {
+		this.tcc = tcc;
+	}
+
 	@Command
-	public void showTCC(@BindingParam("iframe") Iframe report) {
-		InputStream is = Sessions.getCurrent().getWebApp()
-				.getResourceAsStream("files/modelo.pdf");
-
-		final AMedia amedia = new AMedia("PDFReference16.pdf", "pdf",
-				"application/pdf", is);
-		report.setContent(amedia);
-	}
-	
-	public TCC getNewTcc() {
-		return newTcc;
-	}
-
-	public void setNewTcc(TCC newTcc) {
-		this.newTcc = newTcc;
+	public void changeOrientador(@BindingParam("butOrientador") Button butOrientador,
+			@BindingParam("cmbOrientador") Combobox cmbOrientador) {
+		if (orientadores.size() <= 1) {
+			orientadores = new UsuarioBusiness().getOrientadores();
+			BindUtils.postNotifyChange(null, null, this, "orientadores");
+		}
+		butOrientador.setVisible(false);
 	}
 
 	public List<Usuario> getOrientadores() {
@@ -78,6 +82,16 @@ public class CadastroTccController extends CommonsController {
 	}
 
 	@Command
+	public void showTCC(@BindingParam("iframe") Iframe report) {
+		InputStream is = Sessions.getCurrent().getWebApp()
+				.getResourceAsStream("files/modelo.pdf");
+
+		final AMedia amedia = new AMedia("PDFReference16.pdf", "pdf",
+				"application/pdf", is);
+		report.setContent(amedia);
+	}
+
+	@Command
 	public void upload(@BindingParam("evt") UploadEvent evt) {
 		Media auxMedia = evt.getMedia();
 		if (!auxMedia.getName().contains(".pdf")) {
@@ -88,11 +102,11 @@ public class CadastroTccController extends CommonsController {
 			return;
 		}
 		media = auxMedia;
-		final AMedia tccFile = new AMedia(newTcc.getNomeTCC(), "pdf",
+		final AMedia tccFile = new AMedia(tcc.getNomeTCC(), "pdf",
 				"application/pdf", media.getStreamData());
 		iframe.setContent(tccFile);
 	}
-	
+
 	@Command
 	public void extraUpload(@BindingParam("evt") UploadEvent evt) {
 		Media auxMedia = evt.getMedia();
@@ -115,7 +129,7 @@ public class CadastroTccController extends CommonsController {
 
 			String newFileName = tccBusiness.encriptFileName();
 			if (newFileName != null) {
-				newTcc.setArquivoTCCBanca(newFileName);
+				tcc.setArquivoTCCBanca(newFileName);
 
 				File file = new File(SAVE_PATH + newFileName);
 
@@ -146,7 +160,7 @@ public class CadastroTccController extends CommonsController {
 		}
 
 	}
-	
+
 	@Command
 	public void saveExtraFile() {
 		BufferedInputStream in = null;
@@ -163,7 +177,7 @@ public class CadastroTccController extends CommonsController {
 
 			String newFileName = tccBusiness.encriptFileName();
 			if (newFileName != null) {
-				newTcc.setArquivoExtraTCCBanca(newFileName);
+				tcc.setArquivoExtraTCCBanca(newFileName);
 
 				File file = new File(SAVE_PATH + newFileName);
 
@@ -197,8 +211,7 @@ public class CadastroTccController extends CommonsController {
 
 	@Command("submit")
 	public void submit() {
-		newTcc.setDataEnvioBanca(new Timestamp(new Date().getTime()));
-		newTcc.setAluno(getUsuario());
+		tcc.setDataEnvioBanca(new Timestamp(new Date().getTime()));
 		if (media != null)
 			savePDF();
 		else
@@ -206,12 +219,12 @@ public class CadastroTccController extends CommonsController {
 					.show("Você não enviou o arquivo de TCC. Lembre-se de enviá-lo depois.");
 		if (extraMedia != null)
 			saveExtraFile();
-		if (tccBusiness.validate(newTcc)) {
-			if (tccBusiness.save(newTcc)) {
-				//new SendMail().onSubmitTCC(newTcc);
+		if (tccBusiness.validate(tcc)) {
+			if (tccBusiness.edit(tcc)) {
+				// new SendMail().onSubmitTCC(tcc);
 				Messagebox
 						.show("\""
-								+ newTcc.getNomeTCC()
+								+ tcc.getNomeTCC()
 								+ "\" cadastrado com sucesso!\nUma mensagem de confirmação foi enviada para o seu e-mail.");
 				tccBusiness.clearErrors();
 			} else {

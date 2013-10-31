@@ -47,6 +47,14 @@ public class TCC implements Serializable {
 	 */
 	@Column(name = "nomeTCC", length = 255, nullable = true)
 	private String nomeTCC;
+	
+	/**
+	 * Campo com o sub nome do TCC. Relaciona com a coluna {@code nomeTCC} do banco
+	 * através da anotação
+	 * {@code @Column(name = "subNomeTCC", length = 255, nullable = true)}.
+	 */
+	@Column(name = "subNomeTCC", length = 255, nullable = true)
+	private String subNomeTCC;
 
 	/**
 	 * Campo com o resumo do TCC. Relaciona com a coluna {@code resumoTCC} do
@@ -190,6 +198,14 @@ public class TCC implements Serializable {
 
 	public void setNomeTCC(String nomeTCC) {
 		this.nomeTCC = nomeTCC;
+	}
+	
+	public String getSubNomeTCC() {
+		return subNomeTCC;
+	}
+
+	public void setSubNomeTCC(String subNomeTCC) {
+		this.subNomeTCC = subNomeTCC;
 	}
 
 	public String getArquivoTCCBanca() {
