@@ -49,7 +49,7 @@ public class TCC implements Serializable {
 	private String nomeTCC;
 	
 	/**
-	 * Campo com o sub nome do TCC. Relaciona com a coluna {@code nomeTCC} do banco
+	 * Campo com o sub nome do TCC. Relaciona com a coluna {@code subNomeTCC} do banco
 	 * através da anotação
 	 * {@code @Column(name = "subNomeTCC", length = 255, nullable = true)}.
 	 */

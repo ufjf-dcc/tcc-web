@@ -7,7 +7,8 @@
 		<include src="@load(vm.menu)" />
 		<hlayout spacing="0" height="100%">
 
-			<grid hflex="1" style="margin:10px; margin-bottom:30px">
+			<grid hflex="1" style="margin:10px; margin-bottom:30px"
+				visible="@load(not vm.currentQuestionaryExists or not vm.currentQuestionaryUsed ? 'true' : 'false')">
 				<columns>
 					<column label="Funções de coordenador"
 						style="font-weight:bold;text-align:center" />
@@ -21,8 +22,7 @@
 							<hlayout>
 								<button label="Criar"
 									onClick="@command('createQuestionary')" />
-								<button
-									label="Criar a partir de antigo"
+								<button label="Criar a partir de antigo"
 									onClick="@command('createQuestionaryFromOld')" />
 							</hlayout>
 						</div>
@@ -59,7 +59,8 @@
 					<row onClick="@command('showTCC', tcc=each)">
 						<label value="@load(each.aluno.nomeUsuario)" />
 						<label value="@load(each.nomeTCC)" />
-						<label onCreate="@command('getTCCDateApresentacao', tcc=each, lbl=self)" />
+						<label
+							onCreate="@command('getTCCDateApresentacao', tcc=each, lbl=self)" />
 						<div align="center">
 							<button label="Detalhes"
 								onClick="@command('showTCC', tcc=each)"

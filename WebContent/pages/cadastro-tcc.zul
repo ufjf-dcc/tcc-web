@@ -21,13 +21,6 @@
 						value="@load(vm.tcc.subNomeTCC) @save(vm.tcc.subNomeTCC, before='submit')"
 						hflex="1" />
 				</hlayout>
-
-				<hlayout style="margin:5px;line-height:20px;">
-					<label value="Nome do TCC: " />
-					<textbox
-						value="@load(vm.tcc.nomeTCC) @save(vm.tcc.nomeTCC, before='submit')"
-						hflex="1" />
-				</hlayout>
 				
 				<hlayout style="margin:5px;line-height:20px;">
 					<label value="Orientador: " />

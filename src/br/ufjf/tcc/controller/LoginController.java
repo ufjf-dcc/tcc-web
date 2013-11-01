@@ -122,7 +122,7 @@ public class LoginController extends CommonsController {
 					+ user.getNomeUsuario()
 					+ ",\n\n"
 					+ "Segue, abaixo, a sua nova senha de acesso ao TCCs UFJF.\n "
-					+ "<b>Recomendamos que a altere no primeiro acesso ao sistema.</b>\n"
+					+ "Recomendamos que a altere no primeiro acesso ao sistema.\n"
 					+ newPassword + "\n\n" + "Atenciosamente,\n" + "(...)");
 
 			Transport.send(message);

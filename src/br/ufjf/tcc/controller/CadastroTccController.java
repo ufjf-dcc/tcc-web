@@ -59,7 +59,8 @@ public class CadastroTccController extends CommonsController {
 	}
 
 	@Command
-	public void changeOrientador(@BindingParam("butOrientador") Button butOrientador,
+	public void changeOrientador(
+			@BindingParam("butOrientador") Button butOrientador,
 			@BindingParam("cmbOrientador") Combobox cmbOrientador) {
 		if (orientadores.size() <= 1) {
 			orientadores = new UsuarioBusiness().getOrientadores();
@@ -72,23 +73,23 @@ public class CadastroTccController extends CommonsController {
 		return orientadores;
 	}
 
-	public Iframe getIframe() {
-		return iframe;
-	}
-
 	@Command
-	public void setIframe(@BindingParam("iframe") Iframe iframe) {
+	public void showTCC(@BindingParam("iframe") Iframe iframe) {
 		this.iframe = iframe;
-	}
+		
+		InputStream is;
+		AMedia pdf;
+		if (tcc.getArquivoTCCBanca() == null) {
+			is = Sessions.getCurrent().getWebApp()
+					.getResourceAsStream("files/modelo.pdf");
+			pdf = new AMedia("modelo.pdf", "pdf", "application/pdf", is);
+		} else {
+			is = Sessions.getCurrent().getWebApp()
+					.getResourceAsStream("files/" + tcc.getArquivoTCCBanca());
+			pdf = new AMedia(tcc.getNomeTCC() + ".pdf", "pdf", "application/pdf", is);
+		}
 
-	@Command
-	public void showTCC(@BindingParam("iframe") Iframe report) {
-		InputStream is = Sessions.getCurrent().getWebApp()
-				.getResourceAsStream("files/modelo.pdf");
-
-		final AMedia amedia = new AMedia("PDFReference16.pdf", "pdf",
-				"application/pdf", is);
-		report.setContent(amedia);
+		iframe.setContent(pdf);
 	}
 
 	@Command
