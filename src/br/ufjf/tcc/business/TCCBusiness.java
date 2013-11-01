@@ -34,7 +34,6 @@ public class TCCBusiness {
 
 		validateName(tcc.getNomeTCC());
 		validateOrientador(tcc.getOrientador());
-		validateFile(tcc.getArquivoTCCBanca());
 
 		return errors.size() == 0 ? true : false;
 	}
@@ -49,11 +48,6 @@ public class TCCBusiness {
 	public void validateOrientador(Usuario orientador) {
 		if (orientador == null)
 			errors.add("Informe o seu orientador;\n");
-	}
-
-	public void validateFile(String fileName) {
-		if (fileName != null && fileName.trim().length() != 0)
-			errors.add("Envie o arquivo do TCC (PDF);\n");
 	}
 
 	// Comunicação com o TCCDAO

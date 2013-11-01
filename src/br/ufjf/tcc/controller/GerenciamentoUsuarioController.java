@@ -109,7 +109,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 				errorMessage += error;
 			Messagebox.show(errorMessage, "Dados insuficientes / inválidos",
 					Messagebox.OK, Messagebox.ERROR);
-			clearErrors();
+			usuarioBusiness.clearErrors();
 		}
 	}
 
@@ -150,10 +150,12 @@ public class GerenciamentoUsuarioController extends CommonsController {
 										"Sucesso", Messagebox.OK,
 										Messagebox.INFORMATION);
 							} else {
-								Messagebox
-										.show("O usuário não foi excluído.",
-												"Erro", Messagebox.OK,
-												Messagebox.ERROR);
+								String errorMessage = "O usuário não pôde ser excluído.\n";
+								for (String error : usuarioBusiness.errors)
+									errorMessage += error;
+								Messagebox.show(errorMessage, "Erro",
+										Messagebox.OK, Messagebox.ERROR);
+								usuarioBusiness.clearErrors();
 							}
 
 						}
@@ -242,7 +244,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 			} else {
 				Messagebox.show("Usuário não foi adicionado!", "Erro",
 						Messagebox.OK, Messagebox.ERROR);
-				clearErrors();
+				usuarioBusiness.clearErrors();
 			}
 		} else {
 			String errorMessage = "";
@@ -250,19 +252,14 @@ public class GerenciamentoUsuarioController extends CommonsController {
 				errorMessage += error;
 			Messagebox.show(errorMessage, "Dados insuficientes / inválidos",
 					Messagebox.OK, Messagebox.ERROR);
-			clearErrors();
+			usuarioBusiness.clearErrors();
 		}
 	}
 
 	/* Limpa os erros de validação e os dados do novo usuário. */
 	public void limpa() {
-		clearErrors();
+		usuarioBusiness.clearErrors();
 		newUsuario = new Usuario();
 		BindUtils.postNotifyChange(null, null, this, "newUsuario");
-	}
-
-	/* Limpa os erros de validação. */
-	public void clearErrors() {
-		usuarioBusiness.errors.clear();
 	}
 }

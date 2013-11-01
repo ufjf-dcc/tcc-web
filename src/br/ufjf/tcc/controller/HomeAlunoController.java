@@ -79,11 +79,12 @@ public class HomeAlunoController extends CommonsController {
 	}
 
 	@Command
-	public void action(@BindingParam("date") CustomDate date, @BindingParam("window") Window window) {
+	public void action(@BindingParam("date") CustomDate date,
+			@BindingParam("window") Window window) {
 		if (date.action == "Editar TCC") {
 			Executions.sendRedirect("/pages/cadastro-tcc.zul");
 		} else if (date.action == "Registrar TCC") {
-			if(orientadores == null){
+			if (orientadores == null) {
 				orientadores = new UsuarioBusiness().getOrientadores();
 				BindUtils.postNotifyChange(null, null, this, "orientadores");
 			}
@@ -95,13 +96,16 @@ public class HomeAlunoController extends CommonsController {
 	public void submit() {
 		TCCBusiness tccBusiness = new TCCBusiness();
 		newTcc.setAluno(getUsuario());
+		newTcc.setCalendarioSemestre(new CalendarioSemestreBusiness()
+				.getCurrentCalendarByCurso(getUsuario().getCurso()));
 		if (tccBusiness.save(newTcc)) {
 			Executions.sendRedirect("/pages/cadastro-tcc.zul");
 		} else {
-			Messagebox.show("Devido a um erro, o TCC não foi criado.",
-					"Erro", Messagebox.OK, Messagebox.ERROR);
+			Messagebox.show("Devido a um erro, o TCC não foi criado.", "Erro",
+					Messagebox.OK, Messagebox.ERROR);
 		}
 	}
+
 	public TCC getNewTcc() {
 		return newTcc;
 	}

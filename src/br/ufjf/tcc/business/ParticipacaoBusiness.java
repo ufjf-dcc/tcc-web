@@ -13,8 +13,8 @@ public class ParticipacaoBusiness {
 		this.participacaoDAO = new ParticipacaoDAO();
 	}
 
-	public List<Participacao> getParticipacoesByProfessor(Usuario professor) {
-		return participacaoDAO.getParticipacoesByProfessor(professor);
+	public List<Participacao> getParticipacoesByUser(Usuario user) {
+		return participacaoDAO.getParticipacoesByUser(user);
 	}
 
 }

@@ -17,7 +17,6 @@ import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.util.media.AMedia;
-import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zul.Button;
@@ -37,7 +36,8 @@ public class CadastroTccController extends CommonsController {
 	private List<Usuario> orientadores = new ArrayList<Usuario>();
 	private TCC tcc;
 	private Iframe iframe;
-	private Media media = null, extraMedia = null;
+	private InputStream tccFile = null, extraFile = null;
+	private AMedia pdf = null;
 	private static final String SAVE_PATH = Sessions.getCurrent().getWebApp()
 			.getRealPath("/")
 			+ "/files/";
@@ -76,17 +76,17 @@ public class CadastroTccController extends CommonsController {
 	@Command
 	public void showTCC(@BindingParam("iframe") Iframe iframe) {
 		this.iframe = iframe;
-		
-		InputStream is;
+
 		AMedia pdf;
 		if (tcc.getArquivoTCCBanca() == null) {
-			is = Sessions.getCurrent().getWebApp()
+			InputStream is = Sessions.getCurrent().getWebApp()
 					.getResourceAsStream("files/modelo.pdf");
 			pdf = new AMedia("modelo.pdf", "pdf", "application/pdf", is);
 		} else {
-			is = Sessions.getCurrent().getWebApp()
+			tccFile = Sessions.getCurrent().getWebApp()
 					.getResourceAsStream("files/" + tcc.getArquivoTCCBanca());
-			pdf = new AMedia(tcc.getNomeTCC() + ".pdf", "pdf", "application/pdf", is);
+			pdf = new AMedia(tcc.getNomeTCC() + ".pdf", "pdf",
+					"application/pdf", tccFile);
 		}
 
 		iframe.setContent(pdf);
@@ -94,24 +94,21 @@ public class CadastroTccController extends CommonsController {
 
 	@Command
 	public void upload(@BindingParam("evt") UploadEvent evt) {
-		Media auxMedia = evt.getMedia();
-		if (!auxMedia.getName().contains(".pdf")) {
+		if (!evt.getMedia().getName().contains(".pdf")) {
 			Messagebox.show(
 					"Este não é um arquivo válido! Apenas PDF são aceitos.",
 					"Formato inválido", Messagebox.OK, Messagebox.INFORMATION);
-			media = null;
+			tccFile = null;
 			return;
 		}
-		media = auxMedia;
-		final AMedia tccFile = new AMedia(tcc.getNomeTCC(), "pdf",
-				"application/pdf", media.getStreamData());
-		iframe.setContent(tccFile);
+		pdf = new AMedia(tcc.getNomeTCC(), "pdf", "application/pdf", evt
+				.getMedia().getStreamData());
+		tccFile = evt.getMedia().getStreamData();
 	}
 
 	@Command
 	public void extraUpload(@BindingParam("evt") UploadEvent evt) {
-		Media auxMedia = evt.getMedia();
-		extraMedia = auxMedia;
+		extraFile = evt.getMedia().getStreamData();
 	}
 
 	@Command
@@ -119,8 +116,7 @@ public class CadastroTccController extends CommonsController {
 		BufferedInputStream in = null;
 		BufferedOutputStream out = null;
 		try {
-			InputStream fin = media.getStreamData();
-			in = new BufferedInputStream(fin);
+			in = new BufferedInputStream(tccFile);
 
 			File baseDir = new File(SAVE_PATH);
 
@@ -167,8 +163,7 @@ public class CadastroTccController extends CommonsController {
 		BufferedInputStream in = null;
 		BufferedOutputStream out = null;
 		try {
-			InputStream fin = extraMedia.getStreamData();
-			in = new BufferedInputStream(fin);
+			in = new BufferedInputStream(extraFile);
 
 			File baseDir = new File(SAVE_PATH);
 
@@ -213,20 +208,22 @@ public class CadastroTccController extends CommonsController {
 	@Command("submit")
 	public void submit() {
 		tcc.setDataEnvioBanca(new Timestamp(new Date().getTime()));
-		if (media != null)
-			savePDF();
-		else
-			Messagebox
-					.show("Você não enviou o arquivo de TCC. Lembre-se de enviá-lo depois.");
-		if (extraMedia != null)
-			saveExtraFile();
 		if (tccBusiness.validate(tcc)) {
+			if (tccFile != null) {
+				iframe.setContent(pdf);
+				savePDF();
+			} else
+				Messagebox
+						.show("Você não enviou o arquivo de TCC. Lembre-se de enviá-lo depois.");
+			if (extraFile != null)
+				saveExtraFile();
 			if (tccBusiness.edit(tcc)) {
 				// new SendMail().onSubmitTCC(tcc);
-				Messagebox
-						.show("\""
-								+ tcc.getNomeTCC()
-								+ "\" cadastrado com sucesso!\nUma mensagem de confirmação foi enviada para o seu e-mail.");
+				Messagebox.show("\"" + tcc.getNomeTCC()
+						+ "\" cadastrado com sucesso!"
+				// +
+				// "\nUma mensagem de confirmação foi enviada para o seu e-mail."
+						);
 				tccBusiness.clearErrors();
 			} else {
 				Messagebox.show("Devido a um erro, o TCC não foi cadastrado.",

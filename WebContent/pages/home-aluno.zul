@@ -78,7 +78,7 @@
 				</rows>
 			</grid>
 			<div align="center">
-				<button label="Registrar" onClick="@command('submit')"
+				<button label="Avançar" onClick="@command('submit')"
 					width="75px" style="margin-top:5px" />
 			</div>
 		</window>

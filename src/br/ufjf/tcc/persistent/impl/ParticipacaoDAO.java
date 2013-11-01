@@ -13,7 +13,7 @@ import br.ufjf.tcc.persistent.IParticipacaoDAO;
 public class ParticipacaoDAO extends GenericoDAO implements IParticipacaoDAO {
 
 	@SuppressWarnings("unchecked")
-	public List<Participacao> getParticipacoesByProfessor(Usuario professor) {
+	public List<Participacao> getParticipacoesByUser(Usuario professor) {
 		List<Participacao> participacoes = null;
 		try {
 			Query query = getSession().createQuery(

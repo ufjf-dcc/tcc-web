@@ -1,16 +1,5 @@
 package br.ufjf.tcc.controller;
 
-import java.util.Properties;
-import java.util.Random;
-
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-
 import org.hibernate.HibernateException;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
@@ -19,6 +8,7 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
 import br.ufjf.tcc.business.UsuarioBusiness;
+import br.ufjf.tcc.library.SendMail;
 import br.ufjf.tcc.library.SessionManager;
 import br.ufjf.tcc.model.Usuario;
 
@@ -75,67 +65,17 @@ public class LoginController extends CommonsController {
 							Messagebox.EXCLAMATION);
 			return;
 		}
-
-		// Gera uma senha aleatória
-		final String charset = "!@#$%^&*()" + "0123456789"
-				+ "abcdefghijklmnopqrstuvwxyz" + "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-		Random rand = new Random(System.currentTimeMillis());
-		StringBuffer sb = new StringBuffer();
-		for (int i = 0; i <= 10; i++) { // gera uma senha de 10 caracteres
-			int pos = rand.nextInt(charset.length());
-			sb.append(charset.charAt(pos));
-		}
-		String newPassword = sb.toString();
-		System.out.println(newPassword);
-		System.out.println(user.getNomeUsuario());
-
-		// Encripta a senha e salva no banco de dados
+		
+		// Gera e encripta uma senha e salva no banco de dados
+		String newPassword = usuarioBusiness.generatePassword();
 		user.setSenha(usuarioBusiness.encripta(newPassword));
-		usuarioBusiness.editar(user);
-
-		// Envia um email com a nova senha
-		final String mailUsername = "ttest4318@gmail.com";
-		final String mailPassword = "tcc12345";
-
-		Properties props = new Properties();
-		props.put("mail.smtp.auth", "true");
-		props.put("mail.smtp.starttls.enable", "true");
-		props.put("mail.smtp.host", "smtp.gmail.com");
-		props.put("mail.smtp.port", "587");
-
-		Session session = Session.getInstance(props,
-				new javax.mail.Authenticator() {
-					protected PasswordAuthentication getPasswordAuthentication() {
-						return new PasswordAuthentication(mailUsername,
-								mailPassword);
-					}
-				});
-
-		try {
-			Message message = new MimeMessage(session);
-			message.setFrom(new InternetAddress("ttest4318@gmail.com"));
-			message.setRecipients(Message.RecipientType.TO,
-					InternetAddress.parse(email));
-			message.setSubject("Recuperação de senha");
-			message.setText("Prezado(a) "
-					+ user.getNomeUsuario()
-					+ ",\n\n"
-					+ "Segue, abaixo, a sua nova senha de acesso ao TCCs UFJF.\n "
-					+ "Recomendamos que a altere no primeiro acesso ao sistema.\n"
-					+ newPassword + "\n\n" + "Atenciosamente,\n" + "(...)");
-
-			Transport.send(message);
-			
+		if(usuarioBusiness.editar(user) && new SendMail().sendNewPassword(user, newPassword)){
 			Messagebox
 			.show("Um e-mail com a nova senha foi enviado para " + user.getEmail() + ".",
 					"Verifique o seu e-mail", Messagebox.OK,
 					Messagebox.INFORMATION);
-
-		} catch (MessagingException e) {
-			throw new RuntimeException(e);
 		}
-		
+
 		forgot.detach();
 	}
 

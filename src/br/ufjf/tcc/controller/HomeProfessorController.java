@@ -43,7 +43,7 @@ public class HomeProfessorController extends CommonsController {
 
 		else {
 			getUsuario().setParticipacoes(new ParticipacaoBusiness()
-					.getParticipacoesByProfessor(getUsuario()));
+					.getParticipacoesByUser(getUsuario()));
 			for (Participacao p : getUsuario().getParticipacoes()) {
 				tccs.add(p.getTcc());
 			}

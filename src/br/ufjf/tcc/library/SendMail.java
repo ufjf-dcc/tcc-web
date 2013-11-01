@@ -11,7 +11,6 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import br.ufjf.tcc.business.UsuarioBusiness;
 import br.ufjf.tcc.model.TCC;
 import br.ufjf.tcc.model.Usuario;
 
@@ -20,14 +19,14 @@ public class SendMail {
 	private final String password = "tcc12345";
 	private Properties props;
 	private Message message;
-	
-	public SendMail(){
+
+	public SendMail() {
 		props = new Properties();
 		props.put("mail.smtp.auth", "true");
 		props.put("mail.smtp.starttls.enable", "true");
 		props.put("mail.smtp.host", "smtp.gmail.com");
 		props.put("mail.smtp.port", "587");
-		
+
 		Session session = Session.getInstance(props,
 				new javax.mail.Authenticator() {
 					protected PasswordAuthentication getPasswordAuthentication() {
@@ -36,7 +35,7 @@ public class SendMail {
 				});
 		message = new MimeMessage(session);
 	}
-	
+
 	public boolean onSubmitTCC(TCC newTcc) {
 		try {
 			message.setFrom(new InternetAddress("jorge.smrr@gmail.com"));
@@ -60,7 +59,7 @@ public class SendMail {
 		}
 		return false;
 	}
-	
+
 	/*
 	 * Envia um e-mail com a senha provisória para o usuário recém-cadastrado
 	 * usando o SMTP do Gmail.
@@ -77,7 +76,51 @@ public class SendMail {
 					+ "Você foi cadastrado no sistema de envio de TCCs da UFJF. "
 					+ "Segue, abaixo, a sua senha de acesso. "
 					+ "Recomendamos que a altere no primeiro acesso ao sistema.\n"
-					+ new UsuarioBusiness().generatePassword() + "\n\n" + "Atenciosamente,\n" + "(...)");
+					+ newPassword + "\n\n"
+					+ "Atenciosamente,\n" + "(...)");
+
+			Transport.send(message);
+			return true;
+		} catch (AddressException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	public boolean sendNewPassword(Usuario user, String newPassword) {
+		final String mailUsername = "ttest4318@gmail.com";
+		final String mailPassword = "tcc12345";
+
+		Properties props = new Properties();
+		props.put("mail.smtp.auth", "true");
+		props.put("mail.smtp.starttls.enable", "true");
+		props.put("mail.smtp.host", "smtp.gmail.com");
+		props.put("mail.smtp.port", "587");
+
+		Session session = Session.getInstance(props,
+				new javax.mail.Authenticator() {
+					protected PasswordAuthentication getPasswordAuthentication() {
+						return new PasswordAuthentication(mailUsername,
+								mailPassword);
+					}
+				});
+
+		try {
+			Message message = new MimeMessage(session);
+			message.setFrom(new InternetAddress("ttest4318@gmail.com"));
+			message.setRecipients(Message.RecipientType.TO,
+					InternetAddress.parse(user.getEmail()));
+			message.setSubject("Recuperação de senha");
+			message.setText("Prezado(a) "
+					+ user.getNomeUsuario()
+					+ ",\n\n"
+					+ "Segue, abaixo, a sua nova senha de acesso ao TCCs UFJF.\n "
+					+ "Recomendamos que a altere no primeiro acesso ao sistema.\n"
+					+ newPassword + "\n\n" + "Atenciosamente,\n" + "(...)");
 
 			Transport.send(message);
 			return true;

@@ -90,7 +90,7 @@ public class Usuario implements Serializable {
 	 * 
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "tipoUsuario", nullable = false)
+	@JoinColumn(name = "idTipoUsuario", nullable = false)
 	private TipoUsuario tipoUsuario;
 
 	/**

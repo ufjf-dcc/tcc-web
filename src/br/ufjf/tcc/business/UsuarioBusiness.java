@@ -25,8 +25,8 @@ public class UsuarioBusiness {
 	public List<String> getErrors() {
 		return errors;
 	}
-	
-	public void clearErrors(){
+
+	public void clearErrors() {
 		this.errors.clear();
 	}
 
@@ -67,7 +67,9 @@ public class UsuarioBusiness {
 		if (password == null || password.trim().length() == 0 || retype == null
 				|| retype.trim().length() == 0)
 			errors.add("A senha não pode estar em branco;\n");
-		if ((!password.equals(retype))) {
+		else if (password.trim().length() <= 6)
+			errors.add("A senha deve conter ao menos 6 caracteres;\n");
+		else if ((!password.equals(retype))) {
 			errors.add("As senhas não são iguais. Tente novamente.\n");
 		}
 	}
@@ -112,8 +114,8 @@ public class UsuarioBusiness {
 
 	/* Método para gerar a senha provisória (10 caracteres aleatórios). */
 	public String generatePassword() {
-		final String charset = "!@#$%^&*()" + "0123456789"
-				+ "abcdefghijklmnopqrstuvwxyz" + "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		final String charset = "0123456789" + "abcdefghijklmnopqrstuvwxyz"
+				+ "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 		Random rand = new Random(System.currentTimeMillis());
 		StringBuffer sb = new StringBuffer();
@@ -157,6 +159,14 @@ public class UsuarioBusiness {
 	}
 
 	public boolean exclui(Usuario usuario) {
+		if (new TCCBusiness().getTCCByUser(usuario).size() > 0) {
+			errors.add("O usuário possui TCC(s) cadastrado(s);\n");
+			return false;
+		}
+		if (new ParticipacaoBusiness().getParticipacoesByUser(usuario).size() > 0) {
+			errors.add("O usuário possui participações em TCCs;\n");
+			return false;
+		}
 		return usuarioDAO.exclui(usuario);
 	}
 
