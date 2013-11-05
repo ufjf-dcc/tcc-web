@@ -23,7 +23,7 @@
 				<listhead>
 					<listheader label="Código" align="center" hflex="1" />
 					<listheader label="Descrição" align="center" hflex="5" />
-					<listheader label="(Des)Ativada" align="center" hflex="1" />
+					<listheader label="Ativada" align="center" hflex="1" />
 				</listhead>
 				<template name="model" var="permission">
 					<listitem>

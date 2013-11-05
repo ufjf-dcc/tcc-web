@@ -75,7 +75,15 @@ public class Usuario implements Serializable {
 	private String nomeUsuario;
 
 	/**
-	 * Campo com a titulacao do professor/coordenador. Relaciona com a coluna
+	 * Campo com a situação do usuário (ativo ou inativo). Relaciona com a
+	 * coluna {@code ativo} do banco através da anotação
+	 * {@code @Column(name = "ativo", nullable = false)}.
+	 */
+	@Column(name = "ativo", nullable = false)
+	private boolean ativo;
+	
+	/**
+	 * Campo com a informação. Relaciona com a coluna
 	 * {@code titulacao} do banco através da anotação
 	 * {@code @Column(name = "titulacao", length = 45, nullable = true)}.
 	 */
@@ -175,6 +183,14 @@ public class Usuario implements Serializable {
 
 	public void setNomeUsuario(String nomeUsuario) {
 		this.nomeUsuario = nomeUsuario;
+	}
+
+	public boolean isAtivo() {
+		return ativo;
+	}
+
+	public void setAtivo(boolean ativo) {
+		this.ativo = ativo;
 	}
 
 	public String getTitulacao() {

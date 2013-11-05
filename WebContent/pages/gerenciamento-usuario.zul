@@ -41,6 +41,7 @@
 					sort="auto(tipoUsuario.nomeTipoUsuario)" />
 				<column hflex="1" label="Titulação"
 					sort="auto(titulacao)" />
+					<column width="50px" label="Ativo" />
 				<column width="100px" label="Editar" />
 			</columns>
 			<template name="editable">
@@ -85,6 +86,8 @@
 						value="@load(each.titulacao) @save(each.titulacao, before='confirm')"
 						width="100%"
 						disabled="@load(each.tipoUsuario.idTipoUsuario eq 1)" />
+						
+					<checkbox checked="@load(each.ativo) @save(each.ativo, before='confirm')" />
 
 					<div>
 						<button image="/img/confirm.gif"
@@ -105,6 +108,7 @@
 					<label
 						value="@load(each.tipoUsuario.nomeTipoUsuario)" />
 					<label value="@load(each.titulacao)" />
+					<checkbox checked="@load(each.ativo)" disabled="true" />
 					<div>
 						<button image="/img/edit.gif"
 							onClick="@command('changeEditableStatus', usuario=each)" />

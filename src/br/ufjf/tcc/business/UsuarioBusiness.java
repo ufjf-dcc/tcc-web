@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.zkoss.zul.Messagebox;
+
 import jonelo.jacksum.JacksumAPI;
 import jonelo.jacksum.algorithm.AbstractChecksum;
 import br.ufjf.tcc.library.SessionManager;
@@ -80,10 +82,20 @@ public class UsuarioBusiness {
 				this.encripta(senha));
 
 		if (usuario != null) {
-			SessionManager.setAttribute("usuario", usuario);
-			return true;
+			if (usuario.isAtivo()) {
+				SessionManager.setAttribute("usuario", usuario);
+				return true;
+			} else {
+				Messagebox
+						.show("Seu casdastro não está ativo. Por favor contate o coordenador de seu curso.",
+								"Usuário inativo", Messagebox.OK,
+								Messagebox.INFORMATION);
+				return false;
+			}
 		}
-
+		
+		Messagebox.show("Usuário ou Senha inválidos!",
+				"Falha no Login", Messagebox.OK, Messagebox.ERROR);
 		return false;
 	}
 

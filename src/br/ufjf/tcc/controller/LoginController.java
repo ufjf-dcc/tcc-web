@@ -33,12 +33,8 @@ public class LoginController extends CommonsController {
 				&& usuarioForm.getSenha() != null) {
 			usuarioBusiness = new UsuarioBusiness();
 			if (usuarioBusiness.login(usuarioForm.getMatricula(),
-					usuarioForm.getSenha())) {
+					usuarioForm.getSenha()))
 				redirectHome();
-			} else {
-				Messagebox.show("Usuário ou Senha inválidos!",
-						"Falha no Login", Messagebox.OK, Messagebox.ERROR);
-			}
 		}
 	}
 
