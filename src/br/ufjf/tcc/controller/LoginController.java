@@ -35,6 +35,11 @@ public class LoginController extends CommonsController {
 			if (usuarioBusiness.login(usuarioForm.getMatricula(),
 					usuarioForm.getSenha()))
 				redirectHome();
+			else {
+				Messagebox.show(usuarioBusiness.getErrors().get(0), "Erro",
+						Messagebox.OK, Messagebox.ERROR);
+				usuarioBusiness.clearErrors();
+			}
 		}
 	}
 
