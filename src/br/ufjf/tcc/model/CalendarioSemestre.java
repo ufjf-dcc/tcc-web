@@ -88,6 +88,16 @@ public class CalendarioSemestre implements Serializable {
 	 */
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "calendarioSemestre")
 	private List<Questionario> questionarios = new ArrayList<Questionario>();
+	
+	/**
+	 * Relacionamento 1 para N entre CalendarioSemestre e Prazo. Mapeada em
+	 * {@link Prazo} pela variável {@code calendarioSemestre} e retorno do tipo
+	 * {@code LAZY} que indica que não será carregado automáticamente este dado
+	 * quando retornarmos o {@link CalendarioSemestre}.
+	 * 
+	 */
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "calendarioSemestre")
+	private List<Prazo> prazos = new ArrayList<Prazo>();
 
 	public int getIdCalendarioSemestre() {
 		return idCalendarioSemestre;
@@ -135,6 +145,14 @@ public class CalendarioSemestre implements Serializable {
 
 	public void setQuestionarios(List<Questionario> questionarios) {
 		this.questionarios = questionarios;
+	}
+
+	public List<Prazo> getPrazos() {
+		return prazos;
+	}
+
+	public void setPrazos(List<Prazo> prazos) {
+		this.prazos = prazos;
 	}
 
 }

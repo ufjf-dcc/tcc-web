@@ -32,7 +32,7 @@
 			</grid>
 
 			<grid emptyMessage="O calendário do semestre ainda não foi cadastrado no sistema."
-				model="@load(vm.dates) @template('prazos')"
+				model="@load(vm.prazos) @template('prazos')"
 				style="margin:10px">
 				<auxhead sclass="text-center">
 					<auxheader colspan="3" label="Prazos" />
@@ -44,13 +44,13 @@
 				</columns>
 				<template name="prazos">
 					<row>
-						<label value="@load(each.date)"
-							style="@load(each.isCurrent ? 'font-weight:bold;' : '')" />
-						<label value="@load(each.description)"
-							style="@load(each.isCurrent ? 'font-weight:bold;' : '')" />
-						<button label="@load(each.action)"
-							onClick="@command('action', date=each, window=registrarTCC)"
-							disabled="@load(not each.isCurrent)" />
+						<label onCreate="@command('formatDate', dataFinal=each.dataFinal, label=self)"
+							style="@load(each.idPrazo eq currentPrazo ? 'font-weight:bold;' : '')" />
+						<label onCreate="@command('getDescription', tipo=each.tipo, label=self)"
+							 style="@load(each.idPrazo eq currentPrazo ? 'font-weight:bold;' : '')"/>
+						<button onCreate="@command('getAction', tipo=each.tipo, button=self)"
+							onClick="@command('action', tipo=each.tipo, window=registrarTCC)"
+							disabled="@load(each.idPrazo ne vm.currentPrazo)" />
 					</row>
 				</template>
 			</grid>

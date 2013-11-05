@@ -24,6 +24,7 @@
 		<mapping class="br.ufjf.tcc.model.Participacao" />
 		<mapping class="br.ufjf.tcc.model.Pergunta" />
 		<mapping class="br.ufjf.tcc.model.Permissao" />
+		<mapping class="br.ufjf.tcc.model.Prazo" />
 		<mapping class="br.ufjf.tcc.model.Questionario" />
 		<mapping class="br.ufjf.tcc.model.Resposta" />
 		<mapping class="br.ufjf.tcc.model.TCC" />

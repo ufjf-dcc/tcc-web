@@ -40,7 +40,7 @@ public class SendMail {
 		try {
 			message.setFrom(new InternetAddress("jorge.smrr@gmail.com"));
 			message.setRecipients(Message.RecipientType.TO,
-					InternetAddress.parse("alu@no, orien@tador"));
+					InternetAddress.parse(newTcc.getAluno().getEmail() +"," + newTcc.getOrientador().getEmail()));
 			message.setSubject("Confirmação de envio de TCC");
 			message.setText("Prezado(a) " + newTcc.getAluno().getNomeUsuario()
 					+ ",\n\n" + "Você enviou o TCC \"" + newTcc.getNomeTCC()
