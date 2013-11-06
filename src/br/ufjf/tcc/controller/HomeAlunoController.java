@@ -64,7 +64,7 @@ public class HomeAlunoController extends CommonsController {
 
 		} else {
 			Messagebox
-					.show("O calendário deste semestre ainda não foi cadastrado. Vote mais tarde.",
+					.show("O calendário deste semestre ainda não foi cadastrado. Volte mais tarde.",
 							"Calendário não cadastrado", Messagebox.OK,
 							Messagebox.ERROR);
 		}
@@ -131,6 +131,6 @@ public class HomeAlunoController extends CommonsController {
 	@Command
 	public void getDescription(@BindingParam("tipo") int type,
 			@BindingParam("label") Label label) {
-		label.setValue(prazosBusiness.getDescription(type, userHasTcc));
+		label.setValue(prazosBusiness.getDescription(type));
 	}
 }

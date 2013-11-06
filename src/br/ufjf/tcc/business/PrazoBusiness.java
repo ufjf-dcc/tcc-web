@@ -19,24 +19,37 @@ public class PrazoBusiness {
 			if (userHasTcc)
 				return "Editar TCC";
 			else
-				return "Registrar TCC";			
+				return "Registrar TCC";	
+		case Prazo.ENTREGA_FORM_BANCA:
+			return "Preencher formulário";
+		case Prazo.DEFESA:
+			return "Agendar defesa";
+		case Prazo.ENTREGA_FINAL:
+			return "Enviar ata final";
 		}
 		return "";
 	}
 	
-	public String getDescription(int type, boolean userHasTcc){
+	public String getDescription(int type){
 		switch(type){
 		case Prazo.ENTREGA_TCC_BANCA:
-			if (userHasTcc)
-				return "Você pode editar o seu TCC antes do prazo terminar.";
-			else
-				return "Você ainda não registrou o seu TCC.";
+			return "Data limite para entrega da versão do trabalho para a banca";
+		case Prazo.ENTREGA_FORM_BANCA:
+			return "Data limite para entrega do formulário da banca";
+		case Prazo.DEFESA:
+			return "Data limite para defesa";
+		case Prazo.ENTREGA_FINAL:
+			return "Data limite para entrega da ata de defesa e versão final do trabalho";
 		}
 		return "";
 	}
 
 	public List<Prazo> getCurrentCalendarByCurso(CalendarioSemestre calendarioSemestre) {
 		return prazoDAO.getPrazosByCalendario(calendarioSemestre);
+	}
+
+	public boolean save(Prazo p) {
+		return prazoDAO.salvar(p);		
 	}
 
 }

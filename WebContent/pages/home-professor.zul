@@ -36,6 +36,17 @@
 								onClick="@command('editQuestionary')" />
 						</div>
 					</row>
+					<row
+						visible="@load(vm.currentCalendarExists ? 'false' : 'true')">
+						<div align="center">
+							<label
+								value="O seu curso ainda não possui um calendário para o semestre atual." />
+							<hlayout>
+								<button label="Criar"
+									onClick="@command('createCalendar')" />
+							</hlayout>
+						</div>
+					</row>
 				</rows>
 			</grid>
 

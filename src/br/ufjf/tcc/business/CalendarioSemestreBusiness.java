@@ -10,6 +10,10 @@ public class CalendarioSemestreBusiness {
 	public CalendarioSemestreBusiness() {
 		this.calendarioSemestreDAO = new CalendarioSemestreDAO();
 	}
+	
+	public boolean save(CalendarioSemestre calendarioSemestre){
+		return calendarioSemestreDAO.salvar(calendarioSemestre);
+	}
 
 	public CalendarioSemestre getCurrentCalendarByCurso(Curso curso) {
 		return calendarioSemestreDAO.getCurrentCalendarByCurso(curso);

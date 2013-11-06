@@ -186,7 +186,8 @@ public class CadastroQuestionarioController extends CommonsController {
 					}
 				}
 
-				Messagebox.show("Questionário cadastrado.");
+				Messagebox.show("Questionário cadastrado com sucesso.", "Concluído",
+						Messagebox.OK, Messagebox.INFORMATION);
 				window.detach();
 				limpa();
 			} else {

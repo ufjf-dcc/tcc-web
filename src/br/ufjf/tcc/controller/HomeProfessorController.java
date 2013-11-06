@@ -18,6 +18,7 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Window;
 
+import br.ufjf.tcc.business.CalendarioSemestreBusiness;
 import br.ufjf.tcc.business.ParticipacaoBusiness;
 import br.ufjf.tcc.business.QuestionarioBusiness;
 import br.ufjf.tcc.model.Participacao;
@@ -29,7 +30,7 @@ public class HomeProfessorController extends CommonsController {
 	private List<TCC> tccs = new ArrayList<TCC>();
 	private Questionario currentQuestionary;
 	private boolean currentQuestionaryExists = true,
-			currentQuestionaryUsed = true;
+			currentQuestionaryUsed = true, currentCalendarExists = true;
 
 	/*
 	 * Pega toas as TCCs em que o Usuário tem Participação e verifica se o
@@ -42,8 +43,9 @@ public class HomeProfessorController extends CommonsController {
 			super.paginaProibida();
 
 		else {
-			getUsuario().setParticipacoes(new ParticipacaoBusiness()
-					.getParticipacoesByUser(getUsuario()));
+			getUsuario().setParticipacoes(
+					new ParticipacaoBusiness()
+							.getParticipacoesByUser(getUsuario()));
 			for (Participacao p : getUsuario().getParticipacoes()) {
 				tccs.add(p.getTcc());
 			}
@@ -52,11 +54,14 @@ public class HomeProfessorController extends CommonsController {
 		currentQuestionary = new QuestionarioBusiness()
 				.getCurrentQuestionaryByCurso(getUsuario().getCurso());
 
-		if (currentQuestionary == null)
+		if (currentQuestionary == null) {
 			currentQuestionaryExists = false;
+			currentQuestionaryUsed = new QuestionarioBusiness()
+					.isQuestionaryUsed(currentQuestionary);
+		}
 
-		currentQuestionaryUsed = new QuestionarioBusiness()
-				.isQuestionaryUsed(currentQuestionary);
+		currentCalendarExists = new CalendarioSemestreBusiness()
+				.getCurrentCalendarByCurso(getUsuario().getCurso()) != null;
 	}
 
 	public List<TCC> getTccs() {
@@ -69,6 +74,10 @@ public class HomeProfessorController extends CommonsController {
 
 	public boolean isCurrentQuestionaryUsed() {
 		return currentQuestionaryUsed;
+	}
+
+	public boolean isCurrentCalendarExists() {
+		return currentCalendarExists;
 	}
 
 	// Formata a data de apresentação para String
@@ -105,6 +114,13 @@ public class HomeProfessorController extends CommonsController {
 		map.put("editing", true);
 		final Window dialog = (Window) Executions.createComponents(
 				"/pages/cadastro-questionario.zul", null, map);
+		dialog.doModal();
+	}
+	
+	@Command
+	public void createCalendar() {
+		final Window dialog = (Window) Executions.createComponents(
+				"/pages/cadastro-calendario1.zul", null, null);
 		dialog.doModal();
 	}
 

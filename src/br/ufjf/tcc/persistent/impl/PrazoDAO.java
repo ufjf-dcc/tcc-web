@@ -18,7 +18,7 @@ public class PrazoDAO extends GenericoDAO implements IPrazoDAO {
 		try {
 			Query query = getSession()
 					.createQuery(
-							"SELECT p FROM Prazo AS p WHERE p.calendarioSemestre = :calendarioSemestre");
+							"SELECT p FROM Prazo AS p WHERE p.calendarioSemestre = :calendarioSemestre ORDER BY p.dataFinal");
 			query.setParameter("calendarioSemestre", calendarioSemestre);
 			
 			prazos = query.list();

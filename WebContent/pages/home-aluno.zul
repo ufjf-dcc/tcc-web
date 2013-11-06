@@ -5,7 +5,7 @@
 	<div apply="org.zkoss.bind.BindComposer" align="center"
 		viewModel="@id('vm') @init('br.ufjf.tcc.controller.HomeAlunoController')">
 		<include src="@load(vm.menu)" />
-		<vlayout spacing="0" width="550px">
+		<vlayout spacing="0" width="700px">
 
 			<grid style="margin:10px">
 				<columns>
@@ -31,33 +31,38 @@
 				</rows>
 			</grid>
 
-			<grid emptyMessage="O calendário do semestre ainda não foi cadastrado no sistema."
-				model="@load(vm.prazos) @template('prazos')"
-				style="margin:10px">
+			<grid
+				emptyMessage="O calendário do semestre ainda não foi cadastrado no sistema."
+				model="@load(vm.prazos) @template('prazos')" style="margin:10px">
 				<auxhead sclass="text-center">
 					<auxheader colspan="3" label="Prazos" />
 				</auxhead>
 				<columns>
-					<column label="Data" hflex="1" />
-					<column label="Descrição" hflex="3" />
-					<column label="Ação" hflex="1" />
+					<column label="Data" width="80px" />
+					<column label="Descrição" />
+					<column label="Ação" width="150px" />
 				</columns>
 				<template name="prazos">
 					<row>
-						<label onCreate="@command('formatDate', dataFinal=each.dataFinal, label=self)"
+						<label
+							onCreate="@command('formatDate', dataFinal=each.dataFinal, label=self)"
 							style="@load(each.idPrazo eq currentPrazo ? 'font-weight:bold;' : '')" />
-						<label onCreate="@command('getDescription', tipo=each.tipo, label=self)"
-							 style="@load(each.idPrazo eq currentPrazo ? 'font-weight:bold;' : '')"/>
-						<button onCreate="@command('getAction', tipo=each.tipo, button=self)"
-							onClick="@command('action', tipo=each.tipo, window=registrarTCC)"
-							disabled="@load(each.idPrazo ne vm.currentPrazo)" />
+						<label
+							onCreate="@command('getDescription', tipo=each.tipo, label=self)"
+							style="@load(each.idPrazo eq currentPrazo ? 'font-weight:bold;' : '')" />
+						<div align="center">
+							<button width="100%"
+								onCreate="@command('getAction', tipo=each.tipo, button=self)"
+								onClick="@command('action', tipo=each.tipo, window=registrarTCC)"
+								disabled="@load(each.idPrazo ne vm.currentPrazo)" />
+						</div>
 					</row>
 				</template>
 			</grid>
 		</vlayout>
-		<window id="registrarTCC" title="Registrar TCC"
-			visible="false" width="400px" border="normal"
-			position="center,center" closable="true"
+		<window id="registrarTCC" title="Registrar TCC" visible="false"
+			width="400px" border="normal" position="center,center"
+			closable="true"
 			onClose="self.setVisible(false); event.stopPropagation();">
 			<grid>
 				<columns>
@@ -71,7 +76,8 @@
 							model="@load(vm.orientadores)" readonly="true"
 							selectedItem="@load(vm.newTcc.orientador) @save(vm.newTcc.orientador, before='submit')">
 							<template name="model">
-								<comboitem label="@load(each.nomeUsuario)" />
+								<comboitem
+									label="@load(each.nomeUsuario)" />
 							</template>
 						</combobox>
 					</row>

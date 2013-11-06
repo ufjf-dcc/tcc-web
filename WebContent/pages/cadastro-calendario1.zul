@@ -1,0 +1,47 @@
+<zk>
+	<window id="cadcal" title="Cadastrar Calendário" width="400px"
+		border="normal" position="center,center" closable="true"
+		apply="org.zkoss.bind.BindComposer"
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.CadastroCalendario1Controller')">
+
+		<grid>
+			<columns>
+				<column width="100px" />
+				<column />
+			</columns>
+			<rows>
+				<row>
+					<label value="Nome do Calendário:" />
+					<textbox
+						value="@bind(vm.newCalendar.nomeCalendarioSemestre)" width="100%"/>
+				</row>
+				<row>
+					<label value="Curso:" />
+					<combobox readonly="true" width="100%"
+						value="@load(vm.usuario.curso.nomeCurso)" model="@load(vm.cursos)"
+						selectedItem="@bind(vm.newCalendar.curso)"
+						disabled="@load(not vm.admin)">
+						<template name="model">
+							<comboitem label="@load(each.nomeCurso)" />
+						</template>
+					</combobox>
+				</row>
+				<row>
+					<label value="Data inicial:" />
+					<datebox value="@bind(vm.newCalendar.inicioSemestre)"
+						format="dd/MM/yyyy" constraint="no empty" width="100%" />
+				</row>
+				<row>
+					<label value="Data final:" />
+					<datebox value="@bind(vm.newCalendar.finalSemestre)"
+						format="dd/MM/yyyy" constraint="no empty" width="100%" />
+				</row>
+			</rows>
+		</grid>
+		<div align="center">
+			<button label="Avançar"
+				onClick="@command('submit', window=cadcal)"
+				style="margin-top:5px;" />
+		</div>
+	</window>
+</zk>

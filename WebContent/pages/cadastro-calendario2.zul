@@ -1,0 +1,36 @@
+<zk>
+	<window id="cadcal2" title="Cadastrar Calendário" width="650px"
+		border="normal" position="center,center" closable="true"
+		apply="org.zkoss.bind.BindComposer"
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.CadastroCalendario2Controller')">
+
+		<grid model="@load(vm.prazos)">
+			<columns>
+				<column label="#" width="30px" />
+				<column label="Data" width="100px" />
+				<column label="Tipo do prazo" />
+			</columns>
+			<template name="model">
+				<row>
+					<label value="${forEachStatus.index + 1}: " />
+					<datebox value="@bind(each.dataFinal)"
+						format="dd/MM/yyyy" constraint="no empty" />
+					<combobox width="100%" readonly="true"
+						model="@load(vm.types)" selectedItem="@bind(each.tipo)"
+						onCreate="@command('getDescription', combobox=self, type=each.tipo)">
+						<template name="model">
+							<comboitem
+								onCreate="@command('getDescription', comboitem=self, type=forEachStatus.index)" />
+						</template>
+					</combobox>
+				</row>
+			</template>
+		</grid>
+
+		<div align="center">
+			<button label="Cadastrar Calendário"
+				onClick="@command('submit', window=cadcal2)"
+				style="margin-top:5px;" />
+		</div>
+	</window>
+</zk>
