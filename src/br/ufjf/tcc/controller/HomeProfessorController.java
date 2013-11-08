@@ -53,19 +53,23 @@ public class HomeProfessorController extends CommonsController {
 			}
 		}
 
-		currentQuestionary = new QuestionarioBusiness()
-				.getCurrentQuestionaryByCurso(getUsuario().getCurso());
-
-		if (currentQuestionary == null) {
-			currentQuestionaryExists = false;
-			currentQuestionaryUsed = new QuestionarioBusiness()
-					.isQuestionaryUsed(currentQuestionary);
-		}
-
 		currentCalendar = new CalendarioSemestreBusiness()
 				.getCurrentCalendarByCurso(getUsuario().getCurso());
 
-		currentCalendarExists = currentCalendar != null;
+		if (currentCalendar != null) {			
+			currentCalendarExists = currentCalendar != null;
+
+			currentQuestionary = new QuestionarioBusiness()
+					.getCurrentQuestionaryByCurso(getUsuario().getCurso());
+
+			if (currentQuestionary == null) {
+				currentQuestionaryExists = false;
+				currentQuestionaryUsed = new QuestionarioBusiness()
+						.isQuestionaryUsed(currentQuestionary);
+			}
+		} else {
+			currentCalendarExists = false;
+		}
 	}
 
 	public List<TCC> getTccs() {
@@ -124,7 +128,7 @@ public class HomeProfessorController extends CommonsController {
 	@Command
 	public void createCalendar() {
 		final Window dialog = (Window) Executions.createComponents(
-				"/pages/cadastro-calendario1.zul", null, null);
+				"/pages/cadastro-calendario.zul", null, null);
 		dialog.doModal();
 	}
 
@@ -134,7 +138,7 @@ public class HomeProfessorController extends CommonsController {
 		map.put("calendar", currentCalendar);
 		map.put("editing", true);
 		final Window dialog = (Window) Executions.createComponents(
-				"/pages/cadastro-calendario2.zul", null, map);
+				"/pages/cadastro-prazos.zul", null, map);
 		dialog.doModal();
 	}
 

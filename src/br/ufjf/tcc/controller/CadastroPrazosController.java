@@ -24,7 +24,7 @@ import br.ufjf.tcc.business.PrazoBusiness;
 import br.ufjf.tcc.model.CalendarioSemestre;
 import br.ufjf.tcc.model.Prazo;
 
-public class CadastroCalendario2Controller extends CommonsController {
+public class CadastroPrazosController extends CommonsController {
 	private CalendarioSemestre calendar;
 	private int currentPrazo = -1;
 	private List<Prazo> prazos = new ArrayList<Prazo>();
@@ -121,7 +121,7 @@ public class CadastroCalendario2Controller extends CommonsController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("calendar", calendar);
 		final Window dialog = (Window) Executions.createComponents(
-				"/pages/cadastro-calendario1.zul", null, map);
+				"/pages/cadastro-calendario.zul", null, map);
 		dialog.doModal();
 	}
 

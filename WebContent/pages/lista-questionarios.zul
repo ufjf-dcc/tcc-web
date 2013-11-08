@@ -1,9 +1,8 @@
 <zk>
 	<window id="listquest" title="Questionários" width="300px"
-		border="normal" position="center,top" style="margin-top: 100px;"
+		border="normal" position="center,center"
 		closable="true" apply="org.zkoss.bind.BindComposer"
-		viewModel="@id('vm') @init('br.ufjf.tcc.controller.ListaQuestionariosController', cmb=cmbCurso)"
-		onClose="self.setVisible(false); event.stopPropagation();" >
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.ListaQuestionariosController', cmb=cmbCurso)" >
 
 		<grid model="@load(vm.questionaries)"
 			emptyMessage="Não existem questionários antigos">

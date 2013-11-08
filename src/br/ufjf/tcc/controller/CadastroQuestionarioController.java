@@ -11,6 +11,9 @@ import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
@@ -146,6 +149,7 @@ public class CadastroQuestionarioController extends CommonsController {
 	 * Salva ou atualiza o questionário do semestre atual. Se estiver editando o
 	 * quetionário, só salva as alterações das perguntas.
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Command
 	public void submit(@BindingParam("window") Window window) {
 		questionary.setCalendarioSemestre(currentCalendar);
@@ -187,7 +191,11 @@ public class CadastroQuestionarioController extends CommonsController {
 				}
 
 				Messagebox.show("Questionário cadastrado com sucesso.", "Concluído",
-						Messagebox.OK, Messagebox.INFORMATION);
+						Messagebox.OK, Messagebox.INFORMATION, new EventListener() {
+				    public void onEvent(Event evt) throws InterruptedException {
+				    	Executions.sendRedirect("/pages/home-professor.zul");
+				    }
+				});
 				window.detach();
 				limpa();
 			} else {

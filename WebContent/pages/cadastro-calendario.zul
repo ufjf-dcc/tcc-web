@@ -1,12 +1,12 @@
 <zk>
-	<window id="cadcal" title="Cadastrar Calendário" width="400px"
+	<window id="cadcal" title="Cadastrar Calendário" width="450px"
 		border="normal" position="center,center" closable="true"
 		apply="org.zkoss.bind.BindComposer"
-		viewModel="@id('vm') @init('br.ufjf.tcc.controller.CadastroCalendario1Controller')">
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.CadastroCalendarioController')">
 
 		<grid>
 			<columns>
-				<column width="100px" />
+				<column width="150px" />
 				<column />
 			</columns>
 			<rows>

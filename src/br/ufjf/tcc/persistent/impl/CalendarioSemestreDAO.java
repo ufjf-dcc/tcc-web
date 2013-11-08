@@ -13,14 +13,13 @@ import br.ufjf.tcc.persistent.ICalendarioSemestreDAO;
 public class CalendarioSemestreDAO extends GenericoDAO implements ICalendarioSemestreDAO {
 	
 	@Override
-	public CalendarioSemestre getCurrentCalendarByCurso (Curso curso) {
+	public CalendarioSemestre getCalendarByDateAndCurso (Date date, Curso curso) {
 		CalendarioSemestre currentCalendar = null;
-		try {	
-			Date currentDay = new Date();			
+		try {
 			Query query = getSession()
 					.createQuery(
-							"SELECT c FROM CalendarioSemestre AS c WHERE c.curso = :curso AND c.inicioSemestre <= :currentDay AND c.finalSemestre >= :currentDay");
-			query.setParameter("currentDay", currentDay);
+							"SELECT c FROM CalendarioSemestre AS c WHERE c.curso = :curso AND c.inicioSemestre <= :date AND c.finalSemestre >= :date");
+			query.setParameter("date", date);
 			query.setParameter("curso", curso);
 			
 			currentCalendar = (CalendarioSemestre) query.uniqueResult();
