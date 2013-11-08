@@ -21,6 +21,7 @@ import org.zkoss.zul.Window;
 import br.ufjf.tcc.business.CalendarioSemestreBusiness;
 import br.ufjf.tcc.business.ParticipacaoBusiness;
 import br.ufjf.tcc.business.QuestionarioBusiness;
+import br.ufjf.tcc.model.CalendarioSemestre;
 import br.ufjf.tcc.model.Participacao;
 import br.ufjf.tcc.model.Questionario;
 import br.ufjf.tcc.model.TCC;
@@ -29,12 +30,13 @@ import br.ufjf.tcc.model.Usuario;
 public class HomeProfessorController extends CommonsController {
 	private List<TCC> tccs = new ArrayList<TCC>();
 	private Questionario currentQuestionary;
+	private CalendarioSemestre currentCalendar;
 	private boolean currentQuestionaryExists = true,
 			currentQuestionaryUsed = true, currentCalendarExists = true;
 
 	/*
-	 * Pega toas as TCCs em que o Usuário tem Participação e verifica se o
-	 * Questionário do seu Curso já existe.
+	 * Pega toas as TCCs em que o Prof/Coord tem Participação e verifica se o
+	 * Questionário e o Calendário do seu Curso já existe.
 	 */
 	@Init
 	public void init() {
@@ -60,8 +62,10 @@ public class HomeProfessorController extends CommonsController {
 					.isQuestionaryUsed(currentQuestionary);
 		}
 
-		currentCalendarExists = new CalendarioSemestreBusiness()
-				.getCurrentCalendarByCurso(getUsuario().getCurso()) != null;
+		currentCalendar = new CalendarioSemestreBusiness()
+				.getCurrentCalendarByCurso(getUsuario().getCurso());
+
+		currentCalendarExists = currentCalendar != null;
 	}
 
 	public List<TCC> getTccs() {
@@ -116,11 +120,21 @@ public class HomeProfessorController extends CommonsController {
 				"/pages/cadastro-questionario.zul", null, map);
 		dialog.doModal();
 	}
-	
+
 	@Command
 	public void createCalendar() {
 		final Window dialog = (Window) Executions.createComponents(
 				"/pages/cadastro-calendario1.zul", null, null);
+		dialog.doModal();
+	}
+
+	@Command
+	public void editCalendar() {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("calendar", currentCalendar);
+		map.put("editing", true);
+		final Window dialog = (Window) Executions.createComponents(
+				"/pages/cadastro-calendario2.zul", null, map);
 		dialog.doModal();
 	}
 

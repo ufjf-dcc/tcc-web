@@ -47,6 +47,17 @@
 							</hlayout>
 						</div>
 					</row>
+					<row
+						visible="@load(vm.currentCalendarExists ? 'true' : 'false')">
+						<div align="center">
+							<label
+								value="O seu curso já possui um calendário para o semestre atual, mas você pode editar os prazos ainda não vencidos." />
+							<hlayout>
+								<button label="Editar"
+									onClick="@command('editCalendar')" />
+							</hlayout>
+						</div>
+					</row>
 				</rows>
 			</grid>
 

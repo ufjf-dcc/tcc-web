@@ -12,14 +12,14 @@ public class PrazoBusiness {
 	public PrazoBusiness() {
 		this.prazoDAO = new PrazoDAO();
 	}
-	
-	public String getAction(int type, boolean userHasTcc){
-		switch(type){
+
+	public String getAction(int type, boolean userHasTcc) {
+		switch (type) {
 		case Prazo.ENTREGA_TCC_BANCA:
 			if (userHasTcc)
 				return "Editar TCC";
 			else
-				return "Registrar TCC";	
+				return "Registrar TCC";
 		case Prazo.ENTREGA_FORM_BANCA:
 			return "Preencher formulário";
 		case Prazo.DEFESA:
@@ -29,9 +29,9 @@ public class PrazoBusiness {
 		}
 		return "";
 	}
-	
-	public String getDescription(int type){
-		switch(type){
+
+	public String getDescription(int type) {
+		switch (type) {
 		case Prazo.ENTREGA_TCC_BANCA:
 			return "Data limite para entrega da versão do trabalho para a banca";
 		case Prazo.ENTREGA_FORM_BANCA:
@@ -44,12 +44,26 @@ public class PrazoBusiness {
 		return "";
 	}
 
-	public List<Prazo> getCurrentCalendarByCurso(CalendarioSemestre calendarioSemestre) {
+	public List<Prazo> getPrazosByCalendario(
+			CalendarioSemestre calendarioSemestre) {
 		return prazoDAO.getPrazosByCalendario(calendarioSemestre);
 	}
 
 	public boolean save(Prazo p) {
-		return prazoDAO.salvar(p);		
+		return prazoDAO.salvar(p);
+	}
+
+	public boolean saveList(List<Prazo> prazos) {
+		return prazoDAO.salvarLista(prazos);
+	}
+
+	public boolean editList(List<Prazo> prazos) {
+		List<Prazo> oldPrazos = getPrazosByCalendario(prazos.get(0)
+				.getCalendarioSemestre());
+		for (Prazo p : oldPrazos)
+			if (!prazoDAO.exclui(p))
+				return false;
+		return prazoDAO.salvarLista(prazos);
 	}
 
 }

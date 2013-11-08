@@ -27,11 +27,11 @@ import br.ufjf.tcc.model.Usuario;
 
 public class HomeAlunoController extends CommonsController {
 	private boolean userHasTcc = getUsuario().getTcc().size() != 0;
-	private int currentPrazo;
+	private int currentPrazo = -1;
 	private List<Prazo> prazos;
 	private TCC newTcc = new TCC();
 	private List<Usuario> orientadores;
-	private PrazoBusiness prazosBusiness= new PrazoBusiness();
+	private PrazoBusiness prazoBusiness = new PrazoBusiness();
 
 	public List<Prazo> getPrazos() {
 		return prazos;
@@ -51,16 +51,15 @@ public class HomeAlunoController extends CommonsController {
 				.getCurrentCalendarByCurso(getUsuario().getCurso());
 
 		if (currentCalendar != null) {
-			prazos = prazosBusiness.getCurrentCalendarByCurso(currentCalendar);
+			prazos = prazoBusiness.getPrazosByCalendario(currentCalendar);
 
 			DateTime currentDay = new DateTime(new Date());
 
-			for (Prazo p : prazos) {
-				if (currentDay.isAfter(new DateTime(p.getDataFinal())))
+			for (int i = prazos.size() - 1; i >= 0; i--)
+				if(currentDay.isAfter(new DateTime(prazos.get(i).getDataFinal()))){
+					currentPrazo = i + 1;
 					break;
-				else
-					currentPrazo = p.getIdPrazo();
-			}
+				}
 
 		} else {
 			Messagebox
@@ -73,7 +72,7 @@ public class HomeAlunoController extends CommonsController {
 	@Command
 	public void action(@BindingParam("tipo") int tipo,
 			@BindingParam("window") Window window) {
-		switch(tipo){
+		switch (tipo) {
 		case Prazo.ENTREGA_TCC_BANCA:
 			if (userHasTcc)
 				Executions.sendRedirect("/pages/cadastro-tcc.zul");
@@ -125,12 +124,12 @@ public class HomeAlunoController extends CommonsController {
 	@Command
 	public void getAction(@BindingParam("tipo") int type,
 			@BindingParam("button") Button button) {
-		button.setLabel(prazosBusiness.getAction(type, userHasTcc));
+		button.setLabel(prazoBusiness.getAction(type, userHasTcc));
 	}
 
 	@Command
 	public void getDescription(@BindingParam("tipo") int type,
 			@BindingParam("label") Label label) {
-		label.setValue(prazosBusiness.getDescription(type));
+		label.setValue(prazoBusiness.getDescription(type));
 	}
 }

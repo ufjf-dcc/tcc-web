@@ -1,5 +1,5 @@
 <zk>
-	<window id="cadcal2" title="Cadastrar Calendário" width="650px"
+	<window id="cadcal2" title="Cadastrar Calendário" width="600px"
 		border="normal" position="center,center" closable="true"
 		apply="org.zkoss.bind.BindComposer"
 		viewModel="@id('vm') @init('br.ufjf.tcc.controller.CadastroCalendario2Controller')">
@@ -7,30 +7,39 @@
 		<grid model="@load(vm.prazos)">
 			<columns>
 				<column label="#" width="30px" />
-				<column label="Data" width="100px" />
+				<column label="Data" width="110px" />
 				<column label="Tipo do prazo" />
 			</columns>
 			<template name="model">
 				<row>
-					<label value="${forEachStatus.index + 1}: " />
-					<datebox value="@bind(each.dataFinal)"
-						format="dd/MM/yyyy" constraint="no empty" />
+					<label value="${forEachStatus.index + 1}º " />
+					<datebox width="100%" value="@bind(each.dataFinal)"
+						format="dd/MM/yyyy" constraint="no empty"
+						disabled="@load(forEachStatus.index lt vm.currentPrazo ? 'true' : 'false')" />
 					<combobox width="100%" readonly="true"
 						model="@load(vm.types)" selectedItem="@bind(each.tipo)"
-						onCreate="@command('getDescription', combobox=self, type=each.tipo)">
+						disabled="@load(forEachStatus.index lt vm.currentPrazo ? 'true' : 'false')"
+						onCreate="@command('getDescription', combobox=self)">
 						<template name="model">
 							<comboitem
-								onCreate="@command('getDescription', comboitem=self, type=forEachStatus.index)" />
+								onCreate="@command('getDescription', comboitem=self)" />
 						</template>
 					</combobox>
 				</row>
 			</template>
 		</grid>
 
-		<div align="center">
-			<button label="Cadastrar Calendário"
-				onClick="@command('submit', window=cadcal2)"
-				style="margin-top:5px;" />
-		</div>
+		<hlayout width="98%" style="margin:5px;">
+			<div hflex="1">
+				<button label="Voltar"
+					onClick="@command('goBack', window=cadcal2)"
+					visible="@load(vm.editing ? 'false' : 'true')" />
+			</div>
+			<div hflex="1" align="right">
+				<button
+					label="@load(vm.editing ? 'Atualizar calendário' : 'Cadastrar calendário')"
+					onClick="@command('submit', window=cadcal2)" />
+			</div>
+		</hlayout>
 	</window>
 </zk>

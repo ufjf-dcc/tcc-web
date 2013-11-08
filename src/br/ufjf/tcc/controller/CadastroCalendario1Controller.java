@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
+import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.Window;
@@ -16,21 +17,22 @@ import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.model.Usuario;
 
 public class CadastroCalendario1Controller extends CommonsController {
-	private CalendarioSemestre newCalendar = new CalendarioSemestre();
+	private CalendarioSemestre newCalendar;
 	private List<Curso> cursos = new CursoBusiness().getCursos();
 	private boolean admin = getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ADMINISTRADOR;
 	
 	@Init
-	public void init() {
-		newCalendar.setCurso(getUsuario().getCurso());
+	public void init(@ExecutionArgParam("calendar") CalendarioSemestre calendar) {
+		if (calendar != null)
+			this.newCalendar = calendar;
+		else {
+			newCalendar = new CalendarioSemestre();
+			newCalendar.setCurso(getUsuario().getCurso());
+		}
 	}
 	
 	public CalendarioSemestre getNewCalendar() {
 		return newCalendar;
-	}
-	
-	public void setNewCalendar(CalendarioSemestre newCalendar) {
-		this.newCalendar = newCalendar;
 	}
 	
 	public boolean isAdmin() {
@@ -47,8 +49,9 @@ public class CadastroCalendario1Controller extends CommonsController {
 	
 	@Command
 	public void submit(@BindingParam("window") Window window) {
-		Map<String, CalendarioSemestre> map = new HashMap<String, CalendarioSemestre>();
-		map.put("newCalendar", newCalendar);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("calendar", newCalendar);
+		map.put("editing", false);
 		final Window dialog = (Window) Executions.createComponents(
 				"/pages/cadastro-calendario2.zul", null, map);
 		dialog.doModal();
