@@ -56,20 +56,18 @@ public class HomeProfessorController extends CommonsController {
 		currentCalendar = new CalendarioSemestreBusiness()
 				.getCurrentCalendarByCurso(getUsuario().getCurso());
 
-		if (currentCalendar != null) {			
-			currentCalendarExists = currentCalendar != null;
-
+		currentCalendarExists = currentCalendar != null;
+		if (currentCalendar != null) {
 			currentQuestionary = new QuestionarioBusiness()
 					.getCurrentQuestionaryByCurso(getUsuario().getCurso());
 
-			if (currentQuestionary == null) {
-				currentQuestionaryExists = false;
+			currentQuestionaryExists = currentQuestionary != null;
+			if (currentQuestionary != null) {
 				currentQuestionaryUsed = new QuestionarioBusiness()
 						.isQuestionaryUsed(currentQuestionary);
 			}
-		} else {
-			currentCalendarExists = false;
-		}
+		}		
+		
 	}
 
 	public List<TCC> getTccs() {

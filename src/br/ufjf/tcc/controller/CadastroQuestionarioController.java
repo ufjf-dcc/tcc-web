@@ -152,61 +152,61 @@ public class CadastroQuestionarioController extends CommonsController {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Command
 	public void submit(@BindingParam("window") Window window) {
+		for (Pergunta question : questions) {
+			question.setOrdem(questions.indexOf(question));
+			question.setQuestionario(questionary);
+		}
+		
 		questionary.setCalendarioSemestre(currentCalendar);
-		questionary.setPerguntas(questions);
 		questionary.setAtivo(true);
+		
 		QuestionarioBusiness questionarioBusiness = new QuestionarioBusiness();
-		if (questionarioBusiness.validate(questionary)) {
+		PerguntaBusiness perguntaBusiness = new PerguntaBusiness();
+		
+		if (questionarioBusiness.validate(questionary) && perguntaBusiness.validate(questions)) {
 			if (editing) {
-				PerguntaBusiness perguntaBusiness = new PerguntaBusiness();
-				for (Pergunta question : questions) {
-					question.setOrdem(questions.indexOf(question));
-					question.setQuestionario(questionary);
-					if (!perguntaBusiness.saveOrEdit(question)) {
-						Messagebox
-								.show("Questionário não foi atualizado! (perguntas não foram salvas)",
-										"Erro", Messagebox.OK, Messagebox.ERROR);
-						return;
-					}
-				}
 
-				for (Pergunta question : questionsToDelete)
-					if (!perguntaBusiness.delete(question))
-						Messagebox
-								.show("Questionário não foi atualizado! (antigas perguntas não puderam ser excluídas)",
-										"Erro", Messagebox.OK, Messagebox.ERROR);
+				if (perguntaBusiness.editList(questions)) {
+					Messagebox.show("Questionário atualizado.", "Sucesso",
+							Messagebox.OK, Messagebox.INFORMATION);
+					window.detach();
+				} else
+					Messagebox
+							.show("Questionário não foi atualizado!",
+									"Erro", Messagebox.OK, Messagebox.ERROR);
 
-				Messagebox.show("Questionário atualizado.", "Sucesso",
-						Messagebox.OK, Messagebox.INFORMATION);
-				window.detach();
 				limpa();
-			} else if (questionarioBusiness.save(questionary)) {
-				PerguntaBusiness perguntaBusiness = new PerguntaBusiness();
-				for (Pergunta question : questions) {
-					if (question.getTitulo() != null) {
-						question.setOrdem(questions.indexOf(question));
-						question.setQuestionario(questionary);
-						perguntaBusiness.save(question);
-					}
-				}
-
-				Messagebox.show("Questionário cadastrado com sucesso.", "Concluído",
-						Messagebox.OK, Messagebox.INFORMATION, new EventListener() {
-				    public void onEvent(Event evt) throws InterruptedException {
-				    	Executions.sendRedirect("/pages/home-professor.zul");
-				    }
-				});
-				window.detach();
-				limpa();
+				
 			} else {
-				Messagebox.show("Questionário não foi adicionado!", "Erro",
-						Messagebox.OK, Messagebox.ERROR);
-				questionarioBusiness.clearErrors();
+				questionary.setPerguntas(questions);
+				if (questionarioBusiness.save(questionary)) {
+					
+					if (perguntaBusiness.saveList(questions)) {
+						Messagebox.show("Questionário cadastrado com sucesso.",
+								"Concluído", Messagebox.OK, Messagebox.INFORMATION,
+								new EventListener() {
+									public void onEvent(Event evt)
+											throws InterruptedException {
+										Executions
+												.sendRedirect("/pages/home-professor.zul");
+									}
+								});
+						window.detach();
+					}
+
+					limpa();
+				} else {
+					Messagebox.show("Questionário não foi adicionado!", "Erro",
+							Messagebox.OK, Messagebox.ERROR);
+					questionarioBusiness.clearErrors();
+				}
 			}
 
 		} else {
 			String errorMessage = "";
-			for (String error : questionarioBusiness.getErrors())
+			List<String> errors = questionarioBusiness.getErrors();
+			errors.addAll(perguntaBusiness.getErrors());
+			for (String error : errors)
 				errorMessage += error;
 			Messagebox.show(errorMessage, "Dados insuficientes / inválidos",
 					Messagebox.OK, Messagebox.ERROR);
