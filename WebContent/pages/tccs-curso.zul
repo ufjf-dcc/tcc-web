@@ -1,0 +1,109 @@
+<?page title="Gerenciamento de TCCs"?>
+<?init class="br.ufjf.tcc.controller.AuthController"?>
+<zk>
+	<style src="/style.css" />
+	<div apply="org.zkoss.bind.BindComposer"
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.TCCsCursoController')"
+		height="100%" class="publicList">
+		<include src="@load(vm.menu)" />
+		<grid model="@load(vm.filterTccs) @template('lista')"
+			emptyMessage="@load(vm.emptyMessage)" mold="paging" autopaging="true"
+			vflex="true">
+			<auxhead>
+				<auxheader colspan="4">
+					<div>
+						<hlayout
+							style="float:left;">
+							<label value="Pesquisar: " />
+							<textbox id="filtro"
+								value="@bind(vm.filterString)" />
+							<separator orient="vertical" spacing="3px" />
+
+							<label value="Ano: "
+								style="margin-left:10px;" />
+							<combobox id="cmbYear" width="150px"
+								readonly="true" model="@load(vm.years)"
+								value="@load(filterYear)" selectedItem="@bind(vm.filterYear)">
+								<template name="model">
+									<comboitem label="@load(each)" />
+								</template>
+							</combobox>
+							<separator orient="vertical" spacing="3px" />
+
+							<button label="Filtrar"
+								width="60px" onClick="@command('filtra')"
+								style="margin-left:20px;" />
+
+							<image src="/img/help.gif"
+								tooltip="filterHelp" style="cursor: help" />
+
+						</hlayout>
+					</div>
+				</auxheader>
+			</auxhead>
+			<columns>
+				<column hflex="13" label="NomeTCC" sort="auto(nomeTCC)" />
+				<column hflex="4" label="Autor"
+					sort="auto(aluno.nomeUsuario)" />
+				<column hflex="1" label="PDF" />
+				<column hflex="1" label="Extras" />
+			</columns>
+			<template name="lista">
+				<row onClick="@command('showTCC', tcc=each)">
+					<div>
+						<label value="@load(each.nomeTCC)"
+							tooltip="${each.idTCC}, position=at_pointer" />
+						<popup id="${each.idTCC}">
+							<vlayout width="550px">
+								<label value="Resumo"
+									style="font-size: 14px; font-weight: bold; text-align: justify; display: block;" />
+								<label value="@load(each.resumoTCC)" />
+								<hlayout>
+									<label value="Ano: "
+										style="font-weight:bold;" />
+									<label
+										onCreate="@command('getEachTccYear', tcc=each, lbl=self)" />
+								</hlayout>
+								<label value="Orientador"
+									style="font-size: 14px; font-weight: bold; text-align: justify; display: block;" />
+								<label
+									value="@load(each.orientador.nomeUsuario)" />
+								<label value="Palavras-chave"
+									visible="@load(not empty each.palavrasChave)"
+									style="font-size: 14px; font-weight: bold; text-align: justify; display: block;" />
+								<label
+									value="@load(each.palavrasChave)" />
+							</vlayout>
+						</popup>
+					</div>
+					<label value="@load(each.aluno.nomeUsuario)"
+						tooltip="${each.idTCC}, position=at_pointer" />
+					<image src="/img/pdf.png" style="cursor: pointer"
+						onClick="@command('downloadPDF', tcc=each)" />
+					<image style="cursor: pointer"
+						src="@load(not empty each.arquivoExtraTCCFinal ? '/img/rar.png' : '/img/norar.png')"
+						onClick="@command('downloadExtra', tcc=each)" />
+				</row>
+			</template>
+		</grid>
+	</div>
+	<popup id="filterHelp">
+		<html>
+			
+			<![CDATA[ Permite filtrar a lista de TCCs com o termo e o
+			ano <br> escolhidos. O termo pode ser, por exemplo:
+			<ul><li>Autor ou orientador;</li> <li>Nome do TCC;</li>
+			<li>Palavra-chave;</li> <li>Conteúdo dos resumos.</li>
+			<ul>]]>
+			
+		</html>
+	</popup>
+	<popup id="cursoHelp">
+		<html>
+			
+			<![CDATA[ Permite filtrar a lista de TCCs <br> com o curso
+			desejado.]]>
+			
+		</html>
+	</popup>
+</zk>

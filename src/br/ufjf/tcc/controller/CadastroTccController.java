@@ -26,7 +26,6 @@ import org.zkoss.zul.Messagebox;
 
 import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.business.UsuarioBusiness;
-import br.ufjf.tcc.library.SessionManager;
 import br.ufjf.tcc.model.TCC;
 import br.ufjf.tcc.model.Usuario;
 
@@ -44,9 +43,7 @@ public class CadastroTccController extends CommonsController {
 
 	@Init
 	public void init() {
-		getUsuario().setTcc(tccBusiness.getTCCByUser(getUsuario()));
-		SessionManager.setAttribute("usuario", getUsuario());
-		tcc = getUsuario().getTcc().get(0);
+		tcc = (TCC) Sessions.getCurrent().getAttribute("tcc");
 		orientadores.add(tcc.getOrientador());
 	}
 

@@ -8,6 +8,8 @@
 				href="/pages/alunos-orientados.zul" />
 			<menuitem label="Gerenciar alunos do curso"
 				href="/pages/gerenciamento-usuario.zul" />
+			<menuitem label="Gerenciar TCCs do curso"
+				href="/pages/tccs-curso.zul" />
 			<menuitem label="Configurações"
 				onClick="@command('settings')" />
 			<menuitem label="Sair" onClick="@command('sair')" />

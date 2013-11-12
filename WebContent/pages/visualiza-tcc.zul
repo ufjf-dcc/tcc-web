@@ -7,12 +7,13 @@
 		viewModel="@id('vm') @init('br.ufjf.tcc.controller.VisualizaTCCController')"
 		height="100%">
 		<include src="@load(vm.menu)" />
-		<hlayout style="background-color:#efefef;"  height="96%">
+		<hlayout style="background-color:#efefef;" height="96%">
 			<vlayout hflex="1" style="margin:15px">
-				<hlayout style="margin-bottom:15px;background-color:#efefef;"
-					visible="@load(vm.answerTcc ? 'true' : 'false')">
+				<hlayout
+					style="margin-bottom:15px;background-color:#efefef;"
+					visible="@load(vm.canAnswer ? 'true' : 'false')">
 					<button label="Informações do TCC"
-						onClick="@command('showInfo')" hflex="1"/>
+						onClick="@command('showInfo')" hflex="1" />
 					<button label="Preencher ficha de respostas"
 						onClick="@command('showFicha')" hflex="1" />
 				</hlayout>
@@ -47,8 +48,7 @@
 					<hlayout style="cursor: pointer; margin-top:5px"
 						visible="@load(not empty tcc.arquivoExtraTCCFinal ? 'true' : 'false')"
 						onClick="@command('downloadExtra', tcc=each)">
-						<image
-							src="/img/rar.png" />
+						<image src="/img/rar.png" />
 						<label value="Download arquivos extras"
 							style="font-size: 14px; font-weight: bold;" />
 					</hlayout>
@@ -75,8 +75,8 @@
 								</hlayout>
 								<hlayout>
 									<label value="Resposta: " />
-									<textbox
-										value="@bind(each.nota)" width="95%" />
+									<textbox value="@bind(each.nota)"
+										width="95%" />
 								</hlayout>
 							</row>
 						</template>
@@ -87,6 +87,9 @@
 							style="margin-bottom:10px;" />
 					</div>
 				</vlayout>
+				<button label="Editar TCC"
+					visible="@load(vm.canEdit ? 'true' : 'false')"
+					onClick="@command('editTCC')" />
 			</vlayout>
 			<iframe hflex="2" vflex="100" autohide="true" height="100%"
 				onCreate="@command('showTCC', iframe=self)" />

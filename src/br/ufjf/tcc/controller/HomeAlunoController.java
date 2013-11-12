@@ -11,6 +11,7 @@ import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
@@ -56,7 +57,8 @@ public class HomeAlunoController extends CommonsController {
 			DateTime currentDay = new DateTime(new Date());
 
 			for (int i = prazos.size() - 1; i >= 0; i--)
-				if(currentDay.isAfter(new DateTime(prazos.get(i).getDataFinal()))){
+				if (currentDay.isAfter(new DateTime(prazos.get(i)
+						.getDataFinal()))) {
 					currentPrazo = i + 1;
 					break;
 				}
@@ -74,9 +76,11 @@ public class HomeAlunoController extends CommonsController {
 			@BindingParam("window") Window window) {
 		switch (tipo) {
 		case Prazo.ENTREGA_TCC_BANCA:
-			if (userHasTcc)
+			if (userHasTcc) {
+				Sessions.getCurrent().setAttribute("tcc",
+						new TCCBusiness().getcurrentTCCByUser(getUsuario()));
 				Executions.sendRedirect("/pages/cadastro-tcc.zul");
-			else {
+			} else {
 				if (orientadores == null) {
 					orientadores = new UsuarioBusiness().getOrientadores();
 					BindUtils

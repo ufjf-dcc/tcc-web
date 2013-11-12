@@ -84,4 +84,12 @@ public class TCCBusiness {
 		return null;
 	}
 
+	public List<TCC> getTCCsByCurso(Curso curso) {
+		return tccDao.getTCCsByCurso(curso);
+	}
+	
+	public TCC getcurrentTCCByUser(Usuario user) {
+		return tccDao.getcurrentTCCByUser(user);
+	}
+
 }

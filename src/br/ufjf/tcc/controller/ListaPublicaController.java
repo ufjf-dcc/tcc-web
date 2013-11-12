@@ -91,7 +91,7 @@ public class ListaPublicaController extends CommonsController {
 		if (curso.getIdCurso() > 0) {
 			tccsByCurso = new TCCBusiness().getPublicListByCurso(curso);
 			if (tccsByCurso == null || tccsByCurso.size() == 0)
-				emptyMessage = "Nenhuma monografica encontrada para o curso de "
+				emptyMessage = "Nenhuma monografia encontrada para o curso de "
 						+ curso.getNomeCurso();
 			else {
 				emptyMessage = "Sem resultados para seu filtro no curso de "

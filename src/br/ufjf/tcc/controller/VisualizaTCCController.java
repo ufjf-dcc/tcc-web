@@ -10,6 +10,7 @@ import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zhtml.Filedownload;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Iframe;
 import org.zkoss.zul.Label;
@@ -24,26 +25,29 @@ import br.ufjf.tcc.model.Participacao;
 import br.ufjf.tcc.model.Pergunta;
 import br.ufjf.tcc.model.Resposta;
 import br.ufjf.tcc.model.TCC;
+import br.ufjf.tcc.model.Usuario;
 
 public class VisualizaTCCController extends CommonsController {
 	private TCC tcc;
-	private boolean answerTcc = false;
+	private boolean canAnswer = false,
+			canEdit = getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.COORDENADOR
+					|| getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ADMINISTRADOR;
 	private List<Resposta> answers = new ArrayList<Resposta>();
 	private Vlayout informacoes, ficha;
 
 	@Init
 	public void init() {
 		tcc = (TCC) Sessions.getCurrent().getAttribute("tcc");
-		answerTcc = (Boolean) Sessions.getCurrent().getAttribute("answerTcc");
+		canAnswer = true;
 
-		if (answerTcc) {
+		if (canAnswer) {
 			List<Pergunta> questions = new PerguntaBusiness()
 					.getQuestionsByQuestionary(new QuestionarioBusiness()
 							.getCurrentQuestionaryByCurso(tcc.getAluno()
 									.getCurso()));
-			
+
 			Participacao p = null;
-			for(Participacao aux : getUsuario().getParticipacoes()){
+			for (Participacao aux : getUsuario().getParticipacoes()) {
 				if (aux.getTcc().getIdTCC() == tcc.getIdTCC())
 					p = aux;
 			}
@@ -65,12 +69,12 @@ public class VisualizaTCCController extends CommonsController {
 		this.tcc = tcc;
 	}
 
-	public boolean isAnswerTcc() {
-		return answerTcc;
+	public boolean isCanAnswer() {
+		return canAnswer;
 	}
 
-	public void setAnswerTcc(boolean answerTcc) {
-		this.answerTcc = answerTcc;
+	public boolean isCanEdit() {
+		return canEdit;
 	}
 
 	public List<Resposta> getAnswers() {
@@ -109,8 +113,16 @@ public class VisualizaTCCController extends CommonsController {
 
 	@Command
 	public void showTCC(@BindingParam("iframe") Iframe report) {
-		InputStream is = Sessions.getCurrent().getWebApp()
-				.getResourceAsStream("files/" + tcc.getArquivoTCCFinal());
+		InputStream is;
+		if (tcc.getArquivoTCCFinal() != null)
+			is = Sessions.getCurrent().getWebApp()
+					.getResourceAsStream("files/" + tcc.getArquivoTCCFinal());
+		else if (tcc.getArquivoTCCBanca() != null)
+			is = Sessions.getCurrent().getWebApp()
+					.getResourceAsStream("files/" + tcc.getArquivoTCCBanca());
+		else
+			is = Sessions.getCurrent().getWebApp()
+					.getResourceAsStream("files/modelo.pdf");
 
 		final AMedia amedia = new AMedia("PDFReference16.pdf", "pdf",
 				"application/pdf", is);
@@ -119,9 +131,12 @@ public class VisualizaTCCController extends CommonsController {
 
 	@Command
 	public void getTccYear(@BindingParam("lbl") Label lbl) {
-		Calendar cal = Calendar.getInstance();
-		cal.setTimeInMillis(tcc.getDataEnvioFinal().getTime());
-		lbl.setValue("" + cal.get(Calendar.YEAR));
+		if (tcc.getDataEnvioFinal() != null) {
+			Calendar cal = Calendar.getInstance();
+			cal.setTimeInMillis(tcc.getDataEnvioFinal().getTime());
+			lbl.setValue("" + cal.get(Calendar.YEAR));
+		} else
+			lbl.setValue("Não finalizada");
 	}
 
 	@Command
@@ -176,5 +191,11 @@ public class VisualizaTCCController extends CommonsController {
 		new TCCBusiness().edit(tcc);
 
 		Messagebox.show("Conceito final: " + sum);
+	}
+
+	@Command
+	public void editTCC() {
+		Sessions.getCurrent().setAttribute("tcc", tcc);
+		Executions.sendRedirect("/pages/cadastro-tcc.zul");
 	}
 }
