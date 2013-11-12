@@ -165,7 +165,7 @@ public class UsuarioBusiness {
 	}
 
 	public boolean exclui(Usuario usuario) {
-		if (new TCCBusiness().getTCCByUser(usuario).size() > 0) {
+		if (new TCCBusiness().userHasTCC(usuario)) {
 			errors.add("O usuário possui TCC(s) cadastrado(s);\n");
 			return false;
 		}

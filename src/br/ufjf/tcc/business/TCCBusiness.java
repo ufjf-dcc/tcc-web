@@ -58,10 +58,6 @@ public class TCCBusiness {
 	public List<TCC> getAll() {
 		return tccDao.getAll();
 	}
-	
-	public List<TCC> getTCCByUser(Usuario usuario) {
-		return tccDao.getTCCByUser(usuario);
-	}
 
 	public boolean save(TCC tcc) {
 		return tccDao.salvar(tcc);
@@ -83,13 +79,21 @@ public class TCCBusiness {
 
 		return null;
 	}
+	
+	public boolean userHasTCC(Usuario user){
+		return tccDao.userHasTCC(user);
+	}
 
 	public List<TCC> getTCCsByCurso(Curso curso) {
 		return tccDao.getTCCsByCurso(curso);
 	}
 	
-	public TCC getcurrentTCCByUser(Usuario user) {
-		return tccDao.getcurrentTCCByUser(user);
+	public TCC getCurrentTCCByAuthor(Usuario user) {
+		return tccDao.getCurrentTCCByAuthor(user);
+	}
+	
+	public List<TCC> getTCCsByOrientador(Usuario user) {
+		return tccDao.getTCCsByOrientador(user);
 	}
 
 }

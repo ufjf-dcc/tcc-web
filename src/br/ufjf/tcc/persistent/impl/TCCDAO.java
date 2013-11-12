@@ -37,27 +37,6 @@ public class TCCDAO extends GenericoDAO implements ITCCDAO {
 		return null;
 	}
 
-	public List<TCC> getTCCByUser(Usuario usuario) {
-		try {
-			Query query = getSession()
-					.createQuery(
-							"SELECT t FROM TCC AS t JOIN FETCH t.aluno AS a JOIN FETCH t.orientador WHERE t.aluno = :aluno");
-			query.setParameter("aluno", usuario);
-
-			List<TCC> resultados = query.list();
-
-			getSession().close();
-
-			if (resultados != null)
-				return resultados;
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
 	public List<TCC> getTCCsNotConceptualized() {
 		List<TCC> results = null;
 
@@ -141,7 +120,7 @@ public class TCCDAO extends GenericoDAO implements ITCCDAO {
 		return null;
 	}
 
-	public TCC getcurrentTCCByUser(Usuario user) {
+	public TCC getCurrentTCCByAuthor(Usuario user) {
 		TCC resultado = null;
 		try {
 			CalendarioSemestre currentCalendar = new CalendarioSemestreBusiness()
@@ -162,6 +141,44 @@ public class TCCDAO extends GenericoDAO implements ITCCDAO {
 		}
 
 		return resultado;
+	}
+
+	public List<TCC> getTCCsByOrientador(Usuario user) {
+		List<TCC> resultados = null;
+		try {
+			Query query = getSession()
+					.createQuery(
+							"SELECT t FROM TCC AS t JOIN FETCH t.aluno JOIN FETCH t.orientador WHERE t.orientador = :user");
+			query.setParameter("user", user);
+
+			resultados = query.list();
+
+			getSession().close();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return resultados;
+	}
+
+	public boolean userHasTCC(Usuario user) {
+		List<TCC> resultados = null;
+		try {
+			Query query = getSession()
+					.createQuery(
+							"SELECT t FROM TCC AS t WHERE t.aluno = :user");
+			query.setParameter("user", user);
+
+			resultados = query.list();
+
+			getSession().close();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return resultados.size() > 0;
 	}
 
 }

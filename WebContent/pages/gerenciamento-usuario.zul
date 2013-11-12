@@ -11,10 +11,10 @@
 			mold="paging" autopaging="true" vflex="true">
 			<auxhead sclass="text-center">
 				<auxheader label="Usuários cadastrados no sistema"
-					colspan="8" />
+					colspan="9" />
 			</auxhead>
 			<auxhead>
-				<auxheader colspan="8">
+				<auxheader colspan="9">
 					<div>
 						<div style="float:left">
 							<textbox id="filtro"
@@ -29,6 +29,23 @@
 					</div>
 				</auxheader>
 			</auxhead>
+			<auxhead sclass="category-center">
+				<auxheader label="Tipo" colspan="1"
+					rowspan="1" />
+				<auxheader colspan="8" rowspan="1">
+					<radiogroup onCheck="@command('filterType', type=self.selectedIndex)">
+						<hlayout width="100%">
+							<radio label="Todos" checked="true"
+								width="90px" />
+							<radio label="Alunos" width="90px" />
+							<radio label="Professores" width="90px" />
+							<radio label="Coordenadores" width="90px" />
+							<radio label="Administradores"
+								width="200px" />
+						</hlayout>
+					</radiogroup>
+				</auxheader>
+			</auxhead>
 			<columns>
 				<column width="50px" label="id" sort="auto(idUsuario)" />
 				<column hflex="1" label="Matrícula"
@@ -41,7 +58,7 @@
 					sort="auto(tipoUsuario.nomeTipoUsuario)" />
 				<column hflex="1" label="Titulação"
 					sort="auto(titulacao)" />
-					<column width="50px" label="Ativo" />
+				<column width="50px" label="Ativo" />
 				<column width="100px" label="Editar" />
 			</columns>
 			<template name="editable">
@@ -86,8 +103,9 @@
 						value="@load(each.titulacao) @save(each.titulacao, before='confirm')"
 						width="100%"
 						disabled="@load(each.tipoUsuario.idTipoUsuario eq 1)" />
-						
-					<checkbox checked="@load(each.ativo) @save(each.ativo, before='confirm')" />
+
+					<checkbox
+						checked="@load(each.ativo) @save(each.ativo, before='confirm')" />
 
 					<div>
 						<button image="/img/confirm.gif"
@@ -108,7 +126,8 @@
 					<label
 						value="@load(each.tipoUsuario.nomeTipoUsuario)" />
 					<label value="@load(each.titulacao)" />
-					<checkbox checked="@load(each.ativo)" disabled="true" />
+					<checkbox checked="@load(each.ativo)"
+						disabled="true" />
 					<div>
 						<button image="/img/edit.gif"
 							onClick="@command('changeEditableStatus', usuario=each)" />
@@ -162,13 +181,12 @@
 							</template>
 						</combobox>
 					</row>
-					
+
 					<row>
 						<label value="Titulação:" />
 						<textbox id="txtTitulacao"
 							value="@load(vm.newUsuario.titulacao) @save(vm.newUsuario.titulacao, before='submit')"
-							tabindex="1" width="100%"
-							disabled="true" />
+							tabindex="1" width="100%" disabled="true" />
 					</row>
 
 					<row>

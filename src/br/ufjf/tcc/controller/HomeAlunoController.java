@@ -78,7 +78,7 @@ public class HomeAlunoController extends CommonsController {
 		case Prazo.ENTREGA_TCC_BANCA:
 			if (userHasTcc) {
 				Sessions.getCurrent().setAttribute("tcc",
-						new TCCBusiness().getcurrentTCCByUser(getUsuario()));
+						new TCCBusiness().getCurrentTCCByAuthor(getUsuario()));
 				Executions.sendRedirect("/pages/cadastro-tcc.zul");
 			} else {
 				if (orientadores == null) {

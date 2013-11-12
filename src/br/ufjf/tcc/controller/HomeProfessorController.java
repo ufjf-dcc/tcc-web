@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
@@ -21,6 +22,7 @@ import org.zkoss.zul.Window;
 import br.ufjf.tcc.business.CalendarioSemestreBusiness;
 import br.ufjf.tcc.business.ParticipacaoBusiness;
 import br.ufjf.tcc.business.QuestionarioBusiness;
+import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.model.CalendarioSemestre;
 import br.ufjf.tcc.model.Participacao;
 import br.ufjf.tcc.model.Questionario;
@@ -29,6 +31,7 @@ import br.ufjf.tcc.model.Usuario;
 
 public class HomeProfessorController extends CommonsController {
 	private List<TCC> tccs = new ArrayList<TCC>();
+	private List<TCC> filterTccs = tccs;
 	private Questionario currentQuestionary;
 	private CalendarioSemestre currentCalendar;
 	private boolean currentQuestionaryExists = true,
@@ -51,6 +54,8 @@ public class HomeProfessorController extends CommonsController {
 			for (Participacao p : getUsuario().getParticipacoes()) {
 				tccs.add(p.getTcc());
 			}
+			tccs.addAll(new TCCBusiness().getTCCsByOrientador(getUsuario()));
+			filterTccs = tccs;
 		}
 
 		currentCalendar = new CalendarioSemestreBusiness()
@@ -66,12 +71,12 @@ public class HomeProfessorController extends CommonsController {
 				currentQuestionaryUsed = new QuestionarioBusiness()
 						.isQuestionaryUsed(currentQuestionary);
 			}
-		}		
-		
+		}
+
 	}
 
-	public List<TCC> getTccs() {
-		return tccs;
+	public List<TCC> getFilterTccs() {
+		return filterTccs;
 	}
 
 	public boolean isCurrentQuestionaryExists() {
@@ -84,6 +89,28 @@ public class HomeProfessorController extends CommonsController {
 
 	public boolean isCurrentCalendarExists() {
 		return currentCalendarExists;
+	}
+	
+	@Command
+	public void filterType(@BindingParam("type") int type){
+		switch(type){
+		case 0:
+			filterTccs = tccs;
+			break;
+		case 1:
+			filterTccs = new ArrayList<TCC>();
+			for (TCC u : tccs)
+				if (u.getOrientador() == getUsuario())
+					filterTccs.add(u);
+			break;
+		case 2:
+			filterTccs = new ArrayList<TCC>();
+			for (TCC u : tccs)
+				if (u.getOrientador() != getUsuario())
+					filterTccs.add(u);
+			break;	
+		}
+		BindUtils.postNotifyChange(null, null, this, "tccs");
 	}
 
 	// Formata a data de apresentação para String

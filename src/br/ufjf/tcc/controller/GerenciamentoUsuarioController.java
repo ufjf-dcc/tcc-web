@@ -201,6 +201,40 @@ public class GerenciamentoUsuarioController extends CommonsController {
 		}
 		BindUtils.postNotifyChange(null, null, this, "filterUsuarios");
 	}
+	
+	@Command
+	public void filterType(@BindingParam("type") int type){
+		switch(type){
+		case 0:
+			filterUsuarios = allUsuarios;
+			break;
+		case 1:
+			filterUsuarios = new ArrayList<Usuario>();
+			for (Usuario u : allUsuarios)
+				if (u.getTipoUsuario().getIdTipoUsuario() == Usuario.ALUNO)
+					filterUsuarios.add(u);
+			break;
+		case 2:
+			filterUsuarios = new ArrayList<Usuario>();
+			for (Usuario u : allUsuarios)
+				if (u.getTipoUsuario().getIdTipoUsuario() == Usuario.PROFESSOR)
+					filterUsuarios.add(u);
+			break;
+		case 3:
+			filterUsuarios = new ArrayList<Usuario>();
+			for (Usuario u : allUsuarios)
+				if (u.getTipoUsuario().getIdTipoUsuario() == Usuario.COORDENADOR)
+					filterUsuarios.add(u);
+			break;
+		case 4:
+			filterUsuarios = new ArrayList<Usuario>();
+			for (Usuario u : allUsuarios)
+				if (u.getTipoUsuario().getIdTipoUsuario() == Usuario.ADMINISTRADOR)
+					filterUsuarios.add(u);
+			break;			
+		}
+		BindUtils.postNotifyChange(null, null, this, "filterUsuarios");
+	}
 
 	/* Abre a janela de cadastro de usuários. */
 	@Command

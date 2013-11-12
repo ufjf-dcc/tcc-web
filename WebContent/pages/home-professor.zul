@@ -61,12 +61,26 @@
 				</rows>
 			</grid>
 
-			<grid hflex="3" model="@load(vm.tccs) @template('tccs')"
+			<grid hflex="3" model="@load(vm.filterTccs) @template('tccs')"
 				style="margin:10px" width="700px" mold="paging" autopaging="true"
 				vflex="true">
 				<auxhead sclass="text-center">
 					<auxheader colspan="4"
 						label="TCCs com sua participação" />
+				</auxhead>
+				<auxhead sclass="category-center">
+					<auxheader label="Tipo de participação" colspan="1" rowspan="1" />
+					<auxheader colspan="3" rowspan="1">
+						<radiogroup
+							onCheck="@command('filterType', type=self.selectedIndex)">
+							<hlayout width="100%">
+								<radio label="Todas" checked="true"
+									width="90px" />
+								<radio label="Orientação" width="90px" />
+								<radio label="Avaliação (Banca)" width="90px" />
+							</hlayout>
+						</radiogroup>
+					</auxheader>
 				</auxhead>
 				<columns>
 					<column label="Aluno" hflex="1"
