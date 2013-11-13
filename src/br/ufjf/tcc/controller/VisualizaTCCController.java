@@ -17,6 +17,7 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Vlayout;
 
+import br.ufjf.tcc.business.ParticipacaoBusiness;
 import br.ufjf.tcc.business.PerguntaBusiness;
 import br.ufjf.tcc.business.QuestionarioBusiness;
 import br.ufjf.tcc.business.RespostaBusiness;
@@ -30,6 +31,7 @@ import br.ufjf.tcc.model.Usuario;
 public class VisualizaTCCController extends CommonsController {
 	private TCC tcc;
 	private boolean canAnswer = false,
+			canDonwloadFileBanca = false,
 			canEdit = getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.COORDENADOR
 					|| getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ADMINISTRADOR;
 	private List<Resposta> answers = new ArrayList<Resposta>();
@@ -59,6 +61,15 @@ public class VisualizaTCCController extends CommonsController {
 				answers.add(answer);
 			}
 		}
+
+		if (canEdit || tcc.getOrientador() == getUsuario())
+			canDonwloadFileBanca = true;
+		else
+			for (Participacao p : new ParticipacaoBusiness().getParticipacoesByTCC(tcc))
+				if (p.getProfessor() == getUsuario()) {
+					canDonwloadFileBanca = true;
+					break;
+				}
 	}
 
 	public TCC getTcc() {
@@ -75,6 +86,10 @@ public class VisualizaTCCController extends CommonsController {
 
 	public boolean isCanEdit() {
 		return canEdit;
+	}
+
+	public boolean isCanDonwloadFileBanca() {
+		return canDonwloadFileBanca;
 	}
 
 	public List<Resposta> getAnswers() {
@@ -124,7 +139,7 @@ public class VisualizaTCCController extends CommonsController {
 			is = Sessions.getCurrent().getWebApp()
 					.getResourceAsStream("files/modelo.pdf");
 
-		final AMedia amedia = new AMedia("PDFReference16.pdf", "pdf",
+		final AMedia amedia = new AMedia(tcc.getNomeTCC() + ".pdf", "pdf",
 				"application/pdf", is);
 		report.setContent(amedia);
 	}
@@ -140,6 +155,13 @@ public class VisualizaTCCController extends CommonsController {
 	}
 
 	@Command
+	public void downloadPDFBanca() {
+		InputStream is = Sessions.getCurrent().getWebApp()
+				.getResourceAsStream("files/" + tcc.getArquivoTCCBanca());
+		Filedownload.save(is, "application/pdf", tcc.getNomeTCC() + "(banca).pdf");
+	}
+
+	@Command
 	public void downloadPDF() {
 		InputStream is = Sessions.getCurrent().getWebApp()
 				.getResourceAsStream("files/" + tcc.getArquivoTCCFinal());
@@ -148,16 +170,10 @@ public class VisualizaTCCController extends CommonsController {
 
 	@Command
 	public void downloadExtra() {
-		if (tcc.getArquivoExtraTCCFinal() != null
-				&& tcc.getArquivoExtraTCCFinal() != "") {
-			InputStream is = Sessions
-					.getCurrent()
-					.getWebApp()
-					.getResourceAsStream(
-							"files/" + tcc.getArquivoExtraTCCFinal());
-			Filedownload.save(is, "application/x-rar-compressed",
-					tcc.getNomeTCC() + ".rar");
-		}
+		InputStream is = Sessions.getCurrent().getWebApp()
+				.getResourceAsStream("files/" + tcc.getArquivoExtraTCCFinal());
+		Filedownload.save(is, "application/x-rar-compressed", tcc.getNomeTCC()
+				+ ".rar");
 	}
 
 	@Command

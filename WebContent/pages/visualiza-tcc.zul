@@ -9,90 +9,113 @@
 		<include src="@load(vm.menu)" />
 		<hlayout style="background-color:#efefef;" height="96%">
 			<vlayout hflex="1" style="margin:15px">
-				<hlayout
-					style="margin-bottom:15px;background-color:#efefef;"
-					visible="@load(vm.canAnswer ? 'true' : 'false')">
-					<button label="Informações do TCC"
-						onClick="@command('showInfo')" hflex="1" />
-					<button label="Preencher ficha de respostas"
-						onClick="@command('showFicha')" hflex="1" />
-				</hlayout>
-				<vlayout
-					onCreate="@command('setInformacoes', vlayout=self)">
-					<label value="Informações gerais:"
-						style="font-size: 18px; font-weight: bold; text-align: justify; display: block;" />
-					<label value="Autor"
-						style="font-size: 14px; font-weight: bold; text-align: justify; display: block; margin-top:5px" />
-					<label value="@load(tcc.aluno.nomeUsuario)" />
-					<label value="Orientador"
-						style="font-size: 14px; font-weight: bold; text-align: justify; display: block; margin-top:5px" />
-					<label value="@load(tcc.orientador.nomeUsuario)" />
-					<label value="Resumo"
-						style="font-size: 14px; font-weight: bold; text-align: justify; display: block; margin-top:5px" />
-					<label value="@load(tcc.resumoTCC)" />
-					<hlayout style="margin-top:5px">
-						<label value="Ano: " style="font-weight:bold;" />
-						<label
-							onCreate="@command('getTccYear', lbl=self)" />
-					</hlayout>
-					<label value="Palavras-chave"
-						visible="@load(not empty tcc.palavrasChave)"
-						style="font-size: 14px; font-weight: bold; text-align: justify; display: block; margin-top:5px" />
-					<label value="@load(tcc.palavrasChave)" />
-					<hlayout style="cursor: pointer; margin-top:5px"
-						onClick="@command('downloadPDF', tcc=each)">
-						<image src="/img/pdf.png" />
-						<label value="Download PDF"
-							style="font-size: 14px; font-weight: bold;" />
-					</hlayout>
-					<hlayout style="cursor: pointer; margin-top:5px"
-						visible="@load(not empty tcc.arquivoExtraTCCFinal ? 'true' : 'false')"
-						onClick="@command('downloadExtra', tcc=each)">
-						<image src="/img/rar.png" />
-						<label value="Download arquivos extras"
-							style="font-size: 14px; font-weight: bold;" />
-					</hlayout>
-				</vlayout>
-				<vlayout visible="false"
-					onCreate="@command('setFicha', vlayout=self)">
-					<grid model="@load(vm.answers)"
-						style="margin:10px;">
-						<columns>
-							<column />
-							<column width="125px" />
-						</columns>
-						<template name="model">
-							<row>
-								<hlayout>
+				<tabbox id="tb">
+					<tabs id="tabs">
+						<tab id="A" label="Informações do TCC" />
+						<tab id="B" label="Preencher ficha de respostas"
+							visible="@load(vm.canAnswer ? 'true' : 'false')" />
+					</tabs>
+					<tabpanels>
+						<tabpanel>
+							<vlayout
+								onCreate="@command('setInformacoes', vlayout=self)">
+								<label value="Informações gerais:"
+									style="font-size: 18px; font-weight: bold; text-align: justify; display: block;" />
+								<label value="Autor"
+									style="font-size: 14px; font-weight: bold; text-align: justify; display: block; margin-top:5px" />
+								<label
+									value="@load(tcc.aluno.nomeUsuario)" />
+								<label value="Orientador"
+									style="font-size: 14px; font-weight: bold; text-align: justify; display: block; margin-top:5px" />
+								<label
+									value="@load(tcc.orientador.nomeUsuario)" />
+								<label value="Resumo"
+									style="font-size: 14px; font-weight: bold; text-align: justify; display: block; margin-top:5px" />
+								<label value="@load(tcc.resumoTCC)" />
+								<hlayout style="margin-top:5px">
+									<label value="Ano: "
+										style="font-weight:bold;" />
 									<label
-										value="Pergunta ${forEachStatus.index + 1}: " />
-									<label
-										value="@load(each.pergunta.titulo)" />
-									<label value=" (" />
-									<label
-										value="@load(each.pergunta.valor)" />
-									<label value=" pts )" />
+										onCreate="@command('getTccYear', lbl=self)" />
 								</hlayout>
-								<hlayout>
-									<label value="Resposta: " />
-									<textbox value="@bind(each.nota)"
-										width="95%" />
+								<label value="Palavras-chave"
+									visible="@load(not empty tcc.palavrasChave)"
+									style="font-size: 14px; font-weight: bold; text-align: justify; display: block; margin-top:5px" />
+								<label value="@load(tcc.palavrasChave)" />
+								<hlayout
+									style="cursor: pointer; margin-top:5px"
+									visible="@load(vm.canDonwloadFileBanca and not empty tcc.arquivoTCCBanca ? 'true' : 'false')"
+									onClick="@command('downloadPDFBanca', tcc=each)">
+									<image src="/img/pdf.png" />
+									<label value="Download PDF (Banca)"
+										style="font-size: 14px; font-weight: bold;" />
 								</hlayout>
-							</row>
-						</template>
-					</grid>
-					<div align="center">
-						<button label="Cadastrar Respostas"
-							onClick="@command('submitFicha', window=prquest)"
-							style="margin-bottom:10px;" />
-					</div>
-				</vlayout>
+								<hlayout
+									style="cursor: pointer; margin-top:5px"
+									visible="@load(not empty tcc.arquivoTCCFinal ? 'true' : 'false')"
+									onClick="@command('downloadPDF', tcc=each)">
+									<image src="/img/pdf.png" />
+									<label value="Download PDF"
+										style="font-size: 14px; font-weight: bold;" />
+								</hlayout>
+								<hlayout
+									style="cursor: pointer; margin-top:5px"
+									visible="@load(not empty tcc.arquivoExtraTCCFinal ? 'true' : 'false')"
+									onClick="@command('downloadExtra', tcc=each)">
+									<image src="/img/rar.png" />
+									<label
+										value="Download arquivos extras"
+										style="font-size: 14px; font-weight: bold;" />
+								</hlayout>
+							</vlayout>
+						</tabpanel>
+						<tabpanel
+							visible="@load(vm.canAnswer ? 'true' : 'false')">
+							<vlayout visible="false"
+								onCreate="@command('setFicha', vlayout=self)">
+								<grid model="@load(vm.answers)"
+									style="margin:10px;">
+									<columns>
+										<column />
+										<column width="125px" />
+									</columns>
+									<template name="model">
+										<row>
+											<hlayout>
+												<label
+													value="Pergunta ${forEachStatus.index + 1}: " />
+												<label
+													value="@load(each.pergunta.titulo)" />
+												<label value=" (" />
+												<label
+													value="@load(each.pergunta.valor)" />
+												<label value=" pts )" />
+											</hlayout>
+											<hlayout>
+												<label
+													value="Resposta: " />
+												<textbox
+													value="@bind(each.nota)" width="95%" />
+											</hlayout>
+										</row>
+									</template>
+								</grid>
+								<div align="center">
+									<button label="Cadastrar Respostas"
+										onClick="@command('submitFicha', window=prquest)"
+										style="margin-bottom:10px;" />
+								</div>
+							</vlayout>
+						</tabpanel>
+					</tabpanels>
+				</tabbox>
+
 				<button label="Editar TCC"
 					visible="@load(vm.canEdit ? 'true' : 'false')"
 					onClick="@command('editTCC')" />
 			</vlayout>
-			<iframe hflex="2" vflex="100" autohide="true" height="100%"
-				onCreate="@command('showTCC', iframe=self)" />
+			<iframe hflex="2" vflex="100" autohide="true"
+					height="100%" onCreate="@command('showTCC', iframe=self)" />
 		</hlayout>
 	</div>
 </zk>

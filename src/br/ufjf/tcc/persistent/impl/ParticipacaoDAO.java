@@ -5,6 +5,7 @@ import java.util.List;
 import org.hibernate.Query;
 
 import br.ufjf.tcc.model.Participacao;
+import br.ufjf.tcc.model.TCC;
 import br.ufjf.tcc.model.Usuario;
 import br.ufjf.tcc.persistent.GenericoDAO;
 import br.ufjf.tcc.persistent.IParticipacaoDAO;
@@ -17,7 +18,7 @@ public class ParticipacaoDAO extends GenericoDAO implements IParticipacaoDAO {
 		List<Participacao> participacoes = null;
 		try {
 			Query query = getSession().createQuery(
-					"SELECT p FROM Participacao AS p JOIN FETCH p.tcc AS t JOIN FETCH t.orientador JOIN FETCH t.aluno JOIN FETCH t.participacoes WHERE p.professor = :professor");
+					"SELECT p FROM Participacao AS p JOIN FETCH p.tcc AS t JOIN FETCH t.orientador JOIN FETCH t.aluno WHERE p.professor = :professor");
 			query.setParameter("professor", professor);
 			participacoes = query.list();
 			getSession().close();
@@ -27,6 +28,23 @@ public class ParticipacaoDAO extends GenericoDAO implements IParticipacaoDAO {
 		}
 
 		return participacoes;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Participacao> getParticipacoesByTCC(TCC tcc) {
+		List<Participacao> tccs = null;
+		try {
+			Query query = getSession().createQuery(
+					"SELECT p FROM Participacao AS p WHERE p.tcc = :tcc");
+			query.setParameter("tcc", tcc);
+			tccs = query.list();
+			getSession().close();
+			return tccs;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return tccs;
 	}
 
 }

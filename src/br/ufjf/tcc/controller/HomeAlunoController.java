@@ -99,6 +99,7 @@ public class HomeAlunoController extends CommonsController {
 		newTcc.setCalendarioSemestre(new CalendarioSemestreBusiness()
 				.getCurrentCalendarByCurso(getUsuario().getCurso()));
 		if (tccBusiness.save(newTcc)) {
+			Sessions.getCurrent().setAttribute("tcc", newTcc);
 			Executions.sendRedirect("/pages/cadastro-tcc.zul");
 		} else {
 			Messagebox.show("Devido a um erro, o TCC não foi criado.", "Erro",

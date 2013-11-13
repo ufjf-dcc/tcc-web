@@ -144,22 +144,19 @@ public class TCCDAO extends GenericoDAO implements ITCCDAO {
 	}
 
 	public List<TCC> getTCCsByOrientador(Usuario user) {
-		List<TCC> resultados = null;
+		List<TCC> results = null;
+
 		try {
-			Query query = getSession()
-					.createQuery(
-							"SELECT t FROM TCC AS t JOIN FETCH t.aluno JOIN FETCH t.orientador WHERE t.orientador = :user");
-			query.setParameter("user", user);
-
-			resultados = query.list();
-
+			Query query = getSession().createQuery("SELECT t FROM TCC AS t JOIN FETCH t.aluno JOIN FETCH t.orientador WHERE t.orientador = :user");
+			query.setParameter("user",user);
+			results = query.list();
 			getSession().close();
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		return resultados;
+		return results;
 	}
 
 	public boolean userHasTCC(Usuario user) {

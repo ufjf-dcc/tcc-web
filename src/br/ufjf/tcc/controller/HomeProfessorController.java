@@ -9,10 +9,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
+import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
@@ -38,7 +38,7 @@ public class HomeProfessorController extends CommonsController {
 			currentQuestionaryUsed = true, currentCalendarExists = true;
 
 	/*
-	 * Pega toas as TCCs em que o Prof/Coord tem Participação e verifica se o
+	 * Pega todas as TCCs em que o Prof/Coord tem Participação e verifica se o
 	 * Questionário e o Calendário do seu Curso já existe.
 	 */
 	@Init
@@ -90,35 +90,38 @@ public class HomeProfessorController extends CommonsController {
 	public boolean isCurrentCalendarExists() {
 		return currentCalendarExists;
 	}
-	
+
+	@NotifyChange("filterTccs")
 	@Command
-	public void filterType(@BindingParam("type") int type){
-		switch(type){
+	public void filterType(@BindingParam("type") int type) {
+		switch (type) {
 		case 0:
 			filterTccs = tccs;
 			break;
 		case 1:
 			filterTccs = new ArrayList<TCC>();
-			for (TCC u : tccs)
-				if (u.getOrientador() == getUsuario())
-					filterTccs.add(u);
+			for (TCC t : tccs)
+				if (t.getOrientador().getIdUsuario() == getUsuario().getIdUsuario())
+					filterTccs.add(t);
 			break;
 		case 2:
 			filterTccs = new ArrayList<TCC>();
-			for (TCC u : tccs)
-				if (u.getOrientador() != getUsuario())
-					filterTccs.add(u);
-			break;	
+			for (TCC t : tccs)
+				if (t.getOrientador().getIdUsuario() != getUsuario().getIdUsuario())
+					filterTccs.add(t);
+			break;
 		}
-		BindUtils.postNotifyChange(null, null, this, "tccs");
 	}
 
 	// Formata a data de apresentação para String
 	@Command
 	public void getTCCDateApresentacao(@BindingParam("tcc") TCC tcc,
 			@BindingParam("lbl") Label lbl) {
-		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy, hh:mm");
-		lbl.setValue(dateFormat.format(tcc.getDataApresentacao()));
+		if (tcc.getDataApresentacao() != null) {
+			DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy, hh:mm");
+			lbl.setValue(dateFormat.format(tcc.getDataApresentacao()));
+		} else
+			lbl.setValue("Não agendada");
 	}
 
 	@Command
@@ -170,8 +173,9 @@ public class HomeProfessorController extends CommonsController {
 	@Command
 	public void canAnswerTCC(@BindingParam("tcc") TCC tcc,
 			@BindingParam("btn") Button btn) {
-		btn.setDisabled(tcc.getDataApresentacao().after(
-				new Timestamp(new Date().getTime())));
+		btn.setDisabled(tcc.getDataApresentacao() != null
+				&& tcc.getDataApresentacao().after(
+						new Timestamp(new Date().getTime())));
 	}
 
 	@Command

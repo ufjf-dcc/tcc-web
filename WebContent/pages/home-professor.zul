@@ -92,13 +92,13 @@
 					<column label="Ação" width="100px" />
 				</columns>
 				<template name="tccs">
-					<row onClick="@command('showTCC', tcc=each)">
+					<row>
 						<label value="@load(each.aluno.nomeUsuario)" />
 						<label value="@load(each.nomeTCC)" />
 						<label
 							onCreate="@command('getTCCDateApresentacao', tcc=each, lbl=self)" />
 						<div align="center">
-							<button label="Detalhes"
+							<button label="Visualizar"
 								onClick="@command('showTCC', tcc=each)"
 								onCreate="@command('canAnswerTCC', tcc=each, btn=self)" />
 						</div>

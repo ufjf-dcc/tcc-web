@@ -2,7 +2,8 @@
 	<window id="cadcal2" title="Cadastrar Calendário" width="600px"
 		border="normal" position="center,center" closable="true"
 		apply="org.zkoss.bind.BindComposer"
-		viewModel="@id('vm') @init('br.ufjf.tcc.controller.CadastroPrazosController')">
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.CadastroPrazosController')"
+		onCancel="self.onClose()" >
 
 		<grid model="@load(vm.prazos)">
 			<columns>
