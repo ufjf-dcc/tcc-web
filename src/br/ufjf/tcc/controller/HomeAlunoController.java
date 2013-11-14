@@ -17,17 +17,14 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
-import br.ufjf.tcc.business.CalendarioSemestreBusiness;
 import br.ufjf.tcc.business.PrazoBusiness;
 import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.business.UsuarioBusiness;
-import br.ufjf.tcc.model.CalendarioSemestre;
 import br.ufjf.tcc.model.Prazo;
 import br.ufjf.tcc.model.TCC;
 import br.ufjf.tcc.model.Usuario;
 
 public class HomeAlunoController extends CommonsController {
-	private boolean userHasTcc = getUsuario().getTcc().size() != 0;
 	private int currentPrazo = -1;
 	private List<Prazo> prazos;
 	private TCC newTcc = new TCC();
@@ -48,11 +45,8 @@ public class HomeAlunoController extends CommonsController {
 
 	@Init
 	public void init() {
-		CalendarioSemestre currentCalendar = new CalendarioSemestreBusiness()
-				.getCurrentCalendarByCurso(getUsuario().getCurso());
-
-		if (currentCalendar != null) {
-			prazos = prazoBusiness.getPrazosByCalendario(currentCalendar);
+		if (getCurrentCalendar() != null) {
+			prazos = getCurrentCalendar().getPrazos();
 
 			DateTime currentDay = new DateTime(new Date());
 
@@ -76,9 +70,7 @@ public class HomeAlunoController extends CommonsController {
 			@BindingParam("window") Window window) {
 		switch (tipo) {
 		case Prazo.ENTREGA_TCC_BANCA:
-			if (userHasTcc) {
-				Sessions.getCurrent().setAttribute("tcc",
-						new TCCBusiness().getCurrentTCCByAuthor(getUsuario()));
+			if (getUsuario().getTcc().size() != 0) {
 				Executions.sendRedirect("/pages/cadastro-tcc.zul");
 			} else {
 				if (orientadores == null) {
@@ -96,8 +88,7 @@ public class HomeAlunoController extends CommonsController {
 	public void submit() {
 		TCCBusiness tccBusiness = new TCCBusiness();
 		newTcc.setAluno(getUsuario());
-		newTcc.setCalendarioSemestre(new CalendarioSemestreBusiness()
-				.getCurrentCalendarByCurso(getUsuario().getCurso()));
+		newTcc.setCalendarioSemestre(getCurrentCalendar());
 		if (tccBusiness.save(newTcc)) {
 			Sessions.getCurrent().setAttribute("tcc", newTcc);
 			Executions.sendRedirect("/pages/cadastro-tcc.zul");
@@ -129,7 +120,7 @@ public class HomeAlunoController extends CommonsController {
 	@Command
 	public void getAction(@BindingParam("tipo") int type,
 			@BindingParam("button") Button button) {
-		button.setLabel(prazoBusiness.getAction(type, userHasTcc));
+		button.setLabel(prazoBusiness.getAction(type, (getUsuario().getTcc().size() != 0)));
 	}
 
 	@Command

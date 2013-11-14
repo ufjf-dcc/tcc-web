@@ -127,7 +127,7 @@ public class TCC implements Serializable {
 	 * {@code @Column(name = "conceitoFinal", nullable = true)}.
 	 */
 	@Column(name = "conceitoFinal", nullable = true)
-	private float conceitoFinal;
+	private float conceitoFinal = -1;
 
 	/**
 	 * Campo com a data da aprensetação. Relaciona com a coluna

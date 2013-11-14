@@ -66,5 +66,9 @@ public class CalendarioSemestreBusiness {
 		return calendarioSemestreDAO.getCalendarByDateAndCurso(new Date(),
 				curso);
 	}
+	
+	public CalendarioSemestre getCalendarById(int id) {
+		return calendarioSemestreDAO.getCalendarById(id);
+	}
 
 }

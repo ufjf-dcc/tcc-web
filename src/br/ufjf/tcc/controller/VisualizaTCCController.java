@@ -22,6 +22,7 @@ import br.ufjf.tcc.business.PerguntaBusiness;
 import br.ufjf.tcc.business.QuestionarioBusiness;
 import br.ufjf.tcc.business.RespostaBusiness;
 import br.ufjf.tcc.business.TCCBusiness;
+import br.ufjf.tcc.library.FileManager;
 import br.ufjf.tcc.model.Participacao;
 import br.ufjf.tcc.model.Pergunta;
 import br.ufjf.tcc.model.Resposta;
@@ -130,14 +131,11 @@ public class VisualizaTCCController extends CommonsController {
 	public void showTCC(@BindingParam("iframe") Iframe report) {
 		InputStream is;
 		if (tcc.getArquivoTCCFinal() != null)
-			is = Sessions.getCurrent().getWebApp()
-					.getResourceAsStream("files/" + tcc.getArquivoTCCFinal());
+			is = FileManager.getFileInputSream(tcc.getArquivoTCCFinal());
 		else if (tcc.getArquivoTCCBanca() != null)
-			is = Sessions.getCurrent().getWebApp()
-					.getResourceAsStream("files/" + tcc.getArquivoTCCBanca());
+			is = FileManager.getFileInputSream(tcc.getArquivoTCCBanca());
 		else
-			is = Sessions.getCurrent().getWebApp()
-					.getResourceAsStream("files/modelo.pdf");
+			is = FileManager.getFileInputSream("files/modelo.pdf");
 
 		final AMedia amedia = new AMedia(tcc.getNomeTCC() + ".pdf", "pdf",
 				"application/pdf", is);
@@ -156,24 +154,39 @@ public class VisualizaTCCController extends CommonsController {
 
 	@Command
 	public void downloadPDFBanca() {
-		InputStream is = Sessions.getCurrent().getWebApp()
-				.getResourceAsStream("files/" + tcc.getArquivoTCCBanca());
-		Filedownload.save(is, "application/pdf", tcc.getNomeTCC() + "(banca).pdf");
+		InputStream is = FileManager
+				.getFileInputSream(tcc.getArquivoTCCBanca());
+		if (is != null)
+			Filedownload.save(is, "application/pdf", tcc.getNomeTCC() + ".pdf");
+		else
+			Messagebox.show("O PDF não foi encontrado!", "Erro", Messagebox.OK,
+					Messagebox.ERROR);
 	}
 
 	@Command
 	public void downloadPDF() {
-		InputStream is = Sessions.getCurrent().getWebApp()
-				.getResourceAsStream("files/" + tcc.getArquivoTCCFinal());
-		Filedownload.save(is, "application/pdf", tcc.getNomeTCC() + ".pdf");
+		InputStream is = FileManager
+				.getFileInputSream(tcc.getArquivoTCCFinal());
+		if (is != null)
+			Filedownload.save(is, "application/pdf", tcc.getNomeTCC() + ".pdf");
+		else
+			Messagebox.show("O PDF não foi encontrado!", "Erro", Messagebox.OK,
+					Messagebox.ERROR);
 	}
 
 	@Command
 	public void downloadExtra() {
-		InputStream is = Sessions.getCurrent().getWebApp()
-				.getResourceAsStream("files/" + tcc.getArquivoExtraTCCFinal());
-		Filedownload.save(is, "application/x-rar-compressed", tcc.getNomeTCC()
-				+ ".rar");
+		if (tcc.getArquivoExtraTCCFinal() != null
+				&& tcc.getArquivoExtraTCCFinal() != "") {
+			InputStream is = FileManager.getFileInputSream(tcc
+					.getArquivoExtraTCCFinal());
+			if (is != null)
+				Filedownload.save(is, "application/x-rar-compressed",
+						tcc.getNomeTCC() + ".rar");
+			else
+				Messagebox.show("O RAR não foi encontrado!", "Erro",
+						Messagebox.OK, Messagebox.ERROR);
+		}
 	}
 
 	@Command

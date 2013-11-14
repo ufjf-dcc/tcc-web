@@ -11,11 +11,12 @@ import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zhtml.Filedownload;
-import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Messagebox;
 
 import br.ufjf.tcc.business.CursoBusiness;
 import br.ufjf.tcc.business.TCCBusiness;
+import br.ufjf.tcc.library.FileManager;
 import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.model.TCC;
 
@@ -80,7 +81,7 @@ public class ListaPublicaController extends CommonsController {
 		empty.setNomeCurso("Selecione um Curso");
 		cursoss.add(empty);
 		List<Curso> cursos = (new CursoBusiness()).getCursos();
-		if(cursos != null)		
+		if (cursos != null)
 			cursoss.addAll(cursos);
 		return cursoss;
 	}
@@ -166,17 +167,27 @@ public class ListaPublicaController extends CommonsController {
 
 	@Command
 	public void downloadPDF(@BindingParam("tcc") TCC tcc) {
-		InputStream is = Sessions.getCurrent().getWebApp()
-				.getResourceAsStream("files/" + tcc.getArquivoTCCFinal());
-		Filedownload.save(is, "application/pdf", tcc.getNomeTCC() + ".pdf");
+		InputStream is = FileManager
+				.getFileInputSream(tcc.getArquivoTCCFinal());
+		if (is != null)
+			Filedownload.save(is, "application/pdf", tcc.getNomeTCC() + ".pdf");
+		else
+			Messagebox.show("O PDF não foi encontrado!", "Erro", Messagebox.OK,
+					Messagebox.ERROR);
 	}
 
 	@Command
 	public void downloadExtra(@BindingParam("tcc") TCC tcc) {
-		if (tcc.getArquivoExtraTCCFinal() != null && tcc.getArquivoExtraTCCFinal() != "") {
-			InputStream is = Sessions.getCurrent().getWebApp()
-					.getResourceAsStream("files/" + tcc.getArquivoExtraTCCFinal());
-			Filedownload.save(is, "application/x-rar-compressed",tcc.getNomeTCC() + ".rar");
+		if (tcc.getArquivoExtraTCCFinal() != null
+				&& tcc.getArquivoExtraTCCFinal() != "") {
+			InputStream is = FileManager.getFileInputSream(tcc
+					.getArquivoExtraTCCFinal());
+			if (is != null)
+				Filedownload.save(is, "application/x-rar-compressed",
+						tcc.getNomeTCC() + ".rar");
+			else
+				Messagebox.show("O RAR não foi encontrado!", "Erro",
+						Messagebox.OK, Messagebox.ERROR);
 		}
 	}
 

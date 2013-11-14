@@ -1,12 +1,6 @@
 package br.ufjf.tcc.controller;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,7 +11,6 @@ import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.util.media.AMedia;
-import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
@@ -26,6 +19,7 @@ import org.zkoss.zul.Messagebox;
 
 import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.business.UsuarioBusiness;
+import br.ufjf.tcc.library.FileManager;
 import br.ufjf.tcc.model.TCC;
 import br.ufjf.tcc.model.Usuario;
 
@@ -37,14 +31,20 @@ public class CadastroTccController extends CommonsController {
 	private Iframe iframe;
 	private InputStream tccFile = null, extraFile = null;
 	private AMedia pdf = null;
-	private static final String SAVE_PATH = Sessions.getCurrent().getWebApp()
-			.getRealPath("/")
-			+ "/files/";
 
 	@Init
 	public void init() {
-		tcc = (TCC) Sessions.getCurrent().getAttribute("tcc");
-		orientadores.add(tcc.getOrientador());
+		TCC tempTcc = tccBusiness.getCurrentTCCByAuthor(getUsuario(),
+				getCurrentCalendar());
+		if (tempTcc != null) {
+			getUsuario().getTcc().clear();
+			getUsuario().getTcc().add(tempTcc);
+			tcc = getUsuario().getTcc().get(0);
+			orientadores.add(tcc.getOrientador());
+		} else {
+			getUsuario().setTcc(new ArrayList<TCC>());
+			redirectHome();
+		}
 	}
 
 	public TCC getTcc() {
@@ -76,12 +76,10 @@ public class CadastroTccController extends CommonsController {
 
 		AMedia pdf;
 		if (tcc.getArquivoTCCBanca() == null) {
-			InputStream is = Sessions.getCurrent().getWebApp()
-					.getResourceAsStream("files/modelo.pdf");
+			InputStream is = FileManager.getFileInputSream("modelo.pdf");
 			pdf = new AMedia("modelo.pdf", "pdf", "application/pdf", is);
 		} else {
-			tccFile = Sessions.getCurrent().getWebApp()
-					.getResourceAsStream("files/" + tcc.getArquivoTCCBanca());
+			tccFile = FileManager.getFileInputSream(tcc.getArquivoTCCBanca());
 			pdf = new AMedia(tcc.getNomeTCC() + ".pdf", "pdf",
 					"application/pdf", tccFile);
 		}
@@ -110,96 +108,20 @@ public class CadastroTccController extends CommonsController {
 
 	@Command
 	public void savePDF() {
-		BufferedInputStream in = null;
-		BufferedOutputStream out = null;
-		try {
-			in = new BufferedInputStream(tccFile);
-
-			File baseDir = new File(SAVE_PATH);
-
-			if (!baseDir.exists()) {
-				baseDir.mkdirs();
-			}
-
-			String newFileName = tccBusiness.encriptFileName();
-			if (newFileName != null) {
-				tcc.setArquivoTCCBanca(newFileName);
-
-				File file = new File(SAVE_PATH + newFileName);
-
-				OutputStream fout = new FileOutputStream(file);
-				out = new BufferedOutputStream(fout);
-				byte buffer[] = new byte[1024];
-				int ch = in.read(buffer);
-				while (ch != -1) {
-					out.write(buffer, 0, ch);
-					ch = in.read(buffer);
-				}
-			}
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		} finally {
-			try {
-				if (out != null)
-					out.close();
-
-				if (in != null)
-					in.close();
-
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
+		String newFileName = FileManager.saveFileInputSream(tccFile, ".pdf");
+		if (newFileName != null) {
+			FileManager.deleteFile(tcc.getArquivoTCCBanca());
+			tcc.setArquivoTCCBanca(newFileName);
 		}
-
 	}
 
 	@Command
 	public void saveExtraFile() {
-		BufferedInputStream in = null;
-		BufferedOutputStream out = null;
-		try {
-			in = new BufferedInputStream(extraFile);
-
-			File baseDir = new File(SAVE_PATH);
-
-			if (!baseDir.exists()) {
-				baseDir.mkdirs();
-			}
-
-			String newFileName = tccBusiness.encriptFileName();
-			if (newFileName != null) {
-				tcc.setArquivoExtraTCCBanca(newFileName);
-
-				File file = new File(SAVE_PATH + newFileName);
-
-				OutputStream fout = new FileOutputStream(file);
-				out = new BufferedOutputStream(fout);
-				byte buffer[] = new byte[1024];
-				int ch = in.read(buffer);
-				while (ch != -1) {
-					out.write(buffer, 0, ch);
-					ch = in.read(buffer);
-				}
-			}
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		} finally {
-			try {
-				if (out != null)
-					out.close();
-
-				if (in != null)
-					in.close();
-
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
+		String newFileName = FileManager.saveFileInputSream(extraFile, ".pdf");
+		if (newFileName != null) {
+			FileManager.deleteFile(tcc.getArquivoExtraTCCBanca());
+			tcc.setArquivoExtraTCCBanca(newFileName);
 		}
-
 	}
 
 	@Command("submit")

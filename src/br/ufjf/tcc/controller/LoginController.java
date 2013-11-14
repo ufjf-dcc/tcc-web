@@ -1,5 +1,8 @@
 package br.ufjf.tcc.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.hibernate.HibernateException;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
@@ -7,9 +10,11 @@ import org.zkoss.bind.annotation.Init;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
+import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.business.UsuarioBusiness;
 import br.ufjf.tcc.library.SendMail;
 import br.ufjf.tcc.library.SessionManager;
+import br.ufjf.tcc.model.TCC;
 import br.ufjf.tcc.model.Usuario;
 
 public class LoginController extends CommonsController {
@@ -33,9 +38,15 @@ public class LoginController extends CommonsController {
 				&& usuarioForm.getSenha() != null) {
 			usuarioBusiness = new UsuarioBusiness();
 			if (usuarioBusiness.login(usuarioForm.getMatricula(),
-					usuarioForm.getSenha()))
+					usuarioForm.getSenha())) {
+				TCCBusiness tccBusiness = new TCCBusiness();
+				TCC tempTcc = tccBusiness.getCurrentTCCByAuthor(getUsuario(),
+						getCurrentCalendar());
+				List<TCC> tcc = new ArrayList<TCC>();
+				if(tempTcc != null) tcc.add(tempTcc);
+				getUsuario().setTcc(tcc);
 				redirectHome();
-			else {
+			} else {
 				Messagebox.show(usuarioBusiness.getErrors().get(0), "Erro",
 						Messagebox.OK, Messagebox.ERROR);
 				usuarioBusiness.clearErrors();
@@ -66,15 +77,15 @@ public class LoginController extends CommonsController {
 							Messagebox.EXCLAMATION);
 			return;
 		}
-		
+
 		// Gera e encripta uma senha e salva no banco de dados
 		String newPassword = usuarioBusiness.generatePassword();
 		user.setSenha(usuarioBusiness.encripta(newPassword));
-		if(usuarioBusiness.editar(user) && new SendMail().sendNewPassword(user, newPassword)){
-			Messagebox
-			.show("Um e-mail com a nova senha foi enviado para " + user.getEmail() + ".",
-					"Verifique o seu e-mail", Messagebox.OK,
-					Messagebox.INFORMATION);
+		if (usuarioBusiness.editar(user)
+				&& new SendMail().sendNewPassword(user, newPassword)) {
+			Messagebox.show("Um e-mail com a nova senha foi enviado para "
+					+ user.getEmail() + ".", "Verifique o seu e-mail",
+					Messagebox.OK, Messagebox.INFORMATION);
 		}
 
 		forgot.detach();

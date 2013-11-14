@@ -18,9 +18,29 @@ public class CalendarioSemestreDAO extends GenericoDAO implements ICalendarioSem
 		try {
 			Query query = getSession()
 					.createQuery(
-							"SELECT c FROM CalendarioSemestre AS c WHERE c.curso = :curso AND c.inicioSemestre <= :date AND c.finalSemestre >= :date");
+							"SELECT c FROM CalendarioSemestre AS c LEFT JOIN FETCH c.prazos AS p WHERE c.curso = :curso AND c.inicioSemestre <= :date AND c.finalSemestre >= :date ORDER BY p.dataFinal");
 			query.setParameter("date", date);
 			query.setParameter("curso", curso);
+			
+			currentCalendar = (CalendarioSemestre) query.uniqueResult();
+			
+			getSession().close();
+			return currentCalendar;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return currentCalendar;
+	}
+	
+	public CalendarioSemestre getCalendarById(int id) {
+		CalendarioSemestre currentCalendar = null;
+		try {
+			Query query = getSession()
+					.createQuery(
+							"SELECT c FROM CalendarioSemestre AS c LEFT JOIN FETCH c.prazos AS p WHERE c.idCalendarioSemestre = :id ORDER BY p.dataFinal");
+			query.setParameter("id", id);
 			
 			currentCalendar = (CalendarioSemestre) query.uniqueResult();
 			

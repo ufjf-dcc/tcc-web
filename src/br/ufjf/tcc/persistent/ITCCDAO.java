@@ -8,5 +8,4 @@ import br.ufjf.tcc.model.TCC;
 public interface ITCCDAO {
 	public List<TCC> getPublicListByCurso(Curso curso);
 	public List<TCC> getAll();
-	public TCC update(TCC tcc, boolean aluno, boolean orientador, boolean participacoes);
 }

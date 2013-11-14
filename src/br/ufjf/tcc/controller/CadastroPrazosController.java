@@ -44,7 +44,7 @@ public class CadastroPrazosController extends CommonsController {
 		if (this.editing) {
 			DateTime currentDay = new DateTime(new Date());
 
-			prazos = new PrazoBusiness().getPrazosByCalendario(calendar);
+			prazos = calendar.getPrazos();
 
 			for (int i = prazos.size() - 1; i >= 0; i--)
 				if (currentDay.isAfter(new DateTime(prazos.get(i)

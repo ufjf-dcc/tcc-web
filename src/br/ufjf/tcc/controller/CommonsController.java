@@ -4,13 +4,30 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zul.Messagebox;
 
+import br.ufjf.tcc.business.CalendarioSemestreBusiness;
 import br.ufjf.tcc.library.SessionManager;
+import br.ufjf.tcc.model.CalendarioSemestre;
+import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.model.Usuario;
 
 public class CommonsController {
-
+	
+	private CalendarioSemestre calendarioSemestre = null;
+	
 	public Usuario getUsuario() {
 		return (Usuario) SessionManager.getAttribute("usuario");
+	}
+	
+	public CalendarioSemestre getCurrentCalendar(Curso curso) {
+		if(calendarioSemestre == null){
+			CalendarioSemestreBusiness calendarioBusiness = new CalendarioSemestreBusiness();
+			calendarioSemestre = calendarioBusiness.getCurrentCalendarByCurso(curso);
+		}
+		return calendarioSemestre;
+	}
+	
+	public CalendarioSemestre getCurrentCalendar() {
+		return getCurrentCalendar(getUsuario().getCurso());
 	}
 
 	public boolean checaPermissao(String nomePermissao) {

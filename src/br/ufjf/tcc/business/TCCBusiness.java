@@ -1,11 +1,9 @@
 package br.ufjf.tcc.business;
 
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.ufjf.tcc.model.CalendarioSemestre;
 import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.model.TCC;
 import br.ufjf.tcc.model.Usuario;
@@ -66,19 +64,6 @@ public class TCCBusiness {
 	public boolean edit(TCC tcc) {
 		return tccDao.editar(tcc);
 	}
-
-	public String encriptFileName() {
-		try {
-			MessageDigest m = MessageDigest.getInstance("MD5");
-			String currentTime = "" + System.currentTimeMillis();
-			m.update(currentTime.getBytes(), 0, currentTime.length());
-			return new BigInteger(1, m.digest()).toString(16);
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
 	
 	public boolean userHasTCC(Usuario user){
 		return tccDao.userHasTCC(user);
@@ -88,8 +73,15 @@ public class TCCBusiness {
 		return tccDao.getTCCsByCurso(curso);
 	}
 	
-	public TCC getCurrentTCCByAuthor(Usuario user) {
-		return tccDao.getCurrentTCCByAuthor(user);
+	public TCC getCurrentTCCByAuthor(Usuario user, CalendarioSemestre currentCalendar) {
+		if(currentCalendar != null)
+			return tccDao.getCurrentTCCByAuthor(user, currentCalendar);
+		else
+			return null;
+	}
+	
+	public TCC getTCCById(int id) {
+		return tccDao.getTCCById(id);
 	}
 	
 	public List<TCC> getTCCsByOrientador(Usuario user) {

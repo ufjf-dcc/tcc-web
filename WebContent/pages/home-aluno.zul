@@ -53,8 +53,7 @@
 						<div align="center">
 							<button width="100%"
 								onCreate="@command('getAction', tipo=each.tipo, button=self)"
-								onClick="@command('action', tipo=each.tipo, window=registrarTCC)"
-								disabled="@load(each.idPrazo ne vm.currentPrazo)" />
+								onClick="@command('action', tipo=each.tipo, window=registrarTCC)"/>
 						</div>
 					</row>
 				</template>
