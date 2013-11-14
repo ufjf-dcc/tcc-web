@@ -71,7 +71,7 @@ public class HomeAlunoController extends CommonsController {
 		switch (tipo) {
 		case Prazo.ENTREGA_TCC_BANCA:
 			if (getUsuario().getTcc().size() != 0) {
-				Executions.sendRedirect("/pages/cadastro-tcc.zul");
+				Executions.sendRedirect("/pages/editor-tcc.zul");
 			} else {
 				if (orientadores == null) {
 					orientadores = new UsuarioBusiness().getOrientadores();
@@ -91,7 +91,7 @@ public class HomeAlunoController extends CommonsController {
 		newTcc.setCalendarioSemestre(getCurrentCalendar());
 		if (tccBusiness.save(newTcc)) {
 			Sessions.getCurrent().setAttribute("tcc", newTcc);
-			Executions.sendRedirect("/pages/cadastro-tcc.zul");
+			Executions.sendRedirect("/pages/editor-tcc.zul");
 		} else {
 			Messagebox.show("Devido a um erro, o TCC não foi criado.", "Erro",
 					Messagebox.OK, Messagebox.ERROR);

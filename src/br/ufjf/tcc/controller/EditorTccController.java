@@ -23,7 +23,7 @@ import br.ufjf.tcc.library.FileManager;
 import br.ufjf.tcc.model.TCC;
 import br.ufjf.tcc.model.Usuario;
 
-public class CadastroTccController extends CommonsController {
+public class EditorTccController extends CommonsController {
 
 	private TCCBusiness tccBusiness = new TCCBusiness();
 	private List<Usuario> orientadores = new ArrayList<Usuario>();

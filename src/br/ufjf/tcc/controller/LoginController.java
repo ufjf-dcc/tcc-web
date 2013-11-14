@@ -39,12 +39,15 @@ public class LoginController extends CommonsController {
 			usuarioBusiness = new UsuarioBusiness();
 			if (usuarioBusiness.login(usuarioForm.getMatricula(),
 					usuarioForm.getSenha())) {
-				TCCBusiness tccBusiness = new TCCBusiness();
-				TCC tempTcc = tccBusiness.getCurrentTCCByAuthor(getUsuario(),
-						getCurrentCalendar());
-				List<TCC> tcc = new ArrayList<TCC>();
-				if(tempTcc != null) tcc.add(tempTcc);
-				getUsuario().setTcc(tcc);
+				if (getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ALUNO) {
+					TCCBusiness tccBusiness = new TCCBusiness();
+					TCC tempTcc = tccBusiness.getCurrentTCCByAuthor(
+							getUsuario(), getCurrentCalendar());
+					List<TCC> tcc = new ArrayList<TCC>();
+					if (tempTcc != null)
+						tcc.add(tempTcc);
+					getUsuario().setTcc(tcc);
+				}
 				redirectHome();
 			} else {
 				Messagebox.show(usuarioBusiness.getErrors().get(0), "Erro",

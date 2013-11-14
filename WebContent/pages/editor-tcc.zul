@@ -1,9 +1,9 @@
-<?page title="Cadastro de TCC" contentType="text/html;charset=UTF-8"?>
+<?page title="Editor de TCC" contentType="text/html;charset=UTF-8"?>
 <?init class="br.ufjf.tcc.controller.AuthController"?>
 <zk>
 	<style src="/style.css" />
 	<div apply="org.zkoss.bind.BindComposer"
-		viewModel="@id('vm') @init('br.ufjf.tcc.controller.CadastroTccController')"
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.EditorTccController')"
 		height="100%">
 		<include src="@load(vm.menu)" />
 		<hlayout style="background-color:#efefef;" height="96%">

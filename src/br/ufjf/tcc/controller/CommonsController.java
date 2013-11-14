@@ -5,27 +5,29 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zul.Messagebox;
 
 import br.ufjf.tcc.business.CalendarioSemestreBusiness;
+import br.ufjf.tcc.business.UsuarioBusiness;
 import br.ufjf.tcc.library.SessionManager;
 import br.ufjf.tcc.model.CalendarioSemestre;
 import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.model.Usuario;
 
 public class CommonsController {
-	
+
 	private CalendarioSemestre calendarioSemestre = null;
-	
+
 	public Usuario getUsuario() {
 		return (Usuario) SessionManager.getAttribute("usuario");
 	}
-	
+
 	public CalendarioSemestre getCurrentCalendar(Curso curso) {
-		if(calendarioSemestre == null){
+		if (calendarioSemestre == null) {
 			CalendarioSemestreBusiness calendarioBusiness = new CalendarioSemestreBusiness();
-			calendarioSemestre = calendarioBusiness.getCurrentCalendarByCurso(curso);
+			calendarioSemestre = calendarioBusiness
+					.getCurrentCalendarByCurso(curso);
 		}
 		return calendarioSemestre;
 	}
-	
+
 	public CalendarioSemestre getCurrentCalendar() {
 		return getCurrentCalendar(getUsuario().getCurso());
 	}
@@ -44,12 +46,11 @@ public class CommonsController {
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void paginaProibida() {
-		Messagebox.show(
-				"Você não tem permissão para acessar esta página. ", "Acesso negado",
-				Messagebox.OK, Messagebox.EXCLAMATION,
+		Messagebox.show("Você não tem permissão para acessar esta página. ",
+				"Acesso negado", Messagebox.OK, Messagebox.EXCLAMATION,
 				new org.zkoss.zk.ui.event.EventListener() {
 					public void onEvent(Event e) {
-						if (Messagebox.ON_OK.equals(e.getName())) {								
+						if (Messagebox.ON_OK.equals(e.getName())) {
 							redirectHome();
 						}
 					}
@@ -57,30 +58,46 @@ public class CommonsController {
 	}
 
 	public String getMenu() {
-		int tipoUsuario = getUsuario().getTipoUsuario().getIdTipoUsuario();
-		if (tipoUsuario == 4)
+		switch ((getUsuario() != null ? getUsuario().getTipoUsuario()
+				.getIdTipoUsuario() : 0)) {
+		case Usuario.ADMINISTRADOR:
 			return "/templates/menu-admin.zul";
-		if (tipoUsuario == 3)
+		case Usuario.COORDENADOR:
 			return "/templates/menu-coord.zul";
-		if (tipoUsuario == 2)
+		case Usuario.PROFESSOR:
 			return "/templates/menu-prof.zul";
-		return "/templates/menu-aluno.zul";
+		case Usuario.ALUNO:
+			return "/templates/menu-aluno.zul";
+		default:
+			return null;
+		}
+
 	}
-	
-	public void redirectHome () {
-		String page;
-		
-		switch (getUsuario().getTipoUsuario().getIdTipoUsuario()) {
-		case 4:
-		case 3:
-		case 2:
-			page = "/pages/home-professor.zul";
+
+	public void redirectHome() {
+		switch ((getUsuario() != null ? getUsuario().getTipoUsuario()
+				.getIdTipoUsuario() : 0)) {
+		case Usuario.ADMINISTRADOR:
+		case Usuario.COORDENADOR:
+		case Usuario.PROFESSOR:
+			Executions.sendRedirect("/pages/home-professor.zul");
+			break;
+		case Usuario.ALUNO:
+			Executions.sendRedirect("/pages/home-aluno.zul");
 			break;
 		default:
-			page = "/pages/home-aluno.zul";
+			Executions.sendRedirect("/index.zul");
 		}
-			
-		Executions.sendRedirect(page);
+
+	}
+
+	public boolean recheckLogin() {
+		UsuarioBusiness usuarioBusiness = new UsuarioBusiness();
+		if (!usuarioBusiness.checaLogin(getUsuario())) {
+			Executions.sendRedirect("/index.zul");
+			return false;
+		} else
+			return true;
 	}
 
 }

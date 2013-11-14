@@ -1,5 +1,4 @@
-<?page title="PDF" contentType="text/html;charset=UTF-8"?>
-<?init class="br.ufjf.tcc.controller.AuthController"?>
+<?page title="Visualizar TCC" contentType="text/html;charset=UTF-8"?>
 <?script content="zk.useStack='auto'" ?>
 <zk>
 	<style src="/style.css" />
@@ -24,14 +23,14 @@
 								<label value="Autor"
 									style="font-size: 14px; font-weight: bold; text-align: justify; display: block; margin-top:5px" />
 								<label
-									value="@load(tcc.aluno.nomeUsuario)" />
+									value="@load(vm.tcc.aluno.nomeUsuario)" />
 								<label value="Orientador"
 									style="font-size: 14px; font-weight: bold; text-align: justify; display: block; margin-top:5px" />
 								<label
-									value="@load(tcc.orientador.nomeUsuario)" />
+									value="@load(vm.tcc.orientador.nomeUsuario)" />
 								<label value="Resumo"
 									style="font-size: 14px; font-weight: bold; text-align: justify; display: block; margin-top:5px" />
-								<label value="@load(tcc.resumoTCC)" />
+								<label value="@load(vm.tcc.resumoTCC)" />
 								<hlayout style="margin-top:5px">
 									<label value="Ano: "
 										style="font-weight:bold;" />
@@ -39,12 +38,12 @@
 										onCreate="@command('getTccYear', lbl=self)" />
 								</hlayout>
 								<label value="Palavras-chave"
-									visible="@load(not empty tcc.palavrasChave)"
+									visible="@load(not empty vm.tcc.palavrasChave)"
 									style="font-size: 14px; font-weight: bold; text-align: justify; display: block; margin-top:5px" />
-								<label value="@load(tcc.palavrasChave)" />
+								<label value="@load(vm.tcc.palavrasChave)" />
 								<hlayout
 									style="cursor: pointer; margin-top:5px"
-									visible="@load(vm.canDonwloadFileBanca and not empty tcc.arquivoTCCBanca ? 'true' : 'false')"
+									visible="@load(vm.canDonwloadFileBanca and not empty vm.tcc.arquivoTCCBanca ? 'true' : 'false')"
 									onClick="@command('downloadPDFBanca', tcc=each)">
 									<image src="/img/pdf.png" />
 									<label value="Download PDF (Banca)"
@@ -52,7 +51,7 @@
 								</hlayout>
 								<hlayout
 									style="cursor: pointer; margin-top:5px"
-									visible="@load(not empty tcc.arquivoTCCFinal ? 'true' : 'false')"
+									visible="@load(not empty vm.tcc.arquivoTCCFinal ? 'true' : 'false')"
 									onClick="@command('downloadPDF', tcc=each)">
 									<image src="/img/pdf.png" />
 									<label value="Download PDF"
@@ -60,7 +59,7 @@
 								</hlayout>
 								<hlayout
 									style="cursor: pointer; margin-top:5px"
-									visible="@load(not empty tcc.arquivoExtraTCCFinal ? 'true' : 'false')"
+									visible="@load(not empty vm.tcc.arquivoExtraTCCFinal ? 'true' : 'false')"
 									onClick="@command('downloadExtra', tcc=each)">
 									<image src="/img/rar.png" />
 									<label

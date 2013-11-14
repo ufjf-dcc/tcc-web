@@ -17,7 +17,6 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Vlayout;
 
-import br.ufjf.tcc.business.ParticipacaoBusiness;
 import br.ufjf.tcc.business.PerguntaBusiness;
 import br.ufjf.tcc.business.QuestionarioBusiness;
 import br.ufjf.tcc.business.RespostaBusiness;
@@ -30,47 +29,78 @@ import br.ufjf.tcc.model.TCC;
 import br.ufjf.tcc.model.Usuario;
 
 public class VisualizaTCCController extends CommonsController {
-	private TCC tcc;
-	private boolean canAnswer = false,
-			canDonwloadFileBanca = false,
-			canEdit = getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.COORDENADOR
-					|| getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ADMINISTRADOR;
+	private TCC tcc = null;
+	private String pageTitle = "TEste";
+	private boolean canAnswer = false, canDonwloadFileBanca = false,
+			canEdit = false;
 	private List<Resposta> answers = new ArrayList<Resposta>();
 	private Vlayout informacoes, ficha;
 
+	public String getPageTitle() {
+		return pageTitle;
+	}
+
+	public void setPageTitle(String pageTitle) {
+		this.pageTitle = pageTitle;
+	}
+
 	@Init
 	public void init() {
-		tcc = (TCC) Sessions.getCurrent().getAttribute("tcc");
-		canAnswer = true;
+		String tccId = Executions.getCurrent().getParameter("tcc");
+		if (tccId != null) {
+			TCCBusiness tccBusiness = new TCCBusiness();
+			tcc = tccBusiness.getTCCById(Integer.parseInt(tccId));
+		}
+		if (tcc != null && canViewTCC()) {
+			if (getUsuario() != null && recheckLogin()) {
+				if (canAnswer) {
+					List<Pergunta> questions = new PerguntaBusiness()
+							.getQuestionsByQuestionary(new QuestionarioBusiness()
+									.getCurrentQuestionaryByCurso(tcc
+											.getAluno().getCurso()));
 
-		if (canAnswer) {
-			List<Pergunta> questions = new PerguntaBusiness()
-					.getQuestionsByQuestionary(new QuestionarioBusiness()
-							.getCurrentQuestionaryByCurso(tcc.getAluno()
-									.getCurso()));
+					Participacao p = null;
+					for (Participacao aux : getUsuario().getParticipacoes()) {
+						if (aux.getTcc().getIdTCC() == tcc.getIdTCC())
+							p = aux;
+					}
 
-			Participacao p = null;
-			for (Participacao aux : getUsuario().getParticipacoes()) {
-				if (aux.getTcc().getIdTCC() == tcc.getIdTCC())
-					p = aux;
+					for (Pergunta question : questions) {
+						Resposta answer = new Resposta();
+						answer.setPergunta(question);
+						answer.setParticipacao(p);
+						answers.add(answer);
+					}
+				}
+
 			}
+		} else
+			redirectHome();
 
-			for (Pergunta question : questions) {
-				Resposta answer = new Resposta();
-				answer.setPergunta(question);
-				answer.setParticipacao(p);
-				answers.add(answer);
+	}
+
+	private boolean canViewTCC() {
+		if (tcc.getDataEnvioFinal() != null) {
+			return true;
+		} else if (getUsuario() != null) {
+			if (getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.COORDENADOR
+					|| getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ADMINISTRADOR
+					|| tcc.getOrientador().getIdUsuario() == getUsuario().getIdUsuario()
+					|| tcc.getAluno().getIdUsuario() == getUsuario().getIdUsuario()) {
+				canEdit = true;
+				canDonwloadFileBanca = true;
+				return true;
+			} else {
+				for (Participacao p : tcc.getParticipacoes())
+					if (p.getProfessor() == getUsuario()) {
+						canDonwloadFileBanca = true;
+						canAnswer = true;
+						return true;
+					}
 			}
 		}
-
-		if (canEdit || tcc.getOrientador() == getUsuario())
-			canDonwloadFileBanca = true;
-		else
-			for (Participacao p : new ParticipacaoBusiness().getParticipacoesByTCC(tcc))
-				if (p.getProfessor() == getUsuario()) {
-					canDonwloadFileBanca = true;
-					break;
-				}
+		
+		return false;
 	}
 
 	public TCC getTcc() {
@@ -135,7 +165,7 @@ public class VisualizaTCCController extends CommonsController {
 		else if (tcc.getArquivoTCCBanca() != null)
 			is = FileManager.getFileInputSream(tcc.getArquivoTCCBanca());
 		else
-			is = FileManager.getFileInputSream("files/modelo.pdf");
+			is = FileManager.getFileInputSream("modelo.pdf");
 
 		final AMedia amedia = new AMedia(tcc.getNomeTCC() + ".pdf", "pdf",
 				"application/pdf", is);
@@ -224,7 +254,6 @@ public class VisualizaTCCController extends CommonsController {
 
 	@Command
 	public void editTCC() {
-		Sessions.getCurrent().setAttribute("tcc", tcc);
-		Executions.sendRedirect("/pages/cadastro-tcc.zul");
+		Executions.sendRedirect("/pages/editor-tcc.zul?tcc="+tcc.getIdTCC());
 	}
 }

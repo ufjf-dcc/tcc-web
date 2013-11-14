@@ -95,7 +95,7 @@ public class TCCDAO extends GenericoDAO implements ITCCDAO {
 		try {
 			Query query = getSession()
 					.createQuery(
-							"SELECT t FROM TCC AS t JOIN FETCH t.aluno JOIN FETCH t.orientador WHERE t.aluno = :user AND t.calendarioSemestre = :currentCalendar");
+							"SELECT t FROM TCC AS t JOIN FETCH t.aluno JOIN FETCH t.orientador LEFT JOIN FETCH t.participacoes WHERE t.aluno = :user AND t.calendarioSemestre = :currentCalendar");
 			query.setParameter("user", user);
 			query.setParameter("currentCalendar", currentCalendar);
 
@@ -115,7 +115,7 @@ public class TCCDAO extends GenericoDAO implements ITCCDAO {
 		try {
 			Query query = getSession()
 					.createQuery(
-							"SELECT t FROM TCC AS t JOIN FETCH t.aluno as a JOIN FETCH t.orientador LEFT JOIN FETCH a.curso WHERE t.idTCC = :id");
+							"SELECT t FROM TCC AS t JOIN FETCH t.aluno as a JOIN FETCH t.orientador LEFT JOIN FETCH t.participacoes LEFT JOIN FETCH a.curso WHERE t.idTCC = :id");
 			query.setParameter("id", id);
 
 			resultado = (TCC) query.uniqueResult();
