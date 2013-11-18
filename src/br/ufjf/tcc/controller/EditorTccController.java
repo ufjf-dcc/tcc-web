@@ -11,6 +11,7 @@ import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.util.media.AMedia;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
@@ -27,24 +28,46 @@ public class EditorTccController extends CommonsController {
 
 	private TCCBusiness tccBusiness = new TCCBusiness();
 	private List<Usuario> orientadores = new ArrayList<Usuario>();
-	private TCC tcc;
+	private TCC tcc = null;
 	private Iframe iframe;
 	private InputStream tccFile = null, extraFile = null;
 	private AMedia pdf = null;
 
 	@Init
 	public void init() {
-		TCC tempTcc = tccBusiness.getCurrentTCCByAuthor(getUsuario(),
-				getCurrentCalendar());
-		if (tempTcc != null) {
-			getUsuario().getTcc().clear();
-			getUsuario().getTcc().add(tempTcc);
-			tcc = getUsuario().getTcc().get(0);
-			orientadores.add(tcc.getOrientador());
+		if(getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ALUNO) {
+			TCC tempTcc = tccBusiness.getCurrentTCCByAuthor(getUsuario(),
+					getCurrentCalendar());
+			if (tempTcc != null) {
+				getUsuario().getTcc().clear();
+				getUsuario().getTcc().add(tempTcc);
+				tcc = getUsuario().getTcc().get(0);
+				orientadores.add(tcc.getOrientador());
+			} else {
+				getUsuario().setTcc(new ArrayList<TCC>());
+				redirectHome();
+			}
 		} else {
-			getUsuario().setTcc(new ArrayList<TCC>());
-			redirectHome();
+			String tccId = Executions.getCurrent().getParameter("tcc");
+			if (tccId != null) {
+				TCCBusiness tccBusiness = new TCCBusiness();
+				tcc = tccBusiness.getTCCById(Integer.parseInt(tccId));
+			}
+			
+			if (tcc != null && canEdit())
+				orientadores.add(tcc.getOrientador());
+			else
+				redirectHome();
 		}
+	}
+	
+	private boolean canEdit() {
+		if (getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.COORDENADOR
+				|| getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ADMINISTRADOR
+				|| tcc.getOrientador().getIdUsuario() == getUsuario().getIdUsuario())
+			return true;
+		else
+			return false;
 	}
 
 	public TCC getTcc() {

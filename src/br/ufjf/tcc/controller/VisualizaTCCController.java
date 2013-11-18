@@ -11,7 +11,6 @@ import org.zkoss.bind.annotation.Init;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zhtml.Filedownload;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Iframe;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;

@@ -46,7 +46,7 @@
 				<label value="Resumo: " style="margin:5px;" />
 				<textbox
 					value="@load(vm.tcc.resumoTCC) @save(vm.tcc.resumoTCC, before='submit')"
-					rows="12" width="560px" style="margin:5px;" />
+					rows="12" width="98%" style="margin:5px;" />
 
 				<hlayout style="margin:5px;line-height:20px;">
 					<button hflex="1"
