@@ -8,7 +8,7 @@
 		<hlayout spacing="0" height="100%">
 
 			<grid hflex="1" style="margin:10px; margin-bottom:30px"
-				visible="@load(not vm.currentCalendarExists or not vm.currentQuestionaryExists or not vm.currentQuestionaryUsed ? 'true' : 'false')">
+				visible="@load(vm.usuario.tipoUsuario.idTipoUsuario gt 2 and (not vm.currentCalendarExists or not vm.currentQuestionaryExists or not vm.currentQuestionaryUsed ? 'true' : 'false'))">
 				<columns>
 					<column label="Funções de coordenador"
 						style="font-weight:bold;text-align:center" />
@@ -42,7 +42,7 @@
 							<label
 								value="O seu curso ainda não possui um calendário para o semestre atual." />
 							<hlayout>
-								<button label="Criar"
+								<button label="Criar calendário"
 									onClick="@command('createCalendar')" />
 							</hlayout>
 						</div>
@@ -53,7 +53,7 @@
 							<label
 								value="O seu curso já possui um calendário para o semestre atual, mas você pode editar os prazos ainda não vencidos." />
 							<hlayout>
-								<button label="Editar"
+								<button label="Editar prazos"
 									onClick="@command('editCalendar')" />
 							</hlayout>
 						</div>
@@ -93,12 +93,12 @@
 				</columns>
 				<template name="tccs">
 					<row>
-						<label value="@load(each.aluno.nomeUsuario)" />
+						<label value="@load(each.aluno.nomeUsuario)" height="400px" style="text-align:vertical-center"/>
 						<label value="@load(each.nomeTCC)" />
 						<label
 							onCreate="@command('getTCCDateApresentacao', tcc=each, lbl=self)" />
 						<div align="center">
-							<button label="Visualizar"
+							<button label="Detalhes"
 								onClick="@command('showTCC', tcc=each)"
 								onCreate="@command('canAnswerTCC', tcc=each, btn=self)" />
 						</div>

@@ -14,8 +14,7 @@ import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zul.Combobox;
-import org.zkoss.zul.Comboitem;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
@@ -28,7 +27,6 @@ public class CadastroPrazosController extends CommonsController {
 	private CalendarioSemestre calendar;
 	private int currentPrazo = -1;
 	private List<Prazo> prazos = new ArrayList<Prazo>();
-	private List<Integer> types = new ArrayList<Integer>();
 	private boolean editing = false;
 
 	@Init
@@ -37,9 +35,6 @@ public class CadastroPrazosController extends CommonsController {
 			@ExecutionArgParam("editing") boolean editing) {
 		this.calendar = calendar;
 		this.editing = editing;
-
-		for (int i = 0; i < 4; i++)
-			types.add(i);
 
 		if (this.editing) {
 			DateTime currentDay = new DateTime(new Date());
@@ -87,14 +82,6 @@ public class CadastroPrazosController extends CommonsController {
 		this.prazos = prazos;
 	}
 
-	public List<Integer> getTypes() {
-		return types;
-	}
-
-	public void setTypes(List<Integer> types) {
-		this.types = types;
-	}
-
 	public CalendarioSemestre getCalendar() {
 		return calendar;
 	}
@@ -114,9 +101,9 @@ public class CadastroPrazosController extends CommonsController {
 	public boolean isEditing() {
 		return editing;
 	}
-	
+
 	@Command
-	public void goBack(@BindingParam("window") Window window){
+	public void goBack(@BindingParam("window") Window window) {
 		window.detach();
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("calendar", calendar);
@@ -130,8 +117,8 @@ public class CadastroPrazosController extends CommonsController {
 	public void submit(@BindingParam("window") Window window) {
 		if (editing) {
 			if (!new PrazoBusiness().editList(prazos)) {
-				Messagebox.show("Não foi possível salvar o calendário",
-						"Erro", Messagebox.OK, Messagebox.ERROR);
+				Messagebox.show("Não foi possível salvar o calendário", "Erro",
+						Messagebox.OK, Messagebox.ERROR);
 				return;
 			}
 		} else {
@@ -151,22 +138,17 @@ public class CadastroPrazosController extends CommonsController {
 
 		Messagebox.show("Calendário cadastrado com sucesso.", "Concluído",
 				Messagebox.OK, Messagebox.INFORMATION, new EventListener() {
-		    public void onEvent(Event evt) throws InterruptedException {
-		    	Executions.sendRedirect("/pages/home-professor.zul");
-		    }
-		});
-		window.detach();		
+					public void onEvent(Event evt) throws InterruptedException {
+						Executions.sendRedirect("/pages/home-professor.zul");
+					}
+				});
+		window.detach();
 	}
 
 	@Command
-	public void getDescription(@BindingParam("comboitem") Comboitem comboitem,
-			@BindingParam("combobox") Combobox combobox) {
-		if (comboitem != null)
-			comboitem.setLabel(new PrazoBusiness().getDescription(comboitem
-					.getIndex()));
-		if (combobox != null)
-			combobox.setValue(new PrazoBusiness().getDescription(combobox
-					.getSelectedIndex()));
+	public void getDescription(@BindingParam("label") Label label,
+			@BindingParam("type") int type) {
+		label.setValue(new PrazoBusiness().getDescription(type));
 	}
 
 }

@@ -21,20 +21,27 @@
 						value="@load(vm.tcc.subNomeTCC) @save(vm.tcc.subNomeTCC, before='submit')"
 						hflex="1" />
 				</hlayout>
-				
+
 				<hlayout style="margin:5px;line-height:20px;">
 					<label value="Orientador: " />
 					<combobox id="cmbOrientadores" hflex="1"
-							model="@load(vm.orientadores)" readonly="true"
-							selectedItem="@load(vm.tcc.orientador) @save(vm.tcc.orientador, before='submit')">
-							<template name="model">
-								<comboitem
-									label="@load(each.nomeUsuario)" />
-							</template>
+						model="@load(vm.orientadores)" readonly="true"
+						selectedItem="@load(vm.tcc.orientador) @save(vm.tcc.orientador, before='submit')">
+						<template name="model">
+							<comboitem label="@load(each.nomeUsuario)" />
+						</template>
 					</combobox>
 					<button id="butOrientador" label="Alterar"
 						onClick="@command('changeOrientador', butOrientador=butOrientador,cmbOrientador=cmbOrientadores)" />
 				</hlayout>
+
+				<button label="Editar Banca Examinadora"
+					onClick="@command('showBanca', window=configBanca)" />
+
+				<label value="Resumo: " style="margin:5px;" />
+				<textbox
+					value="@load(vm.tcc.resumoTCC) @save(vm.tcc.resumoTCC, before='submit')"
+					rows="12" width="98%" style="margin:5px;" />
 
 				<hlayout style="margin:5px;line-height:20px;">
 					<label value="Palavras-chave: " />
@@ -42,11 +49,6 @@
 						value="@load(vm.tcc.palavrasChave) @save(vm.tcc.palavrasChave, before='submit')"
 						hflex="1" />
 				</hlayout>
-
-				<label value="Resumo: " style="margin:5px;" />
-				<textbox
-					value="@load(vm.tcc.resumoTCC) @save(vm.tcc.resumoTCC, before='submit')"
-					rows="12" width="98%" style="margin:5px;" />
 
 				<hlayout style="margin:5px;line-height:20px;">
 					<button hflex="1"
@@ -65,5 +67,50 @@
 			<iframe hflex="2" vflex="100" autohide="true" height="100%"
 				onCreate="@command('showTCC', iframe=self)" />
 		</hlayout>
+		<window id="configBanca" title="Banca Examinadora"
+			visible="false" width="450px" border="normal"
+			position="center,center" closable="true"
+			onClose="self.setVisible(false); event.stopPropagation();">
+			<grid model="@load(vm.banca)"
+				style="margin-left:5px; margin-right:5px;">
+				<auxhead>
+					<auxheader colspan="2">
+						<hlayout style="float:left;">
+							<label value="Selecione: " />
+							<combobox model="@load(vm.orientadores)"
+								readonly="true"
+								selectedItem="@load(vm.tempBanca) @save(vm.tempBanca, before='addToBanca')">
+								<template name="model">
+									<comboitem
+										label="@load(each.nomeUsuario)" />
+								</template>
+							</combobox>
+
+							<button label="Adicionar à Banca"
+								width="60px" onClick="@command('addToBanca')"
+								style="margin-left:20px;" />
+
+							<image src="/img/help.gif"
+								tooltip="bancaHelp" style="cursor: help" />
+						</hlayout>
+					</auxheader>
+				</auxhead>
+				<columns>
+					<column />
+					<column />
+				</columns>
+				<template name="model">
+					<row>
+						<label value="@load(each.nomeUsuario)" />
+						<button image="/img/delete.png"
+							onClick="@command('removeFromBanca', user=each)" />
+					</row>
+				</template>
+			</grid>
+			<div align="center">
+				<button label="Atualizar" onClick="@command('submit')"
+					width="75px" style="margin-top:5px" />
+			</div>
+		</window>
 	</div>
 </zk>

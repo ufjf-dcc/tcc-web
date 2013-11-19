@@ -14,7 +14,6 @@ import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Window;
@@ -101,13 +100,15 @@ public class HomeProfessorController extends CommonsController {
 		case 1:
 			filterTccs = new ArrayList<TCC>();
 			for (TCC t : tccs)
-				if (t.getOrientador().getIdUsuario() == getUsuario().getIdUsuario())
+				if (t.getOrientador().getIdUsuario() == getUsuario()
+						.getIdUsuario())
 					filterTccs.add(t);
 			break;
 		case 2:
 			filterTccs = new ArrayList<TCC>();
 			for (TCC t : tccs)
-				if (t.getOrientador().getIdUsuario() != getUsuario().getIdUsuario())
+				if (t.getOrientador().getIdUsuario() != getUsuario()
+						.getIdUsuario())
 					filterTccs.add(t);
 			break;
 		}
@@ -180,9 +181,8 @@ public class HomeProfessorController extends CommonsController {
 
 	@Command
 	public void showTCC(@BindingParam("tcc") TCC tcc) {
-		Sessions.getCurrent().setAttribute("tcc", tcc);
-		Sessions.getCurrent().setAttribute("answerTcc", true);
-		Executions.sendRedirect("/pages/visualiza-tcc.zul");
+		Executions.sendRedirect("/pages/visualiza-tcc.zul?tcc="
+				+ tcc.getIdTCC());
 	}
 
 }

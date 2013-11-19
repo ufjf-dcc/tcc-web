@@ -28,7 +28,7 @@
 									style="font-size: 14px; font-weight: bold; text-align: justify; display: block; margin-top:5px" />
 								<label
 									value="@load(vm.tcc.orientador.nomeUsuario)" />
-								<label value="Resumo"
+								<label value="Resumo" hyphen="true"
 									style="font-size: 14px; font-weight: bold; text-align: justify; display: block; margin-top:5px" />
 								<label value="@load(vm.tcc.resumoTCC)" />
 								<hlayout style="margin-top:5px">

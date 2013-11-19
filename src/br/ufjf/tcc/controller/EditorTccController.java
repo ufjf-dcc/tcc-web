@@ -10,6 +10,7 @@ import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
+import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.UploadEvent;
@@ -17,10 +18,12 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Iframe;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Window;
 
 import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.business.UsuarioBusiness;
 import br.ufjf.tcc.library.FileManager;
+import br.ufjf.tcc.model.Participacao;
 import br.ufjf.tcc.model.TCC;
 import br.ufjf.tcc.model.Usuario;
 
@@ -28,10 +31,12 @@ public class EditorTccController extends CommonsController {
 
 	private TCCBusiness tccBusiness = new TCCBusiness();
 	private List<Usuario> orientadores = new ArrayList<Usuario>();
+	private List<Participacao> banca;
 	private TCC tcc = null;
 	private Iframe iframe;
 	private InputStream tccFile = null, extraFile = null;
 	private AMedia pdf = null;
+	private Usuario tempBanca = null;
 
 	@Init
 	public void init() {
@@ -91,6 +96,58 @@ public class EditorTccController extends CommonsController {
 
 	public List<Usuario> getOrientadores() {
 		return orientadores;
+	}
+
+	public List<Participacao> getBanca() {
+		return banca;
+	}
+
+	@Command
+	public void showBanca(@BindingParam("window") Window window){		
+		if (banca == null)
+			banca = tcc.getParticipacoes();
+		if (banca == null)
+			banca = new ArrayList<Participacao>();
+		if (orientadores.size() == 1) {
+			 orientadores = new UsuarioBusiness().getOrientadores();
+			 orientadores.remove(tcc.getOrientador());
+			 BindUtils.postNotifyChange(null, null, this, "orientadores");
+		}
+		window.doModal();
+	}
+	
+	public Usuario getTempBanca() {
+		return tempBanca;
+	}
+
+	public void setTempBanca(Usuario tempBanca) {
+		this.tempBanca = tempBanca;
+	}
+
+	@NotifyChange("banca")
+	@Command
+	public void addToBanca() {
+		banca.add(tempBanca);
+	}
+	
+	@NotifyChange("banca")
+	@Command
+	public void removeFromBanca() {
+		banca.remove(tempBanca);
+	}
+	
+	@Command
+	public void submitBanca(@BindingParam("window") Window window){
+		List<Participacao> participacoes = new ArrayList<Participacao>();
+		for (int i = 0; i < banca.size(); i++) {
+			Participacao p = new Participacao();
+			p.setProfessor(banca.get(i));
+			p.setTcc(getTcc());
+			p.setTitulacao(banca.get(i).getTitulacao());
+		}
+		tcc.setParticipacoes(participacoes);
+		orientadores.add(tcc.getOrientador());
+		window.detach();
 	}
 
 	@Command

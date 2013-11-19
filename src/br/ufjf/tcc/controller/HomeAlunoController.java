@@ -56,6 +56,7 @@ public class HomeAlunoController extends CommonsController {
 					currentPrazo = i + 1;
 					break;
 				}
+			System.out.println(currentPrazo);
 
 		} else {
 			Messagebox

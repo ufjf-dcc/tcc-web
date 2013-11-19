@@ -17,15 +17,8 @@
 					<datebox width="100%" value="@bind(each.dataFinal)"
 						format="dd/MM/yyyy" constraint="no empty"
 						disabled="@load(forEachStatus.index lt vm.currentPrazo ? 'true' : 'false')" />
-					<combobox width="100%" readonly="true"
-						model="@load(vm.types)" selectedItem="@bind(each.tipo)"
-						disabled="@load(forEachStatus.index lt vm.currentPrazo ? 'true' : 'false')"
-						onCreate="@command('getDescription', combobox=self)">
-						<template name="model">
-							<comboitem
-								onCreate="@command('getDescription', comboitem=self)" />
-						</template>
-					</combobox>
+					<label 
+						onCreate="@command('getDescription', label=self, type=each.tipo)"/>
 				</row>
 			</template>
 		</grid>

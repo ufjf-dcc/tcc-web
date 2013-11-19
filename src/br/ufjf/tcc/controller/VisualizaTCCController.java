@@ -79,9 +79,7 @@ public class VisualizaTCCController extends CommonsController {
 	}
 
 	private boolean canViewTCC() {
-		if (tcc.getDataEnvioFinal() != null) {
-			return true;
-		} else if (getUsuario() != null) {
+		if (getUsuario() != null) {
 			if (getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.COORDENADOR
 					|| getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ADMINISTRADOR
 					|| tcc.getOrientador().getIdUsuario() == getUsuario().getIdUsuario()
@@ -97,6 +95,8 @@ public class VisualizaTCCController extends CommonsController {
 						return true;
 					}
 			}
+		} else if (tcc.getDataEnvioFinal() != null) {
+			return true;
 		}
 		
 		return false;
