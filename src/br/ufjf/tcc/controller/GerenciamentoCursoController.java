@@ -1,5 +1,7 @@
 package br.ufjf.tcc.controller;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,7 +12,9 @@ import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
+import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
@@ -52,7 +56,8 @@ public class GerenciamentoCursoController extends CommonsController {
 
 	@Command
 	public void confirm(@BindingParam("curso") Curso curso) {
-		if (cursoBusiness.validate(curso, editTemp.get(curso.getIdCurso()).getCodigoCurso())) {
+		if (cursoBusiness.validate(curso, editTemp.get(curso.getIdCurso())
+				.getCodigoCurso())) {
 			if (!cursoBusiness.editar(curso))
 				Messagebox.show("Não foi possível editar o curso.", "Erro",
 						Messagebox.OK, Messagebox.ERROR);
@@ -160,6 +165,38 @@ public class GerenciamentoCursoController extends CommonsController {
 			Messagebox.show(errorMessage, "Dados insuficientes / inválidos",
 					Messagebox.OK, Messagebox.ERROR);
 			cursoBusiness.clearErrors();
+		}
+	}
+
+	@Command("import")
+	public void upload(@BindingParam("evt") UploadEvent evt) {
+		Media media = evt.getMedia();
+		if (!media.getName().contains(".csv")) {
+			Messagebox
+					.show("Este não é um arquivo válido! Apenas CSV são aceitos.");
+			return;
+		}
+		try {
+			BufferedReader in = new BufferedReader(media.getReaderData());
+			String linha;
+			Curso curso;
+			List<Curso> cursos = new ArrayList<Curso>();
+			while ((linha = in.readLine()) != null) {
+				String conteudo[] = linha.split(";");
+				curso = new Curso(conteudo[0], conteudo[1]);
+				cursos.add(curso);
+			}
+			/*
+			 * if (cursoDAO.salvarLista(cursos))
+			 * Messagebox.show("Cursos cadastrados com sucesso", null, new
+			 * org.zkoss.zk.ui.event.EventListener<ClickEvent>() { public void
+			 * onEvent(ClickEvent e) { if (e.getButton() ==
+			 * Messagebox.Button.OK) Executions.sendRedirect(null); else
+			 * Executions.sendRedirect(null); } });
+			 */
+
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 

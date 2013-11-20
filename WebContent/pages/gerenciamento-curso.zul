@@ -26,6 +26,11 @@
 							<button label="Cadastrar Curso"
 								onClick="@command('addCurso', window=addCurso)" />
 						</div>
+						<div style="float:right">
+							<button upload="true"
+								label="Cadastrar via CSV"
+								onUpload="@command('import', evt=event)" />
+						</div>
 					</div>
 				</auxheader>
 			</auxhead>

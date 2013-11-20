@@ -87,6 +87,15 @@ public class Curso implements Serializable {
 	@Transient
 	private boolean editingStatus;
 	
+	public Curso(){
+		
+	}
+	
+	public Curso(String codigoCurso, String nomeCurso) {
+		this.codigoCurso = codigoCurso;
+		this.nomeCurso = nomeCurso;
+	}
+
 	public int getIdCurso() {
 		return idCurso;
 	}
