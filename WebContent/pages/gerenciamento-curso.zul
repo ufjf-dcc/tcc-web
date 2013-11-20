@@ -29,7 +29,7 @@
 						<div style="float:right">
 							<button upload="true"
 								label="Cadastrar via CSV"
-								onUpload="@command('import', evt=event)" />
+								onUpload="@command('import', evt=event, window=importCSV)" />
 						</div>
 					</div>
 				</auxheader>
@@ -96,6 +96,34 @@
 			<div align="center">
 				<button label="Cadastrar" onClick="@command('submit')"
 					width="75px" style="margin-top:5px" />
+			</div>
+		</window>
+		<window id="importCSV" title="Cadastro via CSV" visible="false"
+			width="70%" height="70%" border="normal" position="center,center"
+			closable="true"
+			onClose="self.setVisible(false); event.stopPropagation();">
+
+			<grid model="@load(vm.cursosCSV) @template('csv')"
+				mold="paging" autopaging="true" vflex="true">
+				<columns>
+					<column label="Código" width="100px"
+						sort="auto(curso.codigoCurso)" />
+					<column label="Nome" sort="auto(curso.nomeCurso)" />
+					<column width="50px" sort="" />
+				</columns>
+				<template name="csv">
+					<row>
+						<label value="@load(each.codigoCurso)" />
+						<label value="@load(each.nomeCurso)" />
+						<button image="/img/delete.png" width="100%"
+							onClick="@command('removeFromCSV', curso=each)" />
+					</row>
+				</template>
+			</grid>
+
+			<div align="center">
+				<button label="Cadastrar tudo"
+					onClick="@command('submitCSV', window=importCSV)" width="75px" style="margin-top:5px" />
 			</div>
 		</window>
 	</div>

@@ -11,6 +11,8 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import org.zkoss.zk.ui.util.Clients;
+
 import br.ufjf.tcc.model.TCC;
 import br.ufjf.tcc.model.Usuario;
 
@@ -37,6 +39,7 @@ public class SendMail {
 	}
 
 	public boolean onSubmitTCC(TCC newTcc) {
+		Clients.showBusy("Por favor, aguarde..");
 		try {
 			message.setFrom(new InternetAddress("jorge.smrr@gmail.com"));
 			message.setRecipients(Message.RecipientType.TO,
@@ -57,6 +60,7 @@ public class SendMail {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		Clients.clearBusy();
 		return false;
 	}
 
@@ -65,6 +69,7 @@ public class SendMail {
 	 * usando o SMTP do Gmail.
 	 */
 	public boolean onSubmitUser(Usuario newUser, String newPassword) {
+		Clients.showBusy("Por favor, aguarde..");
 		try {
 			message.setFrom(new InternetAddress("ttest4318@gmail.com"));
 			message.setRecipients(Message.RecipientType.TO,
@@ -88,10 +93,12 @@ public class SendMail {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		Clients.clearBusy();
 		return false;
 	}
 
 	public boolean sendNewPassword(Usuario user, String newPassword) {
+		Clients.showBusy("Por favor, aguarde..");
 		final String mailUsername = "ttest4318@gmail.com";
 		final String mailPassword = "tcc12345";
 
@@ -131,6 +138,7 @@ public class SendMail {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		Clients.clearBusy();
 		return false;
 	}
 }

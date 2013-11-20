@@ -12,21 +12,24 @@ import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
+import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.UploadEvent;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
 import br.ufjf.tcc.business.CursoBusiness;
 import br.ufjf.tcc.model.Curso;
+import br.ufjf.tcc.persistent.impl.CursoDAO;
 
 public class GerenciamentoCursoController extends CommonsController {
 	private CursoBusiness cursoBusiness = new CursoBusiness();
-	private Curso novoCurso;
+	private Curso novoCurso = null;
 	private Map<Integer, Curso> editTemp = new HashMap<Integer, Curso>();
-	private List<Curso> allCursos = cursoBusiness.getCursos();
-	private List<Curso> cursos = allCursos;
+	private List<Curso> allCursos = cursoBusiness.getCursos(),
+			cursos = allCursos, cursosCSV = new ArrayList<Curso>();
 	private String filterString = "";
 
 	@Init
@@ -37,6 +40,16 @@ public class GerenciamentoCursoController extends CommonsController {
 
 	public List<Curso> getCursos() {
 		return cursos;
+	}
+
+	public List<Curso> getCursosCSV() {
+		return cursosCSV;
+	}
+
+	@NotifyChange("cursosCSV")
+	@Command
+	public void removeFromCSV(@BindingParam("curso") Curso curso) {
+		cursosCSV.remove(curso);
 	}
 
 	@Command
@@ -169,35 +182,57 @@ public class GerenciamentoCursoController extends CommonsController {
 	}
 
 	@Command("import")
-	public void upload(@BindingParam("evt") UploadEvent evt) {
+	public void upload(@BindingParam("evt") UploadEvent evt,
+			@BindingParam("window") Window window) {
+		Clients.showBusy("Processando arquivo..");
 		Media media = evt.getMedia();
 		if (!media.getName().contains(".csv")) {
-			Messagebox
-					.show("Este não é um arquivo válido! Apenas CSV são aceitos.");
+			Messagebox.show("Apenas CSV são aceitos.", "Arquivo inválido",
+					Messagebox.OK, Messagebox.EXCLAMATION);
 			return;
 		}
 		try {
 			BufferedReader in = new BufferedReader(media.getReaderData());
 			String linha;
 			Curso curso;
-			List<Curso> cursos = new ArrayList<Curso>();
+			cursosCSV.clear();
+			cursosCSV = new ArrayList<Curso>();
 			while ((linha = in.readLine()) != null) {
 				String conteudo[] = linha.split(";");
 				curso = new Curso(conteudo[0], conteudo[1]);
-				cursos.add(curso);
+				cursosCSV.add(curso);
 			}
-			/*
-			 * if (cursoDAO.salvarLista(cursos))
-			 * Messagebox.show("Cursos cadastrados com sucesso", null, new
-			 * org.zkoss.zk.ui.event.EventListener<ClickEvent>() { public void
-			 * onEvent(ClickEvent e) { if (e.getButton() ==
-			 * Messagebox.Button.OK) Executions.sendRedirect(null); else
-			 * Executions.sendRedirect(null); } });
-			 */
+
+			BindUtils.postNotifyChange(null, null, this, "cursosCSV");
+			window.doModal();
 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		Clients.clearBusy();
+	}
+
+	@NotifyChange("cursos")
+	@Command
+	public void submitCSV(@BindingParam("window") Window window) {
+		Clients.showBusy("Cadastrando cursos..");
+		CursoDAO cursoDAO = new CursoDAO();
+		if (cursosCSV.size() > 0) {
+			if (cursoDAO.salvarLista(cursosCSV)) {
+				Messagebox.show(cursosCSV.size()
+						+ " cursos foram cadastrados com sucesso", "Concluído",
+						Messagebox.OK, Messagebox.INFORMATION);				
+				allCursos.addAll(cursosCSV);
+				cursos = allCursos;
+				filtra();
+			} else
+				Messagebox.show("Os cursos não puderam ser cadastrados", "Erro",
+						Messagebox.OK, Messagebox.INFORMATION);
+		} else
+			Messagebox.show("Nenhum curso foi cadastrado", "Concluído",
+					Messagebox.OK, Messagebox.INFORMATION);
+		window.onClose();
+		Clients.clearBusy();
 	}
 
 	public void limpa() {
