@@ -14,11 +14,16 @@ tbody.z-grid-empty-body td {
 .z-label { 
 	display:block; 
 }
+
 tr.z-row td.z-row-inner { 
 	padding: 2px 5px; 
 }
 .centerGrid .z-row-cnt, .centerGrid .z-column-cnt { 
 	text-align: center; 
+}
+
+.publicList .z-row {
+	cursor: pointer;
 }
 
 .publicList .z-image {

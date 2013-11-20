@@ -1,5 +1,11 @@
 <?page title="Lista Pública de Monografias"?>
+
 <zk>
+<script type="text/javascript">
+    function visualzarTCC(id) {
+        window.open('pages/visualiza-tcc.zul?tcc='+id,'_blank');
+    }
+</script>
 	<style src="/style.css" />
 	<div apply="org.zkoss.bind.BindComposer"
 		viewModel="@id('vm') @init('br.ufjf.tcc.controller.ListaPublicaController')"
@@ -67,7 +73,7 @@
 				<column hflex="1" label="Extras" />
 			</columns>
 			<template name="lista">
-				<row>
+				<row xmlns:w="client" w:onClick="visualzarTCC(${each.idTCC});">
 					<div>
 						<label value="@load(each.nomeTCC)"
 							tooltip="${each.idTCC}, position=at_pointer" />
