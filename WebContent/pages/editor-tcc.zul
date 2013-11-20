@@ -70,12 +70,12 @@
 		<window id="configBanca" title="Banca Examinadora"
 			visible="false" width="450px" border="normal"
 			position="center,center" closable="true"
-			onClose="self.setVisible(false); event.stopPropagation();">
-			<grid model="@load(vm.banca)"
-				style="margin-left:5px; margin-right:5px;">
+			onClose="@command('cancelBanca', window=self, event=event)">
+			<grid model="@load(vm.banca)" emptyMessage="Nenhum examinador adicionado"
+				style="margin-left:5px; margin-right:5px; margin-top:5px;">
 				<auxhead>
 					<auxheader colspan="2">
-						<hlayout style="float:left;">
+						<hlayout>
 							<label value="Selecione: " />
 							<combobox model="@load(vm.orientadores)"
 								readonly="true"
@@ -88,27 +88,25 @@
 
 							<button label="Adicionar à Banca"
 								width="60px" onClick="@command('addToBanca')"
-								style="margin-left:20px;" />
+								style="margin-left:20px;float:right" />
 
-							<image src="/img/help.gif"
-								tooltip="bancaHelp" style="cursor: help" />
 						</hlayout>
 					</auxheader>
 				</auxhead>
 				<columns>
-					<column />
-					<column />
+					<column label="Nome do examinador"/>
+					<column label="Ação" width="50px"/>
 				</columns>
 				<template name="model">
-					<row>
-						<label value="@load(each.nomeUsuario)" />
+					<row visible="@load(not (each.professor eq vm.tcc.orientador))">
+						<label value="@load(each.professor.nomeUsuario)" />
 						<button image="/img/delete.png"
-							onClick="@command('removeFromBanca', user=each)" />
+							onClick="@command('removeFromBanca', participacao=each)" />
 					</row>
 				</template>
 			</grid>
 			<div align="center">
-				<button label="Atualizar" onClick="@command('submit')"
+				<button label="Atualizar" onClick="@command('submitBanca', window=configBanca)"
 					width="75px" style="margin-top:5px" />
 			</div>
 		</window>

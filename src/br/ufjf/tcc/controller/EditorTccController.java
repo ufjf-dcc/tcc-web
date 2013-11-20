@@ -13,6 +13,7 @@ import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
@@ -40,7 +41,7 @@ public class EditorTccController extends CommonsController {
 
 	@Init
 	public void init() {
-		if(getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ALUNO) {
+		if (getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ALUNO) {
 			TCC tempTcc = tccBusiness.getCurrentTCCByAuthor(getUsuario(),
 					getCurrentCalendar());
 			if (tempTcc != null) {
@@ -48,6 +49,16 @@ public class EditorTccController extends CommonsController {
 				getUsuario().getTcc().add(tempTcc);
 				tcc = getUsuario().getTcc().get(0);
 				orientadores.add(tcc.getOrientador());
+				if (tcc.getParticipacoes() == null
+						|| tcc.getParticipacoes().size() == 0) {
+					List<Participacao> auxList = tcc.getParticipacoes();
+					Participacao aux = new Participacao();
+					aux.setProfessor(tcc.getOrientador());
+					aux.setTitulacao(tcc.getOrientador().getTitulacao());
+					aux.setTcc(tcc);
+					auxList.add(aux);
+					tcc.setParticipacoes(auxList);
+				}
 			} else {
 				getUsuario().setTcc(new ArrayList<TCC>());
 				redirectHome();
@@ -58,18 +69,19 @@ public class EditorTccController extends CommonsController {
 				TCCBusiness tccBusiness = new TCCBusiness();
 				tcc = tccBusiness.getTCCById(Integer.parseInt(tccId));
 			}
-			
+
 			if (tcc != null && canEdit())
 				orientadores.add(tcc.getOrientador());
 			else
 				redirectHome();
 		}
 	}
-	
+
 	private boolean canEdit() {
 		if (getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.COORDENADOR
 				|| getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ADMINISTRADOR
-				|| tcc.getOrientador().getIdUsuario() == getUsuario().getIdUsuario())
+				|| tcc.getOrientador().getIdUsuario() == getUsuario()
+						.getIdUsuario())
 			return true;
 		else
 			return false;
@@ -103,19 +115,24 @@ public class EditorTccController extends CommonsController {
 	}
 
 	@Command
-	public void showBanca(@BindingParam("window") Window window){		
+	public void showBanca(@BindingParam("window") Window window) {
 		if (banca == null)
 			banca = tcc.getParticipacoes();
 		if (banca == null)
 			banca = new ArrayList<Participacao>();
 		if (orientadores.size() == 1) {
-			 orientadores = new UsuarioBusiness().getOrientadores();
-			 orientadores.remove(tcc.getOrientador());
-			 BindUtils.postNotifyChange(null, null, this, "orientadores");
+			List<Usuario> aux = new UsuarioBusiness().getOrientadores();
+			orientadores.clear();
+			for (Usuario professor : aux)
+				for (Participacao p : banca)
+					if (p.getProfessor().getIdUsuario() != professor
+							.getIdUsuario())
+						orientadores.add(professor);
+			BindUtils.postNotifyChange(null, null, this, "orientadores");
 		}
 		window.doModal();
 	}
-	
+
 	public Usuario getTempBanca() {
 		return tempBanca;
 	}
@@ -124,30 +141,43 @@ public class EditorTccController extends CommonsController {
 		this.tempBanca = tempBanca;
 	}
 
-	@NotifyChange("banca")
+	@NotifyChange({ "banca", "orientadores" })
 	@Command
 	public void addToBanca() {
-		banca.add(tempBanca);
+		Participacao p = new Participacao();
+		p.setProfessor(tempBanca);
+		p.setTcc(tcc);
+		p.setTitulacao(tempBanca.getTitulacao());
+		banca.add(p);
+		orientadores.remove(tempBanca);
+		tempBanca = null;
 	}
-	
+
+	@NotifyChange({ "banca", "orientadores" })
+	@Command
+	public void removeFromBanca(@BindingParam("participacao") Participacao p) {
+		banca.remove(p);
+		orientadores.add(p.getProfessor());
+		tempBanca = orientadores.get(orientadores.size() - 1);
+	}
+
 	@NotifyChange("banca")
 	@Command
-	public void removeFromBanca() {
-		banca.remove(tempBanca);
-	}
-	
-	@Command
-	public void submitBanca(@BindingParam("window") Window window){
-		List<Participacao> participacoes = new ArrayList<Participacao>();
-		for (int i = 0; i < banca.size(); i++) {
-			Participacao p = new Participacao();
-			p.setProfessor(banca.get(i));
-			p.setTcc(getTcc());
-			p.setTitulacao(banca.get(i).getTitulacao());
-		}
-		tcc.setParticipacoes(participacoes);
+	public void cancelBanca(@BindingParam("window") Window window,
+			@BindingParam("event") Event event) {
+		banca = tcc.getParticipacoes();
+		orientadores.clear();
 		orientadores.add(tcc.getOrientador());
-		window.detach();
+		event.stopPropagation();
+		window.setVisible(false);
+	}
+
+	@Command
+	public void submitBanca(@BindingParam("window") Window window) {
+		tcc.setParticipacoes(banca);
+		orientadores.clear();
+		orientadores.add(tcc.getOrientador());
+		window.setVisible(false);
 	}
 
 	@Command
@@ -207,6 +237,7 @@ public class EditorTccController extends CommonsController {
 	@Command("submit")
 	public void submit() {
 		tcc.setDataEnvioBanca(new Timestamp(new Date().getTime()));
+		System.out.println(tcc.getOrientador().getNomeUsuario());
 		if (tccBusiness.validate(tcc)) {
 			if (tccFile != null) {
 				iframe.setContent(pdf);
