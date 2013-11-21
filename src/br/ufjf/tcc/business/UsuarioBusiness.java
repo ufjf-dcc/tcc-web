@@ -67,7 +67,7 @@ public class UsuarioBusiness {
 		if (password == null || password.trim().length() == 0 || retype == null
 				|| retype.trim().length() == 0)
 			errors.add("A senha não pode estar em branco;\n");
-		else if (password.trim().length() <= 6)
+		else if (password.trim().length() < 6)
 			errors.add("A senha deve conter ao menos 6 caracteres;\n");
 		else if ((!password.equals(retype))) {
 			errors.add("As senhas não são iguais. Tente novamente.\n");

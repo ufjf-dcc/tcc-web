@@ -145,6 +145,21 @@ public class Usuario implements Serializable {
 	@Transient
 	private boolean editingStatus;
 
+	public Usuario() {
+		super();
+	}
+
+	public Usuario(String matricula, String email, String nomeUsuario,
+			String titulacao, TipoUsuario tipoUsuario, Curso curso) {
+		super();
+		this.matricula = matricula;
+		this.email = email;
+		this.nomeUsuario = nomeUsuario;
+		this.titulacao = titulacao;
+		this.tipoUsuario = tipoUsuario;
+		this.curso = curso;
+	}
+
 	public int getIdUsuario() {
 		return idUsuario;
 	}

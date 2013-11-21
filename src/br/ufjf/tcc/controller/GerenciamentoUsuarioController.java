@@ -10,7 +10,10 @@ import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
+import org.zkoss.bind.annotation.NotifyChange;
+import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
@@ -23,11 +26,12 @@ import br.ufjf.tcc.library.SendMail;
 import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.model.TipoUsuario;
 import br.ufjf.tcc.model.Usuario;
+import br.ufjf.tcc.persistent.impl.CursoDAO;
 
 public class GerenciamentoUsuarioController extends CommonsController {
 	private UsuarioBusiness usuarioBusiness = new UsuarioBusiness();
-	private List<Usuario> allUsuarios;
-	private List<Usuario> filterUsuarios;
+	private List<Usuario> allUsuarios, filterUsuarios,
+			usuariosCSV = new ArrayList<Usuario>();
 	private Map<Integer, Usuario> editTemp = new HashMap<Integer, Usuario>();
 	private List<TipoUsuario> tiposUsuario = (new TipoUsuarioBusiness())
 			.getTiposUsuarios();
@@ -75,6 +79,10 @@ public class GerenciamentoUsuarioController extends CommonsController {
 		return filterUsuarios;
 	}
 
+	public List<Usuario> getUsuariosCSV() {
+		return usuariosCSV;
+	}
+
 	@Command
 	public void changeEditableStatus(@BindingParam("usuario") Usuario usuario) {
 		if (!usuario.getEditingStatus()) {
@@ -96,7 +104,8 @@ public class GerenciamentoUsuarioController extends CommonsController {
 	 */
 	@Command
 	public void confirm(@BindingParam("usuario") Usuario usuario) {
-		if (usuarioBusiness.validate(usuario, editTemp.get(usuario.getIdUsuario()).getMatricula())) {
+		if (usuarioBusiness.validate(usuario,
+				editTemp.get(usuario.getIdUsuario()).getMatricula())) {
 			if (!usuarioBusiness.editar(usuario))
 				Messagebox.show("Não foi possível editar o usuário.", "Erro",
 						Messagebox.OK, Messagebox.ERROR);
@@ -201,10 +210,10 @@ public class GerenciamentoUsuarioController extends CommonsController {
 		}
 		BindUtils.postNotifyChange(null, null, this, "filterUsuarios");
 	}
-	
+
 	@Command
-	public void filterType(@BindingParam("type") int type){
-		switch(type){
+	public void filterType(@BindingParam("type") int type) {
+		switch (type) {
 		case 0:
 			filterUsuarios = allUsuarios;
 			break;
@@ -231,7 +240,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 			for (Usuario u : allUsuarios)
 				if (u.getTipoUsuario().getIdTipoUsuario() == Usuario.ADMINISTRADOR)
 					filterUsuarios.add(u);
-			break;			
+			break;
 		}
 		BindUtils.postNotifyChange(null, null, this, "filterUsuarios");
 	}
@@ -288,6 +297,69 @@ public class GerenciamentoUsuarioController extends CommonsController {
 					Messagebox.OK, Messagebox.ERROR);
 			usuarioBusiness.clearErrors();
 		}
+	}
+
+	@Command
+	public void importCSV(@BindingParam("evt") UploadEvent evt,
+			@BindingParam("window") Window window) {
+		Media media = evt.getMedia();
+		if (!media.getName().contains(".csv")) {
+			Messagebox.show("Apenas CSV são aceitos.", "Arquivo inválido",
+					Messagebox.OK, Messagebox.EXCLAMATION);
+			return;
+		}
+
+		String csv = new String(media.getByteData());
+		String linhas[] = csv.split("\\r?\\n");
+
+		Usuario usuario;
+		usuariosCSV.clear();
+		usuariosCSV = new ArrayList<Usuario>();
+		CursoBusiness cursoBusiness = new CursoBusiness();
+		TipoUsuarioBusiness tipoUsuarioBusiness = new TipoUsuarioBusiness();
+		UsuarioBusiness usuarioBusiness = new UsuarioBusiness();
+
+		for (String linha : linhas) {
+			String campos[] = linha.split(",");
+			usuario = new Usuario(campos[0], campos[1], campos[2], campos[3],
+					tipoUsuarioBusiness.getTipoUsuario(Integer
+							.parseInt(campos[4])),
+					cursoBusiness.getCursoByCode(campos[5]));
+			usuario.setAtivo(true);
+			String password = usuarioBusiness.generatePassword();
+			usuario.setSenha(usuarioBusiness.encripta(password));
+			usuariosCSV.add(usuario);
+		}
+
+		BindUtils.postNotifyChange(null, null, this, "usuariosCSV");
+		window.doModal();
+	}
+
+	@NotifyChange("usuariosCSV")
+	@Command
+	public void removeFromCSV(@BindingParam("usuario") Usuario usuario) {
+		usuariosCSV.remove(usuario);
+	}
+
+	@NotifyChange("usuarios")
+	@Command
+	public void submitCSV(@BindingParam("window") Window window) {
+		CursoDAO cursoDAO = new CursoDAO();
+		if (usuariosCSV.size() > 0) {
+			if (cursoDAO.salvarLista(usuariosCSV)) {
+				Messagebox.show(usuariosCSV.size()
+						+ " usuários foram cadastrados com sucesso",
+						"Concluído", Messagebox.OK, Messagebox.INFORMATION);
+				allUsuarios.addAll(usuariosCSV);
+				filterUsuarios = allUsuarios;
+				filtra();
+			} else
+				Messagebox.show("Os usuários não puderam ser cadastrados",
+						"Erro", Messagebox.OK, Messagebox.INFORMATION);
+		} else
+			Messagebox.show("Nenhum usuário foi cadastrado", "Concluído",
+					Messagebox.OK, Messagebox.INFORMATION);
+		window.onClose();
 	}
 
 	/* Limpa os erros de validação e os dados do novo usuário. */

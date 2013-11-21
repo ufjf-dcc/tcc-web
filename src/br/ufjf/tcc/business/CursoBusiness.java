@@ -74,4 +74,8 @@ public class CursoBusiness {
 		return false;
 	}
 
+	public Curso getCursoByCode(String codigo) {
+		return cursoDAO.getCursoByCode(codigo);
+	}
+
 }

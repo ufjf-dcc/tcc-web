@@ -29,7 +29,7 @@
 						<div style="float:right">
 							<button upload="true"
 								label="Cadastrar via CSV"
-								onUpload="@command('import', evt=event, window=importCSV)" />
+								onUpload="@command('importCSV', evt=event, window=importCSV)" />
 						</div>
 					</div>
 				</auxheader>

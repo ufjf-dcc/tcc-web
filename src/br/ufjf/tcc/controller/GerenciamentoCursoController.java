@@ -1,7 +1,5 @@
 package br.ufjf.tcc.controller;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +14,6 @@ import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.UploadEvent;
-import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
@@ -44,12 +41,6 @@ public class GerenciamentoCursoController extends CommonsController {
 
 	public List<Curso> getCursosCSV() {
 		return cursosCSV;
-	}
-
-	@NotifyChange("cursosCSV")
-	@Command
-	public void removeFromCSV(@BindingParam("curso") Curso curso) {
-		cursosCSV.remove(curso);
 	}
 
 	@Command
@@ -181,41 +172,42 @@ public class GerenciamentoCursoController extends CommonsController {
 		}
 	}
 
-	@Command("import")
-	public void upload(@BindingParam("evt") UploadEvent evt,
+	@Command
+	public void importCSV(@BindingParam("evt") UploadEvent evt,
 			@BindingParam("window") Window window) {
-		Clients.showBusy("Processando arquivo..");
 		Media media = evt.getMedia();
 		if (!media.getName().contains(".csv")) {
 			Messagebox.show("Apenas CSV são aceitos.", "Arquivo inválido",
 					Messagebox.OK, Messagebox.EXCLAMATION);
 			return;
 		}
-		try {
-			BufferedReader in = new BufferedReader(media.getReaderData());
-			String linha;
-			Curso curso;
-			cursosCSV.clear();
-			cursosCSV = new ArrayList<Curso>();
-			while ((linha = in.readLine()) != null) {
-				String conteudo[] = linha.split(";");
-				curso = new Curso(conteudo[0], conteudo[1]);
-				cursosCSV.add(curso);
-			}
+		
+		String csv = new String(media.getByteData());
+		String linhas[] = csv.split("\\r?\\n");
 
-			BindUtils.postNotifyChange(null, null, this, "cursosCSV");
-			window.doModal();
+		Curso curso;
+		cursosCSV.clear();
+		cursosCSV = new ArrayList<Curso>();
 
-		} catch (IOException e) {
-			e.printStackTrace();
+		for (String linha : linhas) {
+			String campos[] = linha.split(",");
+			curso = new Curso(campos[0], campos[1]);
+			cursosCSV.add(curso);
 		}
-		Clients.clearBusy();
+
+		BindUtils.postNotifyChange(null, null, this, "cursosCSV");
+		window.doModal();
+	}
+	
+	@NotifyChange("cursosCSV")
+	@Command
+	public void removeFromCSV(@BindingParam("curso") Curso curso) {
+		cursosCSV.remove(curso);
 	}
 
 	@NotifyChange("cursos")
 	@Command
 	public void submitCSV(@BindingParam("window") Window window) {
-		Clients.showBusy("Cadastrando cursos..");
 		CursoDAO cursoDAO = new CursoDAO();
 		if (cursosCSV.size() > 0) {
 			if (cursoDAO.salvarLista(cursosCSV)) {
@@ -232,7 +224,6 @@ public class GerenciamentoCursoController extends CommonsController {
 			Messagebox.show("Nenhum curso foi cadastrado", "Concluído",
 					Messagebox.OK, Messagebox.INFORMATION);
 		window.onClose();
-		Clients.clearBusy();
 	}
 
 	public void limpa() {

@@ -26,14 +26,15 @@ public class CursoDAO extends GenericoDAO implements ICursoDAO {
 
 		return null;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public List<Curso> getAllCursos() {
 		try {
-			Query query = getSession().createQuery("SELECT c FROM Curso as c ORDER BY c.nomeCurso");
+			Query query = getSession().createQuery(
+					"SELECT c FROM Curso as c ORDER BY c.nomeCurso");
 			List<Curso> cursos = query.list();
 			getSession().close();
-			
+
 			return cursos;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -45,11 +46,15 @@ public class CursoDAO extends GenericoDAO implements ICursoDAO {
 	public boolean jaExiste(String codigoCurso, String oldCodigo) {
 		try {
 			Query query;
-			if(oldCodigo != null){
-				query = getSession().createQuery("SELECT c FROM Curso c WHERE c.codigoCurso = :codigoCurso AND c.codigoCurso != :oldCodigo");
+			if (oldCodigo != null) {
+				query = getSession()
+						.createQuery(
+								"SELECT c FROM Curso c WHERE c.codigoCurso = :codigoCurso AND c.codigoCurso != :oldCodigo");
 				query.setParameter("oldCodigo", oldCodigo);
 			} else
-				query = getSession().createQuery("SELECT c FROM Curso c WHERE c.codigoCurso = :codigoCurso");
+				query = getSession()
+						.createQuery(
+								"SELECT c FROM Curso c WHERE c.codigoCurso = :codigoCurso");
 
 			query.setParameter("codigoCurso", codigoCurso);
 
@@ -64,6 +69,27 @@ public class CursoDAO extends GenericoDAO implements ICursoDAO {
 		}
 
 		return false;
+	}
+
+	public Curso getCursoByCode(String codigo) {
+		Curso curso = null;
+		try {
+			Query query = null;
+			if (codigo != null) {
+				query = getSession()
+						.createQuery(
+								"SELECT c FROM Curso c WHERE c.codigoCurso = :codigoCurso");
+				query.setParameter("codigoCurso", codigo);
+				curso = (Curso) query.uniqueResult();
+			}
+			
+			getSession().close();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return curso;
 	}
 
 }

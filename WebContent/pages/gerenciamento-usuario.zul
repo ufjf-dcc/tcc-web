@@ -25,15 +25,20 @@
 						<div style="float:right">
 							<button label="Cadastrar Usuário"
 								onClick="@command('addUsuario', window=addUsuario)" />
+						</div>						
+						<div style="float:right">
+							<button upload="true"
+								label="Cadastrar via CSV"
+								onUpload="@command('importCSV', evt=event, window=importCSV)" />
 						</div>
 					</div>
 				</auxheader>
 			</auxhead>
 			<auxhead sclass="category-center">
-				<auxheader label="Tipo" colspan="1"
-					rowspan="1" />
+				<auxheader label="Tipo" colspan="1" rowspan="1" />
 				<auxheader colspan="8" rowspan="1">
-					<radiogroup onCheck="@command('filterType', type=self.selectedIndex)">
+					<radiogroup
+						onCheck="@command('filterType', type=self.selectedIndex)">
 						<hlayout width="100%">
 							<radio label="Todos" checked="true"
 								width="90px" />
@@ -207,6 +212,49 @@
 			<div align="center">
 				<button label="Cadastrar" onClick="@command('submit')"
 					width="75px" style="margin-top:5px" />
+			</div>
+		</window>
+		<window id="importCSV" title="Cadastro via CSV" visible="false"
+			width="70%" height="70%" border="normal" position="center,center"
+			closable="true"
+			onClose="self.setVisible(false); event.stopPropagation();">
+
+			<grid model="@load(vm.usuariosCSV) @template('csv')"
+				mold="paging" autopaging="true" vflex="true">
+				<columns>
+					<column hflex="1" label="Matrícula"
+						sort="auto(matricula)" />
+					<column hflex="3" label="Nome"
+						sort="auto(nomeUsuario)" />
+					<column hflex="2" label="Email" sort="auto(email)" />
+					<column hflex="2" label="Curso"
+						sort="auto(curso.nomeCurso)" />
+					<column label="Tipo"
+						sort="auto(tipoUsuario.nomeTipoUsuario)" />
+					<column hflex="1" label="Titulação"
+						sort="auto(titulacao)" />
+					<column width="50px" />
+				</columns>
+				<template name="csv">
+					<row>
+						<label value="@load(each.matricula)" />
+						<label value="@load(each.nomeUsuario)" />
+						<label value="@load(each.email)" />
+						<label
+							value="@load(each.curso.nomeCurso ne null ? each.curso.nomeCurso : 'Nenhum')" />
+						<label
+							value="@load(each.tipoUsuario.nomeTipoUsuario)" />
+						<label value="@load(each.titulacao)" />
+						<button image="/img/delete.png" width="100%"
+							onClick="@command('removeFromCSV', usuario=each)" />
+					</row>
+				</template>
+			</grid>
+
+			<div align="center">
+				<button label="Cadastrar tudo"
+					onClick="@command('submitCSV', window=importCSV)" width="75px"
+					style="margin-top:5px" />
 			</div>
 		</window>
 	</div>
