@@ -1,6 +1,11 @@
 <?page title="Gerenciamento de TCCs"?>
 <?init class="br.ufjf.tcc.controller.AuthController"?>
 <zk>
+<script type="text/javascript">
+    function visualzarTCC(id) {
+        window.open('visualiza-tcc.zul?tcc='+id,'_blank');
+    }
+</script>
 	<style src="/style.css" />
 	<div apply="org.zkoss.bind.BindComposer"
 		viewModel="@id('vm') @init('br.ufjf.tcc.controller.TCCsCursoController')"
@@ -49,7 +54,7 @@
 				<column hflex="1" label="Extras" />
 			</columns>
 			<template name="lista">
-				<row onClick="@command('showTCC', tcc=each)">
+				<row xmlns:w="client" w:onClick="visualzarTCC(${each.idTCC});">
 					<div>
 						<label value="@load(each.nomeTCC)"
 							tooltip="${each.idTCC}, position=at_pointer" />

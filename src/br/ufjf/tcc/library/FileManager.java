@@ -13,8 +13,8 @@ import jonelo.jacksum.algorithm.AbstractChecksum;
 public class FileManager {
 
 	//private static final String FILE_PATH = "/TCCFiles/";
-	//private static final String FILE_PATH = "/Applications/MAMP/htdocs/tcc/files/";
-	private static final String FILE_PATH = "/home/users/jorge/files/";
+	private static final String FILE_PATH = "/Applications/MAMP/htdocs/tcc/files/";
+	//private static final String FILE_PATH = "/home/users/jorge/files/";
 
 	public static InputStream getFileInputSream(String fileName) {
 		try {

@@ -6,8 +6,8 @@
 		viewModel="@id('vm') @init('br.ufjf.tcc.controller.VisualizaTCCController')"
 		height="100%">
 		<include src="@load(vm.menu)" />
-		<hlayout style="background-color:#efefef;" height="96%">
-			<vlayout hflex="1" style="margin:15px">
+		<hlayout style="background-color:#efefef;" height="@load(not empty vm.usuario?'95.5%' : '100%')">
+			<vlayout hflex="1" style="margin:15px;">
 				<tabbox id="tb">
 					<tabs id="tabs">
 						<tab id="A" label="Informações do TCC" />
@@ -18,8 +18,14 @@
 						<tabpanel>
 							<vlayout
 								onCreate="@command('setInformacoes', vlayout=self)">
-								<label value="Informações gerais:"
-									style="font-size: 18px; font-weight: bold; text-align: justify; display: block;" />
+								<label value="Título"
+									style="font-size: 14px; font-weight: bold; text-align: justify; display: block; margin-top:5px" />
+								<label
+									value="@load(vm.tcc.nomeTCC)" />
+								<label value="Subtítulo" visible="@load(not empty vm.tcc.subNomeTCC)"
+									style="font-size: 14px; font-weight: bold; text-align: justify; display: block; margin-top:5px" />
+								<label
+									value="@load(vm.tcc.subNomeTCC)" />
 								<label value="Autor"
 									style="font-size: 14px; font-weight: bold; text-align: justify; display: block; margin-top:5px" />
 								<label
@@ -28,7 +34,7 @@
 									style="font-size: 14px; font-weight: bold; text-align: justify; display: block; margin-top:5px" />
 								<label
 									value="@load(vm.tcc.orientador.nomeUsuario)" />
-								<label value="Resumo" hyphen="true"
+								<label value="Resumo" hyphen="true" visible="@load(not empty vm.tcc.resumoTCC)"
 									style="font-size: 14px; font-weight: bold; text-align: justify; display: block; margin-top:5px" />
 								<label value="@load(vm.tcc.resumoTCC)" />
 								<hlayout style="margin-top:5px">

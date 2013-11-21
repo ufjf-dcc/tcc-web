@@ -12,8 +12,6 @@ import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zhtml.Filedownload;
-import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 
@@ -126,12 +124,6 @@ public class TCCsCursoController extends CommonsController {
 		
 		emptyMessage = "Não há TCCs válidas para esses filtros.";
 		BindUtils.postNotifyChange(null, null, null, "emptyMessage");
-	}
-	
-	@Command
-	public void showTCC(@BindingParam("tcc") TCC tcc){
-		Sessions.getCurrent().setAttribute("tcc", tcc);
-		Executions.sendRedirect("/pages/visualiza-tcc.zul");
 	}
 
 	@Command

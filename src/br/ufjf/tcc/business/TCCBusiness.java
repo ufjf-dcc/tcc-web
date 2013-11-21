@@ -31,16 +31,16 @@ public class TCCBusiness {
 		errors.clear();
 
 		validateName(tcc.getNomeTCC());
+		if(errors.size() < 1)
+			tcc.setNomeTCC(tcc.getNomeTCC().toUpperCase());
 		validateOrientador(tcc.getOrientador());
 
 		return errors.size() == 0 ? true : false;
 	}
 
 	public void validateName(String nomeTCC) {
-		if (nomeTCC == null)
-			errors.add("Informe o nome do TCC;\n");
-		else if (nomeTCC.trim().length() == 0)
-			errors.add("Informe o nome do TCC;\n");
+		if (nomeTCC == null || nomeTCC.trim().length() == 0)
+			errors.add("Informe o nome do TCC;\n");		
 	}
 
 	public void validateOrientador(Usuario orientador) {

@@ -50,7 +50,7 @@
 							style="float:right; line-height:20px;">
 							<label value="Curso: "
 								style="margin-left=10px" />
-							<combobox id="cmbCurso" width="150px"
+							<combobox id="cmbCurso" width="220px"
 								readonly="true" model="@load(vm.cursos)"
 								value="Selecione um Curso" selectedItem="@bind(vm.curso)"
 								onChange="@command('changeCurso')">

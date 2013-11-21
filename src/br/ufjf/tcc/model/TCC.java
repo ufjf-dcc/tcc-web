@@ -193,8 +193,8 @@ public class TCC implements Serializable {
 	 * 
 	 */
 	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "idCalendarioSemestre", nullable = false)
-	private CalendarioSemestre calendarioSemestre;
+	@JoinColumn(name = "idCalendarioSemestre", nullable = true)
+	private CalendarioSemestre calendarioSemestre = null;
 
 	public int getIdTCC() {
 		return idTCC;
