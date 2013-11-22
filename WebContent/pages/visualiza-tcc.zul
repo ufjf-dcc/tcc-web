@@ -52,7 +52,7 @@
 									visible="@load(vm.canDonwloadFileBanca and not empty vm.tcc.arquivoTCCBanca ? 'true' : 'false')"
 									onClick="@command('downloadPDFBanca', tcc=each)">
 									<image src="/img/pdf.png" />
-									<label value="Download PDF (Banca)"
+									<label value="Obter PDF (Banca)"
 										style="font-size: 14px; font-weight: bold;" />
 								</hlayout>
 								<hlayout
@@ -60,7 +60,7 @@
 									visible="@load(not empty vm.tcc.arquivoTCCFinal ? 'true' : 'false')"
 									onClick="@command('downloadPDF', tcc=each)">
 									<image src="/img/pdf.png" />
-									<label value="Download PDF"
+									<label value="Obter PDF"
 										style="font-size: 14px; font-weight: bold;" />
 								</hlayout>
 								<hlayout
@@ -69,7 +69,7 @@
 									onClick="@command('downloadExtra', tcc=each)">
 									<image src="/img/rar.png" />
 									<label
-										value="Download arquivos extras"
+										value="Obter arquivos extras"
 										style="font-size: 14px; font-weight: bold;" />
 								</hlayout>
 							</vlayout>

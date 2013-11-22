@@ -1,5 +1,7 @@
 package br.ufjf.tcc.controller;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,7 +15,10 @@ import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.UploadEvent;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
@@ -26,7 +31,7 @@ import br.ufjf.tcc.library.SendMail;
 import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.model.TipoUsuario;
 import br.ufjf.tcc.model.Usuario;
-import br.ufjf.tcc.persistent.impl.CursoDAO;
+import br.ufjf.tcc.persistent.impl.UsuarioDAO;
 
 public class GerenciamentoUsuarioController extends CommonsController {
 	private UsuarioBusiness usuarioBusiness = new UsuarioBusiness();
@@ -38,6 +43,8 @@ public class GerenciamentoUsuarioController extends CommonsController {
 	private List<Curso> cursos = this.getAllCursos();
 	private String filterString = "";
 	private Usuario newUsuario;
+	private boolean submitUserListenerExists = false,
+			importCSVListenerExists = false, submitCSVListenerExists = false;
 
 	/*
 	 * Se o usuário logado for Administrador, mostra todos os usuários. Se for
@@ -263,76 +270,160 @@ public class GerenciamentoUsuarioController extends CommonsController {
 	 * envio do e-mail, exclui o usuário cadastrado e notifica o usuário logado.
 	 */
 	@Command
-	public void submit() {
-		if (usuarioBusiness.validate(newUsuario, null)) {
-			String newPassword = usuarioBusiness.generatePassword();
-			newUsuario.setSenha(usuarioBusiness.encripta(newPassword));
-			if (usuarioBusiness.salvar(newUsuario)) {
-				if (!new SendMail().onSubmitUser(newUsuario, newPassword)) {
-					Messagebox
-							.show("O sistema não conseguiu enviar o e-mail de confirmação. Tente novamente.",
-									"Erro", Messagebox.OK, Messagebox.ERROR);
-					usuarioBusiness.exclui(newUsuario);
-					return;
-				}
+	public void submitUser(@BindingParam("window") final Window window) {
+		Clients.showBusy(window, "Validando...");
 
-				Messagebox
-						.show("Usuário adicionado com sucesso! Um e-mail de confirmação foi enviado.",
-								"Sucesso", Messagebox.OK,
-								Messagebox.INFORMATION);
-				allUsuarios.add(newUsuario);
-				this.filtra();
-				BindUtils.postNotifyChange(null, null, this, "filterUsuarios");
-				this.limpa();
-			} else {
-				Messagebox.show("Usuário não foi adicionado!", "Erro",
-						Messagebox.OK, Messagebox.ERROR);
-				usuarioBusiness.clearErrors();
-			}
-		} else {
-			String errorMessage = "";
-			for (String error : usuarioBusiness.errors)
-				errorMessage += error;
-			Messagebox.show(errorMessage, "Dados insuficientes / inválidos",
-					Messagebox.OK, Messagebox.ERROR);
-			usuarioBusiness.clearErrors();
+		if (!submitUserListenerExists) {
+			submitUserListenerExists = true;
+			window.addEventListener(Events.ON_CLIENT_INFO,
+					new EventListener<Event>() {
+						@Override
+						public void onEvent(Event event) throws Exception {
+							if (usuarioBusiness.validate(newUsuario, null)) {
+								Clients.showBusy(window, "Cadastrando...");
+								String newPassword = usuarioBusiness
+										.generatePassword();
+								newUsuario.setSenha(usuarioBusiness
+										.encripta(newPassword));
+								if (usuarioBusiness.salvar(newUsuario)) {
+									if (!new SendMail().onSubmitUser(
+											newUsuario, newPassword)) {
+										Messagebox
+												.show("O sistema não conseguiu enviar o e-mail de confirmação. Tente novamente.",
+														"Erro", Messagebox.OK,
+														Messagebox.ERROR);
+										usuarioBusiness.exclui(newUsuario);
+										return;
+									}
+
+									allUsuarios.add(newUsuario);
+									filtra();
+									notifyFilterUsuarios();
+									Clients.clearBusy(window);
+									Messagebox
+											.show("Usuário adicionado com sucesso! Um e-mail de confirmação foi enviado.",
+													"Sucesso", Messagebox.OK,
+													Messagebox.INFORMATION);
+									limpa();
+								} else {
+									Clients.clearBusy(window);
+									Messagebox.show(
+											"Usuário não foi adicionado!",
+											"Erro", Messagebox.OK,
+											Messagebox.ERROR);
+								}
+							} else {
+								String errorMessage = "";
+								for (String error : usuarioBusiness.errors)
+									errorMessage += error;
+								Clients.clearBusy(window);
+								Messagebox.show(errorMessage,
+										"Dados insuficientes / inválidos",
+										Messagebox.OK, Messagebox.ERROR);
+							}
+						}
+					});
 		}
+		Events.echoEvent(Events.ON_CLIENT_INFO, window, null);
+	}
+
+	public void notifyFilterUsuarios() {
+		BindUtils.postNotifyChange(null, null, this, "filterUsuarios");
 	}
 
 	@Command
-	public void importCSV(@BindingParam("evt") UploadEvent evt,
-			@BindingParam("window") Window window) {
-		Media media = evt.getMedia();
-		if (!media.getName().contains(".csv")) {
-			Messagebox.show("Apenas CSV são aceitos.", "Arquivo inválido",
-					Messagebox.OK, Messagebox.EXCLAMATION);
-			return;
+	public void importCSV(@BindingParam("evt") final UploadEvent evt,
+			@BindingParam("window") final Window window) {
+		Clients.showBusy(window, "Processando arquivo...");
+
+		if (!importCSVListenerExists) {
+			importCSVListenerExists = true;
+			window.addEventListener(Events.ON_CLIENT_INFO,
+					new EventListener<Event>() {
+						@Override
+						public void onEvent(Event event) throws Exception {
+
+							Media media = ((UploadEvent) event.getData()).getMedia();
+							if (!media.getName().contains(".csv")) {
+								Messagebox.show("Apenas CSV são aceitos.",
+										"Arquivo inválido", Messagebox.OK,
+										Messagebox.EXCLAMATION);
+								return;
+							}
+
+							Usuario usuarioTemp;
+							CursoBusiness cursoBusiness = new CursoBusiness();
+							TipoUsuarioBusiness tipoUsuarioBusiness = new TipoUsuarioBusiness();
+							UsuarioBusiness usuarioBusiness = new UsuarioBusiness();
+
+							try {
+								String csv = new String(media.getByteData());
+								String linhas[] = csv.split("\\r?\\n");
+
+								usuariosCSV.clear();
+								usuariosCSV = new ArrayList<Usuario>();
+
+								for (String linha : linhas) {
+									String campos[] = linha.split(",|;|:");
+									usuarioTemp = new Usuario(
+											campos[0],
+											campos[1],
+											campos[2],
+											campos[3],
+											tipoUsuarioBusiness.getTipoUsuario(Integer
+													.parseInt(campos[4])),
+											cursoBusiness
+													.getCursoByCode(campos[5]));
+									usuarioTemp.setAtivo(true);
+									String password = usuarioBusiness
+											.generatePassword();
+									usuarioTemp.setSenha(usuarioBusiness
+											.encripta(password));
+									usuariosCSV.add(usuarioTemp);
+								}
+							} catch (IllegalStateException e) {
+								try {
+									BufferedReader in = new BufferedReader(
+											media.getReaderData());
+									String linha;
+									usuariosCSV.clear();
+									usuariosCSV = new ArrayList<Usuario>();
+									while ((linha = in.readLine()) != null) {
+										String campos[] = linha.split(",|;|:");
+										usuarioTemp = new Usuario(
+												campos[0],
+												campos[1],
+												campos[2],
+												campos[3],
+												tipoUsuarioBusiness.getTipoUsuario(Integer
+														.parseInt(campos[4])),
+												cursoBusiness
+														.getCursoByCode(campos[5]));
+										usuarioTemp.setAtivo(true);
+										String password = usuarioBusiness
+												.generatePassword();
+										usuarioTemp.setSenha(usuarioBusiness
+												.encripta(password));
+										usuariosCSV.add(usuarioTemp);
+									}
+
+								} catch (IOException f) {
+									f.printStackTrace();
+								}
+
+								notifyCSVList();
+								Clients.clearBusy(window);
+							}
+						}
+					});
 		}
 
-		String csv = new String(media.getByteData());
-		String linhas[] = csv.split("\\r?\\n");
-
-		Usuario usuario;
-		usuariosCSV.clear();
-		usuariosCSV = new ArrayList<Usuario>();
-		CursoBusiness cursoBusiness = new CursoBusiness();
-		TipoUsuarioBusiness tipoUsuarioBusiness = new TipoUsuarioBusiness();
-		UsuarioBusiness usuarioBusiness = new UsuarioBusiness();
-
-		for (String linha : linhas) {
-			String campos[] = linha.split(",");
-			usuario = new Usuario(campos[0], campos[1], campos[2], campos[3],
-					tipoUsuarioBusiness.getTipoUsuario(Integer
-							.parseInt(campos[4])),
-					cursoBusiness.getCursoByCode(campos[5]));
-			usuario.setAtivo(true);
-			String password = usuarioBusiness.generatePassword();
-			usuario.setSenha(usuarioBusiness.encripta(password));
-			usuariosCSV.add(usuario);
-		}
-
-		BindUtils.postNotifyChange(null, null, this, "usuariosCSV");
 		window.doModal();
+		Events.echoEvent(Events.ON_CLIENT_INFO, window, evt);
+	}
+
+	public void notifyCSVList() {
+		BindUtils.postNotifyChange(null, null, this, "usuariosCSV");
 	}
 
 	@NotifyChange("usuariosCSV")
@@ -343,23 +434,52 @@ public class GerenciamentoUsuarioController extends CommonsController {
 
 	@NotifyChange("usuarios")
 	@Command
-	public void submitCSV(@BindingParam("window") Window window) {
-		CursoDAO cursoDAO = new CursoDAO();
-		if (usuariosCSV.size() > 0) {
-			if (cursoDAO.salvarLista(usuariosCSV)) {
-				Messagebox.show(usuariosCSV.size()
-						+ " usuários foram cadastrados com sucesso",
-						"Concluído", Messagebox.OK, Messagebox.INFORMATION);
-				allUsuarios.addAll(usuariosCSV);
-				filterUsuarios = allUsuarios;
-				filtra();
-			} else
-				Messagebox.show("Os usuários não puderam ser cadastrados",
-						"Erro", Messagebox.OK, Messagebox.INFORMATION);
-		} else
-			Messagebox.show("Nenhum usuário foi cadastrado", "Concluído",
-					Messagebox.OK, Messagebox.INFORMATION);
-		window.onClose();
+	public void submitCSV(@BindingParam("window") final Window window) {
+		Clients.showBusy(window, "Cadastrando usuários...");
+
+		if (!submitCSVListenerExists) {
+			submitCSVListenerExists = true;
+			window.addEventListener(Events.ON_NOTIFY,
+					new EventListener<Event>() {
+						@Override
+						public void onEvent(Event event) throws Exception {
+							UsuarioDAO usuarioDAO = new UsuarioDAO();
+							if (usuariosCSV.size() > 0) {
+								if (usuarioDAO.salvarLista(usuariosCSV)) {
+									allUsuarios.addAll(usuariosCSV);
+									filterUsuarios = allUsuarios;
+									filtra();
+									BindUtils.postNotifyChange(null, null,
+											this, "usuarios");
+									Clients.clearBusy(window);
+									window.onClose();
+									Messagebox.show(
+											usuariosCSV.size()
+													+ " usuários foram cadastrados com sucesso",
+											"Concluído", Messagebox.OK,
+											Messagebox.INFORMATION);
+
+								} else {
+									Clients.clearBusy(window);
+									window.onClose();
+									Messagebox
+											.show("Os usuários não puderam ser cadastrados",
+													"Erro", Messagebox.OK,
+													Messagebox.INFORMATION);
+								}
+							} else {
+								Clients.clearBusy(window);
+								window.onClose();
+								Messagebox.show(
+										"Nenhum usuário foi cadastrado",
+										"Concluído", Messagebox.OK,
+										Messagebox.INFORMATION);
+							}
+						}
+					});
+		}
+
+		Events.echoEvent(Events.ON_NOTIFY, window, null);
 	}
 
 	/* Limpa os erros de validação e os dados do novo usuário. */

@@ -35,6 +35,14 @@
 						onClick="@command('changeOrientador', butOrientador=butOrientador,cmbOrientador=cmbOrientadores)" />
 				</hlayout>
 
+				<hlayout style="margin:5px;line-height:20px;">
+					<label value="Data de apresentação: "
+						style="margin:5px;" />
+					<datebox width="100%"
+						value="@bind(vm.tcc.dataApresentacao)" format="dd/MM/yyyy"
+						hflex="1" />
+				</hlayout>
+
 				<button label="Editar Banca Examinadora"
 					onClick="@command('showBanca', window=configBanca)" />
 
@@ -71,7 +79,8 @@
 			visible="false" width="450px" border="normal"
 			position="center,center" closable="true"
 			onClose="@command('cancelBanca', window=self, event=event)">
-			<grid model="@load(vm.banca)" emptyMessage="Nenhum examinador adicionado"
+			<grid model="@load(vm.banca)"
+				emptyMessage="Nenhum examinador adicionado"
 				style="margin-left:5px; margin-right:5px; margin-top:5px;">
 				<auxhead>
 					<auxheader colspan="2">
@@ -94,20 +103,23 @@
 					</auxheader>
 				</auxhead>
 				<columns>
-					<column label="Nome do examinador"/>
-					<column label="Ação" width="50px"/>
+					<column label="Nome do examinador" />
+					<column label="Ação" width="50px" />
 				</columns>
 				<template name="model">
-					<row visible="@load(not (each.professor eq vm.tcc.orientador))">
-						<label value="@load(each.professor.nomeUsuario)" />
+					<row
+						visible="@load(not (each.professor eq vm.tcc.orientador))">
+						<label
+							value="@load(each.professor.nomeUsuario)" />
 						<button image="/img/delete.png"
 							onClick="@command('removeFromBanca', participacao=each)" />
 					</row>
 				</template>
 			</grid>
 			<div align="center">
-				<button label="Atualizar" onClick="@command('submitBanca', window=configBanca)"
-					width="75px" style="margin-top:5px" />
+				<button label="Atualizar"
+					onClick="@command('submitBanca', window=configBanca)" width="75px"
+					style="margin-top:5px" />
 			</div>
 		</window>
 	</div>

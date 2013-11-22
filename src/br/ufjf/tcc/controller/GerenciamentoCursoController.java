@@ -1,5 +1,7 @@
 package br.ufjf.tcc.controller;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,7 +15,10 @@ import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.UploadEvent;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
@@ -173,57 +178,117 @@ public class GerenciamentoCursoController extends CommonsController {
 	}
 
 	@Command
-	public void importCSV(@BindingParam("evt") UploadEvent evt,
-			@BindingParam("window") Window window) {
-		Media media = evt.getMedia();
-		if (!media.getName().contains(".csv")) {
-			Messagebox.show("Apenas CSV são aceitos.", "Arquivo inválido",
-					Messagebox.OK, Messagebox.EXCLAMATION);
-			return;
-		}
-		
-		String csv = new String(media.getByteData());
-		String linhas[] = csv.split("\\r?\\n");
-
-		Curso curso;
-		cursosCSV.clear();
-		cursosCSV = new ArrayList<Curso>();
-
-		for (String linha : linhas) {
-			String campos[] = linha.split(",");
-			curso = new Curso(campos[0], campos[1]);
-			cursosCSV.add(curso);
-		}
-
-		BindUtils.postNotifyChange(null, null, this, "cursosCSV");
+	public void importCSV(@BindingParam("evt") final UploadEvent evt,
+			@BindingParam("window") final Window window) {
 		window.doModal();
+		Clients.showBusy(window, "Processando arquivo...");
+
+		window.addEventListener(Events.ON_CLIENT_INFO,
+				new EventListener<Event>() {
+					@Override
+					public void onEvent(Event event) throws Exception {
+
+						Media media = evt.getMedia();
+						if (!media.getName().contains(".csv")) {
+							Messagebox.show("Apenas CSV são aceitos.",
+									"Arquivo inválido", Messagebox.OK,
+									Messagebox.EXCLAMATION);
+							return;
+						}
+
+						Curso cursoTemp;
+
+						try {
+							String csv = new String(media.getByteData());
+							String linhas[] = csv.split("\\r?\\n");
+
+							cursosCSV.clear();
+							cursosCSV = new ArrayList<Curso>();
+
+							for (String linha : linhas) {
+								String campos[] = linha.split(",|;|:");
+								cursoTemp = new Curso(campos[0], campos[1]);
+								cursosCSV.add(cursoTemp);
+							}
+						} catch (IllegalStateException e) {
+							try {
+								BufferedReader in = new BufferedReader(media
+										.getReaderData());
+								String linha;
+								cursosCSV.clear();
+								cursosCSV = new ArrayList<Curso>();
+								while ((linha = in.readLine()) != null) {
+									String campos[] = linha.split(",|;|:");
+									cursoTemp = new Curso(campos[0], campos[1]);
+									cursosCSV.add(cursoTemp);
+								}
+
+							} catch (IOException f) {
+								f.printStackTrace();
+							}
+						}
+
+						notifyCSVList();
+						Clients.clearBusy(window);
+					}
+				});
+
+		Events.echoEvent("onClientInfo", window, null);
 	}
-	
+
+	public void notifyCSVList() {
+		BindUtils.postNotifyChange(null, null, this, "cursosCSV");
+	}
+
 	@NotifyChange("cursosCSV")
 	@Command
 	public void removeFromCSV(@BindingParam("curso") Curso curso) {
 		cursosCSV.remove(curso);
 	}
 
-	@NotifyChange("cursos")
 	@Command
-	public void submitCSV(@BindingParam("window") Window window) {
-		CursoDAO cursoDAO = new CursoDAO();
-		if (cursosCSV.size() > 0) {
-			if (cursoDAO.salvarLista(cursosCSV)) {
-				Messagebox.show(cursosCSV.size()
-						+ " cursos foram cadastrados com sucesso", "Concluído",
-						Messagebox.OK, Messagebox.INFORMATION);				
-				allCursos.addAll(cursosCSV);
-				cursos = allCursos;
-				filtra();
-			} else
-				Messagebox.show("Os cursos não puderam ser cadastrados", "Erro",
-						Messagebox.OK, Messagebox.INFORMATION);
-		} else
-			Messagebox.show("Nenhum curso foi cadastrado", "Concluído",
-					Messagebox.OK, Messagebox.INFORMATION);
-		window.onClose();
+	public void submitCSV(@BindingParam("window") final Window window) {
+		Clients.showBusy(window, "Cadastrando cursos...");
+
+		window.addEventListener(Events.ON_CLIENT_INFO,
+				new EventListener<Event>() {
+					@Override
+					public void onEvent(Event event) throws Exception {
+
+						CursoDAO cursoDAO = new CursoDAO();
+						if (cursosCSV.size() > 0) {
+							if (cursoDAO.salvarLista(cursosCSV)) {
+								allCursos.addAll(cursosCSV);
+								cursos = allCursos;
+								filtra();
+								BindUtils.postNotifyChange(null, null, this,
+										"cursos");
+								Clients.clearBusy(window);
+								window.onClose();
+								Messagebox.show(
+										cursosCSV.size()
+												+ " cursos foram cadastrados com sucesso",
+										"Concluído", Messagebox.OK,
+										Messagebox.INFORMATION);
+							} else {
+								Clients.clearBusy(window);
+								window.onClose();
+								Messagebox
+										.show("Os cursos não puderam ser cadastrados",
+												"Erro", Messagebox.OK,
+												Messagebox.INFORMATION);
+							}
+						} else {
+							Clients.clearBusy(window);
+							window.onClose();
+							Messagebox.show("Nenhum curso foi cadastrado",
+									"Concluído", Messagebox.OK,
+									Messagebox.INFORMATION);
+						}
+					}
+				});
+
+		Events.echoEvent("onClientInfo", window, null);
 	}
 
 	public void limpa() {

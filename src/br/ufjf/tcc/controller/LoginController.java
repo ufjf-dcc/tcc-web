@@ -7,6 +7,11 @@ import org.hibernate.HibernateException;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
@@ -21,6 +26,7 @@ public class LoginController extends CommonsController {
 
 	private Usuario usuarioForm = new Usuario();
 	private UsuarioBusiness usuarioBusiness;
+	private boolean submitListenerExists = false;
 
 	@Init
 	public void verificaLogado() throws HibernateException, Exception {
@@ -33,28 +39,48 @@ public class LoginController extends CommonsController {
 	}
 
 	@Command
-	public void submit() throws HibernateException, Exception {
-		if (usuarioForm != null && usuarioForm.getMatricula() != null
-				&& usuarioForm.getSenha() != null) {
-			usuarioBusiness = new UsuarioBusiness();
-			if (usuarioBusiness.login(usuarioForm.getMatricula(),
-					usuarioForm.getSenha())) {
-				if (getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ALUNO) {
-					TCCBusiness tccBusiness = new TCCBusiness();
-					TCC tempTcc = tccBusiness.getCurrentTCCByAuthor(
-							getUsuario(), getCurrentCalendar());
-					List<TCC> tcc = new ArrayList<TCC>();
-					if (tempTcc != null)
-						tcc.add(tempTcc);
-					getUsuario().setTcc(tcc);
-				}
-				redirectHome();
-			} else {
-				Messagebox.show(usuarioBusiness.getErrors().get(0), "Erro",
-						Messagebox.OK, Messagebox.ERROR);
-				usuarioBusiness.clearErrors();
-			}
+	public void submit(@BindingParam("panel") final Div page) {
+		Clients.showBusy("Autenticando usuário...");
+		if (!submitListenerExists) {
+			submitListenerExists = true;
+			page.addEventListener(Events.ON_CLIENT_INFO,
+					new EventListener<Event>() {
+						@Override
+						public void onEvent(Event event) throws Exception {
+							if (usuarioForm != null
+									&& usuarioForm.getMatricula() != null
+									&& usuarioForm.getSenha() != null) {
+								usuarioBusiness = new UsuarioBusiness();
+								if (usuarioBusiness.login(
+										usuarioForm.getMatricula(),
+										usuarioForm.getSenha())) {
+									if (getUsuario().getTipoUsuario()
+											.getIdTipoUsuario() == Usuario.ALUNO) {
+										TCCBusiness tccBusiness = new TCCBusiness();
+										TCC tempTcc = tccBusiness
+												.getCurrentTCCByAuthor(
+														getUsuario(),
+														getCurrentCalendar());
+										List<TCC> tcc = new ArrayList<TCC>();
+										if (tempTcc != null)
+											tcc.add(tempTcc);
+										getUsuario().setTcc(tcc);
+									}
+									Clients.clearBusy();
+									redirectHome();
+								} else {
+									Clients.clearBusy();
+									Messagebox.show(usuarioBusiness.getErrors()
+											.get(0), "Erro", Messagebox.OK,
+											Messagebox.ERROR);
+									usuarioBusiness.clearErrors();
+								}
+							}
+						}
+					});
 		}
+
+		Events.echoEvent(Events.ON_CLIENT_INFO, page, null);
 	}
 
 	@Command

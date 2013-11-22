@@ -16,20 +16,19 @@ margin-top:-92px; left:50%; margin-left:-150px;">
 					<rows>
 						<row>
 							<label value="Matricula: " />
-							<textbox value="@bind(fx.matricula)"
-								id="loginMatricula" width="95%" />
+							<textbox value="@bind(fx.matricula)" width="95%" />
 						</row>
 						<row>
 							<label value="Senha " />
 							<textbox value="@bind(fx.senha)"
-								type="password" id="loginSenha" width="95%" onOK="@command('submit')" />
+								type="password" width="95%" onOK="@command('submit', panel=loginForm)" />
 						</row>
 					</rows>
 				</grid>
 				<vlayout>
 					<hlayout style="margin:5px;">
-						<button label="Efetuar login"
-							onClick="@command('submit')" hflex="1" />
+						<button label="Entrar no sistema"
+							onClick="@command('submit', panel=loginForm)" hflex="1" />
 						<button label="Esqueci a senha..."
 							onClick="@command('forgotPassword', window=forgot)" hflex="1" />
 					</hlayout>
