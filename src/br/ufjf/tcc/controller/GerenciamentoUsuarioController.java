@@ -271,7 +271,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 	 */
 	@Command
 	public void submitUser(@BindingParam("window") final Window window) {
-		Clients.showBusy(window, "Validando...");
+		Clients.showBusy(window, "Processando...");
 
 		if (!submitUserListenerExists) {
 			submitUserListenerExists = true;
@@ -280,7 +280,6 @@ public class GerenciamentoUsuarioController extends CommonsController {
 						@Override
 						public void onEvent(Event event) throws Exception {
 							if (usuarioBusiness.validate(newUsuario, null)) {
-								Clients.showBusy(window, "Cadastrando...");
 								String newPassword = usuarioBusiness
 										.generatePassword();
 								newUsuario.setSenha(usuarioBusiness
@@ -297,7 +296,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 									}
 
 									allUsuarios.add(newUsuario);
-									filtra();
+									filterUsuarios = allUsuarios;
 									notifyFilterUsuarios();
 									Clients.clearBusy(window);
 									Messagebox
@@ -334,6 +333,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 	@Command
 	public void importCSV(@BindingParam("evt") final UploadEvent evt,
 			@BindingParam("window") final Window window) {
+		window.doModal();
 		Clients.showBusy(window, "Processando arquivo...");
 
 		if (!importCSVListenerExists) {
@@ -343,7 +343,8 @@ public class GerenciamentoUsuarioController extends CommonsController {
 						@Override
 						public void onEvent(Event event) throws Exception {
 
-							Media media = ((UploadEvent) event.getData()).getMedia();
+							Media media = ((UploadEvent) event.getData())
+									.getMedia();
 							if (!media.getName().contains(".csv")) {
 								Messagebox.show("Apenas CSV são aceitos.",
 										"Arquivo inválido", Messagebox.OK,
@@ -410,15 +411,14 @@ public class GerenciamentoUsuarioController extends CommonsController {
 								} catch (IOException f) {
 									f.printStackTrace();
 								}
-
-								notifyCSVList();
-								Clients.clearBusy(window);
 							}
+
+							notifyCSVList();
+							Clients.clearBusy(window);
 						}
 					});
 		}
 
-		window.doModal();
 		Events.echoEvent(Events.ON_CLIENT_INFO, window, evt);
 	}
 
@@ -444,36 +444,24 @@ public class GerenciamentoUsuarioController extends CommonsController {
 						@Override
 						public void onEvent(Event event) throws Exception {
 							UsuarioDAO usuarioDAO = new UsuarioDAO();
-							if (usuariosCSV.size() > 0) {
-								if (usuarioDAO.salvarLista(usuariosCSV)) {
-									allUsuarios.addAll(usuariosCSV);
-									filterUsuarios = allUsuarios;
-									filtra();
-									BindUtils.postNotifyChange(null, null,
-											this, "usuarios");
-									Clients.clearBusy(window);
-									window.onClose();
-									Messagebox.show(
-											usuariosCSV.size()
-													+ " usuários foram cadastrados com sucesso",
-											"Concluído", Messagebox.OK,
-											Messagebox.INFORMATION);
-
-								} else {
-									Clients.clearBusy(window);
-									window.onClose();
-									Messagebox
-											.show("Os usuários não puderam ser cadastrados",
-													"Erro", Messagebox.OK,
-													Messagebox.INFORMATION);
-								}
-							} else {
+							if (usuarioDAO.salvarLista(usuariosCSV)) {
+								allUsuarios.addAll(usuariosCSV);
+								filterUsuarios = allUsuarios;
+								notifyFilterUsuarios();
 								Clients.clearBusy(window);
-								window.onClose();
+								//window.onClose();
 								Messagebox.show(
-										"Nenhum usuário foi cadastrado",
+										usuariosCSV.size()
+												+ " usuários foram cadastrados com sucesso",
 										"Concluído", Messagebox.OK,
 										Messagebox.INFORMATION);
+
+							} else {
+								Clients.clearBusy(window);
+								Messagebox
+										.show("Os usuários não puderam ser cadastrados",
+												"Erro", Messagebox.OK,
+												Messagebox.INFORMATION);
 							}
 						}
 					});

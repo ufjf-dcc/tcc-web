@@ -33,6 +33,8 @@ public class GerenciamentoCursoController extends CommonsController {
 	private List<Curso> allCursos = cursoBusiness.getCursos(),
 			cursos = allCursos, cursosCSV = new ArrayList<Curso>();
 	private String filterString = "";
+	private boolean submitUserListenerExists = false,
+			importCSVListenerExists = false, submitCSVListenerExists = false;
 
 	@Init
 	public void init() throws HibernateException, Exception {
@@ -153,28 +155,53 @@ public class GerenciamentoCursoController extends CommonsController {
 	}
 
 	@Command
-	public void submit() {
-		if (cursoBusiness.validate(novoCurso, null)) {
-			if (cursoBusiness.salvar(novoCurso)) {
-				allCursos.add(novoCurso);
-				this.filtra();
-				BindUtils.postNotifyChange(null, null, this, "cursos");
-				Messagebox.show("Curso adicionado com sucesso!", "Sucesso",
-						Messagebox.OK, Messagebox.INFORMATION);
-				this.limpa();
-			} else {
-				Messagebox.show("Curso não foi adicionado!", "Erro",
-						Messagebox.OK, Messagebox.ERROR);
-				cursoBusiness.clearErrors();
-			}
-		} else {
-			String errorMessage = "";
-			for (String error : cursoBusiness.getErrors())
-				errorMessage += error;
-			Messagebox.show(errorMessage, "Dados insuficientes / inválidos",
-					Messagebox.OK, Messagebox.ERROR);
-			cursoBusiness.clearErrors();
+	public void submitCurso(@BindingParam("window") final Window window) {
+		Clients.showBusy(window, "Validando...");
+
+		if (!submitUserListenerExists) {
+			submitUserListenerExists = true;
+			window.addEventListener(Events.ON_CLIENT_INFO,
+					new EventListener<Event>() {
+						@Override
+						public void onEvent(Event event) throws Exception {
+							if (cursoBusiness.validate(novoCurso, null)) {
+								if (cursoBusiness.salvar(novoCurso)) {
+									allCursos.add(novoCurso);
+									cursos = allCursos;
+									notifyCursos();
+									Clients.clearBusy(window);
+									Messagebox.show(
+											"Curso adicionado com sucesso!",
+											"Sucesso", Messagebox.OK,
+											Messagebox.INFORMATION);
+									limpa();
+								} else {
+									Clients.clearBusy(window);
+									Messagebox.show(
+											"Curso não foi adicionado!",
+											"Erro", Messagebox.OK,
+											Messagebox.ERROR);
+									cursoBusiness.clearErrors();
+								}
+							} else {
+								String errorMessage = "";
+								for (String error : cursoBusiness.getErrors())
+									errorMessage += error;
+								Clients.clearBusy(window);
+								Messagebox.show(errorMessage,
+										"Dados insuficientes / inválidos",
+										Messagebox.OK, Messagebox.ERROR);
+								cursoBusiness.clearErrors();
+							}
+						}
+					});
 		}
+		
+		Events.echoEvent(Events.ON_CLIENT_INFO, window, null);
+	}
+	
+	public void notifyCursos() {
+		BindUtils.postNotifyChange(null, null, this, "cursos");
 	}
 
 	@Command
@@ -183,57 +210,62 @@ public class GerenciamentoCursoController extends CommonsController {
 		window.doModal();
 		Clients.showBusy(window, "Processando arquivo...");
 
-		window.addEventListener(Events.ON_CLIENT_INFO,
-				new EventListener<Event>() {
-					@Override
-					public void onEvent(Event event) throws Exception {
+		if (!importCSVListenerExists) {
+			importCSVListenerExists = true;
+			window.addEventListener(Events.ON_CLIENT_INFO,
+					new EventListener<Event>() {
+						@Override
+						public void onEvent(Event event) throws Exception {
 
-						Media media = evt.getMedia();
-						if (!media.getName().contains(".csv")) {
-							Messagebox.show("Apenas CSV são aceitos.",
-									"Arquivo inválido", Messagebox.OK,
-									Messagebox.EXCLAMATION);
-							return;
-						}
-
-						Curso cursoTemp;
-
-						try {
-							String csv = new String(media.getByteData());
-							String linhas[] = csv.split("\\r?\\n");
-
-							cursosCSV.clear();
-							cursosCSV = new ArrayList<Curso>();
-
-							for (String linha : linhas) {
-								String campos[] = linha.split(",|;|:");
-								cursoTemp = new Curso(campos[0], campos[1]);
-								cursosCSV.add(cursoTemp);
+							Media media = ((UploadEvent) event.getData())
+									.getMedia();
+							if (!media.getName().contains(".csv")) {
+								Messagebox.show("Apenas CSV são aceitos.",
+										"Arquivo inválido", Messagebox.OK,
+										Messagebox.EXCLAMATION);
+								return;
 							}
-						} catch (IllegalStateException e) {
+
+							Curso cursoTemp;
+
 							try {
-								BufferedReader in = new BufferedReader(media
-										.getReaderData());
-								String linha;
+								String csv = new String(media.getByteData());
+								String linhas[] = csv.split("\\r?\\n");
+
 								cursosCSV.clear();
 								cursosCSV = new ArrayList<Curso>();
-								while ((linha = in.readLine()) != null) {
+
+								for (String linha : linhas) {
 									String campos[] = linha.split(",|;|:");
 									cursoTemp = new Curso(campos[0], campos[1]);
 									cursosCSV.add(cursoTemp);
 								}
+							} catch (IllegalStateException e) {
+								try {
+									BufferedReader in = new BufferedReader(
+											media.getReaderData());
+									String linha;
+									cursosCSV.clear();
+									cursosCSV = new ArrayList<Curso>();
+									while ((linha = in.readLine()) != null) {
+										String campos[] = linha.split(",|;|:");
+										cursoTemp = new Curso(campos[0],
+												campos[1]);
+										cursosCSV.add(cursoTemp);
+									}
 
-							} catch (IOException f) {
-								f.printStackTrace();
+								} catch (IOException f) {
+									f.printStackTrace();
+								}
 							}
+
+							notifyCSVList();
+							Clients.clearBusy(window);
 						}
+					});
+		}
 
-						notifyCSVList();
-						Clients.clearBusy(window);
-					}
-				});
-
-		Events.echoEvent("onClientInfo", window, null);
+		Events.echoEvent(Events.ON_CLIENT_INFO, window, evt);
 	}
 
 	public void notifyCSVList() {
@@ -250,21 +282,20 @@ public class GerenciamentoCursoController extends CommonsController {
 	public void submitCSV(@BindingParam("window") final Window window) {
 		Clients.showBusy(window, "Cadastrando cursos...");
 
-		window.addEventListener(Events.ON_CLIENT_INFO,
-				new EventListener<Event>() {
-					@Override
-					public void onEvent(Event event) throws Exception {
+		if (!submitCSVListenerExists) {
+			submitCSVListenerExists = true;
+			window.addEventListener(Events.ON_NOTIFY,
+					new EventListener<Event>() {
+						@Override
+						public void onEvent(Event event) throws Exception {
 
-						CursoDAO cursoDAO = new CursoDAO();
-						if (cursosCSV.size() > 0) {
+							CursoDAO cursoDAO = new CursoDAO();
 							if (cursoDAO.salvarLista(cursosCSV)) {
 								allCursos.addAll(cursosCSV);
 								cursos = allCursos;
-								filtra();
-								BindUtils.postNotifyChange(null, null, this,
-										"cursos");
+								notifyCursos();
 								Clients.clearBusy(window);
-								window.onClose();
+								//window.onClose();
 								Messagebox.show(
 										cursosCSV.size()
 												+ " cursos foram cadastrados com sucesso",
@@ -278,17 +309,11 @@ public class GerenciamentoCursoController extends CommonsController {
 												"Erro", Messagebox.OK,
 												Messagebox.INFORMATION);
 							}
-						} else {
-							Clients.clearBusy(window);
-							window.onClose();
-							Messagebox.show("Nenhum curso foi cadastrado",
-									"Concluído", Messagebox.OK,
-									Messagebox.INFORMATION);
 						}
-					}
-				});
+					});
+		}
 
-		Events.echoEvent("onClientInfo", window, null);
+		Events.echoEvent(Events.ON_NOTIFY, window, null);
 	}
 
 	public void limpa() {

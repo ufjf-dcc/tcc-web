@@ -81,20 +81,20 @@
 					<row>
 						<label value="Código do Curso:" />
 						<textbox
-							value="@load(vm.novoCurso.codigoCurso) @save(vm.novoCurso.codigoCurso, before='submit')"
+							value="@load(vm.novoCurso.codigoCurso) @save(vm.novoCurso.codigoCurso, before='submitCurso')"
 							tabindex="1" id="codigoCurso" width="100%" />
 					</row>
 					<row>
-						<label value="Nome do Curso:*" />
+						<label value="Nome do Curso:" />
 						<textbox
-							value="@load(vm.novoCurso.nomeCurso) @save(vm.novoCurso.nomeCurso, before='submit')"
+							value="@load(vm.novoCurso.nomeCurso) @save(vm.novoCurso.nomeCurso, before='submitCurso')"
 							tabindex="2" id="nomeCurso" width="100%" />
 					</row>
 
 				</rows>
 			</grid>
 			<div align="center">
-				<button label="Cadastrar" onClick="@command('submit')"
+				<button label="Cadastrar" onClick="@command('submitCurso', window=addCurso)"
 					width="75px" style="margin-top:5px" />
 			</div>
 		</window>
