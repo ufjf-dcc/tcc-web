@@ -1,5 +1,6 @@
 package br.ufjf.tcc.library;
 
+import java.util.List;
 import java.util.Properties;
 
 import javax.mail.Message;
@@ -11,7 +12,6 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import br.ufjf.tcc.model.TCC;
 import br.ufjf.tcc.model.Usuario;
 
 public class SendMail {
@@ -36,20 +36,29 @@ public class SendMail {
 		message = new MimeMessage(session);
 	}
 
-	public boolean onSubmitTCC(TCC newTcc) {
+	/*
+	 * Envia um e-mail informando que os usários foram cadastrados no sistema e
+	 * solicitando a criação da primeira senha.
+	 */
+	public boolean onSubmitCSV(List<Usuario> usuariosCSV) {
 		try {
-			message.setFrom(new InternetAddress("jorge.smrr@gmail.com"));
-			message.setRecipients(Message.RecipientType.TO,
-					InternetAddress.parse(newTcc.getAluno().getEmail() +"," + newTcc.getOrientador().getEmail()));
-			message.setSubject("Confirmação de envio de TCC");
-			message.setText("Prezado(a) " + newTcc.getAluno().getNomeUsuario()
-					+ ",\n\n" + "Você enviou o TCC \"" + newTcc.getNomeTCC()
-					+ "\" com sucesso para o nosso sistema.\n\n"
-					+ "Atenciosamente,\n" + "(...)");
+			message.setFrom(new InternetAddress("ttest4318@gmail.com"));
+			for (Usuario usuario : usuariosCSV) {
+				message.addRecipients(Message.RecipientType.BCC, InternetAddress.parse(usuario.getEmail()));
+			}
+			message.setSubject("Confirmação de cadastro");
+			message.setText("Prezado(a) "
+					+ ",\n\n"
+					+ "Você foi cadastrado no sistema de envio de TCCs da UFJF. "
+					+ "Por favor, siga as instruções abaixo:\n "
+					+ "1- Acesse o link:;\n"
+					+ "2- Clique em \"Esqueci a senha...\";\n"
+					+ "3- Informe sua matríucula e seu e-mail e clique em enviar;\n"
+					+ "Após os passos acima você receberá um novo e-mail com a sua senha provisória."
+					+ "\n\n" + "Atenciosamente,\n" + "(...)");
 
 			Transport.send(message);
 			return true;
-
 		} catch (AddressException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -76,8 +85,7 @@ public class SendMail {
 					+ "Você foi cadastrado no sistema de envio de TCCs da UFJF. "
 					+ "Segue, abaixo, a sua senha de acesso. "
 					+ "Recomendamos que a altere no primeiro acesso ao sistema.\n"
-					+ newPassword + "\n\n"
-					+ "Atenciosamente,\n" + "(...)");
+					+ newPassword + "\n\n" + "Atenciosamente,\n" + "(...)");
 
 			Transport.send(message);
 			return true;

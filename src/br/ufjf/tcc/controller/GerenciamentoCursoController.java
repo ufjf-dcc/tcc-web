@@ -196,10 +196,10 @@ public class GerenciamentoCursoController extends CommonsController {
 						}
 					});
 		}
-		
+
 		Events.echoEvent(Events.ON_CLIENT_INFO, window, null);
 	}
-	
+
 	public void notifyCursos() {
 		BindUtils.postNotifyChange(null, null, this, "cursos");
 	}
@@ -288,26 +288,33 @@ public class GerenciamentoCursoController extends CommonsController {
 					new EventListener<Event>() {
 						@Override
 						public void onEvent(Event event) throws Exception {
-
-							CursoDAO cursoDAO = new CursoDAO();
-							if (cursoDAO.salvarLista(cursosCSV)) {
-								allCursos.addAll(cursosCSV);
-								cursos = allCursos;
-								notifyCursos();
-								Clients.clearBusy(window);
-								//window.onClose();
-								Messagebox.show(
-										cursosCSV.size()
-												+ " cursos foram cadastrados com sucesso",
-										"Concluído", Messagebox.OK,
-										Messagebox.INFORMATION);
+							if (cursosCSV.size() > 0) {
+								CursoDAO cursoDAO = new CursoDAO();
+								if (cursoDAO.salvarLista(cursosCSV)) {
+									allCursos.addAll(cursosCSV);
+									cursos = allCursos;
+									notifyCursos();
+									Clients.clearBusy(window);
+									window.setVisible(false);
+									Messagebox.show(
+											cursosCSV.size()
+													+ " cursos foram cadastrados com sucesso",
+											"Concluído", Messagebox.OK,
+											Messagebox.INFORMATION);
+								} else {
+									Clients.clearBusy(window);
+									window.onClose();
+									Messagebox
+											.show("Os cursos não puderam ser cadastrados",
+													"Erro", Messagebox.OK,
+													Messagebox.INFORMATION);
+								}
 							} else {
 								Clients.clearBusy(window);
-								window.onClose();
 								Messagebox
-										.show("Os cursos não puderam ser cadastrados",
+										.show("Os usuários não puderam ser cadastrados",
 												"Erro", Messagebox.OK,
-												Messagebox.INFORMATION);
+												Messagebox.ERROR);
 							}
 						}
 					});

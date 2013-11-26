@@ -45,6 +45,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 	private Usuario newUsuario;
 	private boolean submitUserListenerExists = false,
 			importCSVListenerExists = false, submitCSVListenerExists = false;
+	private int filterType = 0;
 
 	/*
 	 * Se o usuário logado for Administrador, mostra todos os usuários. Se for
@@ -198,6 +199,14 @@ public class GerenciamentoUsuarioController extends CommonsController {
 		this.filterString = filterString;
 	}
 
+	public int getFilterType() {
+		return filterType;
+	}
+
+	public void setFilterType(int filterType) {
+		this.filterType = filterType;
+	}
+
 	/*
 	 * Filtra a grid buscando usuários que contenham a expressão de busca em
 	 * algum de seus atributos.
@@ -207,47 +216,13 @@ public class GerenciamentoUsuarioController extends CommonsController {
 		String filter = filterString.toLowerCase().trim();
 		filterUsuarios = new ArrayList<Usuario>();
 		for (Usuario u : allUsuarios) {
-			if (u.getNomeUsuario().toLowerCase().contains(filter)
+			if ((filterType == 0 || u.getTipoUsuario().getIdTipoUsuario() == filterType) && (u.getNomeUsuario().toLowerCase().contains(filter)
 					|| u.getEmail().toLowerCase().contains(filter)
 					|| u.getMatricula().toLowerCase().contains(filter)
 					|| (u.getCurso() != null && u.getCurso().getNomeCurso()
-							.toLowerCase().contains(filter))) {
+							.toLowerCase().contains(filter)))) {
 				filterUsuarios.add(u);
 			}
-		}
-		BindUtils.postNotifyChange(null, null, this, "filterUsuarios");
-	}
-
-	@Command
-	public void filterType(@BindingParam("type") int type) {
-		switch (type) {
-		case 0:
-			filterUsuarios = allUsuarios;
-			break;
-		case 1:
-			filterUsuarios = new ArrayList<Usuario>();
-			for (Usuario u : allUsuarios)
-				if (u.getTipoUsuario().getIdTipoUsuario() == Usuario.ALUNO)
-					filterUsuarios.add(u);
-			break;
-		case 2:
-			filterUsuarios = new ArrayList<Usuario>();
-			for (Usuario u : allUsuarios)
-				if (u.getTipoUsuario().getIdTipoUsuario() == Usuario.PROFESSOR)
-					filterUsuarios.add(u);
-			break;
-		case 3:
-			filterUsuarios = new ArrayList<Usuario>();
-			for (Usuario u : allUsuarios)
-				if (u.getTipoUsuario().getIdTipoUsuario() == Usuario.COORDENADOR)
-					filterUsuarios.add(u);
-			break;
-		case 4:
-			filterUsuarios = new ArrayList<Usuario>();
-			for (Usuario u : allUsuarios)
-				if (u.getTipoUsuario().getIdTipoUsuario() == Usuario.ADMINISTRADOR)
-					filterUsuarios.add(u);
-			break;
 		}
 		BindUtils.postNotifyChange(null, null, this, "filterUsuarios");
 	}
@@ -443,24 +418,33 @@ public class GerenciamentoUsuarioController extends CommonsController {
 					new EventListener<Event>() {
 						@Override
 						public void onEvent(Event event) throws Exception {
-							UsuarioDAO usuarioDAO = new UsuarioDAO();
-							if (usuarioDAO.salvarLista(usuariosCSV)) {
-								allUsuarios.addAll(usuariosCSV);
-								filterUsuarios = allUsuarios;
-								notifyFilterUsuarios();
-								Clients.clearBusy(window);
-								//window.onClose();
-								Messagebox.show(
-										usuariosCSV.size()
-												+ " usuários foram cadastrados com sucesso",
-										"Concluído", Messagebox.OK,
-										Messagebox.INFORMATION);
+							if (usuariosCSV.size() > 0) {
+								UsuarioDAO usuarioDAO = new UsuarioDAO();
+								if (usuarioDAO.salvarLista(usuariosCSV)) {
+									allUsuarios.addAll(usuariosCSV);
+									filterUsuarios = allUsuarios;
+									notifyFilterUsuarios();
+									Clients.clearBusy(window);
+									window.setVisible(false);
+									new SendMail().onSubmitCSV(usuariosCSV);
+									Messagebox.show(
+											usuariosCSV.size()
+													+ " usuários foram cadastrados com sucesso",
+											"Concluído", Messagebox.OK,
+											Messagebox.INFORMATION);
 
+								} else {
+									Clients.clearBusy(window);
+									Messagebox
+											.show("Os usuários não puderam ser cadastrados",
+													"Erro", Messagebox.OK,
+													Messagebox.ERROR);
+								}
 							} else {
 								Clients.clearBusy(window);
 								Messagebox
-										.show("Os usuários não puderam ser cadastrados",
-												"Erro", Messagebox.OK,
+										.show("A lista está vazia. Nenhum usuário foi cadastrado.",
+												"Lista vazia", Messagebox.OK,
 												Messagebox.INFORMATION);
 							}
 						}

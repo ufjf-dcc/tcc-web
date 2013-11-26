@@ -36,15 +36,16 @@
 				</hlayout>
 
 				<hlayout style="margin:5px;line-height:20px;">
-					<label value="Data de apresentação: "
-						style="margin:5px;" />
+					<label value="Data de apresentação: " />
 					<datebox width="100%"
 						value="@bind(vm.tcc.dataApresentacao)" format="dd/MM/yyyy"
 						hflex="1" />
 				</hlayout>
 
-				<button label="Editar Banca Examinadora"
-					onClick="@command('showBanca', window=configBanca)" />
+				<div align="center">
+					<button label="Editar Banca Examinadora"
+						onClick="@command('showBanca', window=configBanca)" />
+				</div>
 
 				<label value="Resumo: " style="margin:5px;" />
 				<textbox
@@ -84,7 +85,7 @@
 				style="margin-left:5px; margin-right:5px; margin-top:5px;">
 				<auxhead>
 					<auxheader colspan="2">
-						<hlayout>
+						<hlayout width="100%">
 							<label value="Selecione: " />
 							<combobox model="@load(vm.orientadores)"
 								readonly="true"
@@ -95,16 +96,15 @@
 								</template>
 							</combobox>
 
-							<button label="Adicionar à Banca"
-								width="60px" onClick="@command('addToBanca')"
-								style="margin-left:20px;float:right" />
+							<div align="right" hflex="1"><button label="Adicionar à Banca" onClick="@command('addToBanca')"
+								style="float:right" /></div>
 
 						</hlayout>
 					</auxheader>
 				</auxhead>
 				<columns>
 					<column label="Nome do examinador" />
-					<column label="Ação" width="50px" />
+					<column label="Ação" width="60px" />
 				</columns>
 				<template name="model">
 					<row

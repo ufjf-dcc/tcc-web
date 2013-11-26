@@ -39,7 +39,7 @@
 					sort="auto(curso.idCurso)" />
 				<column hflex="5" label="Nome"
 					sort="auto(curso.nomeCurso)" />
-				<column width="100px" label="Editar" sort="" />
+				<column width="120px" label="Editar" sort="" />
 			</columns>
 			<template name="editable">
 				<row>
@@ -47,7 +47,7 @@
 						value="@load(each.codigoCurso) @save(each.codigoCurso, before='confirm')" />
 					<textbox
 						value="@load(each.nomeCurso) @save(each.nomeCurso, before='confirm')" />
-					<div>
+					<div align="center">
 						<button image="/img/confirm.gif"
 							onClick="@command('confirm', curso=each)" />
 						<button image="/img/cancel.png"
@@ -59,7 +59,7 @@
 				<row>
 					<label value="@load(each.codigoCurso)" />
 					<label value="@load(each.nomeCurso)" />
-					<div>
+					<div align="center">
 						<button image="/img/edit.gif"
 							onClick="@command('changeEditableStatus', curso=each)" />
 						<button image="/img/delete.png"
@@ -109,7 +109,7 @@
 					<column label="Código" width="100px"
 						sort="auto(curso.codigoCurso)" />
 					<column label="Nome" sort="auto(curso.nomeCurso)" />
-					<column width="50px" sort="" />
+					<column width="60px" sort="" />
 				</columns>
 				<template name="csv">
 					<row>

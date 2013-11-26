@@ -1,6 +1,5 @@
 package br.ufjf.tcc.controller;
 
-import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -174,9 +173,8 @@ public class HomeProfessorController extends CommonsController {
 	@Command
 	public void canAnswerTCC(@BindingParam("tcc") TCC tcc,
 			@BindingParam("btn") Button btn) {
-		btn.setDisabled(tcc.getDataApresentacao() != null
-				&& tcc.getDataApresentacao().after(
-						new Timestamp(new Date().getTime())));
+		btn.setDisabled(tcc.getDataApresentacao() == null
+				|| tcc.getDataApresentacao().after(new Date()));
 	}
 
 	@Command

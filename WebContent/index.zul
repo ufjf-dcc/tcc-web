@@ -1,4 +1,4 @@
-<?page title="Login"?>
+<?page title="Entrar no sistema"?>
 <zk>
 	<div align="center" apply="org.zkoss.bind.BindComposer"
 		viewModel="@id('lf') @init('br.ufjf.tcc.controller.LoginController')"
@@ -6,7 +6,7 @@
 		id="loginForm"
 		style="position:absolute; top:50%;
 margin-top:-92px; left:50%; margin-left:-150px;">
-		<panel title="Login" width="300px" border="normal">
+		<panel title="Entrar no sistema" width="300px" border="normal">
 			<panelchildren>
 				<grid>
 					<columns>
@@ -27,7 +27,7 @@ margin-top:-92px; left:50%; margin-left:-150px;">
 				</grid>
 				<vlayout>
 					<hlayout style="margin:5px;">
-						<button label="Entrar no sistema"
+						<button label="Entrar"
 							onClick="@command('submit', panel=loginForm)" hflex="1" />
 						<button label="Esqueci a senha..."
 							onClick="@command('forgotPassword', window=forgot)" hflex="1" />

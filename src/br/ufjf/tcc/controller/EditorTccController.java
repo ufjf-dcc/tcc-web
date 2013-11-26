@@ -14,6 +14,7 @@ import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
@@ -24,7 +25,9 @@ import org.zkoss.zul.Window;
 import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.business.UsuarioBusiness;
 import br.ufjf.tcc.library.FileManager;
+import br.ufjf.tcc.model.CalendarioSemestre;
 import br.ufjf.tcc.model.Participacao;
+import br.ufjf.tcc.model.Prazo;
 import br.ufjf.tcc.model.TCC;
 import br.ufjf.tcc.model.Usuario;
 
@@ -39,11 +42,13 @@ public class EditorTccController extends CommonsController {
 	private AMedia pdf = null;
 	private Usuario tempBanca = null;
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Init
 	public void init() {
 		if (getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ALUNO) {
+			CalendarioSemestre currentCalendar = getCurrentCalendar();
 			TCC tempTcc = tccBusiness.getCurrentTCCByAuthor(getUsuario(),
-					getCurrentCalendar());
+					currentCalendar);
 			if (tempTcc != null) {
 				getUsuario().getTcc().clear();
 				getUsuario().getTcc().add(tempTcc);
@@ -59,6 +64,16 @@ public class EditorTccController extends CommonsController {
 					auxList.add(aux);
 					tcc.setParticipacoes(auxList);
 				}
+				if (currentCalendar.getPrazos().get(Prazo.ENTREGA_TCC_BANCA)
+						.getDataFinal().before(new Date()))
+					Messagebox.show("O prazo para envio de TCCs já terminou.",
+							"Prazo finalizado", Messagebox.OK,
+							Messagebox.INFORMATION, new EventListener() {
+								public void onEvent(Event evt)
+										throws InterruptedException {
+									redirectHome();
+								}
+							});
 			} else {
 				getUsuario().setTcc(new ArrayList<TCC>());
 				redirectHome();
@@ -123,11 +138,15 @@ public class EditorTccController extends CommonsController {
 		if (orientadores.size() == 1) {
 			List<Usuario> aux = new UsuarioBusiness().getOrientadores();
 			orientadores.clear();
-			for (Usuario professor : aux)
-				for (Participacao p : banca)
-					if (p.getProfessor().getIdUsuario() != professor
-							.getIdUsuario())
-						orientadores.add(professor);
+			orientadores = new ArrayList<Usuario>();
+			if (banca.size() > 0) {
+				for (Usuario professor : aux)
+					for (Participacao p : banca)
+						if (p.getProfessor().getIdUsuario() != professor
+								.getIdUsuario())
+							orientadores.add(professor);
+			} else
+				orientadores = aux;
 			BindUtils.postNotifyChange(null, null, this, "orientadores");
 		}
 		window.doModal();

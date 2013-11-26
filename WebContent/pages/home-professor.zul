@@ -93,7 +93,7 @@
 				</columns>
 				<template name="tccs">
 					<row>
-						<label value="@load(each.aluno.nomeUsuario)" height="400px" style="text-align:vertical-center"/>
+						<label value="@load(each.aluno.nomeUsuario)" style="text-align:vertical-center"/>
 						<label value="@load(each.nomeTCC)" />
 						<label
 							onCreate="@command('getTCCDateApresentacao', tcc=each, lbl=self)" />

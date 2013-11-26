@@ -18,7 +18,7 @@
 					<div>
 						<div style="float:left">
 							<textbox id="filtro"
-								value="@bind(vm.filterString)" />
+								value="@bind(vm.filterString)" onOK="@command('filtra')" />
 							<button label="Pesquisar"
 								onClick="@command('filtra')" />
 						</div>
@@ -37,8 +37,8 @@
 			<auxhead sclass="category-center">
 				<auxheader label="Tipo" colspan="1" rowspan="1" />
 				<auxheader colspan="8" rowspan="1">
-					<radiogroup
-						onCheck="@command('filterType', type=self.selectedIndex)">
+					<radiogroup selectedIndex="@bind(vm.filterType)"
+						onCheck="@command('filtra')">
 						<hlayout width="100%">
 							<radio label="Todos" checked="true"
 								width="90px" />
@@ -59,12 +59,12 @@
 				<column hflex="2" label="Email" sort="auto(email)" />
 				<column hflex="2" label="Curso"
 					sort="auto(curso.nomeCurso)" />
-				<column label="Tipo"
+				<column label="Tipo" hflex="1"
 					sort="auto(tipoUsuario.nomeTipoUsuario)" />
 				<column hflex="1" label="Titulação"
 					sort="auto(titulacao)" />
 				<column width="50px" label="Ativo" />
-				<column width="100px" label="Editar" />
+				<column width="120px" label="Editar" />
 			</columns>
 			<template name="editable">
 				<row>
@@ -112,7 +112,7 @@
 					<checkbox
 						checked="@load(each.ativo) @save(each.ativo, before='confirm')" />
 
-					<div>
+					<div align="center">
 						<button image="/img/confirm.gif"
 							onClick="@command('confirm', usuario=each)" />
 						<button image="/img/cancel.png"
@@ -133,7 +133,7 @@
 					<label value="@load(each.titulacao)" />
 					<checkbox checked="@load(each.ativo)"
 						disabled="true" />
-					<div>
+					<div align="center">
 						<button image="/img/edit.gif"
 							onClick="@command('changeEditableStatus', usuario=each)" />
 						<button image="/img/delete.png"
@@ -229,11 +229,11 @@
 					<column hflex="2" label="Email" sort="auto(email)" />
 					<column hflex="2" label="Curso"
 						sort="auto(curso.nomeCurso)" />
-					<column label="Tipo"
+					<column label="Tipo" hflex="1"
 						sort="auto(tipoUsuario.nomeTipoUsuario)" />
 					<column hflex="1" label="Titulação"
 						sort="auto(titulacao)" />
-					<column width="50px" />
+					<column width="60px" />
 				</columns>
 				<template name="csv">
 					<row>
@@ -253,7 +253,7 @@
 
 			<div align="center">
 				<button label="Cadastrar tudo"
-					onClick="@command('submitCSV', window=importCSV)" width="75px"
+					onClick="@command('submitCSV', window=importCSV)"
 					style="margin-top:5px" />
 			</div>
 		</window>
