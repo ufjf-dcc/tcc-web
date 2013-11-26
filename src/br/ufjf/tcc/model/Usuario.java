@@ -111,6 +111,17 @@ public class Usuario implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "idCurso", nullable = true)
 	private Curso curso;
+	
+	/**
+	 * Relacionamento N para 1 entre Usuario e Departamento. Mapeando {@link Departamento} na
+	 * variável {@code Departamento} e retorno do tipo {@code LAZY} que indica que não
+	 * será carregado automáticamente este dado quando retornarmos o
+	 * {@link Usuario}.
+	 * 
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "idDepartamento", nullable = true)
+	private Departamento departamento;
 
 	/**
 	 * Relacionamento 1 para N entre Usuario e TCC. Mapeada em {@link TCC} pela

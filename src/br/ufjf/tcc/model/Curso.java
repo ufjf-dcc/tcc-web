@@ -39,7 +39,7 @@ public class Curso implements Serializable {
 	private int idCurso;
 
 	/**
-	 * Campo com o nome do curso. Relaciona com a coluna {@code nomeCurso} do
+	 * Campo com o nome do curso. Relaciona com a coluna {@code codigoCurso} do
 	 * banco através da anotação
 	 * {@code @Column(name = "codigoCurso", length = 80, nullable = false)}.
 	 */
