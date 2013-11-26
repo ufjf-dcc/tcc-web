@@ -13,7 +13,7 @@
 		<grid model="@load(vm.filterTccs) @template('lista')"
 			emptyMessage="@load(vm.emptyMessage)" mold="paging" autopaging="true"
 			vflex="true">
-			<auxhead sclass="text-center">
+			<auxhead style="text-align: center;">
 				<auxheader label="Lista Pública de Monografias"
 					colspan="4" />
 			</auxhead>
@@ -47,7 +47,7 @@
 
 						</hlayout>
 						<hlayout
-							style="float:right; line-height:20px;">
+							style="float:right;">
 							<label value="Curso: "
 								style="margin-left=10px" />
 							<combobox id="cmbCurso" width="220px"
