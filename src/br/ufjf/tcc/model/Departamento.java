@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -62,6 +63,9 @@ public class Departamento implements Serializable {
 	 */
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "departamento")
 	private List<Usuario> usuarios = new ArrayList<Usuario>();
+	
+	@Transient
+	private boolean editingStatus;
 
 	public int getIdDepartamento() {
 		return idDepartamento;
@@ -93,5 +97,20 @@ public class Departamento implements Serializable {
 
 	public void setUsuarios(List<Usuario> usuarios) {
 		this.usuarios = usuarios;
+	}
+	
+	public boolean getEditingStatus() {
+		return editingStatus;
+	}
+
+	public void setEditingStatus(boolean editingStatus) {
+		this.editingStatus = editingStatus;
+	}
+
+	public void copy(Departamento another) {
+		this.idDepartamento = another.idDepartamento;
+		this.codigoDepartamento = another.codigoDepartamento;
+		this.nomeDepartamento = another.nomeDepartamento;
+		this.usuarios = another.usuarios;
 	}
 }

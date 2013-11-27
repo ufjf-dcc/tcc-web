@@ -26,4 +26,48 @@ public class DepartamentoDAO extends GenericoDAO implements IDepartamentoDAO {
 		return null;
 	}
 
+	public List<Departamento> buscar(String expressão) {
+		try {
+			Query query = getSession().createQuery(
+					"from Departamento where nomeDepartamento LIKE :pesquisa");
+			query.setParameter("pesquisa", "%" + expressão + "%");
+			@SuppressWarnings("unchecked")
+			List<Departamento> departamentos = query.list();
+			getSession().close();
+			return departamentos;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	public boolean jaExiste(String codigoDepartamento, String oldCodigo) {
+		try {
+			Query query;
+			if (oldCodigo != null) {
+				query = getSession()
+						.createQuery(
+								"SELECT c FROM Departamento c WHERE c.codigoDepartamento = :codigoDepartamento AND c.codigoDepartamento != :oldDepartamento");
+				query.setParameter("oldCodigo", oldCodigo);
+			} else
+				query = getSession()
+						.createQuery(
+								"SELECT c FROM Departamento c WHERE c.codigoDepartamento = :codigoDepartamento");
+
+			query.setParameter("codigoDepartamento", codigoDepartamento);
+
+			boolean resultado = query.list().size() > 0 ? true : false;
+
+			getSession().close();
+
+			return resultado;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+
 }
