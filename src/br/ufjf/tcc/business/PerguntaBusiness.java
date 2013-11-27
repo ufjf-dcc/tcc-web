@@ -75,14 +75,9 @@ public class PerguntaBusiness {
 	public boolean saveList(List<Pergunta> perguntas) {
 		return perguntaDAO.salvarLista(perguntas);
 	}
-
-	public boolean editList(List<Pergunta> perguntas) {
-		List<Pergunta> oldPerguntas = getQuestionsByQuestionary(perguntas
-				.get(0).getQuestionario());
-		for (Pergunta p : oldPerguntas)
-			if (!perguntaDAO.exclui(p))
-				return false;
-		return perguntaDAO.salvarLista(perguntas);
+	
+	public boolean deleteList(List<Pergunta> perguntas) {
+		return perguntaDAO.excluiLista(perguntas);
 	}
 
 }

@@ -426,7 +426,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 									notifyFilterUsuarios();
 									Clients.clearBusy(window);
 									window.setVisible(false);
-									new SendMail().onSubmitCSV(usuariosCSV);
+									//new SendMail().onSubmitCSV(usuariosCSV);
 									Messagebox.show(
 											usuariosCSV.size()
 													+ " usuários foram cadastrados com sucesso",

@@ -31,15 +31,37 @@ public class CadastroQuestionarioController extends CommonsController {
 	private Questionario questionary = new Questionario();
 	QuestionarioBusiness questionarioBusiness = new QuestionarioBusiness();
 	private List<Pergunta> questions = new ArrayList<Pergunta>(),
-			questionsToDelete = new ArrayList<Pergunta>();
+			oldQuestions = new ArrayList<Pergunta>();
 	private List<Curso> cursos = new CursoBusiness().getCursos();
-	private String currentSemester = "?";
+	private String title = "?";
 	private CalendarioSemestre currentCalendar;
 	private boolean admin = getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ADMINISTRADOR,
 			editing;
 
-	public String getCurrentSemester() {
-		return currentSemester;
+	@Init
+	public void init(@ExecutionArgParam("curso") Curso curso,
+			@ExecutionArgParam("quest") Questionario q,
+			@ExecutionArgParam("editing") boolean editing) {
+		this.editing = editing;
+
+		if (q != null) {
+			questionary = q;
+			changeTitle();
+			oldQuestions = new PerguntaBusiness().getQuestionsByQuestionary(q);
+			questions = new PerguntaBusiness().getQuestionsByQuestionary(q);
+		} else {
+			if (curso != null) {
+				questionary.setCurso(curso);
+				changeTitle();
+			}
+
+			questions.add(new Pergunta());
+		}
+
+	}
+
+	public String getTitle() {
+		return title;
 	}
 
 	public Questionario getQuestionary() {
@@ -70,30 +92,9 @@ public class CadastroQuestionarioController extends CommonsController {
 		return admin;
 	}
 
-	@Init
-	public void init(@ExecutionArgParam("curso") Curso curso,
-			@ExecutionArgParam("quest") Questionario q,
-			@ExecutionArgParam("editing") boolean editing) {
-		this.editing = editing;
-
-		if (q != null) {
-			questionary = q;
-			semester();
-			questions = new PerguntaBusiness().getQuestionsByQuestionary(q);
-		} else {
-			if (curso != null) {
-				questionary.setCurso(curso);
-				semester();
-			}
-
-			questions.add(new Pergunta());
-		}
-
-	}
-
-	@NotifyChange("currentSemester")
+	@NotifyChange("title")
 	@Command
-	public void semester() {
+	public void changeTitle() {
 		// Mostra o semestre atual
 		Curso curso = questionary.getCurso();
 		if (curso != null) {
@@ -101,15 +102,19 @@ public class CadastroQuestionarioController extends CommonsController {
 			CalendarioSemestre currentCalendar = new CalendarioSemestreBusiness()
 					.getCurrentCalendarByCurso(curso);
 			if (currentCalendar != null) {
-				currentSemester = dateFormat.format(currentCalendar
-						.getInicioSemestre())
+				title = "Questionário - "
+						+ currentCalendar.getNomeCalendarioSemestre()
+						+ " ("
+						+ dateFormat
+								.format(currentCalendar.getInicioSemestre())
 						+ " a "
-						+ dateFormat.format(currentCalendar.getFinalSemestre());
+						+ dateFormat.format(currentCalendar.getFinalSemestre())
+						+ ")";
 				this.currentCalendar = currentCalendar;
 				return;
 			}
 		}
-		currentSemester = "?";
+		title = "Questionário - ?";
 		this.currentCalendar = null;
 	}
 
@@ -123,8 +128,15 @@ public class CadastroQuestionarioController extends CommonsController {
 	@Command
 	public void removeQuestion(@BindingParam("question") Pergunta question) {
 		questions.remove(question);
-		if (editing)
-			questionsToDelete.add(question);
+	}
+	
+	@NotifyChange("questions")
+	@Command
+	public void questionTop(@BindingParam("question") Pergunta question) {
+		int index = questions.indexOf(question);
+		Pergunta aux = questions.get(0);
+		questions.set(0, question);
+		questions.set(index, aux);
 	}
 
 	@NotifyChange("questions")
@@ -144,6 +156,15 @@ public class CadastroQuestionarioController extends CommonsController {
 		questions.set(index + 1, question);
 		questions.set(index, aux);
 	}
+	
+	@NotifyChange("questions")
+	@Command
+	public void questionBottom(@BindingParam("question") Pergunta question) {
+		int index = questions.indexOf(question);
+		Pergunta aux = questions.get(questions.size() - 1);
+		questions.set(questions.size() - 1, question);
+		questions.set(index, aux);
+	}
 
 	/*
 	 * Salva ou atualiza o questionário do semestre atual. Se estiver editando o
@@ -156,39 +177,42 @@ public class CadastroQuestionarioController extends CommonsController {
 			question.setOrdem(questions.indexOf(question));
 			question.setQuestionario(questionary);
 		}
-		
+
 		questionary.setCalendarioSemestre(currentCalendar);
 		questionary.setAtivo(true);
-		
+
 		QuestionarioBusiness questionarioBusiness = new QuestionarioBusiness();
 		PerguntaBusiness perguntaBusiness = new PerguntaBusiness();
-		
-		if (questionarioBusiness.validate(questionary) && perguntaBusiness.validate(questions)) {
-			if (editing) {
 
-				if (perguntaBusiness.editList(questions)) {
-					Messagebox.show("Questionário atualizado.", "Sucesso",
-							Messagebox.OK, Messagebox.INFORMATION);
-					window.detach();
-				} else
-					Messagebox
-							.show("Questionário não foi atualizado!",
-									"Erro", Messagebox.OK, Messagebox.ERROR);
+		if (questionarioBusiness.validate(questionary)
+				&& perguntaBusiness.validate(questions)) {
+			if (editing) {
+				if (perguntaBusiness.deleteList(oldQuestions)) {
+					if (perguntaBusiness.saveList(questions)) {
+						Messagebox.show("Questionário atualizado.", "Sucesso",
+								Messagebox.OK, Messagebox.INFORMATION);
+						window.detach();
+					} else
+						Messagebox.show("Questionário não foi atualizado!",
+								"Erro", Messagebox.OK, Messagebox.ERROR);
+				} else {
+					Messagebox.show("Questionário não foi atualizado 2!",
+							"Erro", Messagebox.OK, Messagebox.ERROR);
+				}
 
 				limpa();
-				
+
 			} else {
 				questionary.setPerguntas(questions);
 				if (questionarioBusiness.save(questionary)) {
-					
+
 					if (perguntaBusiness.saveList(questions)) {
 						Messagebox.show("Questionário cadastrado com sucesso.",
-								"Concluído", Messagebox.OK, Messagebox.INFORMATION,
-								new EventListener() {
+								"Concluído", Messagebox.OK,
+								Messagebox.INFORMATION, new EventListener() {
 									public void onEvent(Event evt)
 											throws InterruptedException {
-										Executions
-												.sendRedirect("/pages/home-professor.zul");
+										Executions.sendRedirect(null);
 									}
 								});
 						window.detach();

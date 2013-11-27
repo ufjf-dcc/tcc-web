@@ -215,7 +215,7 @@
 			</div>
 		</window>
 		<window id="importCSV" title="Cadastro via CSV" visible="false"
-			width="70%" height="70%" border="normal" position="center,center"
+			width="80%" height="80%" border="normal" position="center,center"
 			closable="true"
 			onClose="self.setVisible(false); event.stopPropagation();">
 

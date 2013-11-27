@@ -278,6 +278,14 @@ public class Usuario implements Serializable {
 		this.editingStatus = editingStatus;
 	}
 
+	public Departamento getDepartamento() {
+		return departamento;
+	}
+
+	public void setDepartamento(Departamento departamento) {
+		this.departamento = departamento;
+	}
+
 	public void copy(Usuario another) {
 		this.idUsuario = another.idUsuario;
 		this.matricula = another.matricula;
