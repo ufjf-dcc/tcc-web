@@ -19,16 +19,16 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
 import br.ufjf.tcc.business.CursoBusiness;
+import br.ufjf.tcc.business.DepartamentoBusiness;
 import br.ufjf.tcc.business.TipoUsuarioBusiness;
 import br.ufjf.tcc.business.UsuarioBusiness;
 import br.ufjf.tcc.library.SendMail;
 import br.ufjf.tcc.model.Curso;
+import br.ufjf.tcc.model.Departamento;
 import br.ufjf.tcc.model.TipoUsuario;
 import br.ufjf.tcc.model.Usuario;
 import br.ufjf.tcc.persistent.impl.UsuarioDAO;
@@ -41,6 +41,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 	private List<TipoUsuario> tiposUsuario = (new TipoUsuarioBusiness())
 			.getTiposUsuarios();
 	private List<Curso> cursos = this.getAllCursos();
+	private List<Departamento> departamentos = this.getAllDepartamentos();
 	private String filterString = "";
 	private Usuario newUsuario;
 	private boolean submitUserListenerExists = false,
@@ -74,6 +75,17 @@ public class GerenciamentoUsuarioController extends CommonsController {
 		cursoss.addAll((new CursoBusiness()).getCursos());
 		return cursoss;
 	}
+	
+	/* Método para fornecer a lista de curso às Combobox de departamento. */
+	private List<Departamento> getAllDepartamentos() {
+		List<Departamento> departamentoss = new ArrayList<Departamento>();
+		Departamento empty = new Departamento();
+		empty.setIdDepartamento(0);
+		empty.setNomeDepartamento("Nenhum");
+		departamentoss.add(empty);
+		departamentoss.addAll((new DepartamentoBusiness()).getDepartamentos());
+		return departamentoss;
+	}
 
 	public List<TipoUsuario> getTiposUsuario() {
 		return this.tiposUsuario;
@@ -81,6 +93,10 @@ public class GerenciamentoUsuarioController extends CommonsController {
 
 	public List<Curso> getCursos() {
 		return this.cursos;
+	}
+
+	public List<Departamento> getDepartamentos() {
+		return departamentos;
 	}
 
 	public List<Usuario> getFilterUsuarios() {
@@ -136,18 +152,8 @@ public class GerenciamentoUsuarioController extends CommonsController {
 	 * desabilita a opção de informar a titulação.
 	 */
 	@Command
-	public void selectTipo(@BindingParam("cmbTipo") Combobox cmbTipo,
-			@BindingParam("cmbCurso") Combobox cmbCurso,
-			@BindingParam("txtTitulacao") Textbox txtTitulacao) {
-		if (cmbCurso == null || txtTitulacao == null) {
-			((Combobox) cmbTipo.getPreviousSibling()).setDisabled(cmbTipo
-					.getValue().contains("Professor"));
-			((Combobox) cmbTipo.getPreviousSibling()).setDisabled(cmbTipo
-					.getValue().contains("Aluno"));
-		} else {
-			cmbCurso.setDisabled(cmbTipo.getValue().contains("Professor"));
-			txtTitulacao.setDisabled(cmbTipo.getValue().contains("Aluno"));
-		}
+	public void notifyNewUsuario() {
+		BindUtils.postNotifyChange(null, null, this, "newUsuario");
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

@@ -82,7 +82,6 @@
 						value="@load(each.email) @save(each.email, before='confirm')"
 						width="100%" />
 
-
 					<combobox readonly="true" width="100%"
 						value="@load(each.curso.nomeCurso ne null ? each.curso.nomeCurso : 'Nenhum')"
 						model="@load(vm.cursos)"
@@ -153,23 +152,44 @@
 				</columns>
 				<rows>
 					<row>
-						<label value="Nome do Usuário:*" />
-						<textbox
-							value="@load(vm.newUsuario.nomeUsuario) @save(vm.newUsuario.nomeUsuario, before='submitUser')"
-							tabindex="1" width="100%" />
+						<label value="Tipo:" />
+						<combobox id="cmbTipoUsuario" width="100%"
+							readonly="true" model="@load(vm.tiposUsuario)"
+							value="@load(vm.newUsuario.tipoUsuario.nomeTipoUsuario ne null ? vm.newUsuario.tipoUsuario.nomeTipoUsuario : 'Aluno')"
+							selectedItem="@bind(vm.newUsuario.tipoUsuario)"
+							onSelect="@command('notifyNewUsuario')">
+							<template name="model">
+								<comboitem
+									label="@load(each.nomeTipoUsuario)" />
+							</template>
+						</combobox>
 					</row>
-
+					
 					<row>
-						<label value="Matrícula/Siape:*" />
+						<label value="@load(vm.newUsuario.tipoUsuario.idTipoUsuario eq 1 ? 'Matrícula' : 'Siape')" />
 						<textbox
 							value="@load(vm.newUsuario.matricula) @save(vm.newUsuario.matricula, before='submitUser')"
 							tabindex="1" width="100%" />
 					</row>
+					
+					<row>
+						<label value="Nome do Usuário:" />
+						<textbox
+							value="@load(vm.newUsuario.nomeUsuario) @save(vm.newUsuario.nomeUsuario, before='submitUser')"
+							tabindex="1" width="100%" />
+					</row>					
 
 					<row>
-						<label value="Email:*" />
+						<label value="Email:" />
 						<textbox
 							value="@load(vm.newUsuario.email) @save(vm.newUsuario.email, before='submitUser')"
+							tabindex="1" width="100%" />
+					</row>
+					
+					<row>
+						<label value="Titulação:" />
+						<textbox id="txtTitulacao"
+							value="@load(vm.newUsuario.titulacao) @save(vm.newUsuario.titulacao, before='submitUser')"
 							tabindex="1" width="100%" />
 					</row>
 
@@ -179,31 +199,24 @@
 							readonly="true" model="@load(vm.cursos)"
 							value="@load(vm.newUsuario.curso.nomeCurso ne null ? vm.newUsuario.curso.nomeCurso : 'Nenhum')"
 							selectedItem="@load(vm.newUsuario.curso) @save(vm.newUsuario.curso, before='submitUser')"
-							disabled="@load(each.tipoUsuario.idTipoUsuario eq 2)">
+							disabled="@load(vm.newUsuario.tipoUsuario.idTipoUsuario eq 2)">
 							<template name="model">
 								<comboitem
 									label="@load(each.nomeCurso)" />
 							</template>
 						</combobox>
 					</row>
-
+					
 					<row>
-						<label value="Titulação:" />
-						<textbox id="txtTitulacao"
-							value="@load(vm.newUsuario.titulacao) @save(vm.newUsuario.titulacao, before='submitUser')"
-							tabindex="1" width="100%" disabled="true" />
-					</row>
-
-					<row>
-						<label value="Tipo:*" />
-						<combobox id="cmbTipoUsuario" width="100%"
-							readonly="true" model="@load(vm.tiposUsuario)"
-							value="@load(vm.newUsuario.tipoUsuario.nomeTipoUsuario ne null ? vm.newUsuario.tipoUsuario.nomeTipoUsuario : 'Aluno')"
-							selectedItem="@load(vm.newUsuario.tipoUsuario) @save(vm.newUsuario.tipoUsuario, before='submitUser')"
-							onSelect="@command('selectTipo', cmbTipo=self, cmbCurso=cmbCurso, txtTitulacao=txtTitulacao)">
+						<label value="Departamento:" />
+						<combobox id="cmbDepartamento" width="100%"
+							readonly="true" model="@load(vm.departamentos)"
+							value="@load(vm.newUsuario.departamento.nomeDepartamento ne null ? vm.newUsuario.departamento.nomeDepartamento : 'Nenhum')"
+							selectedItem="@load(vm.newUsuario.departamento) @save(vm.newUsuario.departamento, before='submitUser')"
+							disabled="@load(vm.newUsuario.tipoUsuario.idTipoUsuario eq 1)">
 							<template name="model">
 								<comboitem
-									label="@load(each.nomeTipoUsuario)" />
+									label="@load(each.nomeDepartamento)" />
 							</template>
 						</combobox>
 					</row>
