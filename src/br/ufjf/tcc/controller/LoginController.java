@@ -55,7 +55,6 @@ public class LoginController extends CommonsController {
 			} else {
 				Messagebox.show(usuarioBusiness.getErrors().get(0), "Erro",
 						Messagebox.OK, Messagebox.ERROR);
-				usuarioBusiness.clearErrors();
 			}
 		} else {
 			Messagebox.show("Informe a matrícula e a senha", "Erro",

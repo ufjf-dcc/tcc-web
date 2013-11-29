@@ -44,6 +44,7 @@ public class PrazoBusiness {
 		return "";
 	}
 
+	//Comunicação com o PrazoDAO
 	public List<Prazo> getPrazosByCalendario(
 			CalendarioSemestre calendarioSemestre) {
 		return prazoDAO.getPrazosByCalendario(calendarioSemestre);

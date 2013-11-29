@@ -21,10 +21,6 @@ public class QuestionarioBusiness {
 		return errors;
 	}
 
-	public void clearErrors() {
-		this.errors.clear();
-	}
-
 	// validação dos formulários
 	public boolean validate(Questionario questionary) {
 		errors.clear();

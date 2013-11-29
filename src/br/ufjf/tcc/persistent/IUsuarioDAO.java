@@ -5,6 +5,7 @@ import java.util.List;
 import org.hibernate.HibernateException;
 
 import br.ufjf.tcc.model.Curso;
+import br.ufjf.tcc.model.Departamento;
 import br.ufjf.tcc.model.Permissao;
 import br.ufjf.tcc.model.Usuario;
 
@@ -19,4 +20,5 @@ public interface IUsuarioDAO {
 	public boolean jaExiste(String matricula, String oldMatricula);
 	public List<Usuario> getOrientadores();
 	public List<Usuario> getOrientados(Usuario usuario);
+	List<Usuario> getAllByDepartamento(Departamento departamento);
 }

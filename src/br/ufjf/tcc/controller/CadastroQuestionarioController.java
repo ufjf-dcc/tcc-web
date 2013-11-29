@@ -222,7 +222,6 @@ public class CadastroQuestionarioController extends CommonsController {
 				} else {
 					Messagebox.show("Questionário não foi adicionado!", "Erro",
 							Messagebox.OK, Messagebox.ERROR);
-					questionarioBusiness.clearErrors();
 				}
 			}
 
@@ -234,13 +233,11 @@ public class CadastroQuestionarioController extends CommonsController {
 				errorMessage += error;
 			Messagebox.show(errorMessage, "Dados insuficientes / inválidos",
 					Messagebox.OK, Messagebox.ERROR);
-			questionarioBusiness.clearErrors();
 		}
 
 	}
 
 	public void limpa() {
-		questionarioBusiness.clearErrors();
 		questionary = new Questionario();
 		BindUtils.postNotifyChange(null, null, this, "questionary");
 	}

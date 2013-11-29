@@ -81,7 +81,6 @@ public class GerenciamentoCursoController extends CommonsController {
 				errorMessage += error;
 			Messagebox.show(errorMessage, "Dados insuficientes / inválidos",
 					Messagebox.OK, Messagebox.ERROR);
-			cursoBusiness.clearErrors();
 		}
 	}
 
@@ -103,10 +102,11 @@ public class GerenciamentoCursoController extends CommonsController {
 										"Sucesso", Messagebox.OK,
 										Messagebox.INFORMATION);
 							} else {
-								Messagebox
-										.show("O curso não foi excluído.",
-												"Erro", Messagebox.OK,
-												Messagebox.ERROR);
+								String errorMessage = "O curso não pôde ser excluído.\n";
+								for (String error : cursoBusiness.getErrors())
+									errorMessage += error;
+								Messagebox.show(errorMessage, "Erro",
+										Messagebox.OK, Messagebox.ERROR);
 							}
 
 						}
@@ -181,7 +181,6 @@ public class GerenciamentoCursoController extends CommonsController {
 											"Curso não foi adicionado!",
 											"Erro", Messagebox.OK,
 											Messagebox.ERROR);
-									cursoBusiness.clearErrors();
 								}
 							} else {
 								String errorMessage = "";
@@ -191,7 +190,6 @@ public class GerenciamentoCursoController extends CommonsController {
 								Messagebox.show(errorMessage,
 										"Dados insuficientes / inválidos",
 										Messagebox.OK, Messagebox.ERROR);
-								cursoBusiness.clearErrors();
 							}
 						}
 					});
@@ -324,7 +322,6 @@ public class GerenciamentoCursoController extends CommonsController {
 	}
 
 	public void limpa() {
-		cursoBusiness.clearErrors();
 		novoCurso = new Curso();
 		BindUtils.postNotifyChange(null, null, this, "novoCurso");
 	}

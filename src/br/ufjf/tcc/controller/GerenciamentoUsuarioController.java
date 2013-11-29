@@ -138,11 +138,10 @@ public class GerenciamentoUsuarioController extends CommonsController {
 			refreshRowTemplate(usuario);
 		} else {
 			String errorMessage = "";
-			for (String error : usuarioBusiness.errors)
+			for (String error : usuarioBusiness.getErrors())
 				errorMessage += error;
 			Messagebox.show(errorMessage, "Dados insuficientes / inválidos",
 					Messagebox.OK, Messagebox.ERROR);
-			usuarioBusiness.clearErrors();
 		}
 	}
 
@@ -152,8 +151,11 @@ public class GerenciamentoUsuarioController extends CommonsController {
 	 * desabilita a opção de informar a titulação.
 	 */
 	@Command
-	public void notifyNewUsuario() {
-		BindUtils.postNotifyChange(null, null, this, "newUsuario");
+	public void onChangeType() {
+		if (newUsuario.getTipoUsuario().getIdTipoUsuario() == 1)
+			newUsuario.setDepartamento(null);
+		else if (newUsuario.getTipoUsuario().getIdTipoUsuario() == 2)
+			newUsuario.setCurso(null);
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -174,11 +176,10 @@ public class GerenciamentoUsuarioController extends CommonsController {
 										Messagebox.INFORMATION);
 							} else {
 								String errorMessage = "O usuário não pôde ser excluído.\n";
-								for (String error : usuarioBusiness.errors)
+								for (String error : usuarioBusiness.getErrors())
 									errorMessage += error;
 								Messagebox.show(errorMessage, "Erro",
 										Messagebox.OK, Messagebox.ERROR);
-								usuarioBusiness.clearErrors();
 							}
 
 						}
@@ -294,7 +295,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 								}
 							} else {
 								String errorMessage = "";
-								for (String error : usuarioBusiness.errors)
+								for (String error : usuarioBusiness.getErrors())
 									errorMessage += error;
 								Clients.clearBusy(window);
 								Messagebox.show(errorMessage,
@@ -462,7 +463,6 @@ public class GerenciamentoUsuarioController extends CommonsController {
 
 	/* Limpa os erros de validação e os dados do novo usuário. */
 	public void limpa() {
-		usuarioBusiness.clearErrors();
 		newUsuario = new Usuario();
 		BindUtils.postNotifyChange(null, null, this, "newUsuario");
 	}

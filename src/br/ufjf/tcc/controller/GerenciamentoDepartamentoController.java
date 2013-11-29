@@ -86,7 +86,6 @@ public class GerenciamentoDepartamentoController extends CommonsController {
 				errorMessage += error;
 			Messagebox.show(errorMessage, "Dados insuficientes / inválidos",
 					Messagebox.OK, Messagebox.ERROR);
-			departamentoBusiness.clearErrors();
 		}
 	}
 
@@ -108,10 +107,11 @@ public class GerenciamentoDepartamentoController extends CommonsController {
 										"Sucesso", Messagebox.OK,
 										Messagebox.INFORMATION);
 							} else {
-								Messagebox
-										.show("O departamento não foi excluído.",
-												"Erro", Messagebox.OK,
-												Messagebox.ERROR);
+								String errorMessage = "O departamento não pôde ser excluído.\n";
+								for (String error : departamentoBusiness.getErrors())
+									errorMessage += error;
+								Messagebox.show(errorMessage, "Erro",
+										Messagebox.OK, Messagebox.ERROR);
 							}
 
 						}
@@ -174,7 +174,6 @@ public class GerenciamentoDepartamentoController extends CommonsController {
 											"Departamento não foi adicionado!",
 											"Erro", Messagebox.OK,
 											Messagebox.ERROR);
-									departamentoBusiness.clearErrors();
 								}
 							} else {
 								String errorMessage = "";
@@ -184,7 +183,6 @@ public class GerenciamentoDepartamentoController extends CommonsController {
 								Messagebox.show(errorMessage,
 										"Dados insuficientes / inválidos",
 										Messagebox.OK, Messagebox.ERROR);
-								departamentoBusiness.clearErrors();
 							}
 						}
 					});
@@ -198,7 +196,6 @@ public class GerenciamentoDepartamentoController extends CommonsController {
 	}
 
 	public void limpa() {
-		departamentoBusiness.clearErrors();
 		novoDepartamento = new Departamento();
 		BindUtils.postNotifyChange(null, null, this, "novoDepartamento");
 	}

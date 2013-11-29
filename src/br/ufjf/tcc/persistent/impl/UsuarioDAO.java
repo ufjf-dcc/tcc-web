@@ -7,6 +7,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 
 import br.ufjf.tcc.model.Curso;
+import br.ufjf.tcc.model.Departamento;
 import br.ufjf.tcc.model.Permissao;
 import br.ufjf.tcc.model.TCC;
 import br.ufjf.tcc.model.TipoUsuario;
@@ -91,7 +92,7 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 		try {
 			Query query = getSession()
 					.createQuery(
-							"SELECT u FROM Usuario AS u LEFT JOIN FETCH u.curso JOIN FETCH u.tipoUsuario WHERE u.curso = :curso ORDER BY u.idUsuario");
+							"SELECT u FROM Usuario AS u left join fetch u.departamento LEFT JOIN FETCH u.curso JOIN FETCH u.tipoUsuario WHERE u.curso = :curso ORDER BY u.idUsuario");
 			query.setParameter("curso", curso);
 			
 			List<Usuario> resultados = query.list();
@@ -108,6 +109,7 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 		return null;
 	}
 
+	@Override
 	public boolean jaExiste(String matricula, String oldMatricula) {
 		try {
 			Query query;
@@ -238,6 +240,29 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return null;
+	}
+
+	@Override
+	public List<Usuario> getAllByDepartamento(Departamento departamento) {
+		try {
+			Query query = getSession()
+					.createQuery(
+							"SELECT u FROM Usuario AS u left join fetch u.departamento LEFT JOIN FETCH u.curso JOIN FETCH u.tipoUsuario WHERE u.departamento = :departamento ORDER BY u.idUsuario");
+			query.setParameter("departamento", departamento);
+			
+			@SuppressWarnings("unchecked")
+			List<Usuario> resultados = query.list();
+
+			getSession().close();
+
+			if (resultados != null)
+				return resultados;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 		return null;
 	}
 }

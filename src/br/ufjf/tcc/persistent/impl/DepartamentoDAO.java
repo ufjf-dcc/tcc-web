@@ -10,6 +10,7 @@ import br.ufjf.tcc.persistent.IDepartamentoDAO;
 
 public class DepartamentoDAO extends GenericoDAO implements IDepartamentoDAO {
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<Departamento> getAllDepartamentos() {
 		try {
@@ -26,6 +27,7 @@ public class DepartamentoDAO extends GenericoDAO implements IDepartamentoDAO {
 		return null;
 	}
 
+	@Override
 	public List<Departamento> buscar(String expressão) {
 		try {
 			Query query = getSession().createQuery(
@@ -42,6 +44,7 @@ public class DepartamentoDAO extends GenericoDAO implements IDepartamentoDAO {
 		return null;
 	}
 
+	@Override
 	public boolean jaExiste(String codigoDepartamento, String oldCodigo) {
 		try {
 			Query query;

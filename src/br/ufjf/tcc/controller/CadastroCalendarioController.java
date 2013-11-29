@@ -58,7 +58,6 @@ public class CadastroCalendarioController extends CommonsController {
 				errorMessage += error;
 			Messagebox.show(errorMessage, "Dados insuficientes / inválidos",
 					Messagebox.OK, Messagebox.ERROR);
-			calendarioSemestreBusiness.clearErrors();
 		} else {
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("calendar", newCalendar);

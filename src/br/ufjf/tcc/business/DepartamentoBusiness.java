@@ -19,10 +19,6 @@ public class DepartamentoBusiness {
 		return errors;
 	}
 
-	public void clearErrors() {
-		this.errors.clear();
-	}
-
 	// validação dos formulários
 	public boolean validate(Departamento departamento, String oldCodigo) {
 		errors.clear();
@@ -63,10 +59,16 @@ public class DepartamentoBusiness {
 	}
 
 	public boolean exclui(Departamento departamento) {
+		errors.clear();
+		if (new UsuarioBusiness().getAllByDepartamento(departamento).size() > 0) {
+			errors.add("Existem usuários cadastrados com este departamento.");
+			return false;
+		}
 		return departamentoDAO.exclui(departamento);
 	}
 	
 	public boolean jaExiste(String codigoDepartamento, String oldCodigo) {
+		errors.clear();
 		if (departamentoDAO.jaExiste(codigoDepartamento, oldCodigo)){
 			errors.add("Já existe um departamento com este código.\n");
 			return true;

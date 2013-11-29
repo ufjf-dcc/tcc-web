@@ -18,10 +18,6 @@ public class CursoBusiness {
 	public List<String> getErrors() {
 		return errors;
 	}
-	
-	public void clearErrors(){
-		this.errors.clear();
-	}
 
 	// validação dos formulários
 	public boolean validate(Curso curso, String oldCodigo) {
@@ -63,10 +59,20 @@ public class CursoBusiness {
 	}
 
 	public boolean exclui(Curso curso) {
+		errors.clear();
+		if(new UsuarioBusiness().getAllByCurso(curso).size() > 0) {
+			errors.add("O curso possui usuários cadastrados.");
+			return false;
+		}
+		if (new TCCBusiness().getTCCsByCurso(curso).size() > 0) {
+			errors.add("Existem TCCs relacionados a este curso.");
+			return false;
+		}
 		return cursoDAO.exclui(curso);
 	}
 
 	public boolean jaExiste(String codigoCurso, String oldCodigo) {
+		errors.clear();
 		if (cursoDAO.jaExiste(codigoCurso, oldCodigo)){
 			errors.add("Já existe um curso com este código.\n");
 			return true;

@@ -24,7 +24,8 @@ import org.hibernate.annotations.GenericGenerator;
 @Entity
 @Table(name = "Usuario")
 public class Usuario implements Serializable {
-	public static final int ALUNO = 1, PROFESSOR = 2, COORDENADOR = 3, ADMINISTRADOR = 4;
+	public static final int ALUNO = 1, PROFESSOR = 2, COORDENADOR = 3,
+			ADMINISTRADOR = 4;
 
 	private static final long serialVersionUID = 1L;
 
@@ -81,10 +82,10 @@ public class Usuario implements Serializable {
 	 */
 	@Column(name = "ativo", nullable = false)
 	private boolean ativo;
-	
+
 	/**
-	 * Campo com a informação. Relaciona com a coluna
-	 * {@code titulacao} do banco através da anotação
+	 * Campo com a informação. Relaciona com a coluna {@code titulacao} do banco
+	 * através da anotação
 	 * {@code @Column(name = "titulacao", length = 45, nullable = true)}.
 	 */
 	@Column(name = "titulacao", length = 45, nullable = true)
@@ -111,12 +112,12 @@ public class Usuario implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "idCurso", nullable = true)
 	private Curso curso;
-	
+
 	/**
-	 * Relacionamento N para 1 entre Usuario e Departamento. Mapeando {@link Departamento} na
-	 * variável {@code Departamento} e retorno do tipo {@code LAZY} que indica que não
-	 * será carregado automáticamente este dado quando retornarmos o
-	 * {@link Usuario}.
+	 * Relacionamento N para 1 entre Usuario e Departamento. Mapeando
+	 * {@link Departamento} na variável {@code Departamento} e retorno do tipo
+	 * {@code LAZY} que indica que não será carregado automáticamente este dado
+	 * quando retornarmos o {@link Usuario}.
 	 * 
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -240,10 +241,7 @@ public class Usuario implements Serializable {
 	}
 
 	public void setCurso(Curso curso) {
-		if (curso.getIdCurso() == 0)
-			this.curso = null;
-		else
-			this.curso = curso;
+		this.curso = curso;
 	}
 
 	public List<TCC> getTcc() {
@@ -300,5 +298,5 @@ public class Usuario implements Serializable {
 		this.participacoes = another.participacoes;
 		this.editingStatus = another.editingStatus;
 	}
-	
+
 }

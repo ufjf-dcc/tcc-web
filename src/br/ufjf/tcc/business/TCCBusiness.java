@@ -21,10 +21,6 @@ public class TCCBusiness {
 	public List<String> getErrors() {
 		return errors;
 	}
-	
-	public void clearErrors(){
-		this.errors.clear();
-	}
 
 	// validação dos formulários
 	public boolean validate(TCC tcc) {

@@ -9,13 +9,14 @@ import jonelo.jacksum.JacksumAPI;
 import jonelo.jacksum.algorithm.AbstractChecksum;
 import br.ufjf.tcc.library.SessionManager;
 import br.ufjf.tcc.model.Curso;
+import br.ufjf.tcc.model.Departamento;
 import br.ufjf.tcc.model.Permissao;
 import br.ufjf.tcc.model.Usuario;
 import br.ufjf.tcc.persistent.impl.UsuarioDAO;
 
 public class UsuarioBusiness {
 	private UsuarioDAO usuarioDAO;
-	public List<String> errors = new ArrayList<String>();
+	private List<String> errors = new ArrayList<String>();
 
 	public UsuarioBusiness() {
 		this.errors = new ArrayList<String>();
@@ -26,17 +27,14 @@ public class UsuarioBusiness {
 		return errors;
 	}
 
-	public void clearErrors() {
-		this.errors.clear();
-	}
-
 	// validação dos formulários
 	public boolean validate(Usuario usuario, String oldMatricula) {
 		errors.clear();
 
-		validarNome(usuario.getNomeUsuario());
 		validarMatricula(usuario.getMatricula(), oldMatricula);
+		validarNome(usuario.getNomeUsuario());
 		validateEmail(usuario.getEmail(), null);
+		validateTipo(usuario);
 
 		return errors.size() == 0;
 	}
@@ -74,8 +72,31 @@ public class UsuarioBusiness {
 		}
 	}
 
+	public void validateTipo(Usuario usuario) {
+		switch (usuario.getTipoUsuario().getIdTipoUsuario()) {
+		case 1:
+			if (usuario.getCurso() == null)
+				errors.add("Um aluno deve pertencer a um curso.\n");
+			if (usuario.getDepartamento() != null)
+				errors.add("Um aluno não pode pertencer a um departamento.\n");
+			break;
+		case 2:
+			if (usuario.getDepartamento() == null)
+				errors.add("Um professor deve pertencer a um departamento.\n");
+			if (usuario.getCurso() != null)
+				errors.add("Um professor não deve pertencer a um curso.\n");
+			break;
+		case 3:
+			if (usuario.getCurso() == null)
+				errors.add("Um coordenador deve pertencer a um curso.\n");
+			if (usuario.getDepartamento() == null)
+				errors.add("Um coordenador deve pertencer a um departamento.\n");
+		}
+	}
+
 	// comunicação com o UsuarioDAO
 	public boolean login(String matricula, String senha) {
+		errors.clear();
 		Usuario usuario = usuarioDAO.retornaUsuario(matricula,
 				this.encripta(senha));
 
@@ -88,7 +109,7 @@ public class UsuarioBusiness {
 				return false;
 			}
 		}
-		
+
 		errors.add("Usuário ou Senha inválidos!");
 		return false;
 	}
@@ -165,6 +186,7 @@ public class UsuarioBusiness {
 	}
 
 	public boolean exclui(Usuario usuario) {
+		errors.clear();
 		if (new TCCBusiness().userHasTCC(usuario)) {
 			errors.add("O usuário possui TCC(s) cadastrado(s);\n");
 			return false;
@@ -177,6 +199,7 @@ public class UsuarioBusiness {
 	}
 
 	public boolean jaExiste(String matricula, String oldMatricula) {
+		errors.clear();
 		if (usuarioDAO.jaExiste(matricula, oldMatricula)) {
 			errors.add("Já existe um usuário com a matrícula informada.");
 			return true;
@@ -191,6 +214,10 @@ public class UsuarioBusiness {
 
 	public Usuario getByEmailAndMatricula(String email, String matricula) {
 		return usuarioDAO.getByEmailAndMatricula(email, matricula);
+	}
+
+	public List<Usuario> getAllByDepartamento(Departamento departamento) {
+		return usuarioDAO.getAllByDepartamento(departamento);
 	}
 
 }

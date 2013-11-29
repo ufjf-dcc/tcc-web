@@ -273,7 +273,6 @@ public class EditorTccController extends CommonsController {
 				// +
 				// "\nUma mensagem de confirmação foi enviada para o seu e-mail."
 						);
-				tccBusiness.clearErrors();
 			} else {
 				Messagebox.show("Devido a um erro, o TCC não foi cadastrado.",
 						"Erro", Messagebox.OK, Messagebox.ERROR);
@@ -284,7 +283,6 @@ public class EditorTccController extends CommonsController {
 				errorMessage += error;
 			Messagebox.show(errorMessage, "Dados insuficientes / inválidos",
 					Messagebox.OK, Messagebox.ERROR);
-			tccBusiness.clearErrors();
 		}
 	}
 

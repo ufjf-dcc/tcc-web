@@ -20,10 +20,6 @@ public class PerguntaBusiness {
 		return errors;
 	}
 
-	public void clearErrors() {
-		this.errors.clear();
-	}
-
 	// validação dos formulários
 	public boolean validate(List<Pergunta> questions) {
 		errors.clear();
@@ -56,6 +52,7 @@ public class PerguntaBusiness {
 					+ total + ";\n");
 	}
 
+	//Comunicação com o PerguntaDAO
 	public boolean save(Pergunta pergunta) {
 		return perguntaDAO.salvar(pergunta);
 	}

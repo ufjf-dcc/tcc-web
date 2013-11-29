@@ -240,7 +240,6 @@ public class VisualizaTCCController extends CommonsController {
 				Messagebox.show(errorMessage,
 						"Dados insuficientes / inválidos", Messagebox.OK,
 						Messagebox.ERROR);
-				respostaBusiness.clearErrors();
 				return;
 			}
 		}

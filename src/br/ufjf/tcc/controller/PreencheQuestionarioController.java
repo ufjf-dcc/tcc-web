@@ -55,7 +55,6 @@ public class PreencheQuestionarioController extends CommonsController {
 					errorMessage += error;
 				Messagebox.show(errorMessage, "Dados insuficientes / inválidos",
 						Messagebox.OK, Messagebox.ERROR);
-				respostaBusiness.clearErrors();
 				return;
 			}
 		}

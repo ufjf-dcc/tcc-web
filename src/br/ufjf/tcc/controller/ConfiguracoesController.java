@@ -18,29 +18,29 @@ public class ConfiguracoesController extends CommonsController {
 		UsuarioBusiness usuarioBusiness = new UsuarioBusiness();
 		if (pswd1.trim().length() > 0) {
 			usuarioBusiness.validatePasswords(pswd1, pswd2);
-			if (usuarioBusiness.errors.size() == 0) {
+			if (usuarioBusiness.getErrors().size() == 0) {
 				getUsuario().setSenha(usuarioBusiness.encripta(pswd1));
 			}
 		}
 		if (email1.trim().length() > 0) {
 			usuarioBusiness.validateEmail(email1, email2);
-			if (usuarioBusiness.errors.size() == 0) {
+			if (usuarioBusiness.getErrors().size() == 0) {
 				getUsuario().setEmail(email1);
 			}
 		}
 
-		if (usuarioBusiness.errors.size() == 0) {
+		if (usuarioBusiness.getErrors().size() == 0) {
 			usuarioBusiness.editar(getUsuario());
 			Messagebox.show("Dados atualizados com sucesso!", "Configurações",
 					Messagebox.OK, Messagebox.INFORMATION);
 			settings.detach();
 		} else {
 			String errorMessage = "";
-			for (String error : usuarioBusiness.errors)
+			for (String error : usuarioBusiness.getErrors())
 				errorMessage += error;
 			Messagebox.show(errorMessage, "Dados insuficientes / inválidos",
 					Messagebox.OK, Messagebox.ERROR);
-			usuarioBusiness.errors.clear();
+			usuarioBusiness.getErrors().clear();
 		}
 
 	}

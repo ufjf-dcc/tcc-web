@@ -23,18 +23,14 @@ public class CalendarioSemestreBusiness {
 		return errors;
 	}
 
-	public void clearErrors() {
-		this.errors.clear();
-	}
-
 	// validação dos formulários
 	public boolean validate(CalendarioSemestre calendarioSemestre) {
 		errors.clear();
 
 		validateName(calendarioSemestre.getNomeCalendarioSemestre());
-		validateBeginDate(calendarioSemestre.getInicioSemestre(),
+		validateDates(calendarioSemestre.getInicioSemestre(),
+				calendarioSemestre.getFinalSemestre(),
 				calendarioSemestre.getCurso());
-		validateEndDate(calendarioSemestre.getFinalSemestre());
 
 		return errors.size() == 0;
 	}
@@ -44,20 +40,23 @@ public class CalendarioSemestreBusiness {
 			errors.add("É necessário informar o nome do calendário;\n");
 	}
 
-	public void validateBeginDate(Date begin, Curso curso) {
+	public void validateDates(Date begin, Date end, Curso curso) {
+		DateTime beginDate = new DateTime(begin);
+		DateTime endDate = new DateTime(end);
 		if (begin == null)
 			errors.add("É necessário informar a data inicial;\n");
 		else if (calendarioSemestreDAO.getCalendarByDateAndCurso(begin, curso) != null)
 			errors.add("A data inicial está coincidindo com um semestre anterior;\n");
-	}
-
-	public void validateEndDate(Date end) {
 		if (end == null)
-			errors.add("É necessário informar a data final;\n");
-		else if (new DateTime(end).isBefore(new DateTime(new Date())))
-			errors.add("O final do semestre deve ser uma data futura;\n");
+			errors.add("É necessário informar a data final;\n");		
+		else {if (endDate.isBefore(beginDate) || endDate.isEqual(beginDate))
+			errors.add("O final do semestre deve ser depois de seu início.");
+		if (new DateTime(end).isBeforeNow())
+			errors.add("O final do semestre deve ser em uma data futura;\n");
+		}
 	}
 
+	// Comunicação com o CalendarioSemestreDAO
 	public boolean save(CalendarioSemestre calendarioSemestre) {
 		return calendarioSemestreDAO.salvar(calendarioSemestre);
 	}
@@ -66,7 +65,7 @@ public class CalendarioSemestreBusiness {
 		return calendarioSemestreDAO.getCalendarByDateAndCurso(new Date(),
 				curso);
 	}
-	
+
 	public CalendarioSemestre getCalendarById(int id) {
 		return calendarioSemestreDAO.getCalendarById(id);
 	}
