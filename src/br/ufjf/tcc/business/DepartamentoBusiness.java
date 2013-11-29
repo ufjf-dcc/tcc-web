@@ -61,7 +61,7 @@ public class DepartamentoBusiness {
 	public boolean exclui(Departamento departamento) {
 		errors.clear();
 		if (new UsuarioBusiness().getAllByDepartamento(departamento).size() > 0) {
-			errors.add("Existem usuários cadastrados com este departamento.");
+			errors.add("Existem professores cadastrados com este departamento.");
 			return false;
 		}
 		return departamentoDAO.exclui(departamento);

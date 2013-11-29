@@ -122,7 +122,7 @@ public class GerenciamentoDepartamentoController extends CommonsController {
 	public void removeFromList(Departamento departamento) {
 		filterDepartamentos.remove(departamento);
 		allDepartamentos.remove(departamento);
-		BindUtils.postNotifyChange(null, null, this, "departamentos");
+		BindUtils.postNotifyChange(null, null, this, "filterDepartamentos");
 	}
 
 	public void refreshRowTemplate(Departamento departamento) {
@@ -138,7 +138,7 @@ public class GerenciamentoDepartamentoController extends CommonsController {
 				filterDepartamentos.add(c);
 			}
 		}
-		BindUtils.postNotifyChange(null, null, this, "departamentos");
+		BindUtils.postNotifyChange(null, null, this, "filterDepartamentos");
 	}
 
 	@Command
@@ -192,7 +192,7 @@ public class GerenciamentoDepartamentoController extends CommonsController {
 	}
 
 	public void notifyDepartamentos() {
-		BindUtils.postNotifyChange(null, null, this, "departamentos");
+		BindUtils.postNotifyChange(null, null, this, "filterDepartamentos");
 	}
 
 	public void limpa() {

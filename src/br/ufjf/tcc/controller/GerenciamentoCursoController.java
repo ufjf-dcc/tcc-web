@@ -117,7 +117,7 @@ public class GerenciamentoCursoController extends CommonsController {
 	public void removeFromList(Curso curso) {
 		filterCursos.remove(curso);
 		allCursos.remove(curso);
-		BindUtils.postNotifyChange(null, null, this, "cursos");
+		BindUtils.postNotifyChange(null, null, this, "filterCursos");
 	}
 
 	public void refreshRowTemplate(Curso curso) {
@@ -141,7 +141,7 @@ public class GerenciamentoCursoController extends CommonsController {
 				filterCursos.add(c);
 			}
 		}
-		BindUtils.postNotifyChange(null, null, this, "cursos");
+		BindUtils.postNotifyChange(null, null, this, "filterCursos");
 	}
 
 	@Command
@@ -199,7 +199,7 @@ public class GerenciamentoCursoController extends CommonsController {
 	}
 
 	public void notifyCursos() {
-		BindUtils.postNotifyChange(null, null, this, "cursos");
+		BindUtils.postNotifyChange(null, null, this, "filterCursos");
 	}
 
 	@Command
