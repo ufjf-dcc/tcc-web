@@ -31,7 +31,7 @@ public class GerenciamentoCursoController extends CommonsController {
 	private Curso novoCurso = null;
 	private Map<Integer, Curso> editTemp = new HashMap<Integer, Curso>();
 	private List<Curso> allCursos = cursoBusiness.getCursos(),
-			cursos = allCursos, cursosCSV = new ArrayList<Curso>();
+			filterCursos = allCursos, cursosCSV = new ArrayList<Curso>();
 	private String filterString = "";
 	private boolean submitUserListenerExists = false,
 			importCSVListenerExists = false, submitCSVListenerExists = false;
@@ -42,8 +42,8 @@ public class GerenciamentoCursoController extends CommonsController {
 			super.paginaProibida();
 	}
 
-	public List<Curso> getCursos() {
-		return cursos;
+	public List<Curso> getFilterCursos() {
+		return filterCursos;
 	}
 
 	public List<Curso> getCursosCSV() {
@@ -115,7 +115,7 @@ public class GerenciamentoCursoController extends CommonsController {
 	}
 
 	public void removeFromList(Curso curso) {
-		cursos.remove(curso);
+		filterCursos.remove(curso);
 		allCursos.remove(curso);
 		BindUtils.postNotifyChange(null, null, this, "cursos");
 	}
@@ -134,11 +134,11 @@ public class GerenciamentoCursoController extends CommonsController {
 
 	@Command
 	public void filtra() {
-		cursos = new ArrayList<Curso>();
+		filterCursos = new ArrayList<Curso>();
 		String filter = filterString.toLowerCase().trim();
 		for (Curso c : allCursos) {
 			if (c.getNomeCurso().toLowerCase().contains(filter)) {
-				cursos.add(c);
+				filterCursos.add(c);
 			}
 		}
 		BindUtils.postNotifyChange(null, null, this, "cursos");
@@ -156,7 +156,7 @@ public class GerenciamentoCursoController extends CommonsController {
 
 	@Command
 	public void submitCurso(@BindingParam("window") final Window window) {
-		Clients.showBusy(window, "Validando...");
+		Clients.showBusy(window, "Cadastrando...");
 
 		if (!submitUserListenerExists) {
 			submitUserListenerExists = true;
@@ -167,7 +167,7 @@ public class GerenciamentoCursoController extends CommonsController {
 							if (cursoBusiness.validate(novoCurso, null)) {
 								if (cursoBusiness.salvar(novoCurso)) {
 									allCursos.add(novoCurso);
-									cursos = allCursos;
+									filterCursos = allCursos;
 									notifyCursos();
 									Clients.clearBusy(window);
 									Messagebox.show(
@@ -292,7 +292,7 @@ public class GerenciamentoCursoController extends CommonsController {
 								CursoDAO cursoDAO = new CursoDAO();
 								if (cursoDAO.salvarLista(cursosCSV)) {
 									allCursos.addAll(cursosCSV);
-									cursos = allCursos;
+									filterCursos = allCursos;
 									notifyCursos();
 									Clients.clearBusy(window);
 									window.setVisible(false);

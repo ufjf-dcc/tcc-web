@@ -24,8 +24,8 @@ public class GerenciamentoDepartamentoController extends CommonsController {
 	private DepartamentoBusiness departamentoBusiness = new DepartamentoBusiness();
 	private Departamento novoDepartamento = null;
 	private Map<Integer, Departamento> editTemp = new HashMap<Integer, Departamento>();
-	List<Departamento> allDepartamentos = departamentoBusiness.getDepartamentos();
-	private List<Departamento> departamentos = allDepartamentos;
+	private List<Departamento> allDepartamentos = departamentoBusiness.getDepartamentos();
+	private List<Departamento> filterDepartamentos = allDepartamentos;
 	private String filterString = "";
 	private boolean submitUserListenerExists = false;
 
@@ -33,6 +33,26 @@ public class GerenciamentoDepartamentoController extends CommonsController {
 	public void init() throws HibernateException, Exception {
 		if (!checaPermissao("gcc__"))
 			super.paginaProibida();
+	}
+
+	public List<Departamento> getFilterDepartamentos() {
+		return filterDepartamentos;
+	}
+	
+	public Departamento getNovoDepartamento() {
+		return this.novoDepartamento;
+	}
+
+	public void setNovoDepartamento(Departamento novoDepartamento) {
+		this.novoDepartamento = novoDepartamento;
+	}
+
+	public String getFilterString() {
+		return filterString;
+	}
+
+	public void setFilterString(String filterString) {
+		this.filterString = filterString;
 	}
 
 	@Command
@@ -55,7 +75,7 @@ public class GerenciamentoDepartamentoController extends CommonsController {
 		if (departamentoBusiness.validate(departamento, editTemp.get(departamento.getIdDepartamento())
 				.getCodigoDepartamento())) {
 			if (!departamentoBusiness.editar(departamento))
-				Messagebox.show("Não foi possível editar o curso.", "Erro",
+				Messagebox.show("Não foi possível editar o departamento.", "Erro",
 						Messagebox.OK, Messagebox.ERROR);
 			editTemp.remove(departamento.getIdDepartamento());
 			departamento.setEditingStatus(false);
@@ -74,7 +94,7 @@ public class GerenciamentoDepartamentoController extends CommonsController {
 	@Command
 	public void delete(@BindingParam("departamento") final Departamento departamento) {
 		Messagebox.show(
-				"Você tem certeza que deseja deletar o curso: "
+				"Você tem certeza que deseja deletar o departamento: "
 						+ departamento.getNomeDepartamento() + "?", "Confirmação",
 				Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION,
 				new org.zkoss.zk.ui.event.EventListener() {
@@ -84,12 +104,12 @@ public class GerenciamentoDepartamentoController extends CommonsController {
 							if (departamentoBusiness.exclui(departamento)) {
 								removeFromList(departamento);
 								Messagebox.show(
-										"O curso foi excluído com sucesso.",
+										"O departamento foi excluído com sucesso.",
 										"Sucesso", Messagebox.OK,
 										Messagebox.INFORMATION);
 							} else {
 								Messagebox
-										.show("O curso não foi excluído.",
+										.show("O departamento não foi excluído.",
 												"Erro", Messagebox.OK,
 												Messagebox.ERROR);
 							}
@@ -100,7 +120,7 @@ public class GerenciamentoDepartamentoController extends CommonsController {
 	}
 
 	public void removeFromList(Departamento departamento) {
-		departamentos.remove(departamento);
+		filterDepartamentos.remove(departamento);
 		allDepartamentos.remove(departamento);
 		BindUtils.postNotifyChange(null, null, this, "departamentos");
 	}
@@ -109,39 +129,27 @@ public class GerenciamentoDepartamentoController extends CommonsController {
 		BindUtils.postNotifyChange(null, null, departamento, "editingStatus");
 	}
 
-	public String getFilterString() {
-		return filterString;
-	}
-
-	public void setFilterString(String filterString) {
-		this.filterString = filterString;
-	}
-
 	@Command
 	public void filtra() {
-		departamentos = new ArrayList<Departamento>();
+		filterDepartamentos = new ArrayList<Departamento>();
 		String filter = filterString.toLowerCase().trim();
 		for (Departamento c : allDepartamentos) {
 			if (c.getNomeDepartamento().toLowerCase().contains(filter)) {
-				departamentos.add(c);
+				filterDepartamentos.add(c);
 			}
 		}
 		BindUtils.postNotifyChange(null, null, this, "departamentos");
 	}
 
 	@Command
-	public void addCurso(@BindingParam("window") Window window) {
+	public void addDepartamento(@BindingParam("window") Window window) {
 		this.limpa();
 		window.doModal();
 	}
 
-	public Departamento getNovoDepartamento() {
-		return this.novoDepartamento;
-	}
-
 	@Command
-	public void submitCurso(@BindingParam("window") final Window window) {
-		Clients.showBusy(window, "Validando...");
+	public void submitDepartamento(@BindingParam("window") final Window window) {
+		Clients.showBusy(window, "Cadastrando...");
 
 		if (!submitUserListenerExists) {
 			submitUserListenerExists = true;
@@ -152,18 +160,18 @@ public class GerenciamentoDepartamentoController extends CommonsController {
 							if (departamentoBusiness.validate(novoDepartamento, null)) {
 								if (departamentoBusiness.salvar(novoDepartamento)) {
 									allDepartamentos.add(novoDepartamento);
-									departamentos = allDepartamentos;
-									notifyCursos();
+									filterDepartamentos = allDepartamentos;
+									notifyDepartamentos();
 									Clients.clearBusy(window);
 									Messagebox.show(
-											"Curso adicionado com sucesso!",
+											"Departamento adicionado com sucesso!",
 											"Sucesso", Messagebox.OK,
 											Messagebox.INFORMATION);
 									limpa();
 								} else {
 									Clients.clearBusy(window);
 									Messagebox.show(
-											"Curso não foi adicionado!",
+											"Departamento não foi adicionado!",
 											"Erro", Messagebox.OK,
 											Messagebox.ERROR);
 									departamentoBusiness.clearErrors();
@@ -185,7 +193,7 @@ public class GerenciamentoDepartamentoController extends CommonsController {
 		Events.echoEvent(Events.ON_CLIENT_INFO, window, null);
 	}
 
-	public void notifyCursos() {
+	public void notifyDepartamentos() {
 		BindUtils.postNotifyChange(null, null, this, "departamentos");
 	}
 

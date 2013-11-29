@@ -69,7 +69,7 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 		try {
 			Query query = getSession()
 					.createQuery(
-							"select u from Usuario as u left join fetch u.curso join fetch u.tipoUsuario ORDER BY u.idUsuario");
+							"select u from Usuario as u left join fetch u.departamento left join fetch u.curso left join fetch u.tipoUsuario ORDER BY u.idUsuario");
 
 			List<Usuario> resultados = query.list();
 
