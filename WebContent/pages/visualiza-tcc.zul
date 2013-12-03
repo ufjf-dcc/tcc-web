@@ -6,7 +6,8 @@
 		viewModel="@id('vm') @init('br.ufjf.tcc.controller.VisualizaTCCController')"
 		height="100%">
 		<include src="@load(vm.menu)" />
-		<hlayout style="background-color:#efefef;" height="@load(not empty vm.usuario?'95.5%' : '100%')">
+		<hlayout style="background-color:#efefef;"
+			height="@load(not empty vm.usuario?'95.5%' : '100%')">
 			<vlayout hflex="1" style="margin:15px;">
 				<tabbox id="tb">
 					<tabs id="tabs">
@@ -16,63 +17,70 @@
 					</tabs>
 					<tabpanels>
 						<tabpanel>
-							<vlayout
-								onCreate="@command('setInformacoes', vlayout=self)">
-								<label value="Título"
-									style="font-size: 14px; font-weight: bold; text-align: justify; display: block; margin-top:5px" />
-								<label
-									value="@load(vm.tcc.nomeTCC)" />
-								<label value="Subtítulo" visible="@load(not empty vm.tcc.subNomeTCC)"
-									style="font-size: 14px; font-weight: bold; text-align: justify; display: block; margin-top:5px" />
-								<label
-									value="@load(vm.tcc.subNomeTCC)" />
-								<label value="Autor"
-									style="font-size: 14px; font-weight: bold; text-align: justify; display: block; margin-top:5px" />
-								<label
-									value="@load(vm.tcc.aluno.nomeUsuario)" />
-								<label value="Orientador"
-									style="font-size: 14px; font-weight: bold; text-align: justify; display: block; margin-top:5px" />
-								<label
-									value="@load(vm.tcc.orientador.nomeUsuario)" />
-								<label value="Resumo" hyphen="true" visible="@load(not empty vm.tcc.resumoTCC)"
-									style="font-size: 14px; font-weight: bold; text-align: justify; display: block; margin-top:5px" />
-								<label value="@load(vm.tcc.resumoTCC)" />
-								<hlayout style="margin-top:5px">
-									<label value="Ano: "
-										style="font-weight:bold;" />
+							<div width="100%" height="100%"
+								style="border:1px solid black;overflow:auto;">
+								<vlayout
+									onCreate="@command('setInformacoes', vlayout=self)">
+									<label value="Título"
+										style="font-size: 14px; font-weight: bold; text-align: justify; display: block; margin-top:5px" />
 									<label
-										onCreate="@command('getTccYear', lbl=self)" />
-								</hlayout>
-								<label value="Palavras-chave"
-									visible="@load(not empty vm.tcc.palavrasChave)"
-									style="font-size: 14px; font-weight: bold; text-align: justify; display: block; margin-top:5px" />
-								<label value="@load(vm.tcc.palavrasChave)" />
-								<hlayout
-									style="cursor: pointer; margin-top:5px"
-									visible="@load(vm.canDonwloadFileBanca and not empty vm.tcc.arquivoTCCBanca ? 'true' : 'false')"
-									onClick="@command('downloadPDFBanca', tcc=each)">
-									<image src="/img/pdf.png" />
-									<label value="Obter PDF (Banca)"
-										style="font-size: 14px; font-weight: bold;" />
-								</hlayout>
-								<hlayout
-									style="cursor: pointer; margin-top:5px"
-									visible="@load(not empty vm.tcc.arquivoTCCFinal ? 'true' : 'false')"
-									onClick="@command('downloadPDF', tcc=each)">
-									<image src="/img/pdf.png" />
-									<label value="Obter PDF"
-										style="font-size: 14px; font-weight: bold;" />
-								</hlayout>
-								<hlayout
-									style="cursor: pointer; margin-top:5px"
-									visible="@load(not empty vm.tcc.arquivoExtraTCCFinal ? 'true' : 'false')"
-									onClick="@command('downloadExtra', tcc=each)">
-									<image src="/img/rar.png" />
+										value="@load(vm.tcc.nomeTCC)" />
+									<label value="Subtítulo"
+										visible="@load(not empty vm.tcc.subNomeTCC)"
+										style="font-size: 14px; font-weight: bold; text-align: justify; display: block; margin-top:5px" />
 									<label
-										value="Obter arquivos extras"
-										style="font-size: 14px; font-weight: bold;" />
-								</hlayout>
-							</vlayout>
+										value="@load(vm.tcc.subNomeTCC)" />
+									<label value="Autor"
+										style="font-size: 14px; font-weight: bold; text-align: justify; display: block; margin-top:5px" />
+									<label
+										value="@load(vm.tcc.aluno.nomeUsuario)" />
+									<label value="Orientador"
+										style="font-size: 14px; font-weight: bold; text-align: justify; display: block; margin-top:5px" />
+									<label
+										value="@load(vm.tcc.orientador.nomeUsuario)" />
+									<label value="Resumo" hyphen="true"
+										visible="@load(not empty vm.tcc.resumoTCC)"
+										style="font-size: 14px; font-weight: bold; text-align: justify; display: block; margin-top:5px" />
+									<label
+										value="@load(vm.tcc.resumoTCC)" />
+									<hlayout style="margin-top:5px">
+										<label value="Ano: "
+											style="font-weight:bold;" />
+										<label
+											onCreate="@command('getTccYear', lbl=self)" />
+									</hlayout>
+									<label value="Palavras-chave"
+										visible="@load(not empty vm.tcc.palavrasChave)"
+										style="font-size: 14px; font-weight: bold; text-align: justify; display: block; margin-top:5px" />
+									<label
+										value="@load(vm.tcc.palavrasChave)" />
+									<hlayout
+										style="cursor: pointer; margin-top:5px"
+										visible="@load(vm.canDonwloadFileBanca and not empty vm.tcc.arquivoTCCBanca ? 'true' : 'false')"
+										onClick="@command('downloadPDFBanca', tcc=each)">
+										<image src="/img/pdf.png" />
+										<label value="Obter PDF (Banca)"
+											style="font-size: 14px; font-weight: bold;" />
+									</hlayout>
+									<hlayout
+										style="cursor: pointer; margin-top:5px"
+										visible="@load(not empty vm.tcc.arquivoTCCFinal ? 'true' : 'false')"
+										onClick="@command('downloadPDF', tcc=each)">
+										<image src="/img/pdf.png" />
+										<label value="Obter PDF"
+											style="font-size: 14px; font-weight: bold;" />
+									</hlayout>
+									<hlayout
+										style="cursor: pointer; margin-top:5px"
+										visible="@load(not empty vm.tcc.arquivoExtraTCCFinal ? 'true' : 'false')"
+										onClick="@command('downloadExtra', tcc=each)">
+										<image src="/img/rar.png" />
+										<label
+											value="Obter arquivos extras"
+											style="font-size: 14px; font-weight: bold;" />
+									</hlayout>
+								</vlayout>
+							</div>
 						</tabpanel>
 						<tabpanel
 							visible="@load(vm.canAnswer ? 'true' : 'false')">
@@ -119,8 +127,8 @@
 					visible="@load(vm.canEdit ? 'true' : 'false')"
 					onClick="@command('editTCC')" />
 			</vlayout>
-			<iframe hflex="2" vflex="100" autohide="true"
-					height="100%" onCreate="@command('showTCC', iframe=self)" />
+			<iframe hflex="2" vflex="100" autohide="true" height="100%"
+				onCreate="@command('showTCC', iframe=self)" />
 		</hlayout>
 	</div>
 </zk>

@@ -2,6 +2,8 @@ package br.ufjf.tcc.controller;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -20,16 +22,18 @@ import org.zkoss.zul.Window;
 import br.ufjf.tcc.business.PrazoBusiness;
 import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.business.UsuarioBusiness;
+import br.ufjf.tcc.model.CalendarioSemestre;
 import br.ufjf.tcc.model.Prazo;
 import br.ufjf.tcc.model.TCC;
 import br.ufjf.tcc.model.Usuario;
 
 public class HomeAlunoController extends CommonsController {
-	private int currentPrazo = -1;
+	private int currentPrazo = 0;
 	private List<Prazo> prazos;
 	private TCC newTcc = new TCC();
 	private List<Usuario> orientadores;
 	private PrazoBusiness prazoBusiness = new PrazoBusiness();
+	private String gridTitle = "?";
 
 	public List<Prazo> getPrazos() {
 		return prazos;
@@ -43,10 +47,23 @@ public class HomeAlunoController extends CommonsController {
 		return currentPrazo;
 	}
 
+	public String getGridTitle() {
+		return gridTitle;
+	}
+
 	@Init
 	public void init() {
-		if (getCurrentCalendar() != null) {
+		CalendarioSemestre currentCalendar = getCurrentCalendar();
+		if (currentCalendar != null) {
 			prazos = getCurrentCalendar().getPrazos();
+			Collections.sort(prazos, new Comparator<Prazo>() {
+
+				@Override
+				public int compare(Prazo arg0, Prazo arg1) {
+					return (arg0.getTipo() < arg1.getTipo() ? -1 : (arg0
+							.getTipo() == arg1.getTipo() ? 0 : 1));
+				}
+			});
 
 			DateTime currentDay = new DateTime(new Date());
 
@@ -56,7 +73,15 @@ public class HomeAlunoController extends CommonsController {
 					currentPrazo = i + 1;
 					break;
 				}
-			System.out.println(currentPrazo);
+
+			DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+			gridTitle = "Calendário "
+					+ currentCalendar.getNomeCalendarioSemestre() + " ("
+					+ dateFormat.format(currentCalendar.getInicioSemestre())
+					+ " a "
+					+ dateFormat.format(currentCalendar.getFinalSemestre())
+					+ ")";
 
 		} else {
 			Messagebox
@@ -121,7 +146,8 @@ public class HomeAlunoController extends CommonsController {
 	@Command
 	public void getAction(@BindingParam("tipo") int type,
 			@BindingParam("button") Button button) {
-		button.setLabel(prazoBusiness.getAction(type, (getUsuario().getTcc().size() != 0)));
+		button.setLabel(prazoBusiness.getAction(type, (getUsuario().getTcc()
+				.size() != 0)));
 	}
 
 	@Command

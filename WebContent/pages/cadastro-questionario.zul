@@ -1,11 +1,11 @@
 <zk>
-	<window id="cadquest" title="@load(vm.title)" width="750px"
+	<window id="cadquest" title="@load(vm.title)" width="750px" 
 		border="normal" position="center,center" closable="true"
 		apply="org.zkoss.bind.BindComposer"
 		viewModel="@id('vm') @init('br.ufjf.tcc.controller.CadastroQuestionarioController')"
-		onCancel="self.onClose()" contentStyle="max-height:400px">
+		onCancel="self.onClose()" contentStyle="max-height:400px;" >
 
-		<grid id="questionsGrid" model="@load(vm.questions)">
+		<grid model="@load(vm.questions)" mold="paging" vflex="1">
 			<auxhead>
 				<auxheader colspan="4">
 					<hlayout width="100%" hflex="true">
@@ -31,7 +31,7 @@
 				</auxheader>
 			</auxhead>
 			<columns>
-				<column label="#" width="30px"/>
+				<column label="#" width="30px" />
 				<column label="Título da pergunta" />
 				<column label="Valor" width="70px" />
 				<column label="Ordenação" width="210px" />

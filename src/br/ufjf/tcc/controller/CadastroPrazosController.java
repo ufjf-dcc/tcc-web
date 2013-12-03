@@ -1,6 +1,8 @@
 package br.ufjf.tcc.controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -39,7 +41,15 @@ public class CadastroPrazosController extends CommonsController {
 		if (this.editing) {
 			DateTime currentDay = new DateTime(new Date());
 
-			prazos = calendar.getPrazos();
+			prazos = calendar.getPrazos();			
+			Collections.sort(prazos, new Comparator<Prazo>() {
+
+				@Override
+				public int compare(Prazo arg0, Prazo arg1) {
+					return (arg0.getTipo() < arg1.getTipo() ? -1 : (arg0
+							.getTipo() == arg1.getTipo() ? 0 : 1));
+				}
+			});
 
 			for (int i = prazos.size() - 1; i >= 0; i--)
 				if (currentDay.isAfter(new DateTime(prazos.get(i)
@@ -115,34 +125,44 @@ public class CadastroPrazosController extends CommonsController {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Command
 	public void submit(@BindingParam("window") Window window) {
-		if (editing) {
-			if (!new PrazoBusiness().editList(prazos)) {
-				Messagebox.show("Não foi possível salvar o calendário", "Erro",
-						Messagebox.OK, Messagebox.ERROR);
-				return;
-			}
-		} else {
-			calendar.setPrazos(prazos);
-			if (new CalendarioSemestreBusiness().save(calendar)) {
-				if (!new PrazoBusiness().saveList(prazos)) {
+		PrazoBusiness prazoBusiness = new PrazoBusiness();
+		if (prazoBusiness.validate(prazos)) {
+			if (editing) {
+				if (!new PrazoBusiness().editList(prazos)) {
 					Messagebox.show("Não foi possível salvar o calendário",
 							"Erro", Messagebox.OK, Messagebox.ERROR);
 					return;
 				}
 			} else {
-				Messagebox.show("Não foi possível salvar o calendário", "Erro",
-						Messagebox.OK, Messagebox.ERROR);
-				return;
-			}
-		}
-
-		Messagebox.show("Calendário cadastrado com sucesso.", "Concluído",
-				Messagebox.OK, Messagebox.INFORMATION, new EventListener() {
-					public void onEvent(Event evt) throws InterruptedException {
-						Executions.sendRedirect("/pages/home-professor.zul");
+				calendar.setPrazos(prazos);
+				if (new CalendarioSemestreBusiness().save(calendar)) {
+					if (!new PrazoBusiness().saveList(prazos)) {
+						Messagebox.show("Não foi possível salvar o calendário",
+								"Erro", Messagebox.OK, Messagebox.ERROR);
+						return;
 					}
-				});
-		window.detach();
+				} else {
+					Messagebox.show("Não foi possível salvar o calendário",
+							"Erro", Messagebox.OK, Messagebox.ERROR);
+					return;
+				}
+			}
+
+			Messagebox.show("Calendário cadastrado com sucesso.", "Concluído",
+					Messagebox.OK, Messagebox.INFORMATION, new EventListener() {
+						public void onEvent(Event evt)
+								throws InterruptedException {
+							Executions
+									.sendRedirect("/pages/home-professor.zul");
+						}
+					});
+		} else {
+			String errorMessage = "";
+			for (String error : prazoBusiness.getErrors())
+				errorMessage += error;
+			Messagebox.show(errorMessage, "Erro",
+					Messagebox.OK, Messagebox.ERROR);
+		}
 	}
 
 	@Command

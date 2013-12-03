@@ -1,5 +1,5 @@
 <zk>
-	<window id="cadcal2" title="Cadastrar Calendário" width="600px"
+	<window id="cadcal2" title="Editar Calendário" width="600px"
 		border="normal" position="center,center" closable="true"
 		apply="org.zkoss.bind.BindComposer"
 		viewModel="@id('vm') @init('br.ufjf.tcc.controller.CadastroPrazosController')"
