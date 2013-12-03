@@ -6,8 +6,11 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
 import br.ufjf.tcc.business.UsuarioBusiness;
+import br.ufjf.tcc.library.SendMail;
 
 public class ConfiguracoesController extends CommonsController {
+	private boolean emailChanged = false;
+	private String newEmail;
 
 	@Command
 	public void updateSettings(@BindingParam("pswd1") String pswd1,
@@ -25,13 +28,19 @@ public class ConfiguracoesController extends CommonsController {
 		if (email1.trim().length() > 0) {
 			usuarioBusiness.validateEmail(email1, email2);
 			if (usuarioBusiness.getErrors().size() == 0) {
-				getUsuario().setEmail(email1);
+				newEmail = email1;
+				emailChanged = true;
 			}
 		}
 
 		if (usuarioBusiness.getErrors().size() == 0) {
 			usuarioBusiness.editar(getUsuario());
-			Messagebox.show("Dados atualizados com sucesso!", "Configurações",
+			String stringEmail = "";
+			if (emailChanged) {
+				new SendMail().confirmEmail(getUsuario(), newEmail);
+				stringEmail = " Você precisará confirmar o novo endereço de e-mail dentro de 24 horas.";
+			}
+			Messagebox.show("Dados atualizados com sucesso!" + stringEmail, "Configurações",
 					Messagebox.OK, Messagebox.INFORMATION);
 			settings.detach();
 		} else {

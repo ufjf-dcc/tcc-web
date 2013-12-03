@@ -220,4 +220,8 @@ public class UsuarioBusiness {
 		return usuarioDAO.getAllByDepartamento(departamento);
 	}
 
+	public Usuario getByMatricula(String matricula) {
+		return usuarioDAO.getByMatricula(matricula);
+	}
+
 }

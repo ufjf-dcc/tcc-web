@@ -265,4 +265,25 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 
 		return null;
 	}
+
+	public Usuario getByMatricula(String matricula) {
+		try {
+			Query query = getSession()
+					.createQuery(
+							"SELECT u FROM Usuario AS u WHERE u.matricula = :matricula");
+			query.setParameter("matricula", matricula);
+
+			Usuario resultado = (Usuario) query.uniqueResult();
+
+			getSession().close();
+
+			if (resultado != null)
+				return resultado;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
 }
