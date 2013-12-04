@@ -18,7 +18,8 @@ public interface IUsuarioDAO {
 	public List<Usuario> buscar(String expressão);
 	public List<Permissao> getPermissoes(Usuario usuario);
 	public boolean jaExiste(String matricula, String oldMatricula);
-	public List<Usuario> getOrientadores();
+	public List<Usuario> getProfessores();
 	public List<Usuario> getOrientados(Usuario usuario);
 	List<Usuario> getAllByDepartamento(Departamento departamento);
+	List<Usuario> getProfessoresECoordenadores();
 }

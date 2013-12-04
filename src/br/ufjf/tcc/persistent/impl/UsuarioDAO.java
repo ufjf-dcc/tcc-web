@@ -175,7 +175,27 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<Usuario> getOrientadores() {
+	public List<Usuario> getProfessores() {
+		try {
+			Query query = getSession()
+					.createQuery(
+							"SELECT u FROM Usuario as u WHERE u.tipoUsuario.idTipoUsuario = :professor ORDER BY u.nomeUsuario");
+			query.setParameter("professor", Usuario.PROFESSOR);
+
+			List<Usuario> usuarios = query.list();
+			getSession().close();
+			return usuarios;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<Usuario> getProfessoresECoordenadores() {
 		try {
 			Query query = getSession()
 					.createQuery(

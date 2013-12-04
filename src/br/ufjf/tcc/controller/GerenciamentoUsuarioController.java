@@ -72,18 +72,18 @@ public class GerenciamentoUsuarioController extends CommonsController {
 		empty.setIdCurso(0);
 		empty.setNomeCurso("Nenhum");
 		cursoss.add(empty);
-		cursoss.addAll((new CursoBusiness()).getCursos());
+		cursoss.addAll((new CursoBusiness()).getAll());
 		return cursoss;
 	}
 	
-	/* Método para fornecer a lista de curso às Combobox de departamento. */
+	/* Método para fornecer a lista de departamentos às Combobox de departamento. */
 	private List<Departamento> getAllDepartamentos() {
 		List<Departamento> departamentoss = new ArrayList<Departamento>();
 		Departamento empty = new Departamento();
 		empty.setIdDepartamento(0);
 		empty.setNomeDepartamento("Nenhum");
 		departamentoss.add(empty);
-		departamentoss.addAll((new DepartamentoBusiness()).getDepartamentos());
+		departamentoss.addAll((new DepartamentoBusiness()).getAll());
 		return departamentoss;
 	}
 
@@ -383,10 +383,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 												cursoBusiness
 														.getCursoByCode(campos[5]));
 										usuarioTemp.setAtivo(true);
-										String password = usuarioBusiness
-												.generatePassword();
-										usuarioTemp.setSenha(usuarioBusiness
-												.encripta(password));
+										usuarioTemp.setSenha("123");
 										usuariosCSV.add(usuarioTemp);
 									}
 

@@ -12,7 +12,7 @@ public class DepartamentoDAO extends GenericoDAO implements IDepartamentoDAO {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<Departamento> getAllDepartamentos() {
+	public List<Departamento> getAll() {
 		try {
 			Query query = getSession().createQuery(
 					"SELECT d FROM Departamento as d ORDER BY d.nomeDepartamento");

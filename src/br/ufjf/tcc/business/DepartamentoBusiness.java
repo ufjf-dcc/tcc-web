@@ -42,8 +42,8 @@ public class DepartamentoBusiness {
 	}
 
 	// comunicação com o DepartamentoDAO
-	public List<Departamento> getDepartamentos() {
-		return departamentoDAO.getAllDepartamentos();
+	public List<Departamento> getAll() {
+		return departamentoDAO.getAll();
 	}
 
 	public List<Departamento> buscar(String expressão) {

@@ -157,4 +157,54 @@ public class SendMail {
 		}
 		return false;
 	}
+
+	public boolean onSubmitCoordenador(Usuario newUser, String newPassword) {
+		try {
+			message.setFrom(new InternetAddress("ttest4318@gmail.com"));
+			message.setRecipients(Message.RecipientType.TO,
+					InternetAddress.parse(newUser.getEmail()));
+			message.setSubject("Informação");
+			message.setText("Prezado(a) "
+					+ newUser.getNomeUsuario()
+					+ ",\n\n"
+					+ "Você foi cadastrado no sistema de envio de TCCs da UFJF como coordenador de curso. "
+					+ "Segue, abaixo, a sua senha de acesso. "
+					+ "Recomendamos que a altere no primeiro acesso ao sistema.\n"
+					+ newPassword + "\n\n" + "Atenciosamente,\n" + "(...)");
+
+			Transport.send(message);
+			return true;
+		} catch (AddressException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	public boolean onSetUserAsCoordenador(Usuario coordenador) {
+		try {
+			message.setFrom(new InternetAddress("ttest4318@gmail.com"));
+			message.setRecipients(Message.RecipientType.TO,
+					InternetAddress.parse(coordenador.getEmail()));
+			message.setSubject("Informação");
+			message.setText("Prezado(a) "
+					+ coordenador.getNomeUsuario()
+					+ ",\n\n"
+					+ "Sua função no sistema de envio de TCCs da UFJF foi alterada para coordenador. Acesse o site para mais informações.\n"
+					+ "Atenciosamente,\n" + "(...)");
+
+			Transport.send(message);
+			return true;
+		} catch (AddressException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
 }

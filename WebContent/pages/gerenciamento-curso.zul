@@ -6,7 +6,7 @@
 		viewModel="@id('vm') @init('br.ufjf.tcc.controller.GerenciamentoCursoController')"
 		height="100%" class="centerGrid">
 		<include src="@load(vm.menu)" />
-		<grid 
+		<grid
 			model="@load(vm.filterCursos) @template(each.editingStatus ? 'editable' : 'noneditable')"
 			mold="paging" autopaging="true" vflex="true">
 			<auxhead sclass="text-center">
@@ -25,10 +25,10 @@
 						<div style="float:right">
 							<button label="Cadastrar Curso"
 								onClick="@command('addCurso', window=addCurso)" />
-						
-							<button upload="true"
+
+							<!-- <button upload="true"
 								label="Cadastrar via CSV"
-								onUpload="@command('importCSV', evt=event, window=importCSV)" />
+								onUpload="@command('importCSV', evt=event, window=importCSV)" /> -->
 						</div>
 					</div>
 				</auxheader>
@@ -89,15 +89,33 @@
 							value="@load(vm.novoCurso.nomeCurso) @save(vm.novoCurso.nomeCurso, before='submitCurso')"
 							tabindex="2" id="nomeCurso" width="100%" />
 					</row>
+					<row>
+						<label value="Coordenador: " />
+						<hlayout>
+							<combobox readonly="true" width="100%"
+								model="@load(vm.professores)" autodrop="true"
+								buttonVisible="false"
+								value="@load(vm.coordenador.nomeUsuario)"
+								selectedItem="@bind(vm.coordenador)">
+								<template name="model">
+									<comboitem
+										label="@load(each.nomeUsuario)" />
+								</template>
+							</combobox>
+							<button label="novo" hflex="1"
+								onClick="@command('addCoordenador', window=addCoordenador)" />
+						</hlayout>
+					</row>
 
 				</rows>
 			</grid>
 			<div align="center">
-				<button label="Cadastrar" onClick="@command('submitCurso', window=addCurso)"
-					width="75px" style="margin-top:5px" />
+				<button label="Cadastrar"
+					onClick="@command('submitCurso', window=addCurso)" width="75px"
+					style="margin-top:5px" />
 			</div>
 		</window>
-		<window id="importCSV" title="Cadastro via CSV" visible="false"
+		<!-- <window id="importCSV" title="Cadastro via CSV" visible="false"
 			width="70%" height="70%" border="normal" position="center,center"
 			closable="true"
 			onClose="self.setVisible(false); event.stopPropagation();">
@@ -122,7 +140,62 @@
 
 			<div align="center">
 				<button label="Cadastrar tudo"
-					onClick="@command('submitCSV', window=importCSV)" width="75px" style="margin-top:5px" />
+					onClick="@command('submitCSV', window=importCSV)" width="75px"
+					style="margin-top:5px" />
+			</div>
+		</window> -->
+		<window id="addCoordenador" title="Cadastrar Coordenador"
+			visible="false" width="350px" border="normal"
+			position="center,center" closable="true"
+			onClose="@command('cancelAddCoordenador', window=self, event=event)">
+			<grid>
+				<columns>
+					<column width="125px" />
+					<column />
+				</columns>
+				<rows>
+					<row>
+						<label value="Matrícula" />
+						<textbox value="@bind(vm.coordenador.matricula)"
+							width="100%" />
+					</row>
+
+					<row>
+						<label value="Nome do Usuário:" />
+						<textbox
+							value="@bind(vm.coordenador.nomeUsuario)" width="100%" />
+					</row>
+
+					<row>
+						<label value="Email:" />
+						<textbox value="@bind(vm.coordenador.email)"
+							width="100%" />
+					</row>
+
+					<row>
+						<label value="Titulação:" />
+						<textbox id="txtTitulacao"
+							value="@bind(vm.coordenador.titulacao)" width="100%" />
+					</row>
+
+					<row>
+						<label value="Departamento:" />
+						<combobox id="cmbDepartamento" width="100%"
+							readonly="true" model="@load(vm.departamentos)"
+							value="@load(vm.coordenador.departamento.nomeDepartamento ne null ? vm.coordenador.departamento.nomeDepartamento : 'Nenhum')"
+							selectedItem="@bind(vm.coordenador.departamento)">
+							<template name="model">
+								<comboitem
+									label="@load(each.nomeDepartamento)" />
+							</template>
+						</combobox>
+					</row>
+				</rows>
+			</grid>
+			<div align="center">
+				<button label="Cadastrar como coordenador do novo curso"
+					onClick="@command('submitCoordenador', window=addCoordenador)"
+					style="margin-top:5px" />
 			</div>
 		</window>
 	</div>

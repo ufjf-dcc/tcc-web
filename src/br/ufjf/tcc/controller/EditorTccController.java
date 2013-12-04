@@ -115,7 +115,7 @@ public class EditorTccController extends CommonsController {
 			@BindingParam("butOrientador") Button butOrientador,
 			@BindingParam("cmbOrientador") Combobox cmbOrientador) {
 		if (orientadores.size() <= 1) {
-			orientadores = new UsuarioBusiness().getOrientadores();
+			orientadores = new UsuarioBusiness().getProfessoresECoordenadores();
 			BindUtils.postNotifyChange(null, null, this, "orientadores");
 		}
 		butOrientador.setVisible(false);
@@ -136,7 +136,7 @@ public class EditorTccController extends CommonsController {
 		if (banca == null)
 			banca = new ArrayList<Participacao>();
 		if (orientadores.size() == 1) {
-			List<Usuario> aux = new UsuarioBusiness().getOrientadores();
+			List<Usuario> aux = new UsuarioBusiness().getProfessoresECoordenadores();
 			orientadores.clear();
 			orientadores = new ArrayList<Usuario>();
 			if (banca.size() > 0) {

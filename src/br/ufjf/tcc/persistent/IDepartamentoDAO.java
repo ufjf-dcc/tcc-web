@@ -6,7 +6,7 @@ import br.ufjf.tcc.model.Departamento;
 
 public interface IDepartamentoDAO {
 
-	List<Departamento> getAllDepartamentos();
+	List<Departamento> getAll();
 
 	List<Departamento> buscar(String expressão);
 

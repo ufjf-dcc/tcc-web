@@ -20,7 +20,7 @@ import br.ufjf.tcc.model.Usuario;
 
 public class CadastroCalendarioController extends CommonsController {
 	private CalendarioSemestre newCalendar;
-	private List<Curso> cursos = new CursoBusiness().getCursos();
+	private List<Curso> cursos = new CursoBusiness().getAll();
 	private boolean admin = getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ADMINISTRADOR;
 
 	@Init

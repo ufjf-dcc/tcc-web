@@ -135,7 +135,7 @@ public class UsuarioBusiness {
 			return checksum.getFormattedValue();
 		} catch (NoSuchAlgorithmException ns) {
 			ns.printStackTrace();
-			return senha;
+			return null;
 		}
 	}
 
@@ -164,9 +164,13 @@ public class UsuarioBusiness {
 	public List<Permissao> getPermissoes(Usuario usuario) {
 		return usuarioDAO.getPermissoes(usuario);
 	}
+	
+	public List<Usuario> getProfessores() {
+		return usuarioDAO.getProfessores();
+	}
 
-	public List<Usuario> getOrientadores() {
-		return usuarioDAO.getOrientadores();
+	public List<Usuario> getProfessoresECoordenadores() {
+		return usuarioDAO.getProfessoresECoordenadores();
 	}
 
 	public List<Usuario> getOrientados(Usuario usuario) {

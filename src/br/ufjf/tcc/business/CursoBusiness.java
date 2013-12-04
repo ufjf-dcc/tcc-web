@@ -42,8 +42,8 @@ public class CursoBusiness {
 	}
 
 	// comunicação com o CursoDAO
-	public List<Curso> getCursos() {
-		return cursoDAO.getAllCursos();
+	public List<Curso> getAll() {
+		return cursoDAO.getAll();
 	}
 
 	public List<Curso> buscar(String expressão) {

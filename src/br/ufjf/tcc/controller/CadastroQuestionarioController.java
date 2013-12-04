@@ -32,7 +32,7 @@ public class CadastroQuestionarioController extends CommonsController {
 	QuestionarioBusiness questionarioBusiness = new QuestionarioBusiness();
 	private List<Pergunta> questions = new ArrayList<Pergunta>(),
 			oldQuestions = new ArrayList<Pergunta>();
-	private List<Curso> cursos = new CursoBusiness().getCursos();
+	private List<Curso> cursos = new CursoBusiness().getAll();
 	private String title = "?";
 	private CalendarioSemestre currentCalendar;
 	private boolean admin = getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ADMINISTRADOR,

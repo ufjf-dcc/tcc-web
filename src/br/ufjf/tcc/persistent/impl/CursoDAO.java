@@ -28,10 +28,10 @@ public class CursoDAO extends GenericoDAO implements ICursoDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Curso> getAllCursos() {
+	public List<Curso> getAll() {
 		try {
 			Query query = getSession().createQuery(
-					"SELECT c FROM Curso as c ORDER BY c.nomeCurso");
+					"SELECT c FROM Curso as c ORDER BY c.codigoCurso");
 			List<Curso> cursos = query.list();
 			getSession().close();
 

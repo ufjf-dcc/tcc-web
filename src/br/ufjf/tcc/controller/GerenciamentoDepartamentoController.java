@@ -24,7 +24,7 @@ public class GerenciamentoDepartamentoController extends CommonsController {
 	private DepartamentoBusiness departamentoBusiness = new DepartamentoBusiness();
 	private Departamento novoDepartamento = null;
 	private Map<Integer, Departamento> editTemp = new HashMap<Integer, Departamento>();
-	private List<Departamento> allDepartamentos = departamentoBusiness.getDepartamentos();
+	private List<Departamento> allDepartamentos = departamentoBusiness.getAll();
 	private List<Departamento> filterDepartamentos = allDepartamentos;
 	private String filterString = "";
 	private boolean submitUserListenerExists = false;

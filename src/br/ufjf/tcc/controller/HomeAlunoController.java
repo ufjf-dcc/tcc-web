@@ -100,7 +100,7 @@ public class HomeAlunoController extends CommonsController {
 				Executions.sendRedirect("/pages/editor-tcc.zul");
 			} else {
 				if (orientadores == null) {
-					orientadores = new UsuarioBusiness().getOrientadores();
+					orientadores = new UsuarioBusiness().getProfessoresECoordenadores();
 					BindUtils
 							.postNotifyChange(null, null, this, "orientadores");
 				}
