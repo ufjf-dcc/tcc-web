@@ -1,11 +1,10 @@
 <?page title="Lista Pública de Monografias"?>
 
 <zk>
-<script type="text/javascript">
-    function visualzarTCC(id) {
-        window.open('pages/visualiza-tcc.zul?tcc='+id,'_blank');
-    }
-</script>
+	<script type="text/javascript">
+		function visualzarTCC(id) {
+		window.open('pages/visualiza-tcc.zul?tcc='+id,'_blank'); }
+	</script>
 	<style src="/style.css" />
 	<div apply="org.zkoss.bind.BindComposer"
 		viewModel="@id('vm') @init('br.ufjf.tcc.controller.ListaPublicaController')"
@@ -20,34 +19,7 @@
 			<auxhead>
 				<auxheader colspan="4">
 					<div>
-						<hlayout
-							style="float:left;">
-							<label value="Pesquisar: " />
-							<textbox id="filtro"
-								value="@bind(vm.filterString)" />
-							<separator orient="vertical" spacing="3px" />
-
-							<label value="Ano: "
-								style="margin-left:10px;" />
-							<combobox id="cmbYear" width="150px"
-								readonly="true" model="@load(vm.years)"
-								value="@load(filterYear)" selectedItem="@bind(vm.filterYear)">
-								<template name="model">
-									<comboitem label="@load(each)" />
-								</template>
-							</combobox>
-							<separator orient="vertical" spacing="3px" />
-
-							<button label="Filtrar"
-								width="60px" onClick="@command('filtra')"
-								style="margin-left:20px;" />
-
-							<image src="/img/help.gif"
-								tooltip="filterHelp" style="cursor: help" />
-
-						</hlayout>
-						<hlayout
-							style="float:right;">
+						<hlayout style="float:left;">
 							<label value="Curso: "
 								style="margin-left=10px" />
 							<combobox id="cmbCurso" width="220px"
@@ -59,8 +31,30 @@
 										label="@load(each.nomeCurso)" />
 								</template>
 							</combobox>
+							<separator orient="vertical" spacing="1px" />
+							
+							<label value="Pesquisar: " />
+							<textbox id="filtro"
+								value="@bind(vm.filterString)" />
+							<separator orient="vertical" spacing="1px" />
+							
+							<label value="Ano: "
+								style="margin-left:10px;" />
+							<combobox id="cmbYear" width="150px"
+								readonly="true" model="@load(vm.years)"
+								value="@load(filterYear)" selectedItem="@bind(vm.filterYear)">
+								<template name="model">
+									<comboitem label="@load(each)" />
+								</template>
+							</combobox>
+							<separator orient="vertical" spacing="1px" />
+
+							<button label="Filtrar" width="60px"
+								onClick="@command('filtra')" style="margin-left:20px;" />
+
 							<image src="/img/help.gif"
-								tooltip="cursoHelp" style="cursor: help" />
+								tooltip="filterHelp" style="cursor: help" />
+
 						</hlayout>
 					</div>
 				</auxheader>
@@ -73,7 +67,8 @@
 				<column hflex="1" label="Extras" />
 			</columns>
 			<template name="lista">
-				<row xmlns:w="client" w:onClick="visualzarTCC(${each.idTCC});">
+				<row xmlns:w="client"
+					w:onClick="visualzarTCC(${each.idTCC});">
 					<div>
 						<label value="@load(each.nomeTCC)"
 							tooltip="${each.idTCC}, position=at_pointer" />
@@ -113,20 +108,14 @@
 	</div>
 	<popup id="filterHelp">
 		<html>
+
 			
-			<![CDATA[ Permite filtrar a lista de TCCs com o termo e o
+			<![CDATA[ Permite filtrar a lista de TCCs com o curso, o termo e o
 			ano <br> escolhidos. O termo pode ser, por exemplo:
 			<ul><li>Autor ou orientador;</li> <li>Nome do TCC;</li>
 			<li>Palavra-chave;</li> <li>Conteúdo dos resumos.</li>
 			<ul>]]>
 			
-		</html>
-	</popup>
-	<popup id="cursoHelp">
-		<html>
-			
-			<![CDATA[ Permite filtrar a lista de TCCs <br> com o curso
-			desejado.]]>
 			
 		</html>
 	</popup>

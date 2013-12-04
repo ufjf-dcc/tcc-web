@@ -87,6 +87,8 @@ public class UsuarioBusiness {
 				errors.add("Um professor não deve pertencer a um curso.\n");
 			break;
 		case 3:
+			if(getCoordenadorByCurso(usuario.getCurso()) != null)
+				errors.add("Já existe um coordenador para o curso escolhido.\n");
 			if (usuario.getCurso() == null)
 				errors.add("Um coordenador deve pertencer a um curso.\n");
 			if (usuario.getDepartamento() == null)
@@ -226,6 +228,10 @@ public class UsuarioBusiness {
 
 	public Usuario getByMatricula(String matricula) {
 		return usuarioDAO.getByMatricula(matricula);
+	}
+	
+	public Usuario getCoordenadorByCurso(Curso curso) {
+		return usuarioDAO.getCoordenadorByCurso(curso);
 	}
 
 }
