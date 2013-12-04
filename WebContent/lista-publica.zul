@@ -19,9 +19,9 @@
 			<auxhead>
 				<auxheader colspan="4">
 					<div>
-						<hlayout style="float:left;">
+						<hlayout style="float:left;padding-left:10px;">
 							<label value="Curso: "
-								style="margin-left=10px" />
+								style="margin-left=10px;margin-top:6px;" />
 							<combobox id="cmbCurso" width="220px"
 								readonly="true" model="@load(vm.cursos)"
 								value="Selecione um Curso" selectedItem="@bind(vm.curso)"
@@ -31,15 +31,15 @@
 										label="@load(each.nomeCurso)" />
 								</template>
 							</combobox>
-							<separator orient="vertical" spacing="1px" />
-							
-							<label value="Pesquisar: " />
+						</hlayout>
+						<hlayout style="float:right;padding-right:10px;">							
+							<label value="Pesquisar: " style="margin-top:6px;"/>
 							<textbox id="filtro"
 								value="@bind(vm.filterString)" />
 							<separator orient="vertical" spacing="1px" />
 							
 							<label value="Ano: "
-								style="margin-left:10px;" />
+								style="margin-left:10px;margin-top:6px;" />
 							<combobox id="cmbYear" width="150px"
 								readonly="true" model="@load(vm.years)"
 								value="@load(filterYear)" selectedItem="@bind(vm.filterYear)">
