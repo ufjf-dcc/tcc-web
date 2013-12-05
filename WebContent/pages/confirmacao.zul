@@ -1,0 +1,17 @@
+<?page title="Confirmação de E-mail" contentType="text/html;charset=UTF-8"?>
+<zk>
+	<div align="center" apply="org.zkoss.bind.BindComposer"
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.ConfirmacaoEmailController')"
+		style="position:absolute; top:50%;
+margin-top:-92px; left:50%; margin-left:-150px;">
+		<panel title="Confirmação" width="300px" border="normal">
+			<panelchildren>
+				<vlayout>
+					<label value="@load(vm.message)" />
+					<button label="Ir para a Página Inicial"
+						href="/index.zul" style="margin-bottom:5px" />
+				</vlayout>
+			</panelchildren>
+		</panel>
+	</div>
+</zk>

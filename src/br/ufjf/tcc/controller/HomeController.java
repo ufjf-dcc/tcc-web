@@ -8,7 +8,6 @@ public class HomeController extends CommonsController {
 
 	@Init
 	public void init() throws HibernateException, Exception{
-		super.testaLogado();
 		if(!checaPermissao("hc__")) super.paginaProibida();
 	}
 

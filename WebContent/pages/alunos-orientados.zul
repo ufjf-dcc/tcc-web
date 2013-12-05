@@ -1,9 +1,10 @@
 <?page title="Alunos Orientados"?>
+<?init class="br.ufjf.tcc.controller.AuthController"?>
 <zk>
 	<style src="/widgets/grid/inline_row_editing/style.css" />
 	<div apply="org.zkoss.bind.BindComposer"
 		viewModel="@id('vm') @init('br.ufjf.tcc.controller.AlunosOrientadosController')">
-		<include src="@bind(vm.menu)" />
+		<include src="@load(vm.menu)" />
 		<hlayout spacing="0" height="400px">
 			<listbox vflex="true" hflex="1"
 				model="@load(vm.usuarios)" selectedItem="@bind(vm.selected)" >

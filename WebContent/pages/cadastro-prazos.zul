@@ -1,0 +1,39 @@
+<zk>
+	<window id="cadcal2" title="Editar Calendário" width="600px"
+		border="normal" position="center,center" closable="true"
+		apply="org.zkoss.bind.BindComposer"
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.CadastroPrazosController')"
+		onCancel="self.onClose()" >
+
+		<grid model="@load(vm.prazos)">
+			<columns>
+				<column label="#" width="30px" />
+				<column label="Data" width="110px" />
+				<column label="Tipo do prazo" />
+			</columns>
+			<template name="model">
+				<row>
+					<label value="${forEachStatus.index + 1}º " />
+					<datebox width="100%" value="@bind(each.dataFinal)"
+						format="dd/MM/yyyy" constraint="no empty"
+						disabled="@load(forEachStatus.index lt vm.currentPrazo ? 'true' : 'false')" />
+					<label 
+						onCreate="@command('getDescription', label=self, type=each.tipo)"/>
+				</row>
+			</template>
+		</grid>
+
+		<hlayout width="98%" style="margin:5px;">
+			<div hflex="1">
+				<button label="Voltar"
+					onClick="@command('goBack', window=cadcal2)"
+					visible="@load(vm.editing ? 'false' : 'true')" />
+			</div>
+			<div hflex="1" align="right">
+				<button
+					label="@load(vm.editing ? 'Atualizar calendário' : 'Cadastrar calendário')"
+					onClick="@command('submit', window=cadcal2)" />
+			</div>
+		</hlayout>
+	</window>
+</zk>

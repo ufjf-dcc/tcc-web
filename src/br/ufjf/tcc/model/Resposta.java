@@ -38,11 +38,11 @@ public class Resposta implements Serializable {
 	private int idResposta;
 
 	/**
-	 * Campo com a resposta. Relaciona com a coluna {@code resposta} do banco
-	 * através da anotação {@code @Column(name = "resposta", nullable = false)}.
+	 * Campo com a resposta. Relaciona com a coluna {@code nota} do banco
+	 * através da anotação {@code @Column(name = "nota", nullable = false)}.
 	 */
-	@Column(name = "resposta", nullable = false)
-	private float resposta;
+	@Column(name = "nota", nullable = false)
+	private float nota;
 
 	/**
 	 * Relacionamento N para 1 entre Resposta e Pergunta. Mapeando
@@ -74,12 +74,12 @@ public class Resposta implements Serializable {
 		this.idResposta = idResposta;
 	}
 
-	public float getResposta() {
-		return resposta;
+	public float getNota() {
+		return nota;
 	}
 
-	public void setResposta(float resposta) {
-		this.resposta = resposta;
+	public void setNota(float nota) {
+		this.nota = nota;
 	}
 
 	public Pergunta getPergunta() {

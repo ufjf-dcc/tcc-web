@@ -24,6 +24,8 @@ import org.hibernate.annotations.GenericGenerator;
 @Entity
 @Table(name = "Usuario")
 public class Usuario implements Serializable {
+	public static final int ALUNO = 1, PROFESSOR = 2, COORDENADOR = 3,
+			ADMINISTRADOR = 4;
 
 	private static final long serialVersionUID = 1L;
 
@@ -74,8 +76,16 @@ public class Usuario implements Serializable {
 	private String nomeUsuario;
 
 	/**
-	 * Campo com a titulacao do professor/coordenador. Relaciona com a coluna
-	 * {@code titulacao} do banco através da anotação
+	 * Campo com a situação do usuário (ativo ou inativo). Relaciona com a
+	 * coluna {@code ativo} do banco através da anotação
+	 * {@code @Column(name = "ativo", nullable = false)}.
+	 */
+	@Column(name = "ativo", nullable = false)
+	private boolean ativo;
+
+	/**
+	 * Campo com a informação. Relaciona com a coluna {@code titulacao} do banco
+	 * através da anotação
 	 * {@code @Column(name = "titulacao", length = 45, nullable = true)}.
 	 */
 	@Column(name = "titulacao", length = 45, nullable = true)
@@ -89,7 +99,7 @@ public class Usuario implements Serializable {
 	 * 
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "tipoUsuario", nullable = false)
+	@JoinColumn(name = "idTipoUsuario", nullable = false)
 	private TipoUsuario tipoUsuario;
 
 	/**
@@ -102,6 +112,17 @@ public class Usuario implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "idCurso", nullable = true)
 	private Curso curso;
+
+	/**
+	 * Relacionamento N para 1 entre Usuario e Departamento. Mapeando
+	 * {@link Departamento} na variável {@code Departamento} e retorno do tipo
+	 * {@code LAZY} que indica que não será carregado automáticamente este dado
+	 * quando retornarmos o {@link Usuario}.
+	 * 
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "idDepartamento", nullable = true)
+	private Departamento departamento;
 
 	/**
 	 * Relacionamento 1 para N entre Usuario e TCC. Mapeada em {@link TCC} pela
@@ -135,7 +156,22 @@ public class Usuario implements Serializable {
 
 	@Transient
 	private boolean editingStatus;
-	
+
+	public Usuario() {
+		super();
+	}
+
+	public Usuario(String matricula, String email, String nomeUsuario,
+			String titulacao, TipoUsuario tipoUsuario, Curso curso) {
+		super();
+		this.matricula = matricula;
+		this.email = email;
+		this.nomeUsuario = nomeUsuario;
+		this.titulacao = titulacao;
+		this.tipoUsuario = tipoUsuario;
+		this.curso = curso;
+	}
+
 	public int getIdUsuario() {
 		return idUsuario;
 	}
@@ -176,6 +212,14 @@ public class Usuario implements Serializable {
 		this.nomeUsuario = nomeUsuario;
 	}
 
+	public boolean isAtivo() {
+		return ativo;
+	}
+
+	public void setAtivo(boolean ativo) {
+		this.ativo = ativo;
+	}
+
 	public String getTitulacao() {
 		return titulacao;
 	}
@@ -197,10 +241,7 @@ public class Usuario implements Serializable {
 	}
 
 	public void setCurso(Curso curso) {
-		if(curso.getIdCurso() == 0)
-			this.curso = null;
-		else 
-			this.curso = curso;
+		this.curso = curso;
 	}
 
 	public List<TCC> getTcc() {
@@ -226,13 +267,36 @@ public class Usuario implements Serializable {
 	public void setParticipacoes(List<Participacao> participacoes) {
 		this.participacoes = participacoes;
 	}
-	
+
 	public boolean getEditingStatus() {
 		return editingStatus;
 	}
-	
+
 	public void setEditingStatus(boolean editingStatus) {
 		this.editingStatus = editingStatus;
+	}
+
+	public Departamento getDepartamento() {
+		return departamento;
+	}
+
+	public void setDepartamento(Departamento departamento) {
+		this.departamento = departamento;
+	}
+
+	public void copy(Usuario another) {
+		this.idUsuario = another.idUsuario;
+		this.matricula = another.matricula;
+		this.senha = another.senha;
+		this.email = another.email;
+		this.nomeUsuario = another.nomeUsuario;
+		this.titulacao = another.titulacao;
+		this.tipoUsuario = another.tipoUsuario;
+		this.curso = another.curso;
+		this.tcc = another.tcc;
+		this.orienta = another.orienta;
+		this.participacoes = another.participacoes;
+		this.editingStatus = another.editingStatus;
 	}
 
 }

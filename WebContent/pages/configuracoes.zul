@@ -1,0 +1,35 @@
+<?page title="Confirmação de Cadastro" contentType="text/html;charset=UTF-8"?>
+<?init class="br.ufjf.tcc.controller.AuthController"?>
+<zk>
+	<window id="settings" title="Configurações da Conta" width="350px"
+		border="normal" position="center,center" closable="true"
+		apply="org.zkoss.bind.BindComposer"
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.ConfiguracoesController')"
+		onCancel="self.onClose()" >
+
+		<grid>
+			<rows>
+				<row>
+					<label value="Nova senha: " />
+					<textbox id="pswd1" type="password" width="100%" />
+				</row>
+				<row>
+					<label value="Re-digite a nova senha: " />
+					<textbox id="pswd2" type="password" width="100%" />
+				</row>
+				<row>
+					<label value="Novo e-mail: " />
+					<textbox id="email1" width="100%" />
+				</row>
+				<row>
+					<label value="Re-digite o novo e-mail: " />
+					<textbox id="email2" width="100%" />
+				</row>
+			</rows>
+		</grid>
+		<div align="center" style="margin-top:3px;">
+			<button label="Salvar"
+				onClick="@command('updateSettings', pswd1=pswd1.value, pswd2=pswd2.value, email1=email1.value, email2=email2.value, window=settings)" />
+		</div>
+	</window>
+</zk>

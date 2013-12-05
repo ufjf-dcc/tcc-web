@@ -13,13 +13,13 @@ import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zul.Window;
 
 import br.ufjf.tcc.business.UsuarioBusiness;
-import br.ufjf.tcc.model.Permissoes;
+import br.ufjf.tcc.model.Permissao;
 import br.ufjf.tcc.model.Usuario;
 
 public class PermissoesUsuarioController extends CommonsController {
 	private UsuarioBusiness usuarioBusiness = new UsuarioBusiness();
 	private Usuario usuarioSelecionado;
-	private List<Permissoes> permissoes;
+	private List<Permissao> permissoes;
 	
 	@Init
     public void init(@ContextParam(ContextType.VIEW) Component view,
@@ -38,11 +38,11 @@ public class PermissoesUsuarioController extends CommonsController {
 		this.usuarioSelecionado = usuarioSelecionado;
 	}
 
-	public List<Permissoes> getPermissoes() {
+	public List<Permissao> getPermissoes() {
 		return permissoes;
 	}
 
-	public void setPermissoes(List<Permissoes> permissoes) {
+	public void setPermissoes(List<Permissao> permissoes) {
 		this.permissoes = permissoes;
 	}
 

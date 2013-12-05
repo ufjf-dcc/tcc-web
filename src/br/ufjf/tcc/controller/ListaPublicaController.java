@@ -2,7 +2,8 @@ package br.ufjf.tcc.controller;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 import org.zkoss.bind.BindUtils;
@@ -10,10 +11,12 @@ import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zhtml.Filedownload;
-import org.zkoss.zk.ui.Sessions;
+import org.zkoss.zul.Label;
+import org.zkoss.zul.Messagebox;
 
 import br.ufjf.tcc.business.CursoBusiness;
 import br.ufjf.tcc.business.TCCBusiness;
+import br.ufjf.tcc.library.FileManager;
 import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.model.TCC;
 
@@ -21,10 +24,12 @@ public class ListaPublicaController extends CommonsController {
 
 	private Curso curso = null;
 	private List<Curso> cursos = this.getAllCursos();
-	private String emptyMessage = "Selecione um Curso na caixa acima.";
-	private List<TCC> allTccs = null;
-	private List<TCC> filterTccs = allTccs;
+	private List<String> years;
+	private String emptyMessage = "Selecione um curso na caixa acima.";
+	private List<TCC> tccsByCurso = null;
+	private List<TCC> filterTccs = tccsByCurso;
 	private String filterString = "";
+	private String filterYear = "Todos";
 
 	public String getEmptyMessage() {
 		return emptyMessage;
@@ -42,29 +47,67 @@ public class ListaPublicaController extends CommonsController {
 		this.curso = curso;
 	}
 
+	public List<String> getYears() {
+		return years;
+	}
+
+	public void updateYears() {
+		years = new ArrayList<String>();
+		if (tccsByCurso != null && tccsByCurso.size() > 0) {
+			for (TCC tcc : tccsByCurso) {
+				Calendar cal = Calendar.getInstance();
+				cal.setTimeInMillis(tcc.getDataEnvioFinal().getTime());
+				int year = cal.get(Calendar.YEAR);
+				if (!years.contains("" + year))
+					years.add("" + year);
+			}
+			Collections.sort(years, Collections.reverseOrder());
+		}
+		years.add(0, "Todos");
+	}
+
+	public String getFilterYear() {
+		return filterYear;
+	}
+
+	public void setFilterYear(String filterYear) {
+		this.filterYear = filterYear;
+	}
+
 	private List<Curso> getAllCursos() {
 		List<Curso> cursoss = new ArrayList<Curso>();
 		Curso empty = new Curso();
 		empty.setIdCurso(0);
 		empty.setNomeCurso("Selecione um Curso");
 		cursoss.add(empty);
-		cursoss.addAll((new CursoBusiness()).getCursos());
+		List<Curso> cursos = (new CursoBusiness()).getAll();
+		if (cursos != null)
+			cursoss.addAll(cursos);
 		return cursoss;
 	}
 
-	@NotifyChange("emptyMessage")
+	@NotifyChange({ "emptyMessage", "years", "filterYear" })
 	@Command
 	public void changeCurso() {
 		if (curso.getIdCurso() > 0) {
-			allTccs = new TCCBusiness().getPublicListByCurso(curso);
-			if(allTccs == null)
-				emptyMessage = "Nenhuma monografica encontrada para o curso de "+ curso.getNomeCurso();
-			else
-				emptyMessage = "Sem resultados para seu filtro no curso de "+ curso.getNomeCurso();
+			tccsByCurso = new TCCBusiness().getPublicListByCurso(curso);
+			if (tccsByCurso == null || tccsByCurso.size() == 0)
+				emptyMessage = "Nenhuma monografia encontrada para o curso de "
+						+ curso.getNomeCurso();
+			else {
+				emptyMessage = "Sem resultados para seu filtro no curso de "
+						+ curso.getNomeCurso();
+				filterTccs = tccsByCurso;
+
+			}
 		} else {
-			emptyMessage = "Selecione um Curso na caixa acima.";
-			allTccs = null;
+			emptyMessage = "Selecione um curso na caixa acima.";
+			tccsByCurso = null;
 		}
+		updateYears();
+		if (!years.contains(filterYear))
+			filterYear = "Todos";
+
 		this.filtra();
 		BindUtils.postNotifyChange(null, null, this, "filterTccs");
 	}
@@ -81,45 +124,71 @@ public class ListaPublicaController extends CommonsController {
 		this.filterString = filterString;
 	}
 
+	public String getTccYear(@BindingParam("tcc") TCC tcc) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(tcc.getDataEnvioFinal().getTime());
+		return "" + cal.get(Calendar.YEAR);
+	}
+
+	@Command
+	public void getEachTccYear(@BindingParam("tcc") TCC tcc,
+			@BindingParam("lbl") Label lbl) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(tcc.getDataEnvioFinal().getTime());
+		lbl.setValue("" + cal.get(Calendar.YEAR));
+	}
+
 	@NotifyChange("filterTccs")
 	@Command
 	public void filtra() {
 		String filter = filterString.toLowerCase().trim();
-		if (filter != "" && allTccs != null) {
+		if (tccsByCurso != null) {
 			List<TCC> temp = new ArrayList<TCC>();
-			for (Iterator<TCC> i = allTccs.iterator(); i.hasNext();) {
-				TCC tmp = i.next();
-				if (tmp.getNomeTCC().toLowerCase().contains(filter)
-						|| tmp.getAluno().getNomeUsuario().toLowerCase()
+			for (TCC tcc : tccsByCurso) {
+				if ((filterYear == "Todos" || filterYear
+						.contains(getTccYear(tcc)))
+						&& (filter == "" || (tcc.getNomeTCC().toLowerCase()
 								.contains(filter)
-						|| tmp.getOrientador().getNomeUsuario().toLowerCase()
-								.contains(filter)
-						|| tmp.getPalavrasChave().toLowerCase()
-								.contains(filter)
-						|| tmp.getResumoTCC().toLowerCase().contains(filter)) {
-					temp.add(tmp);
-				}
+								|| tcc.getAluno().getNomeUsuario()
+										.toLowerCase().contains(filter)
+								|| tcc.getOrientador().getNomeUsuario()
+										.toLowerCase().contains(filter)
+								|| tcc.getPalavrasChave().toLowerCase()
+										.contains(filter) || tcc.getResumoTCC()
+								.toLowerCase().contains(filter))))
+					temp.add(tcc);
 			}
 
 			filterTccs = temp;
 		} else {
-			filterTccs = allTccs;
+			filterTccs = tccsByCurso;
 		}
 	}
 
 	@Command
 	public void downloadPDF(@BindingParam("tcc") TCC tcc) {
-		InputStream is = Sessions.getCurrent().getWebApp()
-				.getResourceAsStream("files/" + tcc.getArquivoTCCFinal());
-		Filedownload.save(is, "application/pdf", tcc.getNomeTCC() + ".pdf");
+		InputStream is = FileManager
+				.getFileInputSream(tcc.getArquivoTCCFinal());
+		if (is != null)
+			Filedownload.save(is, "application/pdf", tcc.getNomeTCC() + ".pdf");
+		else
+			Messagebox.show("O PDF não foi encontrado!", "Erro", Messagebox.OK,
+					Messagebox.ERROR);
 	}
 
 	@Command
 	public void downloadExtra(@BindingParam("tcc") TCC tcc) {
-		InputStream is = Sessions.getCurrent().getWebApp()
-				.getResourceAsStream("files/" + tcc.getArquivoExtraTCCFinal());
-		Filedownload.save(is, "application/x-rar-compressed", tcc.getNomeTCC()
-				+ ".rar");
+		if (tcc.getArquivoExtraTCCFinal() != null
+				&& tcc.getArquivoExtraTCCFinal() != "") {
+			InputStream is = FileManager.getFileInputSream(tcc
+					.getArquivoExtraTCCFinal());
+			if (is != null)
+				Filedownload.save(is, "application/x-rar-compressed",
+						tcc.getNomeTCC() + ".rar");
+			else
+				Messagebox.show("O RAR não foi encontrado!", "Erro",
+						Messagebox.OK, Messagebox.ERROR);
+		}
 	}
 
 }

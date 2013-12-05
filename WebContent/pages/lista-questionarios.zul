@@ -1,0 +1,24 @@
+<zk>
+	<window id="listquest" title="Questionários" width="300px"
+		border="normal" position="center,center"
+		closable="true" apply="org.zkoss.bind.BindComposer"
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.ListaQuestionariosController', cmb=cmbCurso)"
+		onCancel="self.onClose()" >
+
+		<grid model="@load(vm.questionaries)"
+			emptyMessage="Não existem questionários antigos">
+			<columns>
+				<column label="id" />
+				<column label="Calendário" />
+			</columns>
+			<template name="model">
+				<row
+					onClick="@command('select', quest=each, window=listquest)">
+					<label value="@load(each.idQuestionario)" />
+					<label
+						value="@load(each.calendarioSemestre.nomeCalendarioSemestre)" />
+				</row>
+			</template>
+		</grid>
+	</window>
+</zk>

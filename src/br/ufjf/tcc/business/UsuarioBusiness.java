@@ -1,82 +1,123 @@
 package br.ufjf.tcc.business;
 
 import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.Random;
 
 import jonelo.jacksum.JacksumAPI;
 import jonelo.jacksum.algorithm.AbstractChecksum;
-
-import org.hibernate.HibernateException;
-
 import br.ufjf.tcc.library.SessionManager;
-import br.ufjf.tcc.model.Permissoes;
+import br.ufjf.tcc.model.Curso;
+import br.ufjf.tcc.model.Departamento;
+import br.ufjf.tcc.model.Permissao;
 import br.ufjf.tcc.model.Usuario;
 import br.ufjf.tcc.persistent.impl.UsuarioDAO;
 
 public class UsuarioBusiness {
-	public Map<String,String> errors = new HashMap<String, String>();
-	
-	//validação dos formulários
-	public boolean validate(Usuario usuario) {
-		errors.clear();		
-		
+	private UsuarioDAO usuarioDAO;
+	private List<String> errors = new ArrayList<String>();
+
+	public UsuarioBusiness() {
+		this.errors = new ArrayList<String>();
+		this.usuarioDAO = new UsuarioDAO();
+	}
+
+	public List<String> getErrors() {
+		return errors;
+	}
+
+	// validação dos formulários
+	public boolean validate(Usuario usuario, String oldMatricula) {
+		errors.clear();
+
+		validarMatricula(usuario.getMatricula(), oldMatricula);
 		validarNome(usuario.getNomeUsuario());
-		validarMatricula(usuario.getMatricula());
-		validarEmail(usuario.getEmail());
-		
-		if (errors.size() == 0)
-			return !jaExiste(usuario.getMatricula()) ? true : false;
-			
-		return false;
+		validateEmail(usuario.getEmail(), null);
+		validateTipo(usuario);
+
+		return errors.size() == 0;
 	}
-	
+
 	public void validarNome(String nomeUsuario) {
-		if(nomeUsuario == null)
-			errors.put("nomeUsuario", "Informe o nome");
-		else
-			if(nomeUsuario.trim().length() == 0)
-				errors.put("nomeUsuario", "Informe o nome");
+		if (nomeUsuario == null || nomeUsuario.trim().length() == 0)
+			errors.add("É necessário informar o nome;\n");
 	}
-	
-	public void validarMatricula(String matricula) {
-		if(matricula == null)
-			errors.put("matricula", "Informe a matrícula");
+
+	public void validarMatricula(String matricula, String oldMatricula) {
+		if (matricula == null || matricula.trim().length() == 0)
+			errors.add("É necessário informar a matrícula;\n");
 		else
-			if(matricula.trim().length() == 0)
-				errors.put("matricula", "Informe a matrícula");
+			jaExiste(matricula, oldMatricula);
 	}
-	
-	public void validarEmail(String email) {
-		if(email == null)
-			errors.put("email", "Informe o e-mail");
-		else
-			if(email.trim().length() == 0)
-				errors.put("email", "Informe o e-mail");
-			else
-				if(email == null || !email.matches(".+@.+\\.[a-z]+"))
-					errors.put("email", "E-mail inválido");
+
+	public void validateEmail(String email, String retype) {
+		if (email == null || email.trim().length() == 0)
+			errors.add("É necessário informar o e-mail;\n");
+		else if (email == null || !email.matches(".+@.+\\.[a-z]+"))
+			errors.add("Informe um e-mail válido;\n");
+		if (retype != null)
+			if (!email.equals(retype))
+				errors.add("Os emails não são iguais. Tente novamente.\n");
 	}
-	
-	//comunicação com o CursoDAO
-	public boolean login(String matricula, String senha)
-			throws HibernateException, Exception {
-		UsuarioDAO usuarioDAO = new UsuarioDAO();
-		Usuario usuario = usuarioDAO.retornaUsuario(matricula, this.encripta(senha));
+
+	public void validatePasswords(String password, String retype) {
+		if (password == null || password.trim().length() == 0 || retype == null
+				|| retype.trim().length() == 0)
+			errors.add("A senha não pode estar em branco;\n");
+		else if (password.trim().length() < 6)
+			errors.add("A senha deve conter ao menos 6 caracteres;\n");
+		else if ((!password.equals(retype))) {
+			errors.add("As senhas não são iguais. Tente novamente.\n");
+		}
+	}
+
+	public void validateTipo(Usuario usuario) {
+		switch (usuario.getTipoUsuario().getIdTipoUsuario()) {
+		case 1:
+			if (usuario.getCurso() == null)
+				errors.add("Um aluno deve pertencer a um curso.\n");
+			if (usuario.getDepartamento() != null)
+				errors.add("Um aluno não pode pertencer a um departamento.\n");
+			break;
+		case 2:
+			if (usuario.getDepartamento() == null)
+				errors.add("Um professor deve pertencer a um departamento.\n");
+			if (usuario.getCurso() != null)
+				errors.add("Um professor não deve pertencer a um curso.\n");
+			break;
+		case 3:
+			if(getCoordenadorByCurso(usuario.getCurso()) != null)
+				errors.add("Já existe um coordenador para o curso escolhido.\n");
+			if (usuario.getCurso() == null)
+				errors.add("Um coordenador deve pertencer a um curso.\n");
+			if (usuario.getDepartamento() == null)
+				errors.add("Um coordenador deve pertencer a um departamento.\n");
+		}
+	}
+
+	// comunicação com o UsuarioDAO
+	public boolean login(String matricula, String senha) {
+		errors.clear();
+		Usuario usuario = usuarioDAO.retornaUsuario(matricula,
+				this.encripta(senha));
 
 		if (usuario != null) {
-			SessionManager.setAttribute("usuario", usuario);
-			return true;
+			if (usuario.isAtivo()) {
+				SessionManager.setAttribute("usuario", usuario);
+				return true;
+			} else {
+				errors.add("Seu casdastro não está ativo. Por favor contate o coordenador de seu curso.");
+				return false;
+			}
 		}
 
+		errors.add("Usuário ou Senha inválidos!");
 		return false;
 	}
 
-	public boolean checaLogin(Usuario usuario) throws HibernateException,
-			Exception {
+	public boolean checaLogin(Usuario usuario) {
 		if (usuario != null) {
-			UsuarioDAO usuarioDAO = new UsuarioDAO();
 			usuario = usuarioDAO.retornaUsuario(usuario.getMatricula(),
 					usuario.getSenha());
 
@@ -96,57 +137,101 @@ public class UsuarioBusiness {
 			return checksum.getFormattedValue();
 		} catch (NoSuchAlgorithmException ns) {
 			ns.printStackTrace();
-			return senha;
+			return null;
 		}
 	}
-	
-	public List<Usuario> getTodosUsuarios() {
-		UsuarioDAO usuarioDAO = new UsuarioDAO();
-		List<Usuario> resultados = usuarioDAO.getTodosUsuarios();
 
-		return resultados;
+	/* Método para gerar a senha provisória (10 caracteres aleatórios). */
+	public String generatePassword() {
+		final String charset = "0123456789" + "abcdefghijklmnopqrstuvwxyz"
+				+ "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+		Random rand = new Random(System.currentTimeMillis());
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i <= 10; i++) {
+			int pos = rand.nextInt(charset.length());
+			sb.append(charset.charAt(pos));
+		}
+		return sb.toString();
 	}
-	
-	public List<Permissoes> getPermissoes(Usuario usuario) {
-		UsuarioDAO usuarioDAO = new UsuarioDAO();
+
+	public List<Usuario> getAll() {
+		return usuarioDAO.getAll();
+	}
+
+	public List<Usuario> getAllByCurso(Curso curso) {
+		return usuarioDAO.getAllByCurso(curso);
+	}
+
+	public List<Permissao> getPermissoes(Usuario usuario) {
 		return usuarioDAO.getPermissoes(usuario);
 	}
 	
+	public List<Usuario> getProfessores() {
+		return usuarioDAO.getProfessores();
+	}
+
+	public List<Usuario> getProfessoresECoordenadores() {
+		return usuarioDAO.getProfessoresECoordenadores();
+	}
+
 	public List<Usuario> getOrientados(Usuario usuario) {
-		UsuarioDAO usuarioDAO = new UsuarioDAO();
 		return usuarioDAO.getOrientados(usuario);
 	}
-	
+
 	public List<Usuario> buscar(String expressão) {
-		UsuarioDAO usuarioDAO = new UsuarioDAO();
 		return usuarioDAO.buscar(expressão);
 	}
-	
+
 	public boolean editar(Usuario usuario) {
-		UsuarioDAO usuarioDAO = new UsuarioDAO();
 		return usuarioDAO.editar(usuario);
 	}
-	
+
 	public boolean salvar(Usuario usuario) {
-		UsuarioDAO usuarioDAO = new UsuarioDAO();
 		return usuarioDAO.salvar(usuario);
 	}
-	
+
 	public boolean exclui(Usuario usuario) {
-		UsuarioDAO usuarioDAO = new UsuarioDAO();
+		errors.clear();
+		if (new TCCBusiness().userHasTCC(usuario)) {
+			errors.add("O usuário possui TCC(s) cadastrado(s);\n");
+			return false;
+		}
+		if (new ParticipacaoBusiness().getParticipacoesByUser(usuario).size() > 0) {
+			errors.add("O usuário possui participações em TCCs;\n");
+			return false;
+		}
 		return usuarioDAO.exclui(usuario);
 	}
-	
-	public boolean jaExiste(String matricula) {
-		UsuarioDAO usuarioDAO = new UsuarioDAO();
-		boolean jaExiste = usuarioDAO.jaExiste(matricula);
-		if (jaExiste) errors.put("matricula", "Já existe um usuário com esta matrícula");
-		return jaExiste;
+
+	public boolean jaExiste(String matricula, String oldMatricula) {
+		errors.clear();
+		if (usuarioDAO.jaExiste(matricula, oldMatricula)) {
+			errors.add("Já existe um usuário com a matrícula informada.");
+			return true;
+		} else
+			return false;
+	}
+
+	public Usuario update(Usuario usuario, boolean curso, boolean tipo,
+			boolean participacoes) {
+		return usuarioDAO.update(usuario, curso, tipo, participacoes);
+	}
+
+	public Usuario getByEmailAndMatricula(String email, String matricula) {
+		return usuarioDAO.getByEmailAndMatricula(email, matricula);
+	}
+
+	public List<Usuario> getAllByDepartamento(Departamento departamento) {
+		return usuarioDAO.getAllByDepartamento(departamento);
+	}
+
+	public Usuario getByMatricula(String matricula) {
+		return usuarioDAO.getByMatricula(matricula);
 	}
 	
-	public Usuario update(Usuario usuario) {
-		UsuarioDAO usuarioDAO = new UsuarioDAO();
-		return usuarioDAO.update(usuario);
+	public Usuario getCoordenadorByCurso(Curso curso) {
+		return usuarioDAO.getCoordenadorByCurso(curso);
 	}
 
 }

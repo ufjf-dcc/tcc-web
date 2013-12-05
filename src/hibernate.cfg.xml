@@ -23,11 +23,13 @@
 		<mapping class="br.ufjf.tcc.model.Curso" />
 		<mapping class="br.ufjf.tcc.model.Participacao" />
 		<mapping class="br.ufjf.tcc.model.Pergunta" />
-		<mapping class="br.ufjf.tcc.model.Permissoes" />
+		<mapping class="br.ufjf.tcc.model.Permissao" />
+		<mapping class="br.ufjf.tcc.model.Prazo" />
 		<mapping class="br.ufjf.tcc.model.Questionario" />
 		<mapping class="br.ufjf.tcc.model.Resposta" />
 		<mapping class="br.ufjf.tcc.model.TCC" />
 		<mapping class="br.ufjf.tcc.model.TipoUsuario" />
 		<mapping class="br.ufjf.tcc.model.Usuario" />
+		<mapping class="br.ufjf.tcc.model.Departamento" />
 	</session-factory>
 </hibernate-configuration>

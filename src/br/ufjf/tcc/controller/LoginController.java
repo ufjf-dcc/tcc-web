@@ -1,16 +1,24 @@
 package br.ufjf.tcc.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.hibernate.HibernateException;
+import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
-import org.zkoss.zk.ui.Executions;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Window;
 
+import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.business.UsuarioBusiness;
+import br.ufjf.tcc.library.SendMail;
 import br.ufjf.tcc.library.SessionManager;
+import br.ufjf.tcc.model.TCC;
 import br.ufjf.tcc.model.Usuario;
 
-public class LoginController {
+public class LoginController extends CommonsController {
 
 	private Usuario usuarioForm = new Usuario();
 	private UsuarioBusiness usuarioBusiness;
@@ -20,24 +28,76 @@ public class LoginController {
 		Usuario usuario = (Usuario) SessionManager.getAttribute("usuario");
 		usuarioBusiness = new UsuarioBusiness();
 		if (usuarioBusiness.checaLogin(usuario)) {
-			Executions.sendRedirect("/pages/home.zul");
+			redirectHome();
 			return;
 		}
 	}
 
 	@Command
-	public void submit() throws HibernateException, Exception {
+	public void submit(@BindingParam("panel") final Div page) {
 		if (usuarioForm != null && usuarioForm.getMatricula() != null
-				&& usuarioForm.getSenha() != null) {
+				&& usuarioForm.getSenha() != null
+				&& usuarioForm.getMatricula().trim().length() > 0
+				&& usuarioForm.getSenha().trim().length() > 0) {
 			usuarioBusiness = new UsuarioBusiness();
 			if (usuarioBusiness.login(usuarioForm.getMatricula(),
 					usuarioForm.getSenha())) {
-				Executions.sendRedirect("/pages/home.zul");
+				if (getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ALUNO) {
+					TCCBusiness tccBusiness = new TCCBusiness();
+					TCC tempTcc = tccBusiness.getCurrentTCCByAuthor(
+							getUsuario(), getCurrentCalendar());
+					List<TCC> tcc = new ArrayList<TCC>();
+					if (tempTcc != null)
+						tcc.add(tempTcc);
+					getUsuario().setTcc(tcc);
+				}
+				redirectHome();
 			} else {
-				Messagebox.show("Usuário ou Senha inválidos!", "Falha no Login",
+				Messagebox.show(usuarioBusiness.getErrors().get(0), "Erro",
 						Messagebox.OK, Messagebox.ERROR);
 			}
+		} else {
+			Messagebox.show("Informe a matrícula e a senha", "Erro",
+					Messagebox.OK, Messagebox.ERROR);
 		}
+
+	}
+
+	@Command
+	public void forgotPassword(@BindingParam("window") Window forgot) {
+		forgot.doModal();
+	}
+
+	@Command
+	public void sendMail(@BindingParam("email") String email,
+			@BindingParam("matricula") String matricula,
+			@BindingParam("window") Window forgot) {
+		// Verfica se o usuário realmente existe
+		if (email.trim().length() == 0 || matricula.trim().length() == 0) {
+			Messagebox.show("Digite as informações solicitadas",
+					"Dados inválidos", Messagebox.OK, Messagebox.ERROR);
+			return;
+		}
+		Usuario user = usuarioBusiness.getByEmailAndMatricula(email, matricula);
+		if (user == null) {
+			Messagebox
+					.show("Não existe um usuário em nosso sistema com os dados informados.",
+							"Dados inválidos", Messagebox.OK,
+							Messagebox.EXCLAMATION);
+			return;
+		}
+
+		// Gera e encripta uma senha e salva no banco de dados
+		String newPassword = usuarioBusiness.generatePassword();
+		user.setSenha(usuarioBusiness.encripta(newPassword));
+		if (usuarioBusiness.editar(user)
+				&& new SendMail().sendNewPassword(user, newPassword)) {
+			Messagebox.show("Um e-mail com a nova senha foi enviado para "
+					+ user.getEmail() + ".", "Verifique o seu e-mail",
+					Messagebox.OK, Messagebox.INFORMATION);
+		}
+
+		forgot.detach();
 	}
 
 	public Usuario getUsuarioForm() {

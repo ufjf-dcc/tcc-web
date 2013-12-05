@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -47,6 +48,14 @@ public class TCC implements Serializable {
 	 */
 	@Column(name = "nomeTCC", length = 255, nullable = true)
 	private String nomeTCC;
+	
+	/**
+	 * Campo com o sub nome do TCC. Relaciona com a coluna {@code subNomeTCC} do banco
+	 * através da anotação
+	 * {@code @Column(name = "subNomeTCC", length = 255, nullable = true)}.
+	 */
+	@Column(name = "subNomeTCC", length = 255, nullable = true)
+	private String subNomeTCC;
 
 	/**
 	 * Campo com o resumo do TCC. Relaciona com a coluna {@code resumoTCC} do
@@ -82,7 +91,15 @@ public class TCC implements Serializable {
 	
 	/**
 	 * Campo com o arquivo extra final do TCC. Relaciona com a coluna
-	 * {@code arquivoTCCFinal} do banco através da anotação
+	 * {@code arquivoExtraTCCBanca} do banco através da anotação
+	 * {@code @Column(name = "arquivoExtraTCCBanca", length = 255, nullable = true)}.
+	 */
+	@Column(name = "arquivoExtraTCCBanca", length = 255, nullable = true)
+	private String arquivoExtraTCCBanca;
+	
+	/**
+	 * Campo com o arquivo extra final do TCC. Relaciona com a coluna
+	 * {@code arquivoExtraTCCFinal} do banco através da anotação
 	 * {@code @Column(name = "arquivoExtraTCCFinal", length = 255, nullable = true)}.
 	 */
 	@Column(name = "arquivoExtraTCCFinal", length = 255, nullable = true)
@@ -110,7 +127,7 @@ public class TCC implements Serializable {
 	 * {@code @Column(name = "conceitoFinal", nullable = true)}.
 	 */
 	@Column(name = "conceitoFinal", nullable = true)
-	private float conceitoFinal;
+	private float conceitoFinal = -1;
 
 	/**
 	 * Campo com a data da aprensetação. Relaciona com a coluna
@@ -167,6 +184,17 @@ public class TCC implements Serializable {
 	 */
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "tcc")
 	private List<Participacao> participacoes = new ArrayList<Participacao>();
+	
+	/**
+	 * Relacionamento 1 para 1 entre TCC e CalendarioSemestre. Mapeando {@link CalendarioSemestre} na
+	 * variável {@code calendarioSemestre} e retorno do tipo {@code LAZY} que indica que
+	 * não será carregado automáticamente este dado quando retornarmos o
+	 * {@link TCC}.
+	 * 
+	 */
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "idCalendarioSemestre", nullable = true)
+	private CalendarioSemestre calendarioSemestre = null;
 
 	public int getIdTCC() {
 		return idTCC;
@@ -183,6 +211,14 @@ public class TCC implements Serializable {
 	public void setNomeTCC(String nomeTCC) {
 		this.nomeTCC = nomeTCC;
 	}
+	
+	public String getSubNomeTCC() {
+		return subNomeTCC;
+	}
+
+	public void setSubNomeTCC(String subNomeTCC) {
+		this.subNomeTCC = subNomeTCC;
+	}
 
 	public String getArquivoTCCBanca() {
 		return arquivoTCCBanca;
@@ -198,6 +234,14 @@ public class TCC implements Serializable {
 
 	public void setArquivoTCCFinal(String arquivoTCCFinal) {
 		this.arquivoTCCFinal = arquivoTCCFinal;
+	}
+
+	public String getArquivoExtraTCCBanca() {
+		return arquivoExtraTCCBanca;
+	}
+
+	public void setArquivoExtraTCCBanca(String arquivoExtraTCCBanca) {
+		this.arquivoExtraTCCBanca = arquivoExtraTCCBanca;
 	}
 
 	public String getArquivoExtraTCCFinal() {
@@ -294,6 +338,14 @@ public class TCC implements Serializable {
 
 	public void setPalavrasChave(String palavrasChave) {
 		this.palavrasChave = palavrasChave;
+	}
+
+	public CalendarioSemestre getCalendarioSemestre() {
+		return calendarioSemestre;
+	}
+
+	public void setCalendarioSemestre(CalendarioSemestre calendarioSemestre) {
+		this.calendarioSemestre = calendarioSemestre;
 	}
 
 }

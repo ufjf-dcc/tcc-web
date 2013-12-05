@@ -1,0 +1,97 @@
+<?page title="Departamentos cadastrados"?>
+<?init class="br.ufjf.tcc.controller.AuthController"?>
+<zk>
+	<style src="/style.css" />
+	<div apply="org.zkoss.bind.BindComposer"
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.GerenciamentoDepartamentoController')"
+		height="100%" class="centerGrid">
+		<include src="@load(vm.menu)" />
+		<grid
+			model="@load(vm.filterDepartamentos) @template(each.editingStatus ? 'editable' : 'noneditable')"
+			mold="paging" autopaging="true" vflex="true">
+			<auxhead sclass="text-center">
+				<auxheader label="Departamentos cadastrados no sistema"
+					colspan="8" />
+			</auxhead>
+			<auxhead>
+				<auxheader colspan="3">
+					<div>
+						<div style="float:left">
+							<textbox id="filtro"
+								value="@bind(vm.filterString)" />
+							<button label="Pesquisar"
+								onClick="@command('filtra')" />
+						</div>
+						<div style="float:right">
+							<button label="Cadastrar Departamento"
+								onClick="@command('addDepartamento', window=addDepartamento)" />
+						</div>
+					</div>
+				</auxheader>
+			</auxhead>
+			<columns>
+				<column width="70px" label="Código"
+					sort="auto(departamento.codigoDepartamento)" />
+				<column hflex="5" label="Nome"
+					sort="auto(departamento.nomeDepartamento)" />
+				<column width="120px" label="Editar" sort="" />
+			</columns>
+			<template name="editable">
+				<row>
+					<textbox
+						value="@load(each.codigoDepartamento) @save(each.codigoDepartamento, before='confirm')" />
+					<textbox
+						value="@load(each.nomeDepartamento) @save(each.nomeDepartamento, before='confirm')" />
+					<div align="center">
+						<button image="/img/confirm.gif"
+							onClick="@command('confirm', departamento=each)" />
+						<button image="/img/cancel.png"
+							onClick="@command('changeEditableStatus', departamento=each)" />
+					</div>
+				</row>
+			</template>
+			<template name="noneditable">
+				<row>
+					<label value="@load(each.codigoDepartamento)" />
+					<label value="@load(each.nomeDepartamento)" />
+					<div align="center">
+						<button image="/img/edit.gif"
+							onClick="@command('changeEditableStatus', departamento=each)" />
+						<button image="/img/delete.png"
+							onClick="@command('delete', departamento=each)" />
+					</div>
+				</row>
+			</template>
+		</grid>
+		<window id="addDepartamento" title="Cadastrar Departamento" visible="false"
+			width="350px" border="normal" position="center,center"
+			closable="true"
+			onClose="self.setVisible(false); event.stopPropagation();">
+			<grid>
+				<columns>
+					<column hflex="1" />
+					<column hflex="2" />
+				</columns>
+				<rows>
+					<row>
+						<label value="Código do Departamento:" />
+						<textbox
+							value="@load(vm.novoDepartamento.codigoDepartamento) @save(vm.novoDepartamento.codigoDepartamento, before='submitDepartamento')"
+							tabindex="1" id="codigoDepartamento" width="100%" />
+					</row>
+					<row>
+						<label value="Nome do Departamento:" />
+						<textbox
+							value="@load(vm.novoDepartamento.nomeDepartamento) @save(vm.novoDepartamento.nomeDepartamento, before='submitDepartamento')"
+							tabindex="2" id="nomeDepartamento" width="100%" />
+					</row>
+
+				</rows>
+			</grid>
+			<div align="center">
+				<button label="Cadastrar" onClick="@command('submitDepartamento', window=addDepartamento)"
+					width="75px" style="margin-top:5px" />
+			</div>
+		</window>
+	</div>
+</zk>

@@ -1,0 +1,126 @@
+<?page title="Editor de TCC" contentType="text/html;charset=UTF-8"?>
+<?init class="br.ufjf.tcc.controller.AuthController"?>
+<zk>
+	<style src="/style.css" />
+	<div apply="org.zkoss.bind.BindComposer"
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.EditorTccController')"
+		height="100%">
+		<include src="@load(vm.menu)" />
+		<hlayout style="background-color:#efefef;" height="96%">
+			<vlayout hflex="1" style="margin:15px">
+				<hlayout style="margin:5px;line-height:20px;">
+					<label value="Título do Trabalho: " />
+					<textbox
+						value="@load(vm.tcc.nomeTCC) @save(vm.tcc.nomeTCC, before='submit')"
+						hflex="1" />
+				</hlayout>
+
+				<hlayout style="margin:5px;line-height:20px;">
+					<label value="Subtítulo do Trabalho: " />
+					<textbox
+						value="@load(vm.tcc.subNomeTCC) @save(vm.tcc.subNomeTCC, before='submit')"
+						hflex="1" />
+				</hlayout>
+
+				<hlayout style="margin:5px;line-height:20px;">
+					<label value="Orientador: " />
+					<combobox id="cmbOrientadores" hflex="1"
+						model="@load(vm.orientadores)" readonly="true"
+						selectedItem="@load(vm.tcc.orientador) @save(vm.tcc.orientador, before='submit')">
+						<template name="model">
+							<comboitem label="@load(each.nomeUsuario)" />
+						</template>
+					</combobox>
+					<button id="butOrientador" label="Alterar"
+						onClick="@command('changeOrientador', butOrientador=butOrientador,cmbOrientador=cmbOrientadores)" />
+				</hlayout>
+
+				<hlayout style="margin:5px;line-height:20px;">
+					<label value="Data de apresentação: " />
+					<datebox width="100%"
+						value="@bind(vm.tcc.dataApresentacao)" format="dd/MM/yyyy"
+						hflex="1" />
+				</hlayout>
+
+				<div align="center">
+					<button label="Editar Banca Examinadora"
+						onClick="@command('showBanca', window=configBanca)" />
+				</div>
+
+				<label value="Resumo: " style="margin:5px;" />
+				<textbox
+					value="@load(vm.tcc.resumoTCC) @save(vm.tcc.resumoTCC, before='submit')"
+					rows="12" width="98%" style="margin:5px;" />
+
+				<hlayout style="margin:5px;line-height:20px;">
+					<label value="Palavras-chave: " />
+					<textbox
+						value="@load(vm.tcc.palavrasChave) @save(vm.tcc.palavrasChave, before='submit')"
+						hflex="1" />
+				</hlayout>
+
+				<hlayout style="margin:5px;line-height:20px;">
+					<button hflex="1"
+						label="Selecionar arquivo (PDF)..." upload="true"
+						onUpload="@command('upload', button=self, evt=event)" />
+					<button hflex="1"
+						label="Selecionar arquivo extra..." upload="true"
+						onUpload="@command('extraUpload', button=self, evt=event)" />
+				</hlayout>
+
+				<div hflex="1" align="center" style="margin-top:10px">
+					<button label="Atualizar"
+						onClick="@command('submit')" width="75px" style="margin-top:5px" />
+				</div>
+			</vlayout>
+			<iframe hflex="2" vflex="100" autohide="true" height="100%"
+				onCreate="@command('showTCC', iframe=self)" />
+		</hlayout>
+		<window id="configBanca" title="Banca Examinadora"
+			visible="false" width="450px" border="normal"
+			position="center,center" closable="true"
+			onClose="@command('cancelBanca', window=self, event=event)">
+			<grid model="@load(vm.banca)"
+				emptyMessage="Nenhum examinador adicionado"
+				style="margin-left:5px; margin-right:5px; margin-top:5px;">
+				<auxhead>
+					<auxheader colspan="2">
+						<hlayout width="100%">
+							<label value="Selecione: " />
+							<combobox model="@load(vm.orientadores)"
+								readonly="true"
+								selectedItem="@load(vm.tempBanca) @save(vm.tempBanca, before='addToBanca')">
+								<template name="model">
+									<comboitem
+										label="@load(each.nomeUsuario)" />
+								</template>
+							</combobox>
+
+							<div align="right" hflex="1"><button label="Adicionar à Banca" onClick="@command('addToBanca')"
+								style="float:right" /></div>
+
+						</hlayout>
+					</auxheader>
+				</auxhead>
+				<columns>
+					<column label="Nome do examinador" />
+					<column label="Ação" width="60px" />
+				</columns>
+				<template name="model">
+					<row
+						visible="@load(not (each.professor eq vm.tcc.orientador))">
+						<label
+							value="@load(each.professor.nomeUsuario)" />
+						<button image="/img/delete.png"
+							onClick="@command('removeFromBanca', participacao=each)" />
+					</row>
+				</template>
+			</grid>
+			<div align="center">
+				<button label="Atualizar"
+					onClick="@command('submitBanca', window=configBanca)" width="75px"
+					style="margin-top:5px" />
+			</div>
+		</window>
+	</div>
+</zk>

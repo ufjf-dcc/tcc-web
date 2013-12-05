@@ -1,0 +1,92 @@
+<?page title="Home"?>
+<?init class="br.ufjf.tcc.controller.AuthController"?>
+<zk>
+	<style src="/style.css" />
+	<div apply="org.zkoss.bind.BindComposer" align="center"
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.HomeAlunoController')">
+		<include src="@load(vm.menu)" />
+		<vlayout spacing="0" width="700px">
+
+			<grid style="margin:10px">
+				<columns>
+					<column>
+						<div align="center">
+							<hlayout>
+								<label value="Bem-vindo(a), "
+									style="font-weight:bold;" />
+								<label
+									value="@load(vm.usuario.nomeUsuario)"
+									style="font-weight:bold;" />
+							</hlayout>
+						</div>
+					</column>
+				</columns>
+				<rows>
+					<row>
+						<div align="center">
+							<label
+								value="Fique atento aos prazos abaixo." />
+						</div>
+					</row>
+				</rows>
+			</grid>
+
+			<grid
+				emptyMessage="O calendário do semestre ainda não foi cadastrado no sistema."
+				model="@load(vm.prazos) @template('prazos')" style="margin:10px">
+				<auxhead sclass="text-center">
+					<auxheader colspan="3" label="@load(vm.gridTitle)" />
+				</auxhead>
+				<columns>
+					<column label="Data" width="80px" />
+					<column label="Descrição" />
+					<column label="Ação" width="170px" />
+				</columns>
+				<template name="prazos">
+					<row>
+						<label
+							onCreate="@command('formatDate', dataFinal=each.dataFinal, label=self)"
+							style="@load(each.tipo eq vm.currentPrazo ? 'font-weight:bold;' : '')" />
+						<label
+							onCreate="@command('getDescription', tipo=each.tipo, label=self)"
+							style="@load(each.tipo eq vm.currentPrazo ? 'font-weight:bold;' : '')" />
+						<div align="center">
+							<button width="100%"
+								onCreate="@command('getAction', tipo=each.tipo, button=self)"
+								onClick="@command('action', tipo=each.tipo, window=registrarTCC)"
+								disabled="@load(each.tipo lt vm.currentPrazo)"/>
+						</div>
+					</row>
+				</template>
+			</grid>
+		</vlayout>
+		<window id="registrarTCC" title="Registrar TCC" visible="false"
+			width="400px" border="normal" position="center,center"
+			closable="true"
+			onClose="self.setVisible(false); event.stopPropagation();">
+			<grid>
+				<columns>
+					<column width="160px" />
+					<column />
+				</columns>
+				<rows>
+					<row>
+						<label value="Selecione o Orientador: " />
+						<combobox id="cmbOrientadores" hflex="1"
+							model="@load(vm.orientadores)" readonly="true"
+							selectedItem="@load(vm.newTcc.orientador) @save(vm.newTcc.orientador, before='submit')">
+							<template name="model">
+								<comboitem
+									label="@load(each.nomeUsuario)" />
+							</template>
+						</combobox>
+					</row>
+				</rows>
+			</grid>
+			<div align="center">
+				<button label="Avançar" onClick="@command('submit')"
+					width="75px" style="margin-top:5px" />
+			</div>
+		</window>
+	</div>
+</zk>

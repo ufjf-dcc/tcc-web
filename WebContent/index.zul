@@ -1,41 +1,70 @@
-<?page title="Login"?>
+<?page title="Entrar no sistema"?>
 <zk>
-	<div
+	<div align="center" apply="org.zkoss.bind.BindComposer"
+		viewModel="@id('lf') @init('br.ufjf.tcc.controller.LoginController')"
+		form="@id('fx') @load(lf.usuarioForm) @save(lf.usuarioForm, before='submit')"
+		id="loginForm"
 		style="position:absolute; top:50%;
-margin-top:-125px; left:50%; margin-left:-150px;">
-		<div align="center" apply="org.zkoss.bind.BindComposer"
-			viewModel="@id('lf') @init('br.ufjf.tcc.controller.LoginController')"
-			form="@id('fx') @load(lf.usuarioForm) @save(lf.usuarioForm, before='submit')"
-			id="loginForm">
-			<panel title="Login" height="250px" width="300px"
-				border="normal">
-				<panelchildren>
-					<tablelayout columns="2">
-						<tablechildren colspan="2"><space height="20px"/></tablechildren>
-						<tablechildren>Matricula:</tablechildren>
-						<tablechildren>
-							<textbox value="@bind(fx.matricula)"
-								width="150px" tabindex="1" id="loginMatricula" />
-						</tablechildren>
-						<tablechildren colspan="2"><space height="20px"/> </tablechildren>
-						<tablechildren>Senha:</tablechildren>
-						<tablechildren>
+margin-top:-92px; left:50%; margin-left:-150px;">
+		<panel title="Entrar no sistema" width="300px" border="normal">
+			<panelchildren>
+				<grid>
+					<columns>
+						<column hflex="1" />
+						<column hflex="2" />
+					</columns>
+					<rows>
+						<row>
+							<label value="Matricula: " />
+							<textbox value="@bind(fx.matricula)" width="95%" />
+						</row>
+						<row>
+							<label value="Senha " />
 							<textbox value="@bind(fx.senha)"
-								type="password" width="150px" tabindex="2" id="loginSenha" />
-						</tablechildren>
-						<tablechildren colspan="2"><space height="15px"/> </tablechildren>
-						<tablechildren colspan="2">
-								<button label="Efetuar login" onClick="@command('submit')" width="100%" height="30px" />
-						</tablechildren>
-						<tablechildren colspan="2"><space height="15px"/></tablechildren>
-						<tablechildren colspan="2">
-							<button label="Lista Pública de Monografias" width="100%" height="30px" href="/lista-publica.zul"/>
-						</tablechildren>
-						<tablechildren colspan="2"><space height="15px"/></tablechildren>
-					</tablelayout>
-				</panelchildren>
-			</panel>
-
-		</div>
+								type="password" width="95%" onOK="@command('submit', panel=loginForm)" />
+						</row>
+					</rows>
+				</grid>
+				<vlayout>
+					<hlayout style="margin:5px;">
+						<button label="Entrar"
+							onClick="@command('submit', panel=loginForm)" hflex="1" />
+						<button label="Esqueci a senha..."
+							onClick="@command('forgotPassword', window=forgot)" hflex="1" />
+					</hlayout>
+					<button label="Lista Pública de Monografias"
+						href="/lista-publica.zul" style="margin-bottom:5px;"
+						target="_blank" />
+				</vlayout>
+			</panelchildren>
+		</panel>
+		<window id="forgot" title="Esqueceu a senha?" visible="false"
+			width="350px" border="normal" position="center,center"
+			closable="true" onCancel="self.setVisible(false); event.stopPropagation();"
+			onClose="self.setVisible(false); event.stopPropagation();">
+			<label
+				value="Digite o seu e-mail e matrícula para que possamos lhe enviar uma nova senha:" />
+			<grid>
+				<columns>
+					<column width="70px" />
+					<column />
+				</columns>
+				<rows>
+					<row>
+						<label value="E-mail:" />
+						<textbox id="email" width="100%" />
+					</row>
+					<row>
+						<label value="Matrícula:" />
+						<textbox id="matricula" width="100%" />
+					</row>
+				</rows>
+			</grid>
+			<div align="center">
+				<button label="Enviar"
+					onClick="@command('sendMail', email=email.value, matricula=matricula.value, window=forgot)"
+					width="75px" style="margin-top:5px" />
+			</div>
+		</window>
 	</div>
 </zk>

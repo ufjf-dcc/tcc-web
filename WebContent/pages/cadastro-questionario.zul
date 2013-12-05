@@ -1,0 +1,73 @@
+<zk>
+	<window id="cadquest" title="@load(vm.title)" width="750px" 
+		border="normal" position="center,center" closable="true"
+		apply="org.zkoss.bind.BindComposer"
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.CadastroQuestionarioController')"
+		onCancel="self.onClose()" contentStyle="max-height:400px;" >
+
+		<grid model="@load(vm.questions)" mold="paging" vflex="1">
+			<auxhead>
+				<auxheader colspan="4">
+					<hlayout width="100%" hflex="true">
+						<combobox id="cmbCurso" width="200px"
+							readonly="true" value="@bind(vm.questionary.curso.nomeCurso)"
+							model="@load(vm.cursos)"
+							selectedItem="@bind(vm.questionary.curso)"
+							onSelect="@command('semester')" disabled="@load(not vm.admin)">
+							<template name="model">
+								<comboitem
+									label="@load(each.nomeCurso)" />
+							</template>
+						</combobox>
+
+						<div align="right" hflex="1">
+							<button label="Adicionar pergunta"
+								onClick="@command('addQuestion')" style="margin-top:5px;" />
+						</div>
+
+						<!-- <checkbox id="ativo" label="Ativo"
+							hflex="1" checked="true" disabled="true" /> -->
+					</hlayout>
+				</auxheader>
+			</auxhead>
+			<columns>
+				<column label="#" width="30px" />
+				<column label="Título da pergunta" />
+				<column label="Valor" width="70px" />
+				<column label="Ordenação" width="210px" />
+			</columns>
+			<template name="model">
+				<row>
+					<label value="${forEachStatus.index + 1}: " />
+					<textbox hflex="1" value="@bind(each.titulo)"
+						width="100%" />
+					<hlayout>
+						<textbox value="@bind(each.valor)" width="95%" />
+					</hlayout>
+					<hlayout>
+						<button label="t"
+							onClick="@command('questionTop', question=each)"
+							disabled="@load(not (forEachStatus.index eq forEachStatus.begin) ? 'false' : 'true')" />
+						<button label="^"
+							onClick="@command('questionUp', question=each)"
+							disabled="@load(not (forEachStatus.index eq forEachStatus.begin) ? 'false' : 'true')" />
+						<button label="v"
+							onClick="@command('questionDown', question=each)"
+							disabled="@load(not (forEachStatus.index + 1 eq forEachStatus.end) ? 'false' : 'true')" />
+						<button label="b"
+							onClick="@command('questionBottom', question=each)"
+							disabled="@load(not (forEachStatus.index + 1 eq forEachStatus.end) ? 'false' : 'true')" />
+						<button image="/img/delete.png"
+							onClick="@command('removeQuestion', question=each)" />
+					</hlayout>
+				</row>
+			</template>
+		</grid>
+		<div align="center">
+			<button label="Cadastrar Questionário"
+				onClick="@command('submit', checkbox=ativo, window=cadquest)"
+				style="margin-top:5px;" />
+		</div>
+
+	</window>
+</zk>
