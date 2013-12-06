@@ -9,7 +9,7 @@
 				href="/pages/alunos-orientados.zul" />
 			<menuitem label="Configurações"
 				onClick="@command('settings')" />
-			<menuitem label="Sair" onClick="@command('sair')" />
+			<menuitem label="Sair" onClick="@command('sair')" style="float:right" />
 		</menubar>
 	</div>
 </zk>

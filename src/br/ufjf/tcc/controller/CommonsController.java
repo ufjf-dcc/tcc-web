@@ -68,6 +68,8 @@ public class CommonsController {
 			return "/templates/menu-prof.zul";
 		case Usuario.ALUNO:
 			return "/templates/menu-aluno.zul";
+		case Usuario.SECRETARIA:
+			return "/templates/menu-secretaria.zul";
 		default:
 			return null;
 		}
@@ -84,6 +86,9 @@ public class CommonsController {
 			break;
 		case Usuario.ALUNO:
 			Executions.sendRedirect("/pages/home-aluno.zul");
+			break;
+		case Usuario.SECRETARIA:
+			Executions.sendRedirect("/pages/tccs-curso.zul");
 			break;
 		default:
 			Executions.sendRedirect("/index.zul");

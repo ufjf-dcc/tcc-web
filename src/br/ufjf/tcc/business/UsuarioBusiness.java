@@ -234,4 +234,8 @@ public class UsuarioBusiness {
 		return usuarioDAO.getCoordenadorByCurso(curso);
 	}
 
+	public Usuario getByName(String nomeUsuario) {
+		return usuarioDAO.getByName(nomeUsuario);
+	}
+
 }

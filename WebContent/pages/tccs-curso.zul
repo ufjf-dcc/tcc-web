@@ -1,11 +1,10 @@
 <?page title="Gerenciamento de TCCs"?>
 <?init class="br.ufjf.tcc.controller.AuthController"?>
 <zk>
-<script type="text/javascript">
-    function visualzarTCC(id) {
-        window.open('visualiza-tcc.zul?tcc='+id,'_blank');
-    }
-</script>
+	<script type="text/javascript">
+		function visualzarTCC(id) {
+		window.open('visualiza-tcc.zul?tcc='+id,'_blank'); }
+	</script>
 	<style src="/style.css" />
 	<div apply="org.zkoss.bind.BindComposer"
 		viewModel="@id('vm') @init('br.ufjf.tcc.controller.TCCsCursoController')"
@@ -17,44 +16,54 @@
 			<auxhead>
 				<auxheader colspan="4">
 					<div>
-						<hlayout
-							style="float:left;">
-							<label value="Pesquisar: " />
-							<textbox id="filtro"
-								value="@bind(vm.filterString)" />
-							<separator orient="vertical" spacing="3px" />
+						<div>
+							<hlayout style="float:left">
+								<label value="Pesquisar: "
+									style="margin-top:6px" />
+								<textbox id="filtro"
+									value="@bind(vm.filterString)" />
+								<separator orient="vertical"
+									spacing="3px" />
 
-							<label value="Ano: "
-								style="margin-left:10px;" />
-							<combobox id="cmbYear" width="150px"
-								readonly="true" model="@load(vm.years)"
-								value="@load(filterYear)" selectedItem="@bind(vm.filterYear)">
-								<template name="model">
-									<comboitem label="@load(each)" />
-								</template>
-							</combobox>
-							<separator orient="vertical" spacing="3px" />
+								<label value="Ano: "
+									style="margin-top:6px" />
+								<combobox id="cmbYear" width="150px"
+									readonly="true" model="@load(vm.years)"
+									value="@load(filterYear)"
+									selectedItem="@bind(vm.filterYear)">
+									<template name="model">
+										<comboitem label="@load(each)" />
+									</template>
+								</combobox>
+								<separator orient="vertical"
+									spacing="3px" />
 
-							<button label="Filtrar"
-								width="60px" onClick="@command('filtra')"
-								style="margin-left:20px;" />
-
+								<button label="Filtrar" width="60px"
+									onClick="@command('filtra')" />
+								<image src="/img/help.gif"
+									tooltip="filterHelp" style="cursor: help" />
+							</hlayout>
+							<button upload="true" label="Enviar TCC via XML"
+								style="float:right"
+								visible="@load(vm.usuario.tipoUsuario.idTipoUsuario eq 0)"
+								onUpload="@command('readXML', evt=event, window=importXML)" />
 							<image src="/img/help.gif"
-								tooltip="filterHelp" style="cursor: help" />
+								tooltip="filterHelp" onClick="@command('showHelp')" />
+						</div>
 
-						</hlayout>
 					</div>
 				</auxheader>
 			</auxhead>
 			<columns>
-				<column hflex="13" label="NomeTCC" sort="auto(nomeTCC)" />
+				<column hflex="13" label="Titulo" sort="auto(nomeTCC)" />
 				<column hflex="4" label="Autor"
 					sort="auto(aluno.nomeUsuario)" />
 				<column hflex="1" label="PDF" />
 				<column hflex="1" label="Extras" />
 			</columns>
 			<template name="lista">
-				<row xmlns:w="client" w:onClick="visualzarTCC(${each.idTCC});">
+				<row xmlns:w="client"
+					w:onClick="visualzarTCC(${each.idTCC});">
 					<div>
 						<label value="@load(each.nomeTCC)"
 							tooltip="${each.idTCC}, position=at_pointer" />
@@ -91,6 +100,56 @@
 				</row>
 			</template>
 		</grid>
+		<window id="importXML" title="Importar via XML" visible="false"
+			height="80%" width="80%" border="normal" position="center,center"
+			closable="true"
+			onClose="self.setVisible(false); event.stopPropagation();">
+			<grid model="@load(vm.filterTccs) @template('lista')"
+				emptyMessage="@load(vm.emptyMessage)" mold="paging"
+				autopaging="true" vflex="true">
+				<columns>
+					<column label="NomeTCC" />
+					<column label="Autor" />
+					<column label="PDF" />
+					<column label="Extras" />
+				</columns>
+				<template name="lista">
+					<row>
+						<div>
+							<label value="@load(each.nomeTCC)"
+								tooltip="${each.idTCC}, position=at_pointer" />
+							<popup id="${each.idTCC}">
+								<vlayout width="550px">
+									<label value="Resumo"
+										style="font-size: 14px; font-weight: bold; text-align: justify; display: block;" />
+									<label
+										value="@load(each.resumoTCC)" />
+									<hlayout>
+										<label value="Ano: "
+											style="font-weight:bold;" />
+										<label
+											onCreate="@command('getEachTccYear', tcc=each, lbl=self)" />
+									</hlayout>
+									<label value="Orientador"
+										style="font-size: 14px; font-weight: bold; text-align: justify; display: block;" />
+									<label
+										value="@load(each.orientador.nomeUsuario)" />
+									<label value="Palavras-chave"
+										visible="@load(not empty each.palavrasChave)"
+										style="font-size: 14px; font-weight: bold; text-align: justify; display: block;" />
+									<label
+										value="@load(each.palavrasChave)" />
+								</vlayout>
+							</popup>
+						</div>
+						<label value="@load(each.aluno.nomeUsuario)"
+							tooltip="${each.idTCC}, position=at_pointer" />
+						<checkbox checked="@load(each.arquivoTCCFinal eq not null)" />
+						<checkbox checked="@load(each.arquivoExtraTCCFinal eq not null)" />
+					</row>
+				</template>
+			</grid>
+		</window>
 	</div>
 	<popup id="filterHelp">
 		<html>
@@ -100,14 +159,6 @@
 			<ul><li>Autor ou orientador;</li> <li>Nome do TCC;</li>
 			<li>Palavra-chave;</li> <li>Conteúdo dos resumos.</li>
 			<ul>]]>
-			
-		</html>
-	</popup>
-	<popup id="cursoHelp">
-		<html>
-			
-			<![CDATA[ Permite filtrar a lista de TCCs <br> com o curso
-			desejado.]]>
 			
 		</html>
 	</popup>

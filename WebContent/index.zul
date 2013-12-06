@@ -16,7 +16,7 @@ margin-top:-92px; left:50%; margin-left:-150px;">
 					<rows>
 						<row>
 							<label value="Matricula: " />
-							<textbox value="@bind(fx.matricula)" width="95%" />
+							<textbox value="@bind(fx.matricula)" width="95%" onOK="@command('submit', panel=loginForm)"/>
 						</row>
 						<row>
 							<label value="Senha " />

@@ -11,9 +11,12 @@ import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
+import org.zkoss.util.media.AMedia;
 import org.zkoss.zhtml.Filedownload;
+import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Window;
 
 import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.library.FileManager;
@@ -22,9 +25,8 @@ import br.ufjf.tcc.model.TCC;
 public class TCCsCursoController extends CommonsController {
 
 	private List<String> years;
-	private String emptyMessage = "Não há TCCs para este curso.";
-	private List<TCC> tccs = null;
-	private List<TCC> filterTccs = tccs;
+	private String emptyMessage;
+	private List<TCC> tccs = null, filterTccs = tccs, xmlTccs;
 	private String filterString = "";
 	private String filterYear = "Todos";
 
@@ -96,6 +98,10 @@ public class TCCsCursoController extends CommonsController {
 			lbl.setValue("Não finalizada");
 	}
 
+	public List<TCC> getXmlTccs() {
+		return xmlTccs;
+	}
+
 	@NotifyChange("filterTccs")
 	@Command
 	public void filtra() {
@@ -121,7 +127,7 @@ public class TCCsCursoController extends CommonsController {
 		} else {
 			filterTccs = tccs;
 		}
-		
+
 		emptyMessage = "Não há TCCs válidas para esses filtros.";
 		BindUtils.postNotifyChange(null, null, null, "emptyMessage");
 	}
@@ -149,6 +155,34 @@ public class TCCsCursoController extends CommonsController {
 			else
 				Messagebox.show("O RAR não foi encontrado!", "Erro",
 						Messagebox.OK, Messagebox.ERROR);
+		}
+	}
+
+	@Command
+	public void showHelp(@BindingParam("window") Window window) {
+
+	}
+
+	@NotifyChange("xmlTccs")
+	@Command
+	public void readXML(@BindingParam("evt") UploadEvent evt,
+			@BindingParam("window") Window window) {
+		if (!evt.getMedia().getName().contains(".xml")) {
+			Messagebox.show(
+					"Este não é um arquivo válido! Apenas XML são aceitos.",
+					"Formato inválido", Messagebox.OK, Messagebox.INFORMATION);
+			return;
+		}
+		
+		AMedia aux = new AMedia("temp", "xml", "xml", evt
+				.getMedia().getStringData());
+		try {
+			xmlTccs = new FileManager().readXML(getUsuario(), aux.getStreamData());
+		} catch (Exception e) {
+			Messagebox.show(
+					"Arquivo inválido",
+					"Erro", Messagebox.OK, Messagebox.ERROR);
+			e.printStackTrace();
 		}
 	}
 

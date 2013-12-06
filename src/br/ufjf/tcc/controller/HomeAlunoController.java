@@ -83,11 +83,6 @@ public class HomeAlunoController extends CommonsController {
 					+ dateFormat.format(currentCalendar.getFinalSemestre())
 					+ ")";
 
-		} else {
-			Messagebox
-					.show("O calendário deste semestre ainda não foi cadastrado. Volte mais tarde.",
-							"Calendário não cadastrado", Messagebox.OK,
-							Messagebox.ERROR);
 		}
 	}
 

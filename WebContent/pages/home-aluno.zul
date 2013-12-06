@@ -32,7 +32,7 @@
 			</grid>
 
 			<grid
-				emptyMessage="O calendário do semestre ainda não foi cadastrado no sistema."
+				emptyMessage="O calendário do semestre ainda não foi cadastrado no sistema. Volte mais tarde."
 				model="@load(vm.prazos) @template('prazos')" style="margin:10px">
 				<auxhead sclass="text-center">
 					<auxheader colspan="3" label="@load(vm.gridTitle)" />
