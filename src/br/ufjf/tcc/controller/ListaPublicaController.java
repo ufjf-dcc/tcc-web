@@ -190,5 +190,4 @@ public class ListaPublicaController extends CommonsController {
 						Messagebox.OK, Messagebox.ERROR);
 		}
 	}
-
 }

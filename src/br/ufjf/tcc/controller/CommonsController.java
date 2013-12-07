@@ -59,7 +59,7 @@ public class CommonsController {
 
 	public String getMenu() {
 		switch ((getUsuario() != null ? getUsuario().getTipoUsuario()
-				.getIdTipoUsuario() : 0)) {
+				.getIdTipoUsuario() : -1)) {
 		case Usuario.ADMINISTRADOR:
 			return "/templates/menu-admin.zul";
 		case Usuario.COORDENADOR:
@@ -71,7 +71,7 @@ public class CommonsController {
 		case Usuario.SECRETARIA:
 			return "/templates/menu-secretaria.zul";
 		default:
-			return null;
+			return "/templates/menu-publico.zul";
 		}
 
 	}

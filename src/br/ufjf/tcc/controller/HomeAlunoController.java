@@ -33,7 +33,7 @@ public class HomeAlunoController extends CommonsController {
 	private TCC newTcc = new TCC();
 	private List<Usuario> orientadores;
 	private PrazoBusiness prazoBusiness = new PrazoBusiness();
-	private String gridTitle = "?";
+	private String gridTitle = "Semestre ?";
 
 	public List<Prazo> getPrazos() {
 		return prazos;

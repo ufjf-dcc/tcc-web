@@ -3,7 +3,9 @@
 		viewModel="@id('hf') @init('br.ufjf.tcc.controller.MenuController')"
 		form="@id('fx') @load(hf.usuario)">
 		<menubar id="menubar" width="100%">
-			<menuitem label="Home" href="/pages/home-professor.zul" />
+			<menuitem label="Página Inicial"
+				href="/pages/home-professor.zul" />
+			<menuitem label="Lista Pública" href="/" />
 			<menu label="Gerenciar...">
 				<menupopup>
 					<menuitem label="Usuários"
@@ -18,7 +20,8 @@
 			</menu>
 			<menuitem label="Configurações"
 				onClick="@command('settings')" />
-			<menuitem label="Sair" onClick="@command('sair')" style="float:right" />
+			<menuitem label="Sair" onClick="@command('sair')"
+				style="float:right" />
 		</menubar>
 	</div>
 </zk>

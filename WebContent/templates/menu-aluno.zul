@@ -3,7 +3,8 @@
 		viewModel="@id('hf') @init('br.ufjf.tcc.controller.MenuController')"
 		form="@id('fx') @load(hf.usuario)">
 		<menubar id="menubar" width="100%" style="text-align: center;">
-			<menuitem label="Home" href="/pages/home-aluno.zul" />
+			<menuitem label="Página Inicial" href="/pages/home-aluno.zul" />
+			<menuitem label="Lista Pública" href="/" />
 			<menuitem label="Configurações" onClick="@command('settings')" />
 			<menuitem label="Sair" onClick="@command('sair')" style="float:right" />
 		</menubar>
