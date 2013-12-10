@@ -2,6 +2,7 @@ package br.ufjf.tcc.controller;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -15,14 +16,17 @@ import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
+import br.ufjf.tcc.business.DepartamentoBusiness;
 import br.ufjf.tcc.business.PrazoBusiness;
 import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.business.UsuarioBusiness;
 import br.ufjf.tcc.model.CalendarioSemestre;
+import br.ufjf.tcc.model.Departamento;
 import br.ufjf.tcc.model.Prazo;
 import br.ufjf.tcc.model.TCC;
 import br.ufjf.tcc.model.Usuario;
@@ -31,7 +35,8 @@ public class HomeAlunoController extends CommonsController {
 	private int currentPrazo = 0;
 	private List<Prazo> prazos;
 	private TCC newTcc = new TCC();
-	private List<Usuario> orientadores;
+	private List<Usuario> orientadores = new ArrayList<Usuario>();
+	private List<Departamento> departamentos;
 	private PrazoBusiness prazoBusiness = new PrazoBusiness();
 	private String gridTitle = "Semestre ?";
 
@@ -94,10 +99,10 @@ public class HomeAlunoController extends CommonsController {
 			if (getUsuario().getTcc().size() != 0) {
 				Executions.sendRedirect("/pages/editor-tcc.zul");
 			} else {
-				if (orientadores == null) {
-					orientadores = new UsuarioBusiness().getProfessoresECoordenadores();
-					BindUtils
-							.postNotifyChange(null, null, this, "orientadores");
+				if (departamentos == null) {
+					departamentos = new DepartamentoBusiness().getAll();
+					BindUtils.postNotifyChange(null, null, this,
+							"departamentos");
 				}
 				window.doModal();
 			}
@@ -105,18 +110,34 @@ public class HomeAlunoController extends CommonsController {
 		}
 	}
 
+	@Command
+	public void selectedDepartamento(@BindingParam("dep") Comboitem combDep) {
+		Departamento dep = (Departamento) combDep.getValue();
+		orientadores.clear();
+		newTcc.setOrientador(null);
+		if (dep != null)
+			orientadores = new UsuarioBusiness().getAllByDepartamento(dep);
+		BindUtils.postNotifyChange(null, null, this, "orientadores");
+	}
+
 	@Command("submit")
 	public void submit() {
-		TCCBusiness tccBusiness = new TCCBusiness();
-		newTcc.setAluno(getUsuario());
-		newTcc.setCalendarioSemestre(getCurrentCalendar());
-		if (tccBusiness.save(newTcc)) {
-			Sessions.getCurrent().setAttribute("tcc", newTcc);
-			Executions.sendRedirect("/pages/editor-tcc.zul");
+		if (newTcc.getOrientador() != null) {
+			TCCBusiness tccBusiness = new TCCBusiness();
+			newTcc.setAluno(getUsuario());
+			newTcc.setCalendarioSemestre(getCurrentCalendar());
+			if (tccBusiness.save(newTcc)) {
+				Sessions.getCurrent().setAttribute("tcc", newTcc);
+				Executions.sendRedirect("/pages/editor-tcc.zul");
+			} else {
+				Messagebox.show("Devido a um erro, o TCC não foi criado.",
+						"Erro", Messagebox.OK, Messagebox.ERROR);
+			}
 		} else {
-			Messagebox.show("Devido a um erro, o TCC não foi criado.", "Erro",
-					Messagebox.OK, Messagebox.ERROR);
+			Messagebox.show("Selecione um Orientador", "Erro", Messagebox.OK,
+					Messagebox.ERROR);
 		}
+
 	}
 
 	public TCC getNewTcc() {
@@ -129,6 +150,10 @@ public class HomeAlunoController extends CommonsController {
 
 	public List<Usuario> getOrientadores() {
 		return orientadores;
+	}
+
+	public List<Departamento> getDepartamentos() {
+		return departamentos;
 	}
 
 	@Command

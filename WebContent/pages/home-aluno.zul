@@ -71,6 +71,17 @@
 				</columns>
 				<rows>
 					<row>
+						<label value="Selecione o Departamento " />
+						<combobox id="cmbDepartamento" hflex="1"
+							model="@load(vm.departamentos)" readonly="true"
+							onSelect="@command('selectedDepartamento', dep=self.selectedItem)">
+							<template name="model">
+								<comboitem
+									label="@load(each.nomeDepartamento)" />
+							</template>
+						</combobox>
+					</row>
+					<row>
 						<label value="Selecione o Orientador: " />
 						<combobox id="cmbOrientadores" hflex="1"
 							model="@load(vm.orientadores)" readonly="true"
