@@ -4,7 +4,7 @@
 		form="@id('fx') @load(hf.usuario)">
 		<menubar id="menubar" width="100%">
 			<menuitem label="Página Inicial"
-				href="/pages/home-professor.zul" />
+				onClick="@command('redirectHome')" />
 			<menuitem label="Lista Pública" href="/" />
 			<menuitem label="Alunos orientados"
 				href="/pages/alunos-orientados.zul" />

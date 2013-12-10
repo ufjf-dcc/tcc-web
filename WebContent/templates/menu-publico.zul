@@ -23,18 +23,18 @@
 				<rows>
 					<row>
 						<label value="Identificador: " tooltip="idHelp" />
-						<textbox value="@bind(fx.matricula)" width="95%"
+						<textbox value="@bind(fx.matricula)" width="100%"
 							onOK="@command('login', panel=loginForm)" tooltip="idHelp" />
 					</row>
 					<row>
 						<label value="Senha " tooltip="pswdHelp" />
 						<textbox value="@bind(fx.senha)" type="password"
-							width="95%" onOK="@command('login', panel=loginForm)"
+							width="100%" onOK="@command('login', panel=loginForm)"
 							tooltip="pswdHelp" />
 					</row>
 				</rows>
 			</grid>
-			<hlayout style="margin:5px;">
+			<hlayout style="margin-top:5px;">
 				<button label="Entrar"
 					onClick="@command('login', window=loginForm)" hflex="1" />
 				<button label="Esqueci a senha..."

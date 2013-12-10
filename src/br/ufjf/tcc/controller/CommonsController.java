@@ -1,5 +1,6 @@
 package br.ufjf.tcc.controller;
 
+import org.zkoss.bind.annotation.Command;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zul.Messagebox;
@@ -76,6 +77,7 @@ public class CommonsController {
 
 	}
 
+	@Command
 	public void redirectHome() {
 		switch ((getUsuario() != null ? getUsuario().getTipoUsuario()
 				.getIdTipoUsuario() : 0)) {

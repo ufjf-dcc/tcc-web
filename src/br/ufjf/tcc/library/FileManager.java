@@ -1,10 +1,10 @@
 package br.ufjf.tcc.library;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -24,6 +24,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.zkoss.io.Files;
 import org.zkoss.util.media.Media;
 
 import br.ufjf.tcc.business.CursoBusiness;
@@ -99,8 +100,19 @@ public class FileManager {
 	}
 
 	public List<TCC> readXML(Usuario secretary, Media media) throws Exception {
+		String fileName = "temp.xml";
 
-		File xml = new File(FILE_PATH + "temp");
+		if (media.isBinary()) {
+			Files.copy(new File(FILE_PATH + fileName), media.getStreamData());
+		} else {
+			BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH
+					+ fileName));
+			Files.copy(writer, media.getReaderData());
+			writer.flush();
+			writer.close();
+		}
+
+		File xml = new File(FILE_PATH + fileName);
 
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -129,7 +141,7 @@ public class FileManager {
 								.item(0).getTextContent());
 				if (aluno == null) {
 					aluno = new Usuario();
-					aluno.setNomeUsuario(eElement.getElementsByTagName("aluno")
+					aluno.setNomeUsuario(eElement.getElementsByTagName("autor")
 							.item(0).getTextContent());
 					aluno.setAtivo(false);
 					// aluno.setCurso(secretary.getCurso());
@@ -138,6 +150,7 @@ public class FileManager {
 							.getElementsByTagName("matricula").item(0)
 							.getTextContent());
 					aluno.setSenha("123");
+					aluno.setEmail("a@a.com");
 					aluno.setTipoUsuario(tipoUsuarioBusiness
 							.getTipoUsuario(Usuario.ALUNO));
 				}
@@ -153,6 +166,7 @@ public class FileManager {
 					orientador.setAtivo(false);
 					// orientador.setMatricula("seila");
 					orientador.setSenha("123");
+					aluno.setEmail("a@a.com");
 					orientador.setTipoUsuario(tipoUsuarioBusiness
 							.getTipoUsuario(Usuario.PROFESSOR));
 				}
@@ -175,7 +189,7 @@ public class FileManager {
 
 			}
 		}
-		deleteFile(FILE_PATH + "temp");
+		deleteFile(FILE_PATH + fileName);
 		return tccs;
 	}
 }

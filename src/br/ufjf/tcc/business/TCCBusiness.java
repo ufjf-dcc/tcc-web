@@ -56,6 +56,10 @@ public class TCCBusiness {
 	public boolean save(TCC tcc) {
 		return tccDao.salvar(tcc);
 	}
+	
+	public boolean saveList(List<TCC> tccs){
+		return tccDao.salvarLista(tccs);
+	}
 
 	public boolean edit(TCC tcc) {
 		return tccDao.editar(tcc);

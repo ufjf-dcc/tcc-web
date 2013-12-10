@@ -43,14 +43,9 @@
 								<image src="/img/help.gif"
 									tooltip="filterHelp" style="cursor: help" />
 							</hlayout>
-							<button upload="true" label="Enviar TCC via XML"
-								style="float:right"
-								visible="@load(vm.usuario.tipoUsuario.idTipoUsuario eq 0)"
-								onUpload="@command('readXML', evt=event, window=importXML)" />
-							<image src="/img/help.gif"
-								tooltip="filterHelp" onClick="@command('showHelp')" />
+							<button style="float:right"
+								label="Cadastrar novo TCC" href="/pages/editor-tcc-sec.zul" />
 						</div>
-
 					</div>
 				</auxheader>
 			</auxhead>
@@ -63,11 +58,11 @@
 			</columns>
 			<template name="lista">
 				<row xmlns:w="client"
-					w:onClick="visualzarTCC(${each.idTCC});">
+					w:onClick="visualzarTCC(${each.idTCC});"
+					tooltip="${forEachStatus.index}, position=at_pointer">
 					<div>
-						<label value="@load(each.nomeTCC)"
-							tooltip="${each.idTCC}, position=at_pointer" />
-						<popup id="${each.idTCC}">
+						<label value="@load(each.nomeTCC)" />
+						<popup id="${forEachStatus.index}">
 							<vlayout width="550px">
 								<label value="Resumo"
 									style="font-size: 14px; font-weight: bold; text-align: justify; display: block;" />
@@ -90,8 +85,7 @@
 							</vlayout>
 						</popup>
 					</div>
-					<label value="@load(each.aluno.nomeUsuario)"
-						tooltip="${each.idTCC}, position=at_pointer" />
+					<label value="@load(each.aluno.nomeUsuario)" />
 					<image src="/img/pdf.png" style="cursor: pointer"
 						onClick="@command('downloadPDF', tcc=each)" />
 					<image style="cursor: pointer"
@@ -100,65 +94,39 @@
 				</row>
 			</template>
 		</grid>
-		<window id="importXML" title="Importar via XML" visible="false"
-			height="80%" width="80%" border="normal" position="center,center"
-			closable="true"
-			onClose="self.setVisible(false); event.stopPropagation();">
-			<grid model="@load(vm.filterTccs) @template('lista')"
-				emptyMessage="@load(vm.emptyMessage)" mold="paging"
-				autopaging="true" vflex="true">
-				<columns>
-					<column label="NomeTCC" />
-					<column label="Autor" />
-					<column label="PDF" />
-					<column label="Extras" />
-				</columns>
-				<template name="lista">
-					<row>
-						<div>
-							<label value="@load(each.nomeTCC)"
-								tooltip="${each.idTCC}, position=at_pointer" />
-							<popup id="${each.idTCC}">
-								<vlayout width="550px">
-									<label value="Resumo"
-										style="font-size: 14px; font-weight: bold; text-align: justify; display: block;" />
-									<label
-										value="@load(each.resumoTCC)" />
-									<hlayout>
-										<label value="Ano: "
-											style="font-weight:bold;" />
-										<label
-											onCreate="@command('getEachTccYear', tcc=each, lbl=self)" />
-									</hlayout>
-									<label value="Orientador"
-										style="font-size: 14px; font-weight: bold; text-align: justify; display: block;" />
-									<label
-										value="@load(each.orientador.nomeUsuario)" />
-									<label value="Palavras-chave"
-										visible="@load(not empty each.palavrasChave)"
-										style="font-size: 14px; font-weight: bold; text-align: justify; display: block;" />
-									<label
-										value="@load(each.palavrasChave)" />
-								</vlayout>
-							</popup>
-						</div>
-						<label value="@load(each.aluno.nomeUsuario)"
-							tooltip="${each.idTCC}, position=at_pointer" />
-						<checkbox checked="@load(each.arquivoTCCFinal eq not null)" />
-						<checkbox checked="@load(each.arquivoExtraTCCFinal eq not null)" />
-					</row>
-				</template>
-			</grid>
-		</window>
 	</div>
 	<popup id="filterHelp">
 		<html>
+
+
+
+
+
+
+
+
+
+
+
+
 			
 			<![CDATA[ Permite filtrar a lista de TCCs com o termo e o
 			ano <br> escolhidos. O termo pode ser, por exemplo:
 			<ul><li>Autor ou orientador;</li> <li>Nome do TCC;</li>
 			<li>Palavra-chave;</li> <li>Conteúdo dos resumos.</li>
 			<ul>]]>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
 			
 		</html>
 	</popup>

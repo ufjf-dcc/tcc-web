@@ -79,11 +79,17 @@ public class VisualizaTCCController extends CommonsController {
 	}
 
 	private boolean canViewTCC() {
-		if (getUsuario() != null) {
-			if (getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.COORDENADOR
-					|| getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ADMINISTRADOR
-					|| tcc.getOrientador().getIdUsuario() == getUsuario().getIdUsuario()
-					|| tcc.getAluno().getIdUsuario() == getUsuario().getIdUsuario()) {
+		if (tcc.getDataEnvioFinal() != null) {
+			return true;
+		} else if (getUsuario() != null) {
+			if (getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ADMINISTRADOR
+					|| tcc.getOrientador().getIdUsuario() == getUsuario()
+							.getIdUsuario()
+					|| tcc.getAluno().getIdUsuario() == getUsuario()
+							.getIdUsuario()
+					|| ((getUsuario().getTipoUsuario().getIdTipoUsuario() != Usuario.PROFESSOR) && getUsuario()
+							.getCurso().getIdCurso() == tcc.getAluno()
+							.getCurso().getIdCurso())) {
 				canEdit = true;
 				canDonwloadFileBanca = true;
 				return true;
@@ -95,10 +101,8 @@ public class VisualizaTCCController extends CommonsController {
 						return true;
 					}
 			}
-		} else if (tcc.getDataEnvioFinal() != null) {
-			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -252,6 +256,11 @@ public class VisualizaTCCController extends CommonsController {
 
 	@Command
 	public void editTCC() {
-		Executions.sendRedirect("/pages/editor-tcc.zul?tcc="+tcc.getIdTCC());
+		if (getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.SECRETARIA)
+			Executions.sendRedirect("/pages/editor-tcc-sec.zul?tcc="
+					+ tcc.getIdTCC());
+		else
+			Executions.sendRedirect("/pages/editor-tcc.zul?tcc="
+					+ tcc.getIdTCC());
 	}
 }

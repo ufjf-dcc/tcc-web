@@ -1,0 +1,125 @@
+<?page title="Editor de TCC" contentType="text/html;charset=UTF-8"?>
+<?init class="br.ufjf.tcc.controller.AuthController"?>
+<zk>
+	<style src="/style.css" />
+	<div apply="org.zkoss.bind.BindComposer"
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.EditorTccSecController')"
+		height="100%">
+		<include src="@load(vm.menu)" />
+		<hlayout style="background-color:#efefef;" height="96%">
+			<vlayout hflex="1" style="overflow:auto">
+				<groupbox id="" mold="3d" width="100%">
+					<caption label="Autor" />
+					<vlayout hflex="1" style="margin:15px">
+						<hlayout style="margin:5px;line-height:20px;">
+							<label value="Matrícula: " />
+							<div hflex="1">
+								<textbox
+									value="@bind(vm.aluno.matricula)" />
+								<button label="Verificar"
+									onClick="@command('verifyAluno')" />
+							</div>
+						</hlayout>
+
+						<hlayout style="margin:5px;line-height:20px;">
+							<label value="Nome:" />
+							<textbox value="@bind(vm.aluno.nomeUsuario)"
+								hflex="1" width="100%" readonly="@load(vm.alunoExists)" />
+						</hlayout>
+
+						<hlayout style="margin:5px;line-height:20px;">
+							<label value="E-mail:" />
+							<textbox value="@bind(vm.aluno.email)"
+								hflex="1" width="100%" readonly="@load(vm.alunoExists)" />
+						</hlayout>
+
+						<hlayout style="margin:5px;line-height:20px;">
+							<label value="Curso:" />
+							<textbox hflex="1"
+								value="@bind(vm.usuario.curso.nomeCurso)" width="100%"
+								readonly="true" />
+						</hlayout>
+					</vlayout>
+				</groupbox>
+
+				<groupbox id="" mold="3d" width="100%">
+					<caption label="Orientador" />
+					<vlayout hflex="1" style="margin:15px">
+						<hlayout style="margin:5px;line-height:20px;">
+							<label value="Nome:" />
+							<div hflex="1">
+								<textbox
+									value="@bind(vm.orientador.email)" hflex="1" width="100%"
+									readonly="true" />
+								<button label="Alterar Orientador"
+									onClick="@command('changeOrientador')" />
+							</div>
+						</hlayout>
+
+					</vlayout>
+				</groupbox>
+
+				<groupbox id="" mold="3d" width="100%">
+					<caption label="TCC" />
+					<vlayout hflex="1" style="margin:15px">
+						<hlayout style="margin:5px;line-height:20px;">
+							<label value="Título do Trabalho: " />
+							<textbox
+								value="@load(vm.tcc.nomeTCC) @save(vm.tcc.nomeTCC, before='submit')"
+								hflex="1" />
+						</hlayout>
+
+						<hlayout style="margin:5px;line-height:20px;">
+							<label value="Subtítulo do Trabalho: " />
+							<textbox
+								value="@load(vm.tcc.subNomeTCC) @save(vm.tcc.subNomeTCC, before='submit')"
+								hflex="1" />
+						</hlayout>
+
+						<hlayout style="margin:5px;line-height:20px;">
+							<label value="Data final: " />
+							<datebox width="100%"
+								value="@bind(vm.tcc.dataEnvioFinal)" format="dd/MM/yyyy"
+								hflex="1" />
+						</hlayout>
+
+						<div align="center">
+							<button label="Editar Banca Examinadora"
+								onClick="@command('showBanca', window=configBanca)" />
+						</div>
+
+						<label value="Resumo: " style="margin:5px;" />
+						<textbox
+							value="@load(vm.tcc.resumoTCC) @save(vm.tcc.resumoTCC, before='submit')"
+							rows="12" width="98%" style="margin:5px;" />
+
+						<hlayout style="margin:5px;line-height:20px;">
+							<label value="Palavras-chave: " />
+							<textbox
+								value="@load(vm.tcc.palavrasChave) @save(vm.tcc.palavrasChave, before='submit')"
+								hflex="1" />
+						</hlayout>
+
+						<hlayout style="margin:5px;line-height:20px;">
+							<button hflex="1"
+								label="Selecionar arquivo (PDF)..." upload="true"
+								onUpload="@command('upload', button=self, evt=event)" />
+							<button hflex="1"
+								label="Selecionar arquivo extra..." upload="true"
+								onUpload="@command('extraUpload', button=self, evt=event)" />
+						</hlayout>
+
+						<div hflex="1" align="center"
+							style="margin-top:10px">
+							<button label="Atualizar"
+								onClick="@command('submit')" width="75px"
+								style="margin-top:5px" />
+						</div>
+					</vlayout>
+				</groupbox>
+			</vlayout>
+			<iframe hflex="2" vflex="100" autohide="true" height="100%"
+				onCreate="@command('showTCC', iframe=self)" />
+		</hlayout>
+	</div>
+</zk>
