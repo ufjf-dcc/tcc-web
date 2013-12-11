@@ -44,6 +44,14 @@ public class CadastroQuestionarioController extends CommonsController {
 			@ExecutionArgParam("editing") boolean editing) {
 		this.editing = editing;
 
+		if (getUsuario() == null) {
+			if (getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ADMINISTRADOR)
+				admin = true;
+			else if (getUsuario().getTipoUsuario().getIdTipoUsuario() != Usuario.COORDENADOR)
+				redirectHome();
+		} else
+			redirectHome();
+
 		if (q != null) {
 			questionary = q;
 			changeTitle();
@@ -129,7 +137,7 @@ public class CadastroQuestionarioController extends CommonsController {
 	public void removeQuestion(@BindingParam("question") Pergunta question) {
 		questions.remove(question);
 	}
-	
+
 	@NotifyChange("questions")
 	@Command
 	public void questionTop(@BindingParam("question") Pergunta question) {
@@ -156,7 +164,7 @@ public class CadastroQuestionarioController extends CommonsController {
 		questions.set(index + 1, question);
 		questions.set(index, aux);
 	}
-	
+
 	@NotifyChange("questions")
 	@Command
 	public void questionBottom(@BindingParam("question") Pergunta question) {

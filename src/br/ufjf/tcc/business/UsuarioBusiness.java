@@ -28,13 +28,13 @@ public class UsuarioBusiness {
 	}
 
 	// validação dos formulários
-	public boolean validate(Usuario usuario, String oldMatricula) {
+	public boolean validate(Usuario usuario, String oldMatricula, boolean validateTipo) {
 		errors.clear();
 
 		validarMatricula(usuario.getMatricula(), oldMatricula);
 		validarNome(usuario.getNomeUsuario());
 		validateEmail(usuario.getEmail(), null);
-		validateTipo(usuario);
+		if (validateTipo) validateTipo(usuario);
 
 		return errors.size() == 0;
 	}

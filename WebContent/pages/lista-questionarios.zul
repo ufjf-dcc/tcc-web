@@ -1,3 +1,4 @@
+<?init class="br.ufjf.tcc.controller.AuthController"?>
 <zk>
 	<window id="listquest" title="Questionários" width="300px"
 		border="normal" position="center,center"

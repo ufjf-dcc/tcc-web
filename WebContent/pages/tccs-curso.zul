@@ -21,7 +21,7 @@
 								<label value="Pesquisar: "
 									style="margin-top:6px" />
 								<textbox id="filtro"
-									value="@bind(vm.filterString)" />
+									value="@bind(vm.filterString)" onOK="@command('filtra')"/>
 								<separator orient="vertical"
 									spacing="3px" />
 
