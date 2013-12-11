@@ -112,20 +112,12 @@
 	</div>
 	<popup id="filterHelp">
 		<html>
-
-
-
-
 			
 			<![CDATA[ Permite filtrar a lista de TCCs com o curso, o
 			termo e o ano <br> escolhidos. O termo pode ser, por
 			exemplo: <ul><li>Autor ou orientador;</li> <li>Nome do
 			TCC;</li> <li>Palavra-chave;</li> <li>Conteúdo dos
 			resumos.</li> <ul>]]>
-			
-			
-			
-			
 			
 		</html>
 	</popup>

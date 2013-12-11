@@ -46,5 +46,25 @@ public class ParticipacaoDAO extends GenericoDAO implements IParticipacaoDAO {
 
 		return tccs;
 	}
+	
+	public boolean updateList(TCC tcc) {
+		try {
+			Query query = getSession().createQuery(
+					"DELETE FROM Participacao AS p WHERE p.tcc = :tcc");
+			query.setParameter("tcc", tcc);
+			query.executeUpdate();
+			
+			getSession().close();
+			
+			if(tcc.getParticipacoes() != null)
+				this.salvarLista(tcc.getParticipacoes());
+			
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return false;
+	}
 
 }

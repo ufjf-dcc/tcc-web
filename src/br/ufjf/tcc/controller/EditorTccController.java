@@ -10,22 +10,23 @@ import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
-import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.UploadEvent;
-import org.zkoss.zul.Button;
-import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Iframe;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
+import br.ufjf.tcc.business.DepartamentoBusiness;
+import br.ufjf.tcc.business.ParticipacaoBusiness;
 import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.business.UsuarioBusiness;
 import br.ufjf.tcc.library.FileManager;
 import br.ufjf.tcc.model.CalendarioSemestre;
+import br.ufjf.tcc.model.Departamento;
 import br.ufjf.tcc.model.Participacao;
 import br.ufjf.tcc.model.Prazo;
 import br.ufjf.tcc.model.TCC;
@@ -34,13 +35,13 @@ import br.ufjf.tcc.model.Usuario;
 public class EditorTccController extends CommonsController {
 
 	private TCCBusiness tccBusiness = new TCCBusiness();
+	private Usuario tempUser;
 	private List<Usuario> orientadores = new ArrayList<Usuario>();
-	private List<Participacao> banca;
+	private List<Departamento> departamentos;
 	private TCC tcc = null;
 	private Iframe iframe;
 	private InputStream tccFile = null, extraFile = null;
 	private AMedia pdf = null;
-	private Usuario tempBanca = null;
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Init
@@ -53,17 +54,6 @@ public class EditorTccController extends CommonsController {
 				getUsuario().getTcc().clear();
 				getUsuario().getTcc().add(tempTcc);
 				tcc = getUsuario().getTcc().get(0);
-				orientadores.add(tcc.getOrientador());
-				if (tcc.getParticipacoes() == null
-						|| tcc.getParticipacoes().size() == 0) {
-					List<Participacao> auxList = tcc.getParticipacoes();
-					Participacao aux = new Participacao();
-					aux.setProfessor(tcc.getOrientador());
-					aux.setTitulacao(tcc.getOrientador().getTitulacao());
-					aux.setTcc(tcc);
-					auxList.add(aux);
-					tcc.setParticipacoes(auxList);
-				}
 				if (currentCalendar.getPrazos().get(Prazo.ENTREGA_TCC_BANCA)
 						.getDataFinal().before(new Date()))
 					Messagebox.show("O prazo para envio de TCCs já terminou.",
@@ -85,9 +75,7 @@ public class EditorTccController extends CommonsController {
 				tcc = tccBusiness.getTCCById(Integer.parseInt(tccId));
 			}
 
-			if (tcc != null && canEdit())
-				orientadores.add(tcc.getOrientador());
-			else
+			if (tcc == null || !canEdit())
 				redirectHome();
 		}
 	}
@@ -111,92 +99,109 @@ public class EditorTccController extends CommonsController {
 	}
 
 	@Command
-	public void changeOrientador(
-			@BindingParam("butOrientador") Button butOrientador,
-			@BindingParam("cmbOrientador") Combobox cmbOrientador) {
-		if (orientadores.size() <= 1) {
-			orientadores = new UsuarioBusiness().getProfessoresECoordenadores();
-			BindUtils.postNotifyChange(null, null, this, "orientadores");
+	public void changeOrientador(@BindingParam("window") Window window) {
+		if (departamentos == null) {
+			departamentos = new DepartamentoBusiness().getAll();
+			BindUtils.postNotifyChange(null, null, this, "departamentos");
 		}
-		butOrientador.setVisible(false);
+		window.doModal();
+	}
+
+	@Command
+	public void selectedDepartamento(@BindingParam("dep") Comboitem combDep) {
+		Departamento dep = (Departamento) combDep.getValue();
+		tempUser = null;
+		orientadores.clear();
+		if (dep != null)
+			orientadores = new UsuarioBusiness().getAllByDepartamento(dep);
+
+		BindUtils.postNotifyChange(null, null, this, "tempUser");
+		BindUtils.postNotifyChange(null, null, this, "orientadores");
+	}
+
+	@Command
+	public void selectOrientador(@BindingParam("window") Window window) {
+		if (tempUser != null) {
+			tcc.setOrientador(tempUser);
+			BindUtils.postNotifyChange(null, null, this, "tcc");
+		}
+		window.setVisible(false);
+	}
+
+	@Command
+	public void showBanca(@BindingParam("window") Window window) {
+		if (departamentos == null) {
+			departamentos = new DepartamentoBusiness().getAll();
+			BindUtils.postNotifyChange(null, null, this, "departamentos");
+		}
+
+		if (tcc.getParticipacoes() == null)
+			tcc.setParticipacoes(new ArrayList<Participacao>());
+
+		tempUser = null;
+		BindUtils.postNotifyChange(null, null, this, "tempUser");
+		BindUtils.postNotifyChange(null, null, this, "orientadores");
+		
+		window.doModal();
+	}
+	
+	private boolean participacoesContains(Usuario tempUser){
+		boolean find = false;
+		
+		for(Participacao p: tcc.getParticipacoes())
+			if(p.getProfessor().getIdUsuario() == tempUser.getIdUsuario()){
+				find = true;
+				break;
+			}
+		
+		return find;
+	}
+
+	@Command
+	public void addToBanca() {
+		if (tempUser != null) {
+			if (!participacoesContains(tempUser) && tempUser.getIdUsuario() != tcc.getOrientador().getIdUsuario()) {
+				Participacao p = new Participacao();
+				p.setProfessor(tempUser);
+				p.setTcc(tcc);
+				if(tempUser.getTitulacao() != null)
+					p.setTitulacao(tempUser.getTitulacao());
+				tcc.getParticipacoes().add(p);
+				BindUtils.postNotifyChange(null, null, this, "tcc");
+			} else {
+				Messagebox
+						.show("Esse professor já está na lista ou é o orientador do TCC", "Erro", Messagebox.OK, Messagebox.ERROR);
+			}
+		}
+	}
+
+	@Command
+	public void removeFromBanca(@BindingParam("participacao") Participacao p) {
+		tcc.getParticipacoes().remove(p);
+		BindUtils.postNotifyChange(null, null, this, "tcc");
+	}
+
+	@Command
+	public void submitBanca(@BindingParam("window") Window window) {
+		orientadores.clear();
+		orientadores.add(tcc.getOrientador());
+		window.setVisible(false);
 	}
 
 	public List<Usuario> getOrientadores() {
 		return orientadores;
 	}
 
-	public List<Participacao> getBanca() {
-		return banca;
+	public List<Departamento> getDepartamentos() {
+		return departamentos;
 	}
 
-	@Command
-	public void showBanca(@BindingParam("window") Window window) {
-		if (banca == null)
-			banca = tcc.getParticipacoes();
-		if (banca == null)
-			banca = new ArrayList<Participacao>();
-		if (orientadores.size() == 1) {
-			List<Usuario> aux = new UsuarioBusiness().getProfessoresECoordenadores();
-			orientadores.clear();
-			orientadores = new ArrayList<Usuario>();
-			if (banca.size() > 0) {
-				for (Usuario professor : aux)
-					for (Participacao p : banca)
-						if (p.getProfessor().getIdUsuario() != professor
-								.getIdUsuario())
-							orientadores.add(professor);
-			} else
-				orientadores = aux;
-			BindUtils.postNotifyChange(null, null, this, "orientadores");
-		}
-		window.doModal();
+	public Usuario getTempUser() {
+		return tempUser;
 	}
 
-	public Usuario getTempBanca() {
-		return tempBanca;
-	}
-
-	public void setTempBanca(Usuario tempBanca) {
-		this.tempBanca = tempBanca;
-	}
-
-	@NotifyChange({ "banca", "orientadores" })
-	@Command
-	public void addToBanca() {
-		Participacao p = new Participacao();
-		p.setProfessor(tempBanca);
-		p.setTcc(tcc);
-		p.setTitulacao(tempBanca.getTitulacao());
-		banca.add(p);
-		orientadores.remove(tempBanca);
-		tempBanca = null;
-	}
-
-	@NotifyChange({ "banca", "orientadores" })
-	@Command
-	public void removeFromBanca(@BindingParam("participacao") Participacao p) {
-		banca.remove(p);
-		orientadores.add(p.getProfessor());
-		tempBanca = orientadores.get(orientadores.size() - 1);
-	}
-
-	@NotifyChange("banca")
-	@Command
-	public void cancelBanca(@BindingParam("window") Window window,
-			@BindingParam("event") Event event) {
-		banca = tcc.getParticipacoes();
-		orientadores.clear();
-		orientadores.add(tcc.getOrientador());
-		event.stopPropagation();
-		window.setVisible(false);
-	}
-
-	@Command
-	public void submitBanca(@BindingParam("window") Window window) {
-		tcc.setParticipacoes(banca);
-		orientadores.clear();
-		orientadores.add(tcc.getOrientador());
-		window.setVisible(false);
+	public void setTempUser(Usuario tempUser) {
+		this.tempUser = tempUser;
 	}
 
 	@Command
@@ -256,7 +261,6 @@ public class EditorTccController extends CommonsController {
 	@Command("submit")
 	public void submit() {
 		tcc.setDataEnvioBanca(new Timestamp(new Date().getTime()));
-		System.out.println(tcc.getOrientador().getNomeUsuario());
 		if (tccBusiness.validate(tcc)) {
 			if (tccFile != null) {
 				iframe.setContent(pdf);
@@ -267,6 +271,7 @@ public class EditorTccController extends CommonsController {
 			if (extraFile != null)
 				saveExtraFile();
 			if (tccBusiness.edit(tcc)) {
+				new ParticipacaoBusiness().updateList(tcc);
 				// new SendMail().onSubmitTCC(tcc);
 				Messagebox.show("\"" + tcc.getNomeTCC()
 						+ "\" cadastrado com sucesso!"
