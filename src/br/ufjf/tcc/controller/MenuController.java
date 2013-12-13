@@ -59,10 +59,10 @@ public class MenuController extends CommonsController {
 					TCCBusiness tccBusiness = new TCCBusiness();
 					TCC tempTcc = tccBusiness.getCurrentTCCByAuthor(
 							getUsuario(), getCurrentCalendar());
-					List<TCC> tcc = new ArrayList<TCC>();
+					List<TCC> tccs = new ArrayList<TCC>();
 					if (tempTcc != null)
-						tcc.add(tempTcc);
-					getUsuario().setTcc(tcc);
+						tccs.add(tempTcc);
+					getUsuario().setTcc(tccs);
 				}
 				redirectHome();
 			} else {

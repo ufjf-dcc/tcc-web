@@ -87,30 +87,29 @@ public class VisualizaTCCController extends CommonsController {
 					canAnswer = true;
 					return true;
 				}
-			
+
 			if (getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ADMINISTRADOR
 					|| getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.COORDENADOR) {
 				canEdit = true;
 				canDonwloadFileBanca = true;
 				return true;
 			}
-			
-			if (getUsuario().getIdUsuario() == tcc.getAluno()
-						.getIdUsuario()
-						|| getUsuario().getIdUsuario() == tcc.getOrientador()
-								.getIdUsuario()) {
-					canEdit = true;
-					canDonwloadFileBanca = true;
-					return true;
-				}
-			
+
+			if (getUsuario().getIdUsuario() == tcc.getAluno().getIdUsuario()
+					|| getUsuario().getIdUsuario() == tcc.getOrientador()
+							.getIdUsuario()) {
+				canEdit = true;
+				canDonwloadFileBanca = true;
+				return true;
+			}
+
 			if (tcc.getDataEnvioFinal() != null) {
 				if (getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.SECRETARIA)
 					canEdit = true;
 				return true;
 			}
 		}
-		
+
 		return tcc.getDataEnvioFinal() != null;
 	}
 
@@ -264,11 +263,6 @@ public class VisualizaTCCController extends CommonsController {
 
 	@Command
 	public void editTCC() {
-		if (getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.SECRETARIA)
-			Executions.sendRedirect("/pages/editor-tcc-sec.zul?tcc="
-					+ tcc.getIdTCC());
-		else
-			Executions.sendRedirect("/pages/editor-tcc.zul?tcc="
-					+ tcc.getIdTCC());
+		Executions.sendRedirect("/pages/edito-tcc.zul?tcc=" + tcc.getIdTCC());
 	}
 }

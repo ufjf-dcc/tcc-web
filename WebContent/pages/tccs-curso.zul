@@ -44,7 +44,7 @@
 									tooltip="filterHelp" style="cursor: help" />
 							</hlayout>
 							<button style="float:right"
-								label="Cadastrar novo TCC" href="/pages/editor-tcc-sec.zul" />
+								label="Cadastrar novo TCC" href="/pages/edito-tcc.zul" />
 						</div>
 					</div>
 				</auxheader>

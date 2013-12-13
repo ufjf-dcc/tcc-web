@@ -90,7 +90,8 @@ public class TCCDAO extends GenericoDAO implements ITCCDAO {
 		return null;
 	}
 
-	public TCC getCurrentTCCByAuthor(Usuario user, CalendarioSemestre currentCalendar) {
+	public TCC getCurrentTCCByAuthor(Usuario user,
+			CalendarioSemestre currentCalendar) {
 		TCC resultado = null;
 		try {
 			Query query = getSession()
@@ -109,7 +110,7 @@ public class TCCDAO extends GenericoDAO implements ITCCDAO {
 
 		return resultado;
 	}
-	
+
 	public TCC getTCCById(int id) {
 		TCC resultado = null;
 		try {
@@ -133,8 +134,10 @@ public class TCCDAO extends GenericoDAO implements ITCCDAO {
 		List<TCC> results = null;
 
 		try {
-			Query query = getSession().createQuery("SELECT t FROM TCC AS t JOIN FETCH t.aluno JOIN FETCH t.orientador WHERE t.orientador = :user");
-			query.setParameter("user",user);
+			Query query = getSession()
+					.createQuery(
+							"SELECT t FROM TCC AS t JOIN FETCH t.aluno JOIN FETCH t.orientador WHERE t.orientador = :user");
+			query.setParameter("user", user);
 			results = query.list();
 			getSession().close();
 
@@ -148,9 +151,8 @@ public class TCCDAO extends GenericoDAO implements ITCCDAO {
 	public boolean userHasTCC(Usuario user) {
 		List<TCC> resultados = null;
 		try {
-			Query query = getSession()
-					.createQuery(
-							"SELECT t FROM TCC AS t WHERE t.aluno = :user");
+			Query query = getSession().createQuery(
+					"SELECT t FROM TCC AS t WHERE t.aluno = :user");
 			query.setParameter("user", user);
 
 			resultados = query.list();
@@ -162,6 +164,27 @@ public class TCCDAO extends GenericoDAO implements ITCCDAO {
 		}
 
 		return resultados.size() > 0;
+	}
+
+	public List<TCC> getFinishedTCCsByCurso(Curso curso) {
+		try {
+			Query query = getSession()
+					.createQuery(
+							"SELECT t FROM TCC AS t JOIN FETCH t.aluno AS a JOIN FETCH t.orientador WHERE a.curso = :curso AND t.dataEnvioFinal IS NOT NULL");
+			query.setParameter("curso", curso);
+
+			List<TCC> resultados = query.list();
+
+			getSession().close();
+
+			if (resultados != null)
+				return resultados;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 
 }

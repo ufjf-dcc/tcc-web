@@ -18,6 +18,7 @@ import org.zkoss.zul.Messagebox;
 import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.library.FileManager;
 import br.ufjf.tcc.model.TCC;
+import br.ufjf.tcc.model.Usuario;
 
 public class TCCsCursoController extends CommonsController {
 
@@ -29,7 +30,18 @@ public class TCCsCursoController extends CommonsController {
 
 	@Init
 	public void init() {
-		tccs = new TCCBusiness().getTCCsByCurso(getUsuario().getCurso());
+		switch(getUsuario().getTipoUsuario().getIdTipoUsuario()){
+		case Usuario.COORDENADOR:
+			tccs = new TCCBusiness().getTCCsByCurso(getUsuario().getCurso());
+			break;
+		case Usuario.SECRETARIA:
+			tccs = new TCCBusiness().getFinishedTCCsByCurso(getUsuario().getCurso());
+			break;
+		default:
+			redirectHome();
+			return;
+		}
+		
 		filterTccs = tccs;
 
 		years = new ArrayList<String>();

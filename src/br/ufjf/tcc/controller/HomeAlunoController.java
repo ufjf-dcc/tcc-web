@@ -23,7 +23,6 @@ import org.zkoss.zul.Window;
 
 import br.ufjf.tcc.business.DepartamentoBusiness;
 import br.ufjf.tcc.business.PrazoBusiness;
-import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.business.UsuarioBusiness;
 import br.ufjf.tcc.model.CalendarioSemestre;
 import br.ufjf.tcc.model.Departamento;
@@ -97,7 +96,7 @@ public class HomeAlunoController extends CommonsController {
 		switch (tipo) {
 		case Prazo.ENTREGA_TCC_BANCA:
 			if (getUsuario().getTcc().size() != 0) {
-				Executions.sendRedirect("/pages/editor-tcc.zul");
+				Executions.sendRedirect("/pages/edito-tcc.zul");
 			} else {
 				if (departamentos == null) {
 					departamentos = new DepartamentoBusiness().getAll();
@@ -123,16 +122,13 @@ public class HomeAlunoController extends CommonsController {
 	@Command("submit")
 	public void submit() {
 		if (newTcc.getOrientador() != null) {
-			TCCBusiness tccBusiness = new TCCBusiness();
 			newTcc.setAluno(getUsuario());
 			newTcc.setCalendarioSemestre(getCurrentCalendar());
-			if (tccBusiness.save(newTcc)) {
-				Sessions.getCurrent().setAttribute("tcc", newTcc);
-				Executions.sendRedirect("/pages/editor-tcc.zul");
-			} else {
-				Messagebox.show("Devido a um erro, o TCC não foi criado.",
-						"Erro", Messagebox.OK, Messagebox.ERROR);
-			}
+			List<TCC> tccs = new ArrayList<TCC>();
+			tccs.add(newTcc);
+			getUsuario().setTcc(tccs);
+			Sessions.getCurrent().setAttribute("tcc", newTcc);
+			Executions.sendRedirect("/pages/edito-tcc.zul");
 		} else {
 			Messagebox.show("Selecione um Orientador", "Erro", Messagebox.OK,
 					Messagebox.ERROR);

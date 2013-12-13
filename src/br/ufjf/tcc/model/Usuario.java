@@ -24,8 +24,8 @@ import org.hibernate.annotations.GenericGenerator;
 @Entity
 @Table(name = "Usuario")
 public class Usuario implements Serializable {
-	public static final int SECRETARIA = 0, ALUNO = 1, PROFESSOR = 2, COORDENADOR = 3,
-			ADMINISTRADOR = 4;
+	public static final int ALUNO = 1, PROFESSOR = 2, COORDENADOR = 3,
+			ADMINISTRADOR = 4, SECRETARIA = 5;
 
 	private static final long serialVersionUID = 1L;
 

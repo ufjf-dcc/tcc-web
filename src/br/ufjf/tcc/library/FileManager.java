@@ -59,6 +59,7 @@ public class FileManager {
 			} else
 				return false;
 		} catch (Exception e) {
+			e.printStackTrace();
 			return false;
 		}
 	}
@@ -83,6 +84,7 @@ public class FileManager {
 					outputStream.write(bytes, 0, read);
 
 			} catch (Exception e) {
+				e.printStackTrace();
 				return null;
 			} finally {
 				try {
