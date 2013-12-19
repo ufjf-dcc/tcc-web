@@ -96,7 +96,7 @@ public class HomeAlunoController extends CommonsController {
 		switch (tipo) {
 		case Prazo.ENTREGA_TCC_BANCA:
 			if (getUsuario().getTcc().size() != 0) {
-				Executions.sendRedirect("/pages/edito-tcc.zul");
+				Executions.sendRedirect("/pages/editor-tcc.zul");
 			} else {
 				if (departamentos == null) {
 					departamentos = new DepartamentoBusiness().getAll();
@@ -128,7 +128,7 @@ public class HomeAlunoController extends CommonsController {
 			tccs.add(newTcc);
 			getUsuario().setTcc(tccs);
 			Sessions.getCurrent().setAttribute("tcc", newTcc);
-			Executions.sendRedirect("/pages/edito-tcc.zul");
+			Executions.sendRedirect("/pages/editor-tcc.zul");
 		} else {
 			Messagebox.show("Selecione um Orientador", "Erro", Messagebox.OK,
 					Messagebox.ERROR);

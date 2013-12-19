@@ -263,6 +263,6 @@ public class VisualizaTCCController extends CommonsController {
 
 	@Command
 	public void editTCC() {
-		Executions.sendRedirect("/pages/edito-tcc.zul?tcc=" + tcc.getIdTCC());
+		Executions.sendRedirect("/pages/editor-tcc.zul?tcc=" + tcc.getIdTCC());
 	}
 }
