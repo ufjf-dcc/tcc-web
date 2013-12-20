@@ -100,8 +100,6 @@ public class EditorTccController extends CommonsController {
 			if (tcc == null || !canEdit())
 				redirectHome();
 		}
-
-		departamentos = new DepartamentoBusiness().getAll();
 	}
 
 	private boolean canEdit() {

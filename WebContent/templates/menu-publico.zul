@@ -15,7 +15,7 @@
 			onCancel="self.setVisible(false); event.stopPropagation();"
 			onClose="self.setVisible(false); event.stopPropagation();">
 			<label id="errorLbl" visible="false"
-				style="text-align:center;color:red;margin:5px;" />
+				style="text-align:center;color:red;margin:5px;font-style:italic" />
 			<grid>
 				<columns>
 					<column width="120px" />

@@ -3,7 +3,7 @@
 <zk>
 	<style src="/style.css" />
 	<div apply="org.zkoss.bind.BindComposer"
-		viewModel="@id('vm') @init('br.ufjf.tcc.controller.EditorTccSecController')"
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.EditorTccController')"
 		height="100%">
 		<include src="@load(vm.menu)" />
 		<hlayout style="background-color:#efefef;" height="96%">
@@ -207,13 +207,13 @@
 			<iframe hflex="2" vflex="100" autohide="true" height="100%"
 				onCreate="@command('showTCC', iframe=self)" />
 		</hlayout>
-		<window id="changeOrientador" title="Alterar Administrador"
+		<window id="changeOrientador" title="Alterar Orientador"
 			visible="false" width="400px" border="normal"
 			position="center,center" closable="true"
 			onClose="self.setVisible(false); event.stopPropagation();">
 			<grid>
 				<columns>
-					<column width="160px" />
+					<column width="170px" />
 					<column />
 				</columns>
 				<rows>

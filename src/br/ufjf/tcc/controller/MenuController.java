@@ -50,11 +50,11 @@ public class MenuController extends CommonsController {
 
 	@Command
 	public void login(@BindingParam("window") Window window, @BindingParam("label") Label errorLbl) {
+		usuarioBusiness = new UsuarioBusiness();
 		if (usuarioForm != null && usuarioForm.getMatricula() != null
 				&& usuarioForm.getSenha() != null
 				&& usuarioForm.getMatricula().trim().length() > 0
 				&& usuarioForm.getSenha().trim().length() > 0) {
-			usuarioBusiness = new UsuarioBusiness();
 			if (usuarioBusiness.login(usuarioForm.getMatricula(),
 					usuarioForm.getSenha())) {
 				if (getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ALUNO) {
@@ -74,7 +74,7 @@ public class MenuController extends CommonsController {
 			}
 		} else {
 			Clients.evalJavaScript("loginFailed()");
-			errorLbl.setValue(usuarioBusiness.getErrors().get(0));
+			errorLbl.setValue("Informe o identificador e a senha");
 			errorLbl.setVisible(true);
 		}
 

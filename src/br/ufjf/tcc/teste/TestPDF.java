@@ -8,6 +8,7 @@ package br.ufjf.tcc.teste;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
+import br.ufjf.tcc.library.FileManager;
 import br.ufjf.tcc.library.PDFHandler;
 
 public class TestPDF {
@@ -15,7 +16,7 @@ public class TestPDF {
 		// Cria os objetos que serão impressos no PDF
 		System.out.println("Hi Testing");
 		ArrayList<Employee> employeeList = new ArrayList<Employee>();
-		String templateFilePath = "/home/users/jorge/files/";
+		String templateFilePath = FileManager.FILE_PATH;
 
 		Employee e1 = new Employee();
 		e1.setName("Debasmita1 Sahoo");
