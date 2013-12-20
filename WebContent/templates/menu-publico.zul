@@ -6,15 +6,16 @@
 			<menuitem label="Universidade Federal de Juiz de Fora"
 				href="http://www.ufjf.br/" />
 			<menuitem label="Entrar no sistema"
-				onClick="@command('showForm', window=loginForm)"
-				style="float:right" />
+				onClick="@command('showForm', window=loginWin)" style="float:right" />
 		</menubar>
 		<window title="Entrar no sistema" visible="false" width="350px"
 			border="normal" position="center,center" closable="true"
 			form="@id('fx') @load(vm.usuarioForm) @save(vm.usuarioForm, before='login')"
-			id="loginForm"
+			id="loginWin"
 			onCancel="self.setVisible(false); event.stopPropagation();"
 			onClose="self.setVisible(false); event.stopPropagation();">
+			<label id="errorLbl" visible="false"
+				style="text-align:center;color:red;margin:5px;" />
 			<grid>
 				<columns>
 					<column width="120px" />
@@ -23,20 +24,21 @@
 				<rows>
 					<row>
 						<label value="Identificador: " tooltip="idHelp" />
-						<textbox value="@bind(fx.matricula)" width="100%"
-							onOK="@command('login', panel=loginForm)" tooltip="idHelp" />
+						<textbox value="@bind(fx.matricula)"
+							width="100%" onOK="@command('login', window=loginWin, label=errorLbl)"
+							tooltip="idHelp" />
 					</row>
 					<row>
 						<label value="Senha " tooltip="pswdHelp" />
 						<textbox value="@bind(fx.senha)" type="password"
-							width="100%" onOK="@command('login', panel=loginForm)"
+							width="100%" onOK="@command('login', window=loginWin, label=errorLbl)"
 							tooltip="pswdHelp" />
 					</row>
 				</rows>
 			</grid>
 			<hlayout style="margin-top:5px;">
 				<button label="Entrar"
-					onClick="@command('login', window=loginForm)" hflex="1" />
+					onClick="@command('login', window=loginWin, label=errorLbl)" hflex="1" />
 				<button label="Esqueci a senha..."
 					onClick="@command('forgotPassword', window=forgot)" hflex="1" />
 			</hlayout>
@@ -70,12 +72,15 @@
 					width="75px" style="margin-top:5px" />
 			</div>
 		</window>
+		<script type="text/javascript" src="/effects.js" />
 	</div>
 	<popup id="idHelp">
 		<html>
 
+
 			
 			<![CDATA[ Informe sua matrícula ou SIAPE]]>
+			
 			
 			
 		</html>
@@ -83,10 +88,12 @@
 	<popup id="pswdHelp">
 		<html>
 
+
 			
 			<![CDATA[ Se este é o seu primeiro acesso, use a senha
 			enviada<br> para o seu e-mail ou clique em "Esqueci a
 			senha"]]>
+			
 			
 			
 		</html>

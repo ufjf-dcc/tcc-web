@@ -1,0 +1,21 @@
+<?page title="Solicitação de Matrícula"?>
+<zk>
+	<style src="/style.css" />
+	<div apply="org.zkoss.bind.BindComposer"
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.MatriculaController')">
+		<include src="@load(vm.menu)" />
+		<grid model="@load(vm.itens) @template('formulario')">
+			<columns>
+				<column />
+				<column />
+			</columns>
+			<template name="formulario">
+				<row>
+					<label value="@load(each.pergunta)" />
+					<textbox value="@bind(each.resposta)" width="100%" />
+				</row>
+			</template>
+		</grid>
+		<button label="Obter PDF" onClick="@command('exportPDF')"/>
+	</div>
+</zk>

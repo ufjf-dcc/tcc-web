@@ -8,6 +8,8 @@ package br.ufjf.tcc.teste;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
+import br.ufjf.tcc.library.PDFHandler;
+
 public class TestPDF {
 	public TestPDF() {
 		// Cria os objetos que serão impressos no PDF

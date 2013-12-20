@@ -6,6 +6,8 @@ import java.util.List;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
@@ -47,7 +49,7 @@ public class MenuController extends CommonsController {
 	}
 
 	@Command
-	public void login(@BindingParam("window") Window window) {
+	public void login(@BindingParam("window") Window window, @BindingParam("label") Label errorLbl) {
 		if (usuarioForm != null && usuarioForm.getMatricula() != null
 				&& usuarioForm.getSenha() != null
 				&& usuarioForm.getMatricula().trim().length() > 0
@@ -66,12 +68,14 @@ public class MenuController extends CommonsController {
 				}
 				redirectHome();
 			} else {
-				Messagebox.show(usuarioBusiness.getErrors().get(0), "Erro",
-						Messagebox.OK, Messagebox.ERROR);
+				Clients.evalJavaScript("loginFailed()");
+				errorLbl.setValue(usuarioBusiness.getErrors().get(0));
+				errorLbl.setVisible(true);
 			}
 		} else {
-			Messagebox.show("Informe a matrícula e a senha", "Erro",
-					Messagebox.OK, Messagebox.ERROR);
+			Clients.evalJavaScript("loginFailed()");
+			errorLbl.setValue(usuarioBusiness.getErrors().get(0));
+			errorLbl.setVisible(true);
 		}
 
 	}

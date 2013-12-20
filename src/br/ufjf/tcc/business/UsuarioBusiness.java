@@ -112,7 +112,7 @@ public class UsuarioBusiness {
 			}
 		}
 
-		errors.add("Usuário ou Senha inválidos!");
+		errors.add("Usuário ou senha inválidos!");
 		return false;
 	}
 
