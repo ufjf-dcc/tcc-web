@@ -100,6 +100,7 @@ public class EditorTccController extends CommonsController {
 			if (tcc == null || !canEdit())
 				redirectHome();
 		}
+		departamentos = new DepartamentoBusiness().getAll();
 	}
 
 	private boolean canEdit() {
@@ -240,10 +241,6 @@ public class EditorTccController extends CommonsController {
 
 	@Command
 	public void changeOrientador(@BindingParam("window") Window window) {
-		if (departamentos == null) {
-			departamentos = new DepartamentoBusiness().getAll();
-			BindUtils.postNotifyChange(null, null, this, "departamentos");
-		}
 		window.doModal();
 	}
 
