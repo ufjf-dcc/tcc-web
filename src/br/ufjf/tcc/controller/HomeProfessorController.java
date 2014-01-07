@@ -3,6 +3,8 @@ package br.ufjf.tcc.controller;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -28,12 +30,14 @@ import br.ufjf.tcc.model.TCC;
 import br.ufjf.tcc.model.Usuario;
 
 public class HomeProfessorController extends CommonsController {
-	private List<TCC> tccs = new ArrayList<TCC>();
-	private List<TCC> filterTccs = tccs;
+	private List<TCC> allTccs = new ArrayList<TCC>(); //inclui TCCs finalizados
+	private List<TCC> tccs = new ArrayList<TCC>(); //apenas TCCs em aberto
+	private List<TCC> filterTccs; //apenas TCCs do tipo selecionado
 	private Questionario currentQuestionary;
 	private CalendarioSemestre currentCalendar;
 	private boolean currentQuestionaryExists = true,
-			currentQuestionaryUsed = true, currentCalendarExists = true;
+			currentQuestionaryUsed = true, currentCalendarExists = true,
+			showAll = false;
 
 	/*
 	 * Pega todas as TCCs em que o Prof/Coord tem Participação e verifica se o
@@ -50,9 +54,23 @@ public class HomeProfessorController extends CommonsController {
 					new ParticipacaoBusiness()
 							.getParticipacoesByUser(getUsuario()));
 			for (Participacao p : getUsuario().getParticipacoes()) {
-				tccs.add(p.getTcc());
+				allTccs.add(p.getTcc());
 			}
-			tccs.addAll(new TCCBusiness().getTCCsByOrientador(getUsuario()));
+			allTccs.addAll(new TCCBusiness().getTCCsByOrientador(getUsuario()));
+			
+			Collections.sort(allTccs, new Comparator<TCC>() {
+
+				@Override
+				public int compare(TCC arg0, TCC arg1) {
+					return (arg0.getDataApresentacao().before(arg1.getDataApresentacao()) ? -1 : (arg0
+							.getDataApresentacao().equals(arg1.getDataApresentacao()) ? 0 : 1));
+				}
+			});
+			
+			for(TCC tcc : allTccs)
+				if(tcc.getDataEnvioFinal() == null)
+					tccs.add(tcc);
+			
 			filterTccs = tccs;
 		}
 
@@ -89,37 +107,53 @@ public class HomeProfessorController extends CommonsController {
 		return currentCalendarExists;
 	}
 
+	public boolean isShowAll() {
+		return showAll;
+	}
+
+	public void setShowAll(boolean showAll) {
+		this.showAll = showAll;
+	}
+
 	@NotifyChange("filterTccs")
 	@Command
 	public void filterType(@BindingParam("type") int type) {
 		switch (type) {
 		case 0:
-			filterTccs = tccs;
+			filterTccs = showAll ? allTccs : tccs;
 			break;
 		case 1:
 			filterTccs = new ArrayList<TCC>();
-			for (TCC t : tccs)
+			for (TCC t : showAll ? allTccs : tccs)
 				if (t.getOrientador().getIdUsuario() == getUsuario()
 						.getIdUsuario())
 					filterTccs.add(t);
 			break;
 		case 2:
 			filterTccs = new ArrayList<TCC>();
-			for (TCC t : tccs)
+			for (TCC t : showAll ? allTccs : tccs)
 				if (t.getOrientador().getIdUsuario() != getUsuario()
 						.getIdUsuario())
 					filterTccs.add(t);
 			break;
 		}
 	}
+	
+	@NotifyChange("filterTccs")
+	@Command
+	public void showAllTccs() {
+		filterTccs = showAll ? allTccs : tccs;
+	}
 
 	// Formata a data de apresentação para String
 	@Command
-	public void getTCCDateApresentacao(@BindingParam("tcc") TCC tcc,
+	public void getTCCApresentacao(@BindingParam("tcc") TCC tcc,
 			@BindingParam("lbl") Label lbl) {
 		if (tcc.getDataApresentacao() != null) {
 			DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy, hh:mm");
 			lbl.setValue(dateFormat.format(tcc.getDataApresentacao()));
+			if (tcc.getSalaDefesa() != null)
+				lbl.setValue(lbl.getValue() + " - Sala " + tcc.getSalaDefesa());
 		} else
 			lbl.setValue("Não agendada");
 	}

@@ -6,8 +6,6 @@
 			<menuitem label="Página Inicial"
 				onClick="@command('redirectHome')" />
 			<menuitem label="Lista Pública" href="/" />
-			<menuitem label="Alunos orientados"
-				href="/pages/alunos-orientados.zul" />
 			<menuitem label="Configurações"
 				onClick="@command('settings')" />
 			<menuitem label="Sair" onClick="@command('sair')"

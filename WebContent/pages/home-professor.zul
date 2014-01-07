@@ -1,13 +1,13 @@
-<?page title="Home" contentType="text/html;charset=UTF-8"?>
+<?page title="Página Inicial" contentType="text/html;charset=UTF-8"?>
 <?init class="br.ufjf.tcc.controller.AuthController"?>
 <zk>
 	<style src="/style.css" />
 	<div apply="org.zkoss.bind.BindComposer" align="center"
-		viewModel="@id('vm') @init('br.ufjf.tcc.controller.HomeProfessorController')">
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.HomeProfessorController')" height="100%">
 		<include src="@load(vm.menu)" />
-		<hlayout spacing="0" height="100%">
+		<hlayout spacing="10px" height="100%" style="margin-top:10px">
 
-			<grid hflex="1" style="margin:10px; margin-bottom:30px"
+			<grid hflex="1"
 				visible="@load(vm.usuario.tipoUsuario.idTipoUsuario gt 2 and (not vm.currentCalendarExists or not vm.currentQuestionaryExists or not vm.currentQuestionaryUsed ? 'true' : 'false'))">
 				<columns>
 					<column label="Funções de coordenador"
@@ -61,25 +61,35 @@
 				</rows>
 			</grid>
 
-			<grid hflex="3" model="@load(vm.filterTccs) @template('tccs')"
-				style="margin:10px" width="700px" mold="paging" autopaging="true"
-				vflex="true">
+			<grid hflex="3"
+				model="@load(vm.filterTccs) @template('tccs')"
+				width="700px" mold="paging" autopaging="true" vflex="true">
 				<auxhead sclass="text-center">
 					<auxheader colspan="4"
 						label="TCCs com sua participação" />
 				</auxhead>
 				<auxhead sclass="category-center">
-					<auxheader label="Tipo de participação" colspan="1" rowspan="1" />
+					<auxheader label="Tipo de participação" colspan="1"
+						rowspan="1" />
 					<auxheader colspan="3" rowspan="1">
-						<radiogroup
-							onCheck="@command('filterType', type=self.selectedIndex)">
-							<hlayout width="100%">
-								<radio label="Todas" checked="true"
-									width="90px" />
-								<radio label="Orientação" width="90px" />
-								<radio label="Avaliação (Banca)" width="90px" />
+						<hlayout width="100%">
+							<hlayout hflex="1">
+								<radiogroup
+									onCheck="@command('filterType', type=self.selectedIndex)">
+
+									<radio label="Todas" checked="true"
+										width="90px" />
+									<radio label="Orientação"
+										width="90px" />
+									<radio label="Avaliação (Banca)"
+										width="90px" />
+
+								</radiogroup>
 							</hlayout>
-						</radiogroup>
+							<hlayout>
+								<checkbox label="Mostrar finalizados" checked="@bind(vm.showAll)" onCheck="@command('showAllTccs')"/>
+							</hlayout>
+						</hlayout>
 					</auxheader>
 				</auxhead>
 				<columns>
@@ -87,16 +97,17 @@
 						sort="auto(tcc.aluno.nomeUsuario)" />
 					<column label="Nome" hflex="2"
 						sort="auto(tcc.nomeTCC)" />
-					<column label="Data de Apresentação" hflex="1"
+					<column label="Apresentação" hflex="1"
 						sort="auto(tcc.dataApresentacao)" />
-					<column label="Ação" width="100px" />
+					<column width="100px" />
 				</columns>
 				<template name="tccs">
 					<row>
-						<label value="@load(each.aluno.nomeUsuario)" style="text-align:vertical-center"/>
+						<label value="@load(each.aluno.nomeUsuario)"
+							style="text-align:vertical-center" />
 						<label value="@load(each.nomeTCC)" />
 						<label
-							onCreate="@command('getTCCDateApresentacao', tcc=each, lbl=self)" />
+							onCreate="@command('getTCCApresentacao', tcc=each, lbl=self)" />
 						<div align="center">
 							<button label="Detalhes"
 								onClick="@command('showTCC', tcc=each)"

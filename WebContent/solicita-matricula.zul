@@ -4,10 +4,10 @@
 	<div apply="org.zkoss.bind.BindComposer" align="center"
 		viewModel="@id('vm') @init('br.ufjf.tcc.controller.MatriculaController')">
 		<include src="@load(vm.menu)" />
-		<grid model="@load(vm.itens) @template('formulario')"
-			width="70%">
+		<grid model="@load(vm.itens) @template('formulario')" style="margin-top:10px"
+			width="60%">
 			<columns>
-				<column />
+				<column width="100px"/>
 				<column />
 			</columns>
 			<template name="formulario">
@@ -23,10 +23,10 @@
 							</template>
 						</combobox>
 
-						<hlayout visible="@load(forEachStatus.index eq 3)">
+						<hlayout visible="@load(forEachStatus.index eq 3)" >
 							<textbox value="@bind(each.resposta)" hflex="1"
-								readonly="true" />
-							<button label="Escolher"
+								readonly="true"/>
+							<button label="Escolher" style="margin-right:12px"
 								onClick="@command('chooseOrientador', window=chooseOrientador)" />
 						</hlayout>
 

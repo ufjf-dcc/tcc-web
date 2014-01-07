@@ -7,8 +7,6 @@
 			<menuitem label="Página Inicial"
 				onClick="@command('redirectHome')" />
 			<menuitem label="Lista Pública" href="/" />
-			<menuitem label="Alunos orientados"
-				href="/pages/alunos-orientados.zul" />
 			<menuitem label="Gerenciar alunos do curso"
 				href="/pages/gerenciamento-usuario.zul" />
 			<menuitem label="Gerenciar TCCs do curso"

@@ -1,4 +1,4 @@
-<?page title="Home"?>
+<?page title="Página Inicial"?>
 <?init class="br.ufjf.tcc.controller.AuthController"?>
 <zk>
 	<style src="/style.css" />

@@ -19,7 +19,7 @@ public class TCCDAO extends GenericoDAO implements ITCCDAO {
 		try {
 			Query query = getSession()
 					.createQuery(
-							"select t from TCC as t join fetch t.aluno as a join fetch t.orientador WHERE  t.dataEnvioFinal > 0 AND a.curso = :curso");
+							"select t from TCC as t join fetch t.aluno as a join fetch t.orientador WHERE  t.dataEnvioFinal > 0 AND a.curso = :curso ORDER BY t.dataEnvioFinal DESC");
 			query.setParameter("curso", curso);
 
 			List<TCC> resultados = query.list();
@@ -73,7 +73,7 @@ public class TCCDAO extends GenericoDAO implements ITCCDAO {
 		try {
 			Query query = getSession()
 					.createQuery(
-							"SELECT t FROM TCC AS t JOIN FETCH t.aluno AS a JOIN FETCH t.orientador WHERE a.curso = :curso");
+							"SELECT t FROM TCC AS t JOIN FETCH t.aluno AS a JOIN FETCH t.orientador WHERE a.curso = :curso ORDER BY t.dataEnvioFInal DESC");
 			query.setParameter("curso", curso);
 
 			List<TCC> resultados = query.list();
@@ -170,7 +170,7 @@ public class TCCDAO extends GenericoDAO implements ITCCDAO {
 		try {
 			Query query = getSession()
 					.createQuery(
-							"SELECT t FROM TCC AS t JOIN FETCH t.aluno AS a JOIN FETCH t.orientador WHERE a.curso = :curso AND t.dataEnvioFinal IS NOT NULL");
+							"SELECT t FROM TCC AS t JOIN FETCH t.aluno AS a JOIN FETCH t.orientador WHERE a.curso = :curso AND t.dataEnvioFinal IS NOT NULL ORDER BY t.dataEnvioFInal DESC");
 			query.setParameter("curso", curso);
 
 			List<TCC> resultados = query.list();

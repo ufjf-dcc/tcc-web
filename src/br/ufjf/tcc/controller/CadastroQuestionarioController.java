@@ -44,13 +44,17 @@ public class CadastroQuestionarioController extends CommonsController {
 			@ExecutionArgParam("editing") boolean editing) {
 		this.editing = editing;
 
-		if (getUsuario() == null) {
+		if (getUsuario() != null) {
 			if (getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ADMINISTRADOR)
 				admin = true;
-			else if (getUsuario().getTipoUsuario().getIdTipoUsuario() != Usuario.COORDENADOR)
+			else if (getUsuario().getTipoUsuario().getIdTipoUsuario() != Usuario.COORDENADOR) {
 				redirectHome();
-		} else
+				return;
+			}
+		} else {
 			redirectHome();
+			return;
+		}
 
 		if (q != null) {
 			questionary = q;

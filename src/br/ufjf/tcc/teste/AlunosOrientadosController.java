@@ -1,10 +1,11 @@
-package br.ufjf.tcc.controller;
+package br.ufjf.tcc.teste;
 
 import java.util.List;
 
 import org.zkoss.bind.annotation.Init;
 
 import br.ufjf.tcc.business.UsuarioBusiness;
+import br.ufjf.tcc.controller.CommonsController;
 import br.ufjf.tcc.model.Usuario;
 
 public class AlunosOrientadosController extends CommonsController {
