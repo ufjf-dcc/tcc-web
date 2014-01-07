@@ -33,12 +33,13 @@ import org.apache.fop.apps.MimeConstants;
 
 public class PDFHandler {
 	public static final String EXTENSION = ".pdf";
-	public String TEMPLATE_PATH = FileManager.FILE_PATH + "template.xsl";
+	public String TEMPLATE_PATH = ConfHandler.getConf("FILE.PATH")
+			+ "template.xsl";
 
 	public String createPDFFile(ByteArrayOutputStream xmlSource)
 			throws IOException {
 		String fileName = System.currentTimeMillis() + ".pdf";
-		File file = new File(FileManager.FILE_PATH + fileName);
+		File file = new File(ConfHandler.getConf("FILE.PATH") + fileName);
 		file.createNewFile();
 		// File file = File.createTempFile("" + System.currentTimeMillis(),
 		// EXTENSION);
