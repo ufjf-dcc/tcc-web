@@ -36,14 +36,10 @@ import br.ufjf.tcc.model.Usuario;
 
 public class FileManager {
 
-	// private static final String FILE_PATH = "/TCCFiles/";
-	// private static final String FILE_PATH =
-	// "/Applications/MAMP/htdocs/tcc/files/";
-	public static final String FILE_PATH = "/home/users/jorge/files/";
-
 	public static InputStream getFileInputSream(String fileName) {
 		try {
-			InputStream is = new FileInputStream(new File(FILE_PATH + fileName));
+			InputStream is = new FileInputStream(new File(
+					ConfHandler.getConf("FILE.PATH") + fileName));
 			return is;
 		} catch (Exception e) {
 			return null;
@@ -53,7 +49,8 @@ public class FileManager {
 	public static Boolean deleteFile(String fileName) {
 		try {
 			if (fileName != null && fileName.trim() != "") {
-				File file = new File(FILE_PATH + fileName);
+				File file = new File(ConfHandler.getConf("FILE.PATH")
+						+ fileName);
 				file.delete();
 				return true;
 			} else
@@ -74,8 +71,8 @@ public class FileManager {
 				checksum.update(("" + System.currentTimeMillis()).getBytes());
 				fileName = checksum.getFormattedValue() + "." + fileExt;
 
-				outputStream = new FileOutputStream(new File(FILE_PATH
-						+ fileName));
+				outputStream = new FileOutputStream(new File(
+						ConfHandler.getConf("FILE.PATH") + fileName));
 
 				int read = 0;
 				byte[] bytes = new byte[1024];
@@ -105,16 +102,17 @@ public class FileManager {
 		String fileName = "temp.xml";
 
 		if (media.isBinary()) {
-			Files.copy(new File(FILE_PATH + fileName), media.getStreamData());
+			Files.copy(new File(ConfHandler.getConf("FILE.PATH") + fileName),
+					media.getStreamData());
 		} else {
-			BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH
-					+ fileName));
+			BufferedWriter writer = new BufferedWriter(new FileWriter(
+					ConfHandler.getConf("FILE.PATH") + fileName));
 			Files.copy(writer, media.getReaderData());
 			writer.flush();
 			writer.close();
 		}
 
-		File xml = new File(FILE_PATH + fileName);
+		File xml = new File(ConfHandler.getConf("FILE.PATH") + fileName);
 
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -191,7 +189,7 @@ public class FileManager {
 
 			}
 		}
-		deleteFile(FILE_PATH + fileName);
+		deleteFile(ConfHandler.getConf("FILE.PATH") + fileName);
 		return tccs;
 	}
 }
