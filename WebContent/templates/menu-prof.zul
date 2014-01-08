@@ -6,10 +6,10 @@
 			<menuitem label="Página Inicial"
 				onClick="@command('redirectHome')" />
 			<menuitem label="Lista Pública" href="/" />
-			<menuitem label="Configurações"
-				onClick="@command('settings')" />
 			<menuitem label="Sair" onClick="@command('sair')"
 				style="float:right" />
+			<menuitem label="Configurações" style="float:right"
+				onClick="@command('settings')" />
 		</menubar>
 	</div>
 </zk>

@@ -128,25 +128,29 @@
 					closable="@load(vm.userSecretaria)">
 					<caption label="Trabalho de Conclusão de Curso" />
 					<vlayout hflex="1" style="margin:15px">
-						<hlayout style="margin:5px;line-height:20px;">
+						<hlayout
+							style="margin-right:5px;margin-top:5px;margin-left:5px;line-height:20px;">
 							<label value="Título do Trabalho: "
 								style="margin-top:5px" />
 							<textbox
 								value="@load(vm.tcc.nomeTCC) @save(vm.tcc.nomeTCC, before='submit')"
 								hflex="1" maxlength="255" />
 						</hlayout>
+
 						<div
 							style="text-align:center;margin-left:100px">
-							<label value="adicionar subtítulo"
-								width="100%" style="size:10px"
-								onClick="@command('vm.setHasSubtitulo', hasSubtitulo=true)" />
+							<label
+								value="@load(not vm.hasSubtitulo ? 'adicionar subtítulo' : 'remover subtítulo')"
+								style="text-decoration: underline;cursor:pointer;size:10px"
+								width="100%" onClick="@command('setHasSubtitulo')" />
 						</div>
 
-						<hlayout style="margin:5px;line-height:20px;">
+						<hlayout style="margin:5px;line-height:20px;"
+							visible="@load(vm.hasSubtitulo ? 'true' : 'false')">
 							<label value="Subtítulo: " />
 							<textbox
 								value="@load(vm.tcc.subNomeTCC) @save(vm.tcc.subNomeTCC, before='submit')"
-								hflex="1" visible="@bind(not vm.hasSubtitulo)" maxlength="255" />
+								hflex="1" maxlength="255" />
 						</hlayout>
 
 						<hlayout style="margin:5px;line-height:20px;"
@@ -244,7 +248,9 @@
 			<div align="center">
 				<button label="Selecionar"
 					onClick="@command('selectOrientador', window=changeOrientador)"
-					width="75px" style="margin-top:5px" />
+					style="margin-top:5px" />
+				<button label="Cancelar"
+					onClick="changeOrientador.onClose()" style="margin-top:5px" />
 			</div>
 		</window>
 		<window id="configBanca" title="Banca Examinadora"

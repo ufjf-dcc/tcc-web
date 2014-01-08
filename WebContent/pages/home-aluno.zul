@@ -60,7 +60,7 @@
 				</template>
 			</grid>
 		</vlayout>
-		<window id="registrarTCC" title="Registrar TCC" visible="false"
+		<window id="registrarTCC" title="Informe o(a) Orientaor(a)" visible="false"
 			width="400px" border="normal" position="center,center"
 			closable="true"
 			onClose="self.setVisible(false); event.stopPropagation();">

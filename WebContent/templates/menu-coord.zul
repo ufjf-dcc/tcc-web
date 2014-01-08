@@ -11,10 +11,10 @@
 				href="/pages/gerenciamento-usuario.zul" />
 			<menuitem label="Gerenciar TCCs do curso"
 				href="/pages/tccs-curso.zul" />
-			<menuitem label="Configurações"
-				onClick="@command('settings')" />
 			<menuitem label="Sair" onClick="@command('sair')"
 				style="float:right" />
+			<menuitem label="Configurações" style="float:right"
+				onClick="@command('settings')" />
 		</menubar>
 	</div>
 </zk>

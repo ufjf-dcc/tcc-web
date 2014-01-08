@@ -131,10 +131,10 @@ public class EditorTccController extends CommonsController {
 	}
 
 	@Command("setHasSubtitulo")
-	public void setHasSubtitulo(
-			@BindingParam("hasSubtitulo") boolean hasSubtitulo) {
-		this.hasSubtitulo = hasSubtitulo;
-		if (this.hasSubtitulo == false)
+	@NotifyChange("hasSubtitulo")
+	public void setHasSubtitulo() {
+		hasSubtitulo = !hasSubtitulo;
+		if (!hasSubtitulo)
 			tcc.setSubNomeTCC(null);
 	}
 
@@ -197,10 +197,10 @@ public class EditorTccController extends CommonsController {
 	}
 
 	@Command
-	public void savePDF() {		
+	public void savePDF() {
 		String newFileName = FileManager.saveFileInputSream(tccFile, "pdf");
 		if (newFileName != null) {
-			switch(getUsuario().getTipoUsuario().getIdTipoUsuario()){
+			switch (getUsuario().getTipoUsuario().getIdTipoUsuario()) {
 			case Usuario.SECRETARIA:
 				FileManager.deleteFile(tcc.getArquivoTCCFinal());
 				tcc.setArquivoTCCFinal(newFileName);
@@ -258,10 +258,19 @@ public class EditorTccController extends CommonsController {
 
 	@Command
 	public void selectOrientador(@BindingParam("window") Window window) {
-		if (tempUser != null) {
-			tcc.setOrientador(tempUser);
-			BindUtils.postNotifyChange(null, null, this, "tcc");
-		}
+		if (tempUser != null)
+			if (!participacoesContains(tempUser)) {
+				tcc.setOrientador(tempUser);
+				BindUtils.postNotifyChange(null, null, this, "tcc");
+			} else {
+				Messagebox
+						.show("Você escolheu um professor que já está incluído na Banca Examinadora. Se ele é seu Orientador, por favor retire-o da Banca antes.",
+								"Inválido", Messagebox.OK, Messagebox.ERROR);
+			}
+	else
+		Messagebox
+		.show("Você não selecionou nenhum professor.",
+				"Erro", Messagebox.OK, Messagebox.ERROR);
 		window.setVisible(false);
 	}
 
@@ -358,7 +367,7 @@ public class EditorTccController extends CommonsController {
 				Messagebox
 						.show("Você não enviou o documento PDF. Lembre-se de enviá-lo depois.",
 								"Aviso", Messagebox.OK, Messagebox.INFORMATION);
-			if (extraFileChanged && extraFile != null){
+			if (extraFileChanged && extraFile != null) {
 				saveExtraFile();
 				extraFileChanged = false;
 				try {

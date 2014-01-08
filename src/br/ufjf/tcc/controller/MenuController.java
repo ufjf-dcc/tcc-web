@@ -90,11 +90,12 @@ public class MenuController extends CommonsController {
 			@BindingParam("matricula") String matricula,
 			@BindingParam("window") Window forgot) {
 		// Verfica se o usuário realmente existe
-		if (email.trim().length() == 0 || matricula.trim().length() == 0) {
+		if (email == null || matricula == null || email.trim().length() == 0 || matricula.trim().length() == 0) {
 			Messagebox.show("Digite as informações solicitadas",
 					"Dados inválidos", Messagebox.OK, Messagebox.ERROR);
 			return;
 		}
+		usuarioBusiness = new UsuarioBusiness();
 		Usuario user = usuarioBusiness.getByEmailAndMatricula(email, matricula);
 		if (user == null) {
 			Messagebox
