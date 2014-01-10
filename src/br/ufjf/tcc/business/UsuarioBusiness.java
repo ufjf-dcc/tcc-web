@@ -28,13 +28,13 @@ public class UsuarioBusiness {
 	}
 
 	// validação dos formulários
-	public boolean validate(Usuario usuario, String oldMatricula) {
+	public boolean validate(Usuario usuario, String oldMatricula, boolean validateTipo) {
 		errors.clear();
 
 		validarMatricula(usuario.getMatricula(), oldMatricula);
 		validarNome(usuario.getNomeUsuario());
 		validateEmail(usuario.getEmail(), null);
-		validateTipo(usuario);
+		if (validateTipo) validateTipo(usuario);
 
 		return errors.size() == 0;
 	}
@@ -112,7 +112,7 @@ public class UsuarioBusiness {
 			}
 		}
 
-		errors.add("Usuário ou Senha inválidos!");
+		errors.add("Usuário ou senha inválidos!");
 		return false;
 	}
 
@@ -232,6 +232,10 @@ public class UsuarioBusiness {
 	
 	public Usuario getCoordenadorByCurso(Curso curso) {
 		return usuarioDAO.getCoordenadorByCurso(curso);
+	}
+
+	public Usuario getByName(String nomeUsuario) {
+		return usuarioDAO.getByName(nomeUsuario);
 	}
 
 }

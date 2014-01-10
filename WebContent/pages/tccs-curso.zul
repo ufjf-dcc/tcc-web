@@ -1,11 +1,10 @@
 <?page title="Gerenciamento de TCCs"?>
 <?init class="br.ufjf.tcc.controller.AuthController"?>
 <zk>
-<script type="text/javascript">
-    function visualzarTCC(id) {
-        window.open('visualiza-tcc.zul?tcc='+id,'_blank');
-    }
-</script>
+	<script type="text/javascript">
+		function visualzarTCC(id) {
+		window.open('visualiza-tcc.zul?tcc='+id,'_blank'); }
+	</script>
 	<style src="/style.css" />
 	<div apply="org.zkoss.bind.BindComposer"
 		viewModel="@id('vm') @init('br.ufjf.tcc.controller.TCCsCursoController')"
@@ -17,48 +16,53 @@
 			<auxhead>
 				<auxheader colspan="4">
 					<div>
-						<hlayout
-							style="float:left;">
-							<label value="Pesquisar: " />
-							<textbox id="filtro"
-								value="@bind(vm.filterString)" />
-							<separator orient="vertical" spacing="3px" />
+						<div>
+							<hlayout style="float:left">
+								<label value="Pesquisar: "
+									style="margin-top:6px" />
+								<textbox id="filtro"
+									value="@bind(vm.filterString)" onOK="@command('filtra')"/>
+								<separator orient="vertical"
+									spacing="3px" />
 
-							<label value="Ano: "
-								style="margin-left:10px;" />
-							<combobox id="cmbYear" width="150px"
-								readonly="true" model="@load(vm.years)"
-								value="@load(filterYear)" selectedItem="@bind(vm.filterYear)">
-								<template name="model">
-									<comboitem label="@load(each)" />
-								</template>
-							</combobox>
-							<separator orient="vertical" spacing="3px" />
+								<label value="Ano: "
+									style="margin-top:6px" />
+								<combobox id="cmbYear" width="150px"
+									readonly="true" model="@load(vm.years)"
+									value="@load(filterYear)"
+									selectedItem="@bind(vm.filterYear)">
+									<template name="model">
+										<comboitem label="@load(each)" />
+									</template>
+								</combobox>
+								<separator orient="vertical"
+									spacing="3px" />
 
-							<button label="Filtrar"
-								width="60px" onClick="@command('filtra')"
-								style="margin-left:20px;" />
-
-							<image src="/img/help.gif"
-								tooltip="filterHelp" style="cursor: help" />
-
-						</hlayout>
+								<button label="Filtrar" width="60px"
+									onClick="@command('filtra')" />
+								<image src="/img/help.gif"
+									tooltip="filterHelp" style="cursor: help" />
+							</hlayout>
+							<button style="float:right"
+								label="Cadastrar novo TCC" href="/pages/editor-tcc.zul" />
+						</div>
 					</div>
 				</auxheader>
 			</auxhead>
 			<columns>
-				<column hflex="13" label="NomeTCC" sort="auto(nomeTCC)" />
+				<column hflex="13" label="Titulo" sort="auto(nomeTCC)" />
 				<column hflex="4" label="Autor"
 					sort="auto(aluno.nomeUsuario)" />
 				<column hflex="1" label="PDF" />
 				<column hflex="1" label="Extras" />
 			</columns>
 			<template name="lista">
-				<row xmlns:w="client" w:onClick="visualzarTCC(${each.idTCC});">
+				<row xmlns:w="client"
+					w:onClick="visualzarTCC(${each.idTCC});"
+					tooltip="${forEachStatus.index}, position=at_pointer">
 					<div>
-						<label value="@load(each.nomeTCC)"
-							tooltip="${each.idTCC}, position=at_pointer" />
-						<popup id="${each.idTCC}">
+						<label value="@load(each.nomeTCC)" />
+						<popup id="${forEachStatus.index}">
 							<vlayout width="550px">
 								<label value="Resumo"
 									style="font-size: 14px; font-weight: bold; text-align: justify; display: block;" />
@@ -81,8 +85,7 @@
 							</vlayout>
 						</popup>
 					</div>
-					<label value="@load(each.aluno.nomeUsuario)"
-						tooltip="${each.idTCC}, position=at_pointer" />
+					<label value="@load(each.aluno.nomeUsuario)" />
 					<image src="/img/pdf.png" style="cursor: pointer"
 						onClick="@command('downloadPDF', tcc=each)" />
 					<image style="cursor: pointer"
@@ -94,6 +97,18 @@
 	</div>
 	<popup id="filterHelp">
 		<html>
+
+
+
+
+
+
+
+
+
+
+
+
 			
 			<![CDATA[ Permite filtrar a lista de TCCs com o termo e o
 			ano <br> escolhidos. O termo pode ser, por exemplo:
@@ -101,13 +116,17 @@
 			<li>Palavra-chave;</li> <li>Conteúdo dos resumos.</li>
 			<ul>]]>
 			
-		</html>
-	</popup>
-	<popup id="cursoHelp">
-		<html>
 			
-			<![CDATA[ Permite filtrar a lista de TCCs <br> com o curso
-			desejado.]]>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
 			
 		</html>
 	</popup>

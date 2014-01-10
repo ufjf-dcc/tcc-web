@@ -1,5 +1,6 @@
 package br.ufjf.tcc.controller;
 
+import org.zkoss.bind.annotation.Command;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zul.Messagebox;
@@ -59,7 +60,7 @@ public class CommonsController {
 
 	public String getMenu() {
 		switch ((getUsuario() != null ? getUsuario().getTipoUsuario()
-				.getIdTipoUsuario() : 0)) {
+				.getIdTipoUsuario() : -1)) {
 		case Usuario.ADMINISTRADOR:
 			return "/templates/menu-admin.zul";
 		case Usuario.COORDENADOR:
@@ -68,12 +69,15 @@ public class CommonsController {
 			return "/templates/menu-prof.zul";
 		case Usuario.ALUNO:
 			return "/templates/menu-aluno.zul";
+		case Usuario.SECRETARIA:
+			return "/templates/menu-secretaria.zul";
 		default:
-			return null;
+			return "/templates/menu-publico.zul";
 		}
 
 	}
 
+	@Command
 	public void redirectHome() {
 		switch ((getUsuario() != null ? getUsuario().getTipoUsuario()
 				.getIdTipoUsuario() : 0)) {
@@ -84,6 +88,9 @@ public class CommonsController {
 			break;
 		case Usuario.ALUNO:
 			Executions.sendRedirect("/pages/home-aluno.zul");
+			break;
+		case Usuario.SECRETARIA:
+			Executions.sendRedirect("/pages/tccs-curso.zul");
 			break;
 		default:
 			Executions.sendRedirect("/index.zul");

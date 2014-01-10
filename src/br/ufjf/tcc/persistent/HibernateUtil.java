@@ -11,6 +11,8 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
 
+import br.ufjf.tcc.library.ConfHandler;
+
 /**
  * Classe com os métodos essenciais para utilização do Hibernate pelos DAOs
  * 
@@ -34,6 +36,11 @@ public class HibernateUtil {
 			configuration.configure();
 			serviceRegistry = new ServiceRegistryBuilder()
 					.applySettings(configuration.getProperties())
+					.applySetting("hibernate.connection.driver_class", ConfHandler.getConf("HIBERNATE.DRIVE"))
+					.applySetting("hibernate.connection.url", ConfHandler.getConf("HIBERNATE.DB"))
+					.applySetting("hibernate.connection.username", ConfHandler.getConf("HIBERNATE.USER"))
+					.applySetting("hibernate.connection.password", ConfHandler.getConf("HIBERNATE.PASS"))
+					.applySetting("dialect", ConfHandler.getConf("HIBERNATE.DIALECT"))
 					.buildServiceRegistry();
 			sessionFactory = configuration.buildSessionFactory(serviceRegistry);
 		} catch (Throwable e) {
@@ -186,7 +193,6 @@ public class HibernateUtil {
 			System.err.println(e.fillInStackTrace());
 			return false;
 		} finally {
-			session.flush();
 			session.close();
 			return true;
 		}

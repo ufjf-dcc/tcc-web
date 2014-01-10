@@ -343,7 +343,7 @@ public class GerenciamentoCursoController extends CommonsController {
 	@Command
 	public void submitCoordenador(@BindingParam("window") Window window) {
 		UsuarioBusiness usuarioBusiness = new UsuarioBusiness();
-		if (usuarioBusiness.validate(coordenador, null)) {
+		if (usuarioBusiness.validate(coordenador, null, false)) {
 			BindUtils.postNotifyChange(null, null, this, "coordenador");
 			window.setVisible(false);
 		} else {

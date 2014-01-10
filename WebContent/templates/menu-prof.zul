@@ -3,13 +3,13 @@
 		viewModel="@id('hf') @init('br.ufjf.tcc.controller.MenuController')"
 		form="@id('fx') @load(hf.usuario)">
 		<menubar id="menubar" width="100%">
-			<menuitem label="Home"
-				href="/pages/home-professor.zul" />
-			<menuitem label="Alunos orientados"
-				href="/pages/alunos-orientados.zul" />
-			<menuitem label="Configurações"
+			<menuitem label="Página Inicial"
+				onClick="@command('redirectHome')" />
+			<menuitem label="Lista Pública" href="/" />
+			<menuitem label="Sair" onClick="@command('sair')"
+				style="float:right" />
+			<menuitem label="Configurações" style="float:right"
 				onClick="@command('settings')" />
-			<menuitem label="Sair" onClick="@command('sair')" />
 		</menubar>
 	</div>
 </zk>

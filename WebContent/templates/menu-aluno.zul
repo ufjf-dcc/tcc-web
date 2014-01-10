@@ -2,10 +2,15 @@
 	<div align="center" apply="org.zkoss.bind.BindComposer"
 		viewModel="@id('hf') @init('br.ufjf.tcc.controller.MenuController')"
 		form="@id('fx') @load(hf.usuario)">
-		<menubar id="menubar" width="100%" style="text-align: center;">
-			<menuitem label="Home" href="/pages/home-aluno.zul" />
-			<menuitem label="Configurações" onClick="@command('settings')" />
-			<menuitem label="Sair" onClick="@command('sair')" />
+		<menubar id="menubar" width="100%"
+			style="text-align: center;">
+			<menuitem label="Página Inicial"
+				onClick="@command('redirectHome')" />
+			<menuitem label="Lista Pública" href="/" />
+			<menuitem label="Sair" onClick="@command('sair')"
+				style="float:right" />
+			<menuitem label="Configurações" style="float:right"
+				onClick="@command('settings')" />
 		</menubar>
 	</div>
 </zk>

@@ -1,7 +1,9 @@
-package br.ufjf.tcc.controller;
+package br.ufjf.tcc.teste;
 
 import org.hibernate.HibernateException;
 import org.zkoss.bind.annotation.Init;
+
+import br.ufjf.tcc.controller.CommonsController;
 
 
 public class HomeController extends CommonsController {

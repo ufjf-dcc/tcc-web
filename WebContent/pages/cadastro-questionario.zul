@@ -1,3 +1,4 @@
+<?init class="br.ufjf.tcc.controller.AuthController"?>
 <zk>
 	<window id="cadquest" title="@load(vm.title)" width="750px" 
 		border="normal" position="center,center" closable="true"

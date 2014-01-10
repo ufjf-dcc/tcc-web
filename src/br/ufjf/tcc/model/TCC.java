@@ -195,6 +195,26 @@ public class TCC implements Serializable {
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "idCalendarioSemestre", nullable = true)
 	private CalendarioSemestre calendarioSemestre = null;
+	
+	public TCC(){
+		
+	}
+
+	public TCC(String nomeTCC, String subNomeTCC, String resumoTCC,
+			String palavrasChave, String arquivoTCCFinal,
+			String arquivoExtraTCCFinal, Timestamp dataEnvioFinal,
+			Usuario aluno, Usuario orientador) {
+		super();
+		this.nomeTCC = nomeTCC;
+		this.subNomeTCC = subNomeTCC;
+		this.resumoTCC = resumoTCC;
+		this.palavrasChave = palavrasChave;
+		this.arquivoTCCFinal = arquivoTCCFinal;
+		this.arquivoExtraTCCFinal = arquivoExtraTCCFinal;
+		this.dataEnvioFinal = dataEnvioFinal;
+		this.aluno = aluno;
+		this.orientador = orientador;
+	}
 
 	public int getIdTCC() {
 		return idTCC;

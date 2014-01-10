@@ -1,0 +1,11 @@
+# Arquivo de Configuração
+# Hibernate
+HIBERNATE.DRIVE = com.mysql.jdbc.Driver
+HIBERNATE.DB = jdbc:mysql://localhost/tcc
+HIBERNATE.USER = root
+HIBERNATE.PASS = root
+HIBERNATE.DIALECT = org.hibernate.dialect.MySQLDialect
+# File Manager
+# FILE.PATH = /Applications/MAMP/htdocs/tcc/files/
+FILE.PATH = /home/users/jorge/files/
+# Alterar endereço em SendMail:144 quando enviar ao servidor

@@ -1,4 +1,4 @@
-<?page title="Home"?>
+<?page title="Página Inicial"?>
 <?init class="br.ufjf.tcc.controller.AuthController"?>
 <zk>
 	<style src="/style.css" />
@@ -32,7 +32,7 @@
 			</grid>
 
 			<grid
-				emptyMessage="O calendário do semestre ainda não foi cadastrado no sistema."
+				emptyMessage="O calendário do semestre ainda não foi cadastrado no sistema. Volte mais tarde."
 				model="@load(vm.prazos) @template('prazos')" style="margin:10px">
 				<auxhead sclass="text-center">
 					<auxheader colspan="3" label="@load(vm.gridTitle)" />
@@ -60,16 +60,27 @@
 				</template>
 			</grid>
 		</vlayout>
-		<window id="registrarTCC" title="Registrar TCC" visible="false"
+		<window id="registrarTCC" title="Informe o(a) Orientaor(a)" visible="false"
 			width="400px" border="normal" position="center,center"
 			closable="true"
 			onClose="self.setVisible(false); event.stopPropagation();">
 			<grid>
 				<columns>
-					<column width="160px" />
+					<column width="170px" />
 					<column />
 				</columns>
 				<rows>
+					<row>
+						<label value="Selecione o Departamento: " />
+						<combobox id="cmbDepartamento" hflex="1"
+							model="@load(vm.departamentos)" readonly="true"
+							onSelect="@command('selectedDepartamento', dep=self.selectedItem)">
+							<template name="model">
+								<comboitem
+									label="@load(each.nomeDepartamento)" />
+							</template>
+						</combobox>
+					</row>
 					<row>
 						<label value="Selecione o Orientador: " />
 						<combobox id="cmbOrientadores" hflex="1"

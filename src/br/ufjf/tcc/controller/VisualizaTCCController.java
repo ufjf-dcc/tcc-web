@@ -80,26 +80,37 @@ public class VisualizaTCCController extends CommonsController {
 
 	private boolean canViewTCC() {
 		if (getUsuario() != null) {
-			if (getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.COORDENADOR
-					|| getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ADMINISTRADOR
-					|| tcc.getOrientador().getIdUsuario() == getUsuario().getIdUsuario()
-					|| tcc.getAluno().getIdUsuario() == getUsuario().getIdUsuario()) {
+
+			for (Participacao p : tcc.getParticipacoes())
+				if (p.getProfessor() == getUsuario()) {
+					canDonwloadFileBanca = true;
+					canAnswer = true;
+					return true;
+				}
+
+			if (getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ADMINISTRADOR
+					|| getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.COORDENADOR) {
 				canEdit = true;
 				canDonwloadFileBanca = true;
 				return true;
-			} else {
-				for (Participacao p : tcc.getParticipacoes())
-					if (p.getProfessor() == getUsuario()) {
-						canDonwloadFileBanca = true;
-						canAnswer = true;
-						return true;
-					}
 			}
-		} else if (tcc.getDataEnvioFinal() != null) {
-			return true;
+
+			if (getUsuario().getIdUsuario() == tcc.getAluno().getIdUsuario()
+					|| getUsuario().getIdUsuario() == tcc.getOrientador()
+							.getIdUsuario()) {
+				canEdit = true;
+				canDonwloadFileBanca = true;
+				return true;
+			}
+
+			if (tcc.getDataEnvioFinal() != null) {
+				if (getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.SECRETARIA)
+					canEdit = true;
+				return true;
+			}
 		}
-		
-		return false;
+
+		return tcc.getDataEnvioFinal() != null;
 	}
 
 	public TCC getTcc() {
@@ -252,6 +263,6 @@ public class VisualizaTCCController extends CommonsController {
 
 	@Command
 	public void editTCC() {
-		Executions.sendRedirect("/pages/editor-tcc.zul?tcc="+tcc.getIdTCC());
+		Executions.sendRedirect("/pages/editor-tcc.zul?tcc=" + tcc.getIdTCC());
 	}
 }

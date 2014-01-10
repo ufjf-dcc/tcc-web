@@ -327,4 +327,25 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 
 		return null;
 	}
+
+	public Usuario getByName(String nomeUsuario) {
+		try {
+			Query query = getSession()
+					.createQuery(
+							"SELECT u FROM Usuario AS u WHERE u.nomeUsuario = :nomeUsuario");
+			query.setParameter("nomeUsuario", nomeUsuario);
+
+			Usuario resultado = (Usuario) query.uniqueResult();
+
+			getSession().close();
+
+			if (resultado != null)
+				return resultado;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
 }

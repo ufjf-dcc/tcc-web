@@ -18,19 +18,30 @@ import org.zkoss.zul.Messagebox;
 import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.library.FileManager;
 import br.ufjf.tcc.model.TCC;
+import br.ufjf.tcc.model.Usuario;
 
 public class TCCsCursoController extends CommonsController {
 
 	private List<String> years;
-	private String emptyMessage = "Não há TCCs para este curso.";
-	private List<TCC> tccs = null;
-	private List<TCC> filterTccs = tccs;
+	private String emptyMessage;
+	private List<TCC> tccs = null, filterTccs = tccs, xmlTccs;
 	private String filterString = "";
 	private String filterYear = "Todos";
 
 	@Init
 	public void init() {
-		tccs = new TCCBusiness().getTCCsByCurso(getUsuario().getCurso());
+		switch(getUsuario().getTipoUsuario().getIdTipoUsuario()){
+		case Usuario.COORDENADOR:
+			tccs = new TCCBusiness().getTCCsByCurso(getUsuario().getCurso());
+			break;
+		case Usuario.SECRETARIA:
+			tccs = new TCCBusiness().getFinishedTCCsByCurso(getUsuario().getCurso());
+			break;
+		default:
+			redirectHome();
+			return;
+		}
+		
 		filterTccs = tccs;
 
 		years = new ArrayList<String>();
@@ -96,6 +107,10 @@ public class TCCsCursoController extends CommonsController {
 			lbl.setValue("Não finalizada");
 	}
 
+	public List<TCC> getXmlTccs() {
+		return xmlTccs;
+	}
+
 	@NotifyChange("filterTccs")
 	@Command
 	public void filtra() {
@@ -121,7 +136,7 @@ public class TCCsCursoController extends CommonsController {
 		} else {
 			filterTccs = tccs;
 		}
-		
+
 		emptyMessage = "Não há TCCs válidas para esses filtros.";
 		BindUtils.postNotifyChange(null, null, null, "emptyMessage");
 	}

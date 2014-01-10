@@ -21,5 +21,8 @@ public class ParticipacaoBusiness {
 	public List<Participacao> getParticipacoesByTCC(TCC tcc) {
 		return participacaoDAO.getParticipacoesByTCC(tcc);
 	}
-
+	
+	public boolean updateList(TCC tcc) {
+		return participacaoDAO.updateList(tcc);
+	}
 }

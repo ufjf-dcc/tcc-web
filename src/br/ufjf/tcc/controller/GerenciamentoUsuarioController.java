@@ -129,7 +129,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 	@Command
 	public void confirm(@BindingParam("usuario") Usuario usuario) {
 		if (usuarioBusiness.validate(usuario,
-				editTemp.get(usuario.getIdUsuario()).getMatricula())) {
+				editTemp.get(usuario.getIdUsuario()).getMatricula(), true)) {
 			if (!usuarioBusiness.editar(usuario))
 				Messagebox.show("Não foi possível editar o usuário.", "Erro",
 						Messagebox.OK, Messagebox.ERROR);
@@ -261,7 +261,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 					new EventListener<Event>() {
 						@Override
 						public void onEvent(Event event) throws Exception {
-							if (usuarioBusiness.validate(newUsuario, null)) {
+							if (usuarioBusiness.validate(newUsuario, null, true)) {
 								String newPassword = usuarioBusiness
 										.generatePassword();
 								newUsuario.setSenha(usuarioBusiness

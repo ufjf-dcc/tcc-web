@@ -2,17 +2,19 @@
 	<div align="center" apply="org.zkoss.bind.BindComposer"
 		viewModel="@id('hf') @init('br.ufjf.tcc.controller.MenuController')"
 		form="@id('fx') @load(hf.usuario)">
-		<menubar id="menubar" width="100%" style="text-align: center;">
-			<menuitem label="Home" href="/pages/home-professor.zul" />
-			<menuitem label="Alunos orientados"
-				href="/pages/alunos-orientados.zul" />
+		<menubar id="menubar" width="100%"
+			style="text-align: center;">
+			<menuitem label="Página Inicial"
+				onClick="@command('redirectHome')" />
+			<menuitem label="Lista Pública" href="/" />
 			<menuitem label="Gerenciar alunos do curso"
 				href="/pages/gerenciamento-usuario.zul" />
 			<menuitem label="Gerenciar TCCs do curso"
 				href="/pages/tccs-curso.zul" />
-			<menuitem label="Configurações"
+			<menuitem label="Sair" onClick="@command('sair')"
+				style="float:right" />
+			<menuitem label="Configurações" style="float:right"
 				onClick="@command('settings')" />
-			<menuitem label="Sair" onClick="@command('sair')" />
 		</menubar>
 	</div>
 </zk>

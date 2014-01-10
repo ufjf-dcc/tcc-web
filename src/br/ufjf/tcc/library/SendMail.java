@@ -111,7 +111,7 @@ public class SendMail {
 			message.setText("Prezado(a) "
 					+ user.getNomeUsuario()
 					+ ",\n\n"
-					+ "Segue, abaixo, a sua nova senha de acesso ao TCCs UFJF.\n "
+					+ "Segue, abaixo, a sua nova senha de acesso ao TCCs UFJF.\n"
 					+ "Recomendamos que a altere no primeiro acesso ao sistema.\n"
 					+ newPassword + "\n\n" + "Atenciosamente,\n" + "(...)");
 

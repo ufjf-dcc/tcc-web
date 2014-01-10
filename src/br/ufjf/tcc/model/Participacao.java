@@ -43,10 +43,10 @@ public class Participacao implements Serializable {
 	/**
 	 * Campo com a titulacao do professor. Relaciona com a coluna
 	 * {@code titulacao} do banco através da anotação
-	 * {@code @Column(name = "titulacao", length = 45, nullable = false)}.
+	 * {@code @Column(name = "titulacao", length = 45}.
 	 */
-	@Column(name = "titulacao", length = 45, nullable = false)
-	private String titulacao;
+	@Column(name = "titulacao", length = 45)
+	private String titulacao = null;
 
 	/**
 	 * Relacionamento 1 para N entre Participacao e Resposta. Mapeada em
