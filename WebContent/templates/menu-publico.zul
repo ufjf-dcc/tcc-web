@@ -59,7 +59,7 @@
 				style="text-align:center;color:red;margin:5px;font-style:italic" />
 			<grid>
 				<columns>
-					<column width="120px" />
+					<column width="90px" />
 					<column />
 				</columns>
 				<rows>
@@ -71,7 +71,7 @@
 							tooltip="idHelp" />
 					</row>
 					<row>
-						<label value="Senha " tooltip="pswdHelp" />
+						<label value="Senha: " tooltip="pswdHelp" />
 						<textbox value="@bind(fx.senha)" type="password"
 							width="100%"
 							onOK="@command('login', window=loginWin, label=errorLbl)"
@@ -126,23 +126,6 @@
 
 			
 			<![CDATA[ Informe sua matrícula ou SIAPE]]>
-			
-			
-			
-			
-			
-		</html>
-	</popup>
-	<popup id="pswdHelp">
-		<html>
-
-
-
-
-			
-			<![CDATA[ Se este é o seu primeiro acesso, use a senha
-			enviada<br> para o seu e-mail ou clique em "Esqueci a
-			senha"]]>
 			
 			
 			

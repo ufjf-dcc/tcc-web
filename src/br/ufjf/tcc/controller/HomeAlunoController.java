@@ -23,6 +23,7 @@ import org.zkoss.zul.Window;
 
 import br.ufjf.tcc.business.DepartamentoBusiness;
 import br.ufjf.tcc.business.PrazoBusiness;
+import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.business.UsuarioBusiness;
 import br.ufjf.tcc.model.CalendarioSemestre;
 import br.ufjf.tcc.model.Departamento;
@@ -122,8 +123,16 @@ public class HomeAlunoController extends CommonsController {
 	@Command("submit")
 	public void submit() {
 		if (newTcc.getOrientador() != null) {
+			TCCBusiness tccBusiness = new TCCBusiness();
 			newTcc.setAluno(getUsuario());
 			newTcc.setCalendarioSemestre(getCurrentCalendar());
+			if (tccBusiness.save(newTcc)) {
+				Sessions.getCurrent().setAttribute("tcc", newTcc);
+				Executions.sendRedirect("/pages/editor-tcc.zul");
+			} else {
+				Messagebox.show("Devido a um erro, o TCC não foi criado.",
+						"Erro", Messagebox.OK, Messagebox.ERROR);
+			}
 			List<TCC> tccs = new ArrayList<TCC>();
 			tccs.add(newTcc);
 			getUsuario().setTcc(tccs);

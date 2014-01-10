@@ -66,12 +66,12 @@
 			onClose="self.setVisible(false); event.stopPropagation();">
 			<grid>
 				<columns>
-					<column width="160px" />
+					<column width="170px" />
 					<column />
 				</columns>
 				<rows>
 					<row>
-						<label value="Selecione o Departamento " />
+						<label value="Selecione o Departamento: " />
 						<combobox id="cmbDepartamento" hflex="1"
 							model="@load(vm.departamentos)" readonly="true"
 							onSelect="@command('selectedDepartamento', dep=self.selectedItem)">
