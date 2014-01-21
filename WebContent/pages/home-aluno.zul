@@ -46,23 +46,22 @@
 					<row>
 						<label
 							onCreate="@command('formatDate', dataFinal=each.dataFinal, label=self)"
-							style="@load(each.tipo eq vm.currentPrazo ? 'font-weight:bold;' : '')" />
+							style="@load(each.tipo eq vm.currentPrazo ? 'font-weight:bold;' : (each.tipo lt vm.currentPrazo ? 'color:#FF3333' : ''))" />
 						<label
 							onCreate="@command('getDescription', tipo=each.tipo, label=self)"
-							style="@load(each.tipo eq vm.currentPrazo ? 'font-weight:bold;' : '')" />
+							style="@load(each.tipo eq vm.currentPrazo ? 'font-weight:bold;' : (each.tipo lt vm.currentPrazo ? 'color:#FF3333' : ''))" />
 						<div align="center">
 							<button width="100%"
 								onCreate="@command('getAction', tipo=each.tipo, button=self)"
-								onClick="@command('action', tipo=each.tipo, window=registrarTCC)"
-								disabled="@load(each.tipo lt vm.currentPrazo)"/>
+								onClick="@command('action', tipo=each.tipo, window=registrarTCC)"/>
 						</div>
 					</row>
 				</template>
 			</grid>
 		</vlayout>
-		<window id="registrarTCC" title="Informe o(a) Orientaor(a)" visible="false"
-			width="400px" border="normal" position="center,center"
-			closable="true"
+		<window id="registrarTCC" title="Informe o(a) Orientaor(a)"
+			visible="false" width="400px" border="normal"
+			position="center,center" closable="true"
 			onClose="self.setVisible(false); event.stopPropagation();">
 			<grid>
 				<columns>

@@ -1,11 +1,17 @@
 # Arquivo de Configuração
+GENERAL.URL = http://monografias.nrc.ice.ufjf.br/tcc-web
+
 # Hibernate
 HIBERNATE.DRIVE = com.mysql.jdbc.Driver
 HIBERNATE.DB = jdbc:mysql://localhost/tcc
 HIBERNATE.USER = root
 HIBERNATE.PASS = root
 HIBERNATE.DIALECT = org.hibernate.dialect.MySQLDialect
+
 # File Manager
-# FILE.PATH = /Applications/MAMP/htdocs/tcc/files/
-FILE.PATH = /home/users/jorge/files/
-# Alterar endereço em SendMail:144 quando enviar ao servidor
+FILE.PATH = /Applications/MAMP/htdocs/tcc/files/
+
+# Mail
+MAIL.USERNAME = ttest4318@gmail.com
+MAIL.PASS = 
+MAIL.FROM = ttest4318@gmail.com

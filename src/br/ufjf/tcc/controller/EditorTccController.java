@@ -14,8 +14,6 @@ import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Iframe;
@@ -28,10 +26,8 @@ import br.ufjf.tcc.business.ParticipacaoBusiness;
 import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.business.UsuarioBusiness;
 import br.ufjf.tcc.library.FileManager;
-import br.ufjf.tcc.model.CalendarioSemestre;
 import br.ufjf.tcc.model.Departamento;
 import br.ufjf.tcc.model.Participacao;
-import br.ufjf.tcc.model.Prazo;
 import br.ufjf.tcc.model.TCC;
 import br.ufjf.tcc.model.Usuario;
 
@@ -49,7 +45,6 @@ public class EditorTccController extends CommonsController {
 			canChangeMatricula = false, userSecretaria = false,
 			tccFileChanged = false, extraFileChanged = false;
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Init
 	public void init() {
 		String tccId = Executions.getCurrent().getParameter("tcc");
@@ -75,21 +70,10 @@ public class EditorTccController extends CommonsController {
 			}
 			break;
 		case Usuario.ALUNO:
-			CalendarioSemestre currentCalendar = getCurrentCalendar();
 			TCC tempTcc = getUsuario().getTcc().get(0);
 			getUsuario().getTcc().clear();
 			getUsuario().getTcc().add(tempTcc);
 			tcc = getUsuario().getTcc().get(0);
-			if (currentCalendar.getPrazos().get(Prazo.ENTREGA_TCC_BANCA)
-					.getDataFinal().before(new Date()))
-				Messagebox.show("O prazo para envio de TCCs já terminou.",
-						"Prazo finalizado", Messagebox.OK,
-						Messagebox.INFORMATION, new EventListener() {
-							public void onEvent(Event evt)
-									throws InterruptedException {
-								redirectHome();
-							}
-						});
 			break;
 		default:
 			if (tccId != null) {
@@ -100,6 +84,7 @@ public class EditorTccController extends CommonsController {
 			if (tcc == null || !canEdit())
 				redirectHome();
 		}
+
 		departamentos = new DepartamentoBusiness().getAll();
 	}
 
@@ -267,10 +252,9 @@ public class EditorTccController extends CommonsController {
 						.show("Você escolheu um professor que já está incluído na Banca Examinadora. Se ele é seu Orientador, por favor retire-o da Banca antes.",
 								"Inválido", Messagebox.OK, Messagebox.ERROR);
 			}
-	else
-		Messagebox
-		.show("Você não selecionou nenhum professor.",
-				"Erro", Messagebox.OK, Messagebox.ERROR);
+		else
+			Messagebox.show("Você não selecionou nenhum professor.", "Erro",
+					Messagebox.OK, Messagebox.ERROR);
 		window.setVisible(false);
 	}
 

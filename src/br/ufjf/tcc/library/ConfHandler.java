@@ -18,7 +18,7 @@ public class ConfHandler {
 			InputStream inputStream = getClass().getResourceAsStream("config.txt");
 	        String arquivo = IOUtils.toString(inputStream);
 			confs = new HashMap<String, String>();
-			Pattern patternConf = Pattern.compile("([A-Z]+\\.[A-Z]+) = (.*)");
+			Pattern patternConf = Pattern.compile("^([A-Z]+\\.[A-Z]+) = (.*)$", Pattern.MULTILINE);
 			Matcher conf = patternConf.matcher(arquivo);
 			while (conf.find()) {
 				confs.put(conf.group(1), conf.group(2));

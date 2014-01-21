@@ -73,7 +73,7 @@ public class TCCDAO extends GenericoDAO implements ITCCDAO {
 		try {
 			Query query = getSession()
 					.createQuery(
-							"SELECT t FROM TCC AS t JOIN FETCH t.aluno AS a JOIN FETCH t.orientador WHERE a.curso = :curso ORDER BY t.dataEnvioFInal DESC");
+							"SELECT t FROM TCC AS t JOIN FETCH t.aluno AS a JOIN FETCH t.orientador WHERE a.curso = :curso ORDER BY t.dataEnvioFinal DESC");
 			query.setParameter("curso", curso);
 
 			List<TCC> resultados = query.list();

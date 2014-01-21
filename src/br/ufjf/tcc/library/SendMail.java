@@ -17,25 +17,28 @@ import org.joda.time.DateTime;
 import br.ufjf.tcc.model.Usuario;
 
 public class SendMail {
-	private final String username = "ttest4318@gmail.com";
-	private final String password = "tcc12345";
 	private Properties props;
 	private Message message;
 
 	public SendMail() {
 		props = new Properties();
-		props.put("mail.smtp.auth", "true");
-		props.put("mail.smtp.starttls.enable", "true");
 		props.put("mail.smtp.host", "smtp.gmail.com");
-		props.put("mail.smtp.port", "587");
+		props.put("mail.smtp.socketFactory.port", "465");
+		props.put("mail.smtp.socketFactory.class",
+				"javax.net.ssl.SSLSocketFactory");
+		props.put("mail.smtp.auth", "true");
+		props.put("mail.smtp.port", "465");
 
-		Session session = Session.getInstance(props,
+		Session session = Session.getDefaultInstance(props,
 				new javax.mail.Authenticator() {
 					protected PasswordAuthentication getPasswordAuthentication() {
-						return new PasswordAuthentication(username, password);
+						return new PasswordAuthentication(ConfHandler
+								.getConf("MAIL.USERNAME"), ConfHandler
+								.getConf("MAIL.PASS"));
 					}
 				});
-		message = new MimeMessage(session);
+
+		this.message = new MimeMessage(session);
 	}
 
 	/*
@@ -44,7 +47,8 @@ public class SendMail {
 	 */
 	public boolean onSubmitCSV(List<Usuario> usuariosCSV) {
 		try {
-			message.setFrom(new InternetAddress("ttest4318@gmail.com"));
+			message.setFrom(new InternetAddress(ConfHandler
+					.getConf("MAIL.FROM")));
 			for (Usuario usuario : usuariosCSV) {
 				message.addRecipients(Message.RecipientType.BCC,
 						InternetAddress.parse(usuario.getEmail()));
@@ -78,7 +82,8 @@ public class SendMail {
 	 */
 	public boolean onSubmitUser(Usuario newUser, String newPassword) {
 		try {
-			message.setFrom(new InternetAddress("ttest4318@gmail.com"));
+			message.setFrom(new InternetAddress(ConfHandler
+					.getConf("MAIL.FROM")));
 			message.setRecipients(Message.RecipientType.TO,
 					InternetAddress.parse(newUser.getEmail()));
 			message.setSubject("Confirmação de cadastro");
@@ -104,7 +109,8 @@ public class SendMail {
 
 	public boolean sendNewPassword(Usuario user, String newPassword) {
 		try {
-			message.setFrom(new InternetAddress("ttest4318@gmail.com"));
+			message.setFrom(new InternetAddress(ConfHandler
+					.getConf("MAIL.FROM")));
 			message.setRecipients(Message.RecipientType.TO,
 					InternetAddress.parse(user.getEmail()));
 			message.setSubject("Recuperação de senha");
@@ -133,7 +139,8 @@ public class SendMail {
 	 */
 	public boolean confirmEmail(Usuario user, String newEmail) {
 		try {
-			message.setFrom(new InternetAddress("ttest4318@gmail.com"));
+			message.setFrom(new InternetAddress(ConfHandler
+					.getConf("MAIL.FROM")));
 			message.setRecipients(Message.RecipientType.TO,
 					InternetAddress.parse(user.getEmail()));
 			message.setSubject("Confirmação de e-mail");
@@ -141,7 +148,8 @@ public class SendMail {
 					+ user.getNomeUsuario()
 					+ ",\n\n"
 					+ "Por favor clique no link abaixo para confirmar seu endereço de e-mail:\n"
-					+ "http://localhost:8080/tcc-web/pages/confirmacao.zul?data="
+					+ ConfHandler.getConf("GENERAL.URL")
+					+ "/pages/confirmacao.zul?data="
 					+ EncryptionUtil.encode(user.getMatricula() + ";"
 							+ newEmail + ";" + DateTime.now().toString())
 					+ "\n\n" + "Atenciosamente,\n" + "(...)");
@@ -160,7 +168,8 @@ public class SendMail {
 
 	public boolean onSubmitCoordenador(Usuario newUser, String newPassword) {
 		try {
-			message.setFrom(new InternetAddress("ttest4318@gmail.com"));
+			message.setFrom(new InternetAddress(ConfHandler
+					.getConf("MAIL.FROM")));
 			message.setRecipients(Message.RecipientType.TO,
 					InternetAddress.parse(newUser.getEmail()));
 			message.setSubject("Informação");
@@ -186,7 +195,8 @@ public class SendMail {
 
 	public boolean onSetUserAsCoordenador(Usuario coordenador) {
 		try {
-			message.setFrom(new InternetAddress("ttest4318@gmail.com"));
+			message.setFrom(new InternetAddress(ConfHandler
+					.getConf("MAIL.FROM")));
 			message.setRecipients(Message.RecipientType.TO,
 					InternetAddress.parse(coordenador.getEmail()));
 			message.setSubject("Informação");
