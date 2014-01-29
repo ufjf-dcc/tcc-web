@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,26 +14,20 @@ import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zul.Button;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Window;
 
-import br.ufjf.tcc.business.CalendarioSemestreBusiness;
-import br.ufjf.tcc.business.ParticipacaoBusiness;
 import br.ufjf.tcc.business.QuestionarioBusiness;
 import br.ufjf.tcc.business.TCCBusiness;
-import br.ufjf.tcc.model.CalendarioSemestre;
-import br.ufjf.tcc.model.Participacao;
 import br.ufjf.tcc.model.Questionario;
 import br.ufjf.tcc.model.TCC;
 import br.ufjf.tcc.model.Usuario;
 
 public class HomeProfessorController extends CommonsController {
-	private List<TCC> allTccs = new ArrayList<TCC>(); //inclui TCCs finalizados
-	private List<TCC> tccs = new ArrayList<TCC>(); //apenas TCCs em aberto
-	private List<TCC> filterTccs; //apenas TCCs do tipo selecionado
+	private List<TCC> allTccs = new ArrayList<TCC>(); // inclui TCCs finalizados
+	private List<TCC> tccs = new ArrayList<TCC>(); // apenas TCCs em aberto
+	private List<TCC> filterTccs; // apenas TCCs do tipo selecionado
 	private Questionario currentQuestionary;
-	private CalendarioSemestre currentCalendar;
 	private boolean currentQuestionaryExists = true,
 			currentQuestionaryUsed = true, currentCalendarExists = true,
 			showAll = false;
@@ -50,35 +43,34 @@ public class HomeProfessorController extends CommonsController {
 			super.paginaProibida();
 
 		else {
-			getUsuario().setParticipacoes(
-					new ParticipacaoBusiness()
-							.getParticipacoesByUser(getUsuario()));
-			for (Participacao p : getUsuario().getParticipacoes()) {
-				allTccs.add(p.getTcc());
-			}
+			allTccs.addAll(new TCCBusiness()
+					.getTCCsByUserParticipacao(getUsuario()));
 			allTccs.addAll(new TCCBusiness().getTCCsByOrientador(getUsuario()));
-			
-			Collections.sort(allTccs, new Comparator<TCC>() {
 
+			Collections.sort(allTccs, new Comparator<TCC>() {
 				@Override
 				public int compare(TCC arg0, TCC arg1) {
-					return (arg0.getDataApresentacao().before(arg1.getDataApresentacao()) ? -1 : (arg0
-							.getDataApresentacao().equals(arg1.getDataApresentacao()) ? 0 : 1));
+					if (arg0.getDataApresentacao() == null)
+						return -1;
+					else if (arg1.getDataApresentacao() == null)
+						return 1;
+					else
+						return (arg0.getDataApresentacao().before(
+								arg1.getDataApresentacao()) ? -1 : (arg0
+								.getDataApresentacao().equals(
+										arg1.getDataApresentacao()) ? 0 : 1));
 				}
 			});
-			
-			for(TCC tcc : allTccs)
-				if(tcc.getDataEnvioFinal() == null)
+
+			for (TCC tcc : allTccs)
+				if (tcc.getDataEnvioFinal() == null)
 					tccs.add(tcc);
-			
+
 			filterTccs = tccs;
 		}
 
-		currentCalendar = new CalendarioSemestreBusiness()
-				.getCurrentCalendarByCurso(getUsuario().getCurso());
-
-		currentCalendarExists = currentCalendar != null;
-		if (currentCalendar != null) {
+		currentCalendarExists = getCurrentCalendar() != null;
+		if (getCurrentCalendar() != null) {
 			currentQuestionary = new QuestionarioBusiness()
 					.getCurrentQuestionaryByCurso(getUsuario().getCurso());
 
@@ -138,7 +130,7 @@ public class HomeProfessorController extends CommonsController {
 			break;
 		}
 	}
-	
+
 	@NotifyChange("filterTccs")
 	@Command
 	public void showAllTccs() {
@@ -197,18 +189,11 @@ public class HomeProfessorController extends CommonsController {
 	@Command
 	public void editCalendar() {
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("calendar", currentCalendar);
+		map.put("calendar", getCurrentCalendar());
 		map.put("editing", true);
 		final Window dialog = (Window) Executions.createComponents(
 				"/pages/cadastro-prazos.zul", null, map);
 		dialog.doModal();
-	}
-
-	@Command
-	public void canAnswerTCC(@BindingParam("tcc") TCC tcc,
-			@BindingParam("btn") Button btn) {
-		btn.setDisabled(tcc.getDataApresentacao() == null
-				|| tcc.getDataApresentacao().after(new Date()));
 	}
 
 	@Command

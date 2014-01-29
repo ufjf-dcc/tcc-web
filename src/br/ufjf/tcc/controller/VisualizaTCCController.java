@@ -11,10 +11,10 @@ import org.zkoss.bind.annotation.Init;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zhtml.Filedownload;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.Iframe;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.Vlayout;
 
 import br.ufjf.tcc.business.PerguntaBusiness;
 import br.ufjf.tcc.business.QuestionarioBusiness;
@@ -33,7 +33,7 @@ public class VisualizaTCCController extends CommonsController {
 	private boolean canAnswer = false, canDonwloadFileBanca = false,
 			canEdit = false;
 	private List<Resposta> answers = new ArrayList<Resposta>();
-	private Vlayout informacoes, ficha;
+	private Div informacoes, ficha;
 
 	public String getPageTitle() {
 		return pageTitle;
@@ -82,30 +82,24 @@ public class VisualizaTCCController extends CommonsController {
 		if (getUsuario() != null) {
 
 			for (Participacao p : tcc.getParticipacoes())
-				if (p.getProfessor() == getUsuario()) {
+				if (p.getProfessor().getIdUsuario() == getUsuario()
+						.getIdUsuario()) {
 					canDonwloadFileBanca = true;
 					canAnswer = true;
 					return true;
 				}
 
-			if (getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ADMINISTRADOR
-					|| getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.COORDENADOR) {
-				canEdit = true;
-				canDonwloadFileBanca = true;
-				return true;
-			}
-
 			if (getUsuario().getIdUsuario() == tcc.getAluno().getIdUsuario()
 					|| getUsuario().getIdUsuario() == tcc.getOrientador()
-							.getIdUsuario()) {
+							.getIdUsuario()
+					|| getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ADMINISTRADOR
+					|| ((getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.COORDENADOR || (getUsuario()
+							.getTipoUsuario().getIdTipoUsuario() == Usuario.SECRETARIA && tcc
+							.getDataEnvioFinal() != null)) && getUsuario()
+							.getCurso().getIdCurso() == tcc.getAluno()
+							.getCurso().getIdCurso())) {
 				canEdit = true;
 				canDonwloadFileBanca = true;
-				return true;
-			}
-
-			if (tcc.getDataEnvioFinal() != null) {
-				if (getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.SECRETARIA)
-					canEdit = true;
 				return true;
 			}
 		}
@@ -137,21 +131,21 @@ public class VisualizaTCCController extends CommonsController {
 		return answers;
 	}
 
-	public Vlayout getInformacoes() {
+	public Div getInformacoes() {
 		return informacoes;
 	}
 
 	@Command
-	public void setInformacoes(@BindingParam("vlayout") Vlayout informacoes) {
+	public void setInformacoes(@BindingParam("adiv") Div informacoes) {
 		this.informacoes = informacoes;
 	}
 
-	public Vlayout getFicha() {
+	public Div getFicha() {
 		return ficha;
 	}
 
 	@Command
-	public void setFicha(@BindingParam("vlayout") Vlayout ficha) {
+	public void setFicha(@BindingParam("adiv") Div ficha) {
 		this.ficha = ficha;
 	}
 
@@ -194,13 +188,16 @@ public class VisualizaTCCController extends CommonsController {
 
 	@Command
 	public void downloadPDFBanca() {
-		InputStream is = FileManager
-				.getFileInputSream(tcc.getArquivoTCCBanca());
-		if (is != null)
-			Filedownload.save(is, "application/pdf", tcc.getNomeTCC() + ".pdf");
-		else
-			Messagebox.show("O PDF não foi encontrado!", "Erro", Messagebox.OK,
-					Messagebox.ERROR);
+		if (canDonwloadFileBanca) {
+			InputStream is = FileManager.getFileInputSream(tcc
+					.getArquivoTCCBanca());
+			if (is != null)
+				Filedownload.save(is, "application/pdf", tcc.getNomeTCC()
+						+ ".pdf");
+			else
+				Messagebox.show("O PDF não foi encontrado!", "Erro",
+						Messagebox.OK, Messagebox.ERROR);
+		}
 	}
 
 	@Command

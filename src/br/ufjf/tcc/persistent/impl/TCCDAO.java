@@ -14,28 +14,6 @@ import br.ufjf.tcc.persistent.ITCCDAO;
 @SuppressWarnings("unchecked")
 public class TCCDAO extends GenericoDAO implements ITCCDAO {
 
-	@Override
-	public List<TCC> getPublicListByCurso(Curso curso) {
-		try {
-			Query query = getSession()
-					.createQuery(
-							"select t from TCC as t join fetch t.aluno as a join fetch t.orientador WHERE  t.dataEnvioFinal > 0 AND a.curso = :curso ORDER BY t.dataEnvioFinal DESC");
-			query.setParameter("curso", curso);
-
-			List<TCC> resultados = query.list();
-
-			getSession().close();
-
-			if (resultados != null)
-				return resultados;
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
 	public List<TCC> getTCCsNotConceptualized() {
 		List<TCC> results = null;
 
@@ -96,7 +74,7 @@ public class TCCDAO extends GenericoDAO implements ITCCDAO {
 		try {
 			Query query = getSession()
 					.createQuery(
-							"SELECT t FROM TCC AS t JOIN FETCH t.aluno JOIN FETCH t.orientador LEFT JOIN FETCH t.participacoes AS p  LEFT JOIN FETCH p.professor WHERE t.aluno = :user AND t.calendarioSemestre = :currentCalendar");
+							"SELECT t FROM TCC AS t JOIN FETCH t.aluno AS a JOIN FETCH a.curso JOIN FETCH t.orientador LEFT JOIN FETCH t.participacoes AS p  LEFT JOIN FETCH p.professor WHERE t.aluno = :user AND t.calendarioSemestre = :currentCalendar");
 			query.setParameter("user", user);
 			query.setParameter("currentCalendar", currentCalendar);
 
@@ -116,7 +94,7 @@ public class TCCDAO extends GenericoDAO implements ITCCDAO {
 		try {
 			Query query = getSession()
 					.createQuery(
-							"SELECT t FROM TCC AS t JOIN FETCH t.aluno as a JOIN FETCH t.orientador LEFT JOIN FETCH t.participacoes AS p LEFT JOIN FETCH p.professor LEFT JOIN FETCH a.curso WHERE t.idTCC = :id");
+							"SELECT t FROM TCC AS t JOIN FETCH t.aluno AS a JOIN FETCH a.curso JOIN FETCH t.orientador LEFT JOIN FETCH t.participacoes AS p LEFT JOIN FETCH p.professor WHERE t.idTCC = :id");
 			query.setParameter("id", id);
 
 			resultado = (TCC) query.uniqueResult();
@@ -137,6 +115,24 @@ public class TCCDAO extends GenericoDAO implements ITCCDAO {
 			Query query = getSession()
 					.createQuery(
 							"SELECT t FROM TCC AS t JOIN FETCH t.aluno JOIN FETCH t.orientador WHERE t.orientador = :user");
+			query.setParameter("user", user);
+			results = query.list();
+			getSession().close();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return results;
+	}
+	
+	public List<TCC> getTCCsByUserParticipacao(Usuario user) {
+		List<TCC> results = null;
+
+		try {
+			Query query = getSession()
+					.createQuery(
+							"SELECT t FROM TCC AS t JOIN FETCH t.aluno JOIN FETCH t.orientador LEFT JOIN t.participacoes AS p WHERE p.professor = :user");
 			query.setParameter("user", user);
 			results = query.list();
 			getSession().close();

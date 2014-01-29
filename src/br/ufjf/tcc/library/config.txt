@@ -3,15 +3,16 @@ GENERAL.URL = http://monografias.nrc.ice.ufjf.br/tcc-web
 
 # Hibernate
 HIBERNATE.DRIVE = com.mysql.jdbc.Driver
+HIBERNATE.DIALECT = org.hibernate.dialect.MySQLDialect
 HIBERNATE.DB = jdbc:mysql://localhost/tcc
 HIBERNATE.USER = root
 HIBERNATE.PASS = root
-HIBERNATE.DIALECT = org.hibernate.dialect.MySQLDialect
 
 # File Manager
 FILE.PATH = /Applications/MAMP/htdocs/tcc/files/
+#FILE.PATH = /TCCFiles/
 
 # Mail
 MAIL.USERNAME = ttest4318@gmail.com
-MAIL.PASS = 
+MAIL.PASS = tcc12345
 MAIL.FROM = ttest4318@gmail.com

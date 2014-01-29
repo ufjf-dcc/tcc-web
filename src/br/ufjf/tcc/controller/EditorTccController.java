@@ -52,10 +52,8 @@ public class EditorTccController extends CommonsController {
 		switch (getUsuario().getTipoUsuario().getIdTipoUsuario()) {
 		case Usuario.SECRETARIA:
 			userSecretaria = true;
-			if (tccId != null) {
-				TCCBusiness tccBusiness = new TCCBusiness();
+			if (tccId != null)
 				tcc = tccBusiness.getTCCById(Integer.parseInt(tccId));
-			}
 
 			if (tcc == null) {
 				tcc = new TCC();
@@ -70,29 +68,34 @@ public class EditorTccController extends CommonsController {
 			}
 			break;
 		case Usuario.ALUNO:
-			TCC tempTcc = getUsuario().getTcc().get(0);
+			TCC tempTCC = tccBusiness.getCurrentTCCByAuthor(getUsuario(),
+					getCurrentCalendar());
 			getUsuario().getTcc().clear();
-			getUsuario().getTcc().add(tempTcc);
-			tcc = getUsuario().getTcc().get(0);
-			break;
-		default:
-			if (tccId != null) {
-				TCCBusiness tccBusiness = new TCCBusiness();
-				tcc = tccBusiness.getTCCById(Integer.parseInt(tccId));
+			if (tempTCC != null) {
+				getUsuario().getTcc().add(tempTCC);
+				tcc = getUsuario().getTcc().get(0);
 			}
 
-			if (tcc == null || !canEdit())
-				redirectHome();
+			break;
+		default:
+			if (tccId != null)
+				tcc = tccBusiness.getTCCById(Integer.parseInt(tccId));
 		}
+
+		if (tcc == null || !canEdit()) 
+			redirectHome();
 
 		departamentos = new DepartamentoBusiness().getAll();
 	}
 
 	private boolean canEdit() {
-		return getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.COORDENADOR
-				|| getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ADMINISTRADOR
-				|| tcc.getOrientador().getIdUsuario() == getUsuario()
-						.getIdUsuario();
+		return (tcc.getOrientador().getIdUsuario() == getUsuario()
+				.getIdUsuario()
+				|| getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ADMINISTRADOR || ((getUsuario()
+				.getTipoUsuario().getIdTipoUsuario() == Usuario.COORDENADOR || getUsuario()
+				.getTipoUsuario().getIdTipoUsuario() == Usuario.SECRETARIA) && getUsuario()
+				.getCurso().getIdCurso() == tcc.getAluno().getCurso()
+				.getIdCurso()));
 	}
 
 	public TCC getTcc() {
@@ -363,12 +366,7 @@ public class EditorTccController extends CommonsController {
 				extraFile = null;
 			}
 			if (tccBusiness.edit(tcc)) {
-				// new SendMail().onSubmitTCC(tcc);
-				Messagebox.show("\"" + tcc.getNomeTCC()
-						+ "\" cadastrado/atualizado com sucesso!"
-				// +
-				// "\nUma mensagem de confirmação foi enviada para o seu e-mail."
-						);
+				Messagebox.show("TCC atualizado com sucesso!");
 			} else {
 				Messagebox.show("Devido a um erro, o TCC não foi cadastrado.",
 						"Erro", Messagebox.OK, Messagebox.ERROR);

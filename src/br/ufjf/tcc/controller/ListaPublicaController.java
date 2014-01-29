@@ -90,7 +90,7 @@ public class ListaPublicaController extends CommonsController {
 	@Command
 	public void changeCurso() {
 		if (curso.getIdCurso() > 0) {
-			tccsByCurso = new TCCBusiness().getPublicListByCurso(curso);
+			tccsByCurso = new TCCBusiness().getFinishedTCCsByCurso(curso);
 			if (tccsByCurso == null || tccsByCurso.size() == 0)
 				emptyMessage = "Nenhuma monografia encontrada para o curso de "
 						+ curso.getNomeCurso();

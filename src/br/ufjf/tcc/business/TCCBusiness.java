@@ -45,9 +45,7 @@ public class TCCBusiness {
 	}
 
 	// Comunicação com o TCCDAO
-	public List<TCC> getPublicListByCurso(Curso curso) {
-		return tccDao.getPublicListByCurso(curso);
-	}
+
 
 	public List<TCC> getAll() {
 		return tccDao.getAll();
@@ -90,6 +88,10 @@ public class TCCBusiness {
 	
 	public List<TCC> getTCCsByOrientador(Usuario user) {
 		return tccDao.getTCCsByOrientador(user);
+	}
+	
+	public List<TCC> getTCCsByUserParticipacao(Usuario user) {
+		return tccDao.getTCCsByUserParticipacao(user);
 	}
 
 	public List<TCC> getFinishedTCCsByCurso(Curso curso) {
