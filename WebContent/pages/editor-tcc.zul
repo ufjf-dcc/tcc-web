@@ -4,10 +4,11 @@
 	<style src="/style.css" />
 	<div apply="org.zkoss.bind.BindComposer"
 		viewModel="@id('vm') @init('br.ufjf.tcc.controller.EditorTccController')"
-		height="100%">
+		height="100%" style="background-color:#efefef;">
 		<include src="@load(vm.menu)" />
-		<hlayout style="background-color:#efefef;" height="96%">
-			<vlayout hflex="1" style="overflow:auto">
+		<div height="94.3%">
+			<div height="100%" width="35%"
+				style="float: left;background-color:#efefef;overflow:scroll;padding-right:2px;">
 				<groupbox id="alunoForm"
 					visible="@load(vm.userSecretaria)" mold="3d" width="100%">
 					<caption label="Autor(a)" />
@@ -202,15 +203,17 @@
 						</hlayout>
 					</vlayout>
 				</groupbox>
-				<div hflex="1" align="center">
+				<div align="center" style="margin:15px" >
 					<button label="Atualizar"
-						onClick="@command('submit')" width="75px" style="margin-top:5px" />
+						onClick="@command('submit')" width="100%" height="30px"/>
 				</div>
 
-			</vlayout>
-			<iframe hflex="2" vflex="100" autohide="true" height="100%"
+			</div>
+			<div style="float: left;width: 65%; height: 100%;">
+				<iframe autohide="true" height="100%" width="100%"
 				onCreate="@command('showTCC', iframe=self)" />
-		</hlayout>
+			</div>
+		</div>
 		<window id="changeOrientador" title="Alterar Orientador"
 			visible="false" width="400px" border="normal"
 			position="center,center" closable="true"

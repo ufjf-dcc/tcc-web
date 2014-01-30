@@ -1,11 +1,6 @@
 <?page title="Visualizar TCC" contentType="text/html;charset=UTF-8"?>
 <?script content="zk.useStack='auto'" ?>
 <zk>
-	<script type="text/javascript">
-		function corrige() { var element =
-		document.getElementById('PANEL'); element.style.height =
-		element.offsetHeight; }
-	</script>
 	<style src="/style.css" />
 	<div apply="org.zkoss.bind.BindComposer"
 		viewModel="@id('vm') @init('br.ufjf.tcc.controller.VisualizaTCCController')"
