@@ -74,25 +74,36 @@ public class UsuarioBusiness {
 
 	public void validateTipo(Usuario usuario) {
 		switch (usuario.getTipoUsuario().getIdTipoUsuario()) {
-		case 1:
+		case Usuario.ALUNO:
 			if (usuario.getCurso() == null)
 				errors.add("Um aluno deve pertencer a um curso.\n");
 			if (usuario.getDepartamento() != null)
 				errors.add("Um aluno não pode pertencer a um departamento.\n");
 			break;
-		case 2:
+		case Usuario.PROFESSOR:
 			if (usuario.getDepartamento() == null)
 				errors.add("Um professor deve pertencer a um departamento.\n");
 			if (usuario.getCurso() != null)
 				errors.add("Um professor não deve pertencer a um curso.\n");
 			break;
-		case 3:
+		case Usuario.COORDENADOR:
 			if(getCoordenadorByCurso(usuario.getCurso()) != null)
 				errors.add("Já existe um coordenador para o curso escolhido.\n");
 			if (usuario.getCurso() == null)
 				errors.add("Um coordenador deve pertencer a um curso.\n");
 			if (usuario.getDepartamento() == null)
 				errors.add("Um coordenador deve pertencer a um departamento.\n");
+		case Usuario.ADMINISTRADOR:
+			if (usuario.getCurso() == null)
+				errors.add("Um Administrador não deve pertencer a um curso.\n");
+			if (usuario.getDepartamento() != null)
+				errors.add("Um Administrador não deve pertencer a um departamento.\n");
+		case Usuario.SECRETARIA:
+			if (usuario.getCurso() == null)
+				errors.add("Um(a) secretário(a) deve pertencer a um curso.\n");
+			if (usuario.getDepartamento() != null)
+				errors.add("Um(a) secretário(a) não pode pertencer a um departamento.\n");
+			break;
 		}
 	}
 
@@ -211,11 +222,6 @@ public class UsuarioBusiness {
 			return true;
 		} else
 			return false;
-	}
-
-	public Usuario update(Usuario usuario, boolean curso, boolean tipo,
-			boolean participacoes) {
-		return usuarioDAO.update(usuario, curso, tipo, participacoes);
 	}
 
 	public Usuario getByEmailAndMatricula(String email, String matricula) {

@@ -7,12 +7,10 @@ import org.hibernate.Query;
 import br.ufjf.tcc.model.CalendarioSemestre;
 import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.persistent.GenericoDAO;
-import br.ufjf.tcc.persistent.ICalendarioSemestreDAO;
 
 
-public class CalendarioSemestreDAO extends GenericoDAO implements ICalendarioSemestreDAO {
+public class CalendarioSemestreDAO extends GenericoDAO {
 	
-	@Override
 	public CalendarioSemestre getCalendarByDateAndCurso (Date date, Curso curso) {
 		CalendarioSemestre currentCalendar = null;
 		try {

@@ -41,7 +41,7 @@ public class TCCBusiness {
 
 	public void validateOrientador(Usuario orientador) {
 		if (orientador == null)
-			errors.add("Informe o seu orientador;\n");
+			errors.add("Informe o orientador;\n");
 	}
 
 	// Comunicação com o TCCDAO

@@ -9,10 +9,9 @@ import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.model.TCC;
 import br.ufjf.tcc.model.Usuario;
 import br.ufjf.tcc.persistent.GenericoDAO;
-import br.ufjf.tcc.persistent.ITCCDAO;
 
 @SuppressWarnings("unchecked")
-public class TCCDAO extends GenericoDAO implements ITCCDAO {
+public class TCCDAO extends GenericoDAO {
 
 	public List<TCC> getTCCsNotConceptualized() {
 		List<TCC> results = null;
@@ -31,7 +30,6 @@ public class TCCDAO extends GenericoDAO implements ITCCDAO {
 		return results;
 	}
 
-	@Override
 	public List<TCC> getAll() {
 		List<TCC> results = null;
 
@@ -125,7 +123,7 @@ public class TCCDAO extends GenericoDAO implements ITCCDAO {
 
 		return results;
 	}
-	
+
 	public List<TCC> getTCCsByUserParticipacao(Usuario user) {
 		List<TCC> results = null;
 

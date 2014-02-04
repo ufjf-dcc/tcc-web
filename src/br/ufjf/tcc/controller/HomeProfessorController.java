@@ -169,8 +169,6 @@ public class HomeProfessorController extends CommonsController {
 
 	@Command
 	public void editQuestionary() {
-		new QuestionarioBusiness().update(currentQuestionary, true, true);
-
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("quest", currentQuestionary);
 		map.put("editing", true);

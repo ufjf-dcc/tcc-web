@@ -41,32 +41,15 @@ public class EditorTccController extends CommonsController {
 	private AMedia pdf = null;
 	private List<Departamento> departamentos;
 	private List<Usuario> orientadores = new ArrayList<Usuario>();
-	private boolean alunoExists = false, hasSubtitulo = false,
-			canChangeMatricula = false, userSecretaria = false,
-			tccFileChanged = false, extraFileChanged = false;
+	private boolean alunoEditBlock = false, canChangeMatricula = false,
+			canEditUser = false, alunoVerified = false, tccFileChanged = false,
+			extraFileChanged = false, hasSubtitulo = false;
 
 	@Init
 	public void init() {
 		String tccId = Executions.getCurrent().getParameter("tcc");
 
 		switch (getUsuario().getTipoUsuario().getIdTipoUsuario()) {
-		case Usuario.SECRETARIA:
-			userSecretaria = true;
-			if (tccId != null)
-				tcc = tccBusiness.getTCCById(Integer.parseInt(tccId));
-
-			if (tcc == null) {
-				tcc = new TCC();
-				tcc.setAluno(new Usuario());
-				alunoExists = false;
-				canChangeMatricula = true;
-			} else {
-				if (tcc.getDataEnvioFinal() == null)
-					redirectHome();
-				else
-					alunoExists = true;
-			}
-			break;
 		case Usuario.ALUNO:
 			TCC tempTCC = tccBusiness.getCurrentTCCByAuthor(getUsuario(),
 					getCurrentCalendar());
@@ -74,28 +57,49 @@ public class EditorTccController extends CommonsController {
 			if (tempTCC != null) {
 				getUsuario().getTcc().add(tempTCC);
 				tcc = getUsuario().getTcc().get(0);
-			}
+			} else
+				redirectHome();
 
 			break;
-		default:
-			if (tccId != null)
-				tcc = tccBusiness.getTCCById(Integer.parseInt(tccId));
-		}
 
-		if (tcc == null || !canEdit()) 
-			redirectHome();
+		case Usuario.ADMINISTRADOR:
+		case Usuario.COORDENADOR:
+			canChangeMatricula = true;
+
+		case Usuario.SECRETARIA:
+			canEditUser = true;
+
+		default:
+			if (tccId != null && tccId.trim().length() > 0) {
+				tcc = tccBusiness.getTCCById(Integer.parseInt(tccId.trim()));
+				alunoEditBlock = true;
+			} else if (canEditUser) {
+				tcc = new TCC();
+				tcc.setAluno(new Usuario());
+				if (getUsuario().getCurso() != null)
+					tcc.getAluno().setCurso(getUsuario().getCurso());
+				alunoEditBlock = false;
+				canChangeMatricula = true;
+			}
+
+			if (tcc == null || !canEdit())
+				redirectHome();
+
+		}
 
 		departamentos = new DepartamentoBusiness().getAll();
 	}
 
 	private boolean canEdit() {
-		return (tcc.getOrientador().getIdUsuario() == getUsuario()
-				.getIdUsuario()
-				|| getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ADMINISTRADOR || ((getUsuario()
-				.getTipoUsuario().getIdTipoUsuario() == Usuario.COORDENADOR || getUsuario()
-				.getTipoUsuario().getIdTipoUsuario() == Usuario.SECRETARIA) && getUsuario()
-				.getCurso().getIdCurso() == tcc.getAluno().getCurso()
-				.getIdCurso()));
+		return (tcc.getOrientador() == null
+				|| tcc.getOrientador().getIdUsuario() == getUsuario()
+						.getIdUsuario()
+				|| getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ADMINISTRADOR || (getUsuario()
+				.getTipoUsuario().getIdTipoUsuario() == Usuario.COORDENADOR || (getUsuario()
+				.getTipoUsuario().getIdTipoUsuario() == Usuario.SECRETARIA && tcc
+				.getDataEnvioFinal() != null)
+				&& getUsuario().getCurso().getIdCurso() == tcc.getAluno()
+						.getCurso().getIdCurso()));
 	}
 
 	public TCC getTcc() {
@@ -106,8 +110,8 @@ public class EditorTccController extends CommonsController {
 		this.tcc = tcc;
 	}
 
-	public boolean isAlunoExists() {
-		return alunoExists;
+	public boolean isAlunoEditBlock() {
+		return alunoEditBlock;
 	}
 
 	public List<Departamento> getDepartamentos() {
@@ -134,8 +138,12 @@ public class EditorTccController extends CommonsController {
 		return canChangeMatricula;
 	}
 
+	public boolean getCanEditUser() {
+		return canEditUser;
+	}
+
 	public boolean isUserSecretaria() {
-		return userSecretaria;
+		return (getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.SECRETARIA);
 	}
 
 	public Usuario getTempUser() {
@@ -144,6 +152,45 @@ public class EditorTccController extends CommonsController {
 
 	public void setTempUser(Usuario tempUser) {
 		this.tempUser = tempUser;
+	}
+
+	@NotifyChange({ "tcc", "alunoExists" })
+	@Command
+	public void verifyAluno(@BindingParam("label") Label lbl) {
+		lbl.setVisible(true);
+		if (tcc.getAluno().getMatricula() != null
+				&& tcc.getAluno().getMatricula().trim().length() > 0) {
+			Usuario aluno = new UsuarioBusiness().getByMatricula(tcc.getAluno()
+					.getMatricula().trim());
+			if (aluno != null) {
+				if (aluno.getTipoUsuario().getIdTipoUsuario() != Usuario.ALUNO
+						|| getUsuario().getTipoUsuario().getIdTipoUsuario() != Usuario.ADMINISTRADOR
+						&& aluno.getCurso().getIdCurso() != getUsuario()
+								.getCurso().getIdCurso()) {
+					lbl.setValue("Usuário existe mas não é um aluno ou pertence a outro curso.");
+					alunoEditBlock = false;
+					alunoVerified = false;
+				} else {
+					tcc.setAluno(aluno);
+					lbl.setValue("Usuário já cadastrado.");
+					alunoEditBlock = true;
+					alunoVerified = true;
+				}
+			} else {
+				if (getUsuario().getTipoUsuario().getIdTipoUsuario() != Usuario.ADMINISTRADOR) {
+					alunoEditBlock = true;
+					lbl.setValue("Usuário ainda não cadastrado.Faça o cadastro abaixo.");
+					alunoVerified = true;
+				} else {
+					lbl.setValue("Usuário ainda não cadastrado.Cadastre ele no menu de Usuários.");
+					alunoVerified = false;
+				}
+			}
+		} else {
+			alunoEditBlock = false;
+			lbl.setValue("É necessário digitar a matrícula.");
+			alunoVerified = false;
+		}
 	}
 
 	@Command
@@ -185,54 +232,6 @@ public class EditorTccController extends CommonsController {
 	}
 
 	@Command
-	public void savePDF() {
-		String newFileName = FileManager.saveFileInputSream(tccFile, "pdf");
-		if (newFileName != null) {
-			switch (getUsuario().getTipoUsuario().getIdTipoUsuario()) {
-			case Usuario.SECRETARIA:
-				FileManager.deleteFile(tcc.getArquivoTCCFinal());
-				tcc.setArquivoTCCFinal(newFileName);
-				break;
-			default:
-				FileManager.deleteFile(tcc.getArquivoTCCFinal());
-				tcc.setArquivoTCCBanca(newFileName);
-				break;
-			}
-		}
-	}
-
-	@Command
-	public void saveExtraFile() {
-		String newFileName = FileManager.saveFileInputSream(extraFile, ".pdf");
-		if (newFileName != null) {
-			FileManager.deleteFile(tcc.getArquivoExtraTCCBanca());
-			tcc.setArquivoExtraTCCBanca(newFileName);
-		}
-	}
-
-	@NotifyChange({ "tcc", "alunoExists" })
-	@Command
-	public void verifyAluno(@BindingParam("label") Label lbl) {
-		Usuario aux = new UsuarioBusiness().getByMatricula(tcc.getAluno()
-				.getMatricula());
-		lbl.setVisible(true);
-		if (aux != null) {
-			tcc.setAluno(aux);
-			alunoExists = true;
-			lbl.setValue("Usuário já cadastrado.");
-		} else {
-			tcc.setAluno(new Usuario());
-			alunoExists = false;
-			lbl.setValue("Usuário ainda não cadastrado.");
-		}
-	}
-
-	@Command
-	public void changeOrientador(@BindingParam("window") Window window) {
-		window.doModal();
-	}
-
-	@Command
 	public void selectedDepartamento(@BindingParam("dep") Comboitem combDep) {
 		Departamento dep = (Departamento) combDep.getValue();
 		tempUser = null;
@@ -242,6 +241,13 @@ public class EditorTccController extends CommonsController {
 
 		BindUtils.postNotifyChange(null, null, this, "tempUser");
 		BindUtils.postNotifyChange(null, null, this, "orientadores");
+	}
+
+	// Editor Orientador
+
+	@Command
+	public void changeOrientador(@BindingParam("window") Window window) {
+		window.doModal();
 	}
 
 	@Command
@@ -273,6 +279,7 @@ public class EditorTccController extends CommonsController {
 		return find;
 	}
 
+	// Editor Banca
 	@Command
 	public void addToBanca() {
 		if (tempUser != null) {
@@ -307,15 +314,23 @@ public class EditorTccController extends CommonsController {
 		window.setVisible(false);
 	}
 
+	// Submit do TCC
 	@Command("submit")
 	public void submit() {
 		if (getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.SECRETARIA
-				&& tcc.getArquivoTCCFinal() == null) {
+				&& (tcc.getArquivoTCCFinal() == null && !tccFileChanged)) {
 			Messagebox.show("É necesário enviar o documento PDF.", "Erro",
 					Messagebox.OK, Messagebox.ERROR);
 			return;
 		}
-		if (!alunoExists) {
+		if (getUsuario().getTipoUsuario().getIdTipoUsuario() != Usuario.ALUNO
+				&& !alunoVerified) {
+			Messagebox
+					.show("Antes de enviar é necesário validar a matricula do aluno no botão de verificar.",
+							"Erro", Messagebox.OK, Messagebox.ERROR);
+			return;
+		}
+		if (!alunoEditBlock) {
 			UsuarioBusiness usuarioBusiness = new UsuarioBusiness();
 			if (usuarioBusiness.validate(tcc.getAluno(), null, false))
 				if (!usuarioBusiness.salvar(tcc.getAluno())) {
@@ -325,17 +340,7 @@ public class EditorTccController extends CommonsController {
 					return;
 				}
 		}
-		if (tcc.getOrientador() == null) {
-			Messagebox.show("É necessário informar o Orientador.", "Erro",
-					Messagebox.OK, Messagebox.ERROR);
-			return;
-		}
-		if (!new ParticipacaoBusiness().updateList(tcc)) {
-			Messagebox
-					.show("Não foi possível salvar as alterações (Banca Examinadora).",
-							"Erro", Messagebox.OK, Messagebox.ERROR);
-			return;
-		}
+
 		tcc.setDataEnvioBanca(new Timestamp(new Date().getTime()));
 		if (tccBusiness.validate(tcc)) {
 			if (tccFileChanged && tccFile != null) {
@@ -354,6 +359,7 @@ public class EditorTccController extends CommonsController {
 				Messagebox
 						.show("Você não enviou o documento PDF. Lembre-se de enviá-lo depois.",
 								"Aviso", Messagebox.OK, Messagebox.INFORMATION);
+
 			if (extraFileChanged && extraFile != null) {
 				saveExtraFile();
 				extraFileChanged = false;
@@ -365,18 +371,54 @@ public class EditorTccController extends CommonsController {
 				}
 				extraFile = null;
 			}
-			if (tccBusiness.edit(tcc)) {
+
+			if (tccBusiness.saveOrEdit(tcc)) {
 				Messagebox.show("TCC atualizado com sucesso!");
+
+				if (!new ParticipacaoBusiness().updateList(tcc)) {
+					Messagebox
+							.show("Não foi possível salvar as alterações da Banca Examinadora.",
+									"Erro", Messagebox.OK, Messagebox.ERROR);
+					return;
+				}
+
 			} else {
 				Messagebox.show("Devido a um erro, o TCC não foi cadastrado.",
 						"Erro", Messagebox.OK, Messagebox.ERROR);
 			}
+
 		} else {
 			String errorMessage = "";
 			for (String error : tccBusiness.getErrors())
 				errorMessage += error;
 			Messagebox.show(errorMessage, "Dados insuficientes / inválidos",
 					Messagebox.OK, Messagebox.ERROR);
+		}
+	}
+
+	@Command
+	public void savePDF() {
+		String newFileName = FileManager.saveFileInputSream(tccFile, "pdf");
+		if (newFileName != null) {
+			switch (getUsuario().getTipoUsuario().getIdTipoUsuario()) {
+			case Usuario.SECRETARIA:
+				FileManager.deleteFile(tcc.getArquivoTCCFinal());
+				tcc.setArquivoTCCFinal(newFileName);
+				break;
+			default:
+				FileManager.deleteFile(tcc.getArquivoTCCBanca());
+				tcc.setArquivoTCCBanca(newFileName);
+				break;
+			}
+		}
+	}
+
+	@Command
+	public void saveExtraFile() {
+		String newFileName = FileManager.saveFileInputSream(extraFile, ".pdf");
+		if (newFileName != null) {
+			FileManager.deleteFile(tcc.getArquivoExtraTCCBanca());
+			tcc.setArquivoExtraTCCBanca(newFileName);
 		}
 	}
 

@@ -8,10 +8,9 @@ import br.ufjf.tcc.model.Participacao;
 import br.ufjf.tcc.model.TCC;
 import br.ufjf.tcc.model.Usuario;
 import br.ufjf.tcc.persistent.GenericoDAO;
-import br.ufjf.tcc.persistent.IParticipacaoDAO;
 
 
-public class ParticipacaoDAO extends GenericoDAO implements IParticipacaoDAO {
+public class ParticipacaoDAO extends GenericoDAO {
 
 	@SuppressWarnings("unchecked")
 	public List<Participacao> getParticipacoesByUser(Usuario professor) {

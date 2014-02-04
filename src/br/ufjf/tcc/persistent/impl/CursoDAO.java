@@ -6,11 +6,9 @@ import org.hibernate.Query;
 
 import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.persistent.GenericoDAO;
-import br.ufjf.tcc.persistent.ICursoDAO;
 
-public class CursoDAO extends GenericoDAO implements ICursoDAO {
+public class CursoDAO extends GenericoDAO {
 
-	@Override
 	@SuppressWarnings("unchecked")
 	public List<Curso> buscar(String expressão) {
 		try {
@@ -82,7 +80,7 @@ public class CursoDAO extends GenericoDAO implements ICursoDAO {
 				query.setParameter("codigoCurso", codigo);
 				curso = (Curso) query.uniqueResult();
 			}
-			
+
 			getSession().close();
 
 		} catch (Exception e) {

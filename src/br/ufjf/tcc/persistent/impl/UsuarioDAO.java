@@ -14,11 +14,9 @@ import br.ufjf.tcc.model.TipoUsuario;
 import br.ufjf.tcc.model.Usuario;
 import br.ufjf.tcc.persistent.GenericoDAO;
 import br.ufjf.tcc.persistent.HibernateUtil;
-import br.ufjf.tcc.persistent.IUsuarioDAO;
 
-public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
+public class UsuarioDAO extends GenericoDAO {
 
-	@Override
 	public Usuario retornaUsuario(String matricula, String senha) {
 		try {
 			Query query = getSession()
@@ -40,8 +38,7 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 
 		return null;
 	}
-	
-	@Override
+
 	public Usuario getByEmailAndMatricula(String email, String matricula) {
 		try {
 			Query query = getSession()
@@ -64,7 +61,6 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 		return null;
 	}
 
-	@Override
 	@SuppressWarnings("unchecked")
 	public List<Usuario> getAll() {
 		try {
@@ -85,8 +81,7 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 
 		return null;
 	}
-	
-	@Override
+
 	@SuppressWarnings("unchecked")
 	public List<Usuario> getAllByCurso(Curso curso) {
 		try {
@@ -94,7 +89,7 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 					.createQuery(
 							"SELECT u FROM Usuario AS u left join fetch u.departamento LEFT JOIN FETCH u.curso JOIN FETCH u.tipoUsuario WHERE u.curso = :curso ORDER BY u.idUsuario");
 			query.setParameter("curso", curso);
-			
+
 			List<Usuario> resultados = query.list();
 
 			getSession().close();
@@ -109,16 +104,19 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 		return null;
 	}
 
-	@Override
 	public boolean jaExiste(String matricula, String oldMatricula) {
 		try {
 			Query query;
-			if(oldMatricula != null){
-				query = getSession().createQuery("SELECT u FROM Usuario u WHERE u.matricula = :matricula AND u.matricula != :oldMatricula");
+			if (oldMatricula != null) {
+				query = getSession()
+						.createQuery(
+								"SELECT u FROM Usuario u WHERE u.matricula = :matricula AND u.matricula != :oldMatricula");
 				query.setParameter("oldMatricula", oldMatricula);
 			} else
-				query = getSession().createQuery("SELECT u FROM Usuario u WHERE u.matricula = :matricula");
-			
+				query = getSession()
+						.createQuery(
+								"SELECT u FROM Usuario u WHERE u.matricula = :matricula");
+
 			query.setParameter("matricula", matricula);
 
 			boolean resultado = query.list().size() > 0 ? true : false;
@@ -134,7 +132,6 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 		return false;
 	}
 
-	@Override
 	@SuppressWarnings("unchecked")
 	public List<Usuario> buscar(String expressão) {
 		Session session = null;
@@ -154,7 +151,6 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 		return usuarios;
 	}
 
-	@Override
 	public List<Permissao> getPermissoes(Usuario usuario) {
 		try {
 			getSession().update(usuario);
@@ -173,7 +169,6 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 		return null;
 	}
 
-	@Override
 	@SuppressWarnings("unchecked")
 	public List<Usuario> getProfessores() {
 		try {
@@ -192,8 +187,7 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 
 		return null;
 	}
-	
-	@Override
+
 	@SuppressWarnings("unchecked")
 	public List<Usuario> getProfessoresECoordenadores() {
 		try {
@@ -214,7 +208,6 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 		return null;
 	}
 
-	@Override
 	@SuppressWarnings("unchecked")
 	public List<Usuario> getOrientados(Usuario orientador) {
 		try {
@@ -238,39 +231,13 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 		return null;
 	}
 
-	@SuppressWarnings("unused")
-	@Override
-	public Usuario update(Usuario usuario, boolean curso, boolean tipo, boolean participacoes) {
-		/*
-		 * Dando update no usuário e solicitando os dados "extras", faz
-		 * com que eles sejam "carregados" do banco, retornando o
-		 * usuário com todas as informações desejadas.
-		 */
-		try {
-			getSession().update(usuario);
-			int aux = -1;
-			
-			if (tipo) aux = usuario.getTipoUsuario().getIdTipoUsuario();
-			if (curso) aux = usuario.getCurso().getIdCurso();
-			if (participacoes) aux = usuario.getParticipacoes().get(0).getIdParticipacao();
-			
-			getSession().close();
-			return usuario;
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	@Override
 	public List<Usuario> getAllByDepartamento(Departamento departamento) {
 		try {
 			Query query = getSession()
 					.createQuery(
 							"SELECT u FROM Usuario AS u left join fetch u.departamento LEFT JOIN FETCH u.curso JOIN FETCH u.tipoUsuario WHERE u.departamento = :departamento ORDER BY u.idUsuario");
 			query.setParameter("departamento", departamento);
-			
+
 			@SuppressWarnings("unchecked")
 			List<Usuario> resultados = query.list();
 
@@ -290,7 +257,7 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 		try {
 			Query query = getSession()
 					.createQuery(
-							"SELECT u FROM Usuario AS u WHERE u.matricula = :matricula");
+							"SELECT u FROM Usuario AS u LEFT JOIN FETCH u.curso JOIN FETCH u.tipoUsuario WHERE u.matricula = :matricula");
 			query.setParameter("matricula", matricula);
 
 			Usuario resultado = (Usuario) query.uniqueResult();
@@ -311,7 +278,7 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 		try {
 			Query query = getSession()
 					.createQuery(
-							"SELECT u FROM Usuario AS u WHERE u.curso = :curso");
+							"SELECT u FROM Usuario AS u LEFT JOIN FETCH u.curso JOIN FETCH u.tipoUsuario WHERE u.curso = :curso");
 			query.setParameter("curso", curso);
 
 			Usuario resultado = (Usuario) query.uniqueResult();
@@ -332,7 +299,7 @@ public class UsuarioDAO extends GenericoDAO implements IUsuarioDAO {
 		try {
 			Query query = getSession()
 					.createQuery(
-							"SELECT u FROM Usuario AS u WHERE u.nomeUsuario = :nomeUsuario");
+							"SELECT u FROM Usuario AS u LEFT JOIN FETCH u.curso JOIN FETCH u.tipoUsuario WHERE u.nomeUsuario = :nomeUsuario");
 			query.setParameter("nomeUsuario", nomeUsuario);
 
 			Usuario resultado = (Usuario) query.uniqueResult();

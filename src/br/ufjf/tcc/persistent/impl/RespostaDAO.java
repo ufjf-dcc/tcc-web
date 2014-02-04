@@ -7,12 +7,10 @@ import org.hibernate.Query;
 import br.ufjf.tcc.model.Questionario;
 import br.ufjf.tcc.model.Resposta;
 import br.ufjf.tcc.persistent.GenericoDAO;
-import br.ufjf.tcc.persistent.IRespostaDAO;
 
-public class RespostaDAO extends GenericoDAO implements IRespostaDAO {
+public class RespostaDAO extends GenericoDAO {
 
 	@SuppressWarnings("unchecked")
-	@Override
 	public List<Resposta> getAll() {
 		List<Resposta> results = null;
 
@@ -29,7 +27,6 @@ public class RespostaDAO extends GenericoDAO implements IRespostaDAO {
 		return results;
 	}
 
-	@Override
 	@SuppressWarnings("unchecked")
 	public List<Resposta> getAnswersFromQuestionary(Questionario questionary) {
 		List<Resposta> question = null;

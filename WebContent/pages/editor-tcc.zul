@@ -10,7 +10,7 @@
 			<div height="100%" width="35%"
 				style="float: left;background-color:#efefef;overflow:scroll;padding-right:2px;">
 				<groupbox id="alunoForm"
-					visible="@load(vm.userSecretaria)" mold="3d" width="100%">
+					visible="@load(vm.canEditUser)" mold="3d" width="100%">
 					<caption label="Autor(a)" />
 					<vlayout hflex="1" style="margin:15px">
 						<hlayout style="margin:5px;line-height:20px;">
@@ -33,7 +33,7 @@
 							<label value="Nome:" style="margin-top:5px" />
 							<textbox
 								value="@bind(vm.tcc.aluno.nomeUsuario)" hflex="1" width="100%"
-								maxlength="255" readonly="@load(vm.alunoExists)" />
+								maxlength="255" readonly="@load(vm.alunoEditBlock)" />
 						</hlayout>
 
 						<hlayout style="margin:5px;line-height:20px;">
@@ -41,14 +41,14 @@
 								style="margin-top:5px" />
 							<textbox value="@bind(vm.tcc.aluno.email)"
 								hflex="1" width="100%" maxlength="255"
-								readonly="@load(vm.alunoExists)" />
+								readonly="@load(vm.alunoEditBlock)" />
 						</hlayout>
 
 						<hlayout style="margin:5px;line-height:20px;">
 							<label value="Curso:"
 								style="margin-top:5px" />
 							<textbox hflex="1" maxlength="255"
-								value="@bind(vm.usuario.curso.nomeCurso)" width="100%"
+								value="@bind(vm.tcc.aluno.curso.nomeCurso)" width="100%"
 								readonly="true" />
 						</hlayout>
 					</vlayout>
@@ -148,7 +148,7 @@
 
 						<hlayout style="margin:5px;line-height:20px;"
 							visible="@load(vm.hasSubtitulo ? 'true' : 'false')">
-							<label value="Subtítulo: " />
+							<label value="Subtítulo: " style="margin-top:4px"/>
 							<textbox
 								value="@load(vm.tcc.subNomeTCC) @save(vm.tcc.subNomeTCC, before='submit')"
 								hflex="1" maxlength="255" />
