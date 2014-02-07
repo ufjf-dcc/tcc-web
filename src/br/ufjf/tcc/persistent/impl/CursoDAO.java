@@ -29,7 +29,7 @@ public class CursoDAO extends GenericoDAO {
 	public List<Curso> getAll() {
 		try {
 			Query query = getSession().createQuery(
-					"SELECT c FROM Curso as c ORDER BY c.codigoCurso");
+					"SELECT c FROM Curso as c ORDER BY c.nomeCurso");
 			List<Curso> cursos = query.list();
 			getSession().close();
 

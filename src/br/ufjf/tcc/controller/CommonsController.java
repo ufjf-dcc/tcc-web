@@ -90,7 +90,7 @@ public class CommonsController {
 			Executions.sendRedirect("/pages/home-aluno.zul");
 			break;
 		case Usuario.SECRETARIA:
-			Executions.sendRedirect("/pages/tccs-curso.zul");
+			Executions.sendRedirect("/pages/home-secretaria.zul");
 			break;
 		default:
 			Executions.sendRedirect("/index.zul");

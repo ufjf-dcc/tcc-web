@@ -15,10 +15,12 @@ import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.UploadEvent;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Iframe;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
 import br.ufjf.tcc.business.DepartamentoBusiness;
@@ -29,6 +31,7 @@ import br.ufjf.tcc.library.FileManager;
 import br.ufjf.tcc.model.Departamento;
 import br.ufjf.tcc.model.Participacao;
 import br.ufjf.tcc.model.TCC;
+import br.ufjf.tcc.model.TipoUsuario;
 import br.ufjf.tcc.model.Usuario;
 
 public class EditorTccController extends CommonsController {
@@ -41,7 +44,7 @@ public class EditorTccController extends CommonsController {
 	private AMedia pdf = null;
 	private List<Departamento> departamentos;
 	private List<Usuario> orientadores = new ArrayList<Usuario>();
-	private boolean alunoEditBlock = false, canChangeMatricula = false,
+	private boolean alunoEditBlock = true, canChangeMatricula = false,
 			canEditUser = false, alunoVerified = false, tccFileChanged = false,
 			extraFileChanged = false, hasSubtitulo = false;
 
@@ -72,13 +75,11 @@ public class EditorTccController extends CommonsController {
 		default:
 			if (tccId != null && tccId.trim().length() > 0) {
 				tcc = tccBusiness.getTCCById(Integer.parseInt(tccId.trim()));
-				alunoEditBlock = true;
 			} else if (canEditUser) {
 				tcc = new TCC();
 				tcc.setAluno(new Usuario());
 				if (getUsuario().getCurso() != null)
 					tcc.getAluno().setCurso(getUsuario().getCurso());
-				alunoEditBlock = false;
 				canChangeMatricula = true;
 			}
 
@@ -154,42 +155,57 @@ public class EditorTccController extends CommonsController {
 		this.tempUser = tempUser;
 	}
 
-	@NotifyChange({ "tcc", "alunoExists" })
+	@NotifyChange({ "tcc", "alunoEditBlock" })
 	@Command
-	public void verifyAluno(@BindingParam("label") Label lbl) {
-		lbl.setVisible(true);
-		if (tcc.getAluno().getMatricula() != null
-				&& tcc.getAluno().getMatricula().trim().length() > 0) {
-			Usuario aluno = new UsuarioBusiness().getByMatricula(tcc.getAluno()
-					.getMatricula().trim());
-			if (aluno != null) {
-				if (aluno.getTipoUsuario().getIdTipoUsuario() != Usuario.ALUNO
-						|| getUsuario().getTipoUsuario().getIdTipoUsuario() != Usuario.ADMINISTRADOR
-						&& aluno.getCurso().getIdCurso() != getUsuario()
-								.getCurso().getIdCurso()) {
-					lbl.setValue("Usuário existe mas não é um aluno ou pertence a outro curso.");
-					alunoEditBlock = false;
-					alunoVerified = false;
+	public void verifyAluno(@BindingParam("textBox") Textbox textb, @BindingParam("button") Button bt,
+			@BindingParam("label") Label lbl) {
+		if (bt.getLabel().equals("Verificar")) {
+			lbl.setVisible(true);
+			if (tcc.getAluno().getMatricula() != null
+					&& tcc.getAluno().getMatricula().trim().length() > 0) {
+				Usuario aluno = new UsuarioBusiness().getByMatricula(tcc
+						.getAluno().getMatricula().trim());
+				if (aluno != null) {
+					if (aluno.getTipoUsuario().getIdTipoUsuario() != Usuario.ALUNO
+							|| getUsuario().getTipoUsuario().getIdTipoUsuario() != Usuario.ADMINISTRADOR
+							&& aluno.getCurso().getIdCurso() != getUsuario()
+									.getCurso().getIdCurso()) {
+						lbl.setValue("Usuário existe mas não é um aluno ou pertence a outro curso.");
+						alunoEditBlock = true;
+						alunoVerified = false;
+					} else {
+						tcc.setAluno(aluno);
+						lbl.setValue("Usuário já cadastrado.");
+						alunoEditBlock = true;
+						alunoVerified = true;
+						textb.setReadonly(true);
+						bt.setLabel("Editar");
+					}
 				} else {
-					tcc.setAluno(aluno);
-					lbl.setValue("Usuário já cadastrado.");
-					alunoEditBlock = true;
-					alunoVerified = true;
+					if (getUsuario().getTipoUsuario().getIdTipoUsuario() != Usuario.ADMINISTRADOR) {
+						alunoEditBlock = false;
+						lbl.setValue("Usuário ainda não cadastrado.Faça o cadastro abaixo.");
+						alunoVerified = true;
+						textb.setReadonly(true);
+						bt.setLabel("Editar");
+					} else {
+						alunoEditBlock = true;
+						lbl.setValue("Usuário ainda não cadastrado.Cadastre ele no menu de Usuários.");
+						alunoVerified = false;
+					}
 				}
 			} else {
-				if (getUsuario().getTipoUsuario().getIdTipoUsuario() != Usuario.ADMINISTRADOR) {
-					alunoEditBlock = true;
-					lbl.setValue("Usuário ainda não cadastrado.Faça o cadastro abaixo.");
-					alunoVerified = true;
-				} else {
-					lbl.setValue("Usuário ainda não cadastrado.Cadastre ele no menu de Usuários.");
-					alunoVerified = false;
-				}
+				alunoEditBlock = true;
+				lbl.setValue("É necessário digitar a matrícula.");
+				alunoVerified = false;
 			}
 		} else {
-			alunoEditBlock = false;
-			lbl.setValue("É necessário digitar a matrícula.");
+			alunoEditBlock = true;
 			alunoVerified = false;
+			lbl.setVisible(false);
+			textb.setReadonly(false);
+			textb.setAttribute("readonly", false);
+			bt.setLabel("Verificar");
 		}
 	}
 
@@ -324,25 +340,43 @@ public class EditorTccController extends CommonsController {
 			return;
 		}
 		if (getUsuario().getTipoUsuario().getIdTipoUsuario() != Usuario.ALUNO
-				&& !alunoVerified) {
+				&& (canChangeMatricula && !alunoVerified)) {
 			Messagebox
 					.show("Antes de enviar é necesário validar a matricula do aluno no botão de verificar.",
 							"Erro", Messagebox.OK, Messagebox.ERROR);
 			return;
 		}
-		if (!alunoEditBlock) {
-			UsuarioBusiness usuarioBusiness = new UsuarioBusiness();
-			if (usuarioBusiness.validate(tcc.getAluno(), null, false))
-				if (!usuarioBusiness.salvar(tcc.getAluno())) {
-					Messagebox.show(
-							"Devido a um erro, o Autor não foi cadastrado.",
-							"Erro", Messagebox.OK, Messagebox.ERROR);
-					return;
-				}
-		}
 
 		tcc.setDataEnvioBanca(new Timestamp(new Date().getTime()));
 		if (tccBusiness.validate(tcc)) {
+
+			if (!alunoEditBlock) {
+				UsuarioBusiness usuarioBusiness = new UsuarioBusiness();
+				if (usuarioBusiness.validate(tcc.getAluno(), null, false)) {
+					tcc.getAluno().setSenha(
+							usuarioBusiness.encripta(usuarioBusiness
+									.generatePassword()));
+					TipoUsuario aluno = new TipoUsuario();
+					aluno.setIdTipoUsuario(Usuario.ALUNO);
+					tcc.getAluno().setTipoUsuario(aluno);
+					if (!usuarioBusiness.salvar(tcc.getAluno())) {
+						Messagebox
+								.show("Devido a um erro, o Autor não foi cadastrado.",
+										"Erro", Messagebox.OK, Messagebox.ERROR);
+						return;
+					}
+				} else {
+					String errorMessage = "Aluno:\n";
+					for (String error : usuarioBusiness.getErrors())
+						errorMessage += error;
+					Messagebox.show(errorMessage,
+							"Dados insuficientes / inválidos", Messagebox.OK,
+							Messagebox.ERROR);
+
+					return;
+				}
+			}
+
 			if (tccFileChanged && tccFile != null) {
 				iframe.setContent(pdf);
 				savePDF();

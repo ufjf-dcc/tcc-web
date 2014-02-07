@@ -235,7 +235,7 @@ public class UsuarioDAO extends GenericoDAO {
 		try {
 			Query query = getSession()
 					.createQuery(
-							"SELECT u FROM Usuario AS u left join fetch u.departamento LEFT JOIN FETCH u.curso JOIN FETCH u.tipoUsuario WHERE u.departamento = :departamento ORDER BY u.idUsuario");
+							"SELECT u FROM Usuario AS u left join fetch u.departamento LEFT JOIN FETCH u.curso JOIN FETCH u.tipoUsuario WHERE u.departamento = :departamento ORDER BY u.nomeUsuario");
 			query.setParameter("departamento", departamento);
 
 			@SuppressWarnings("unchecked")
