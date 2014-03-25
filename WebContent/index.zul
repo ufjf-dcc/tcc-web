@@ -3,7 +3,7 @@
 <zk>
 	<script type="text/javascript">
 		function visualzarTCC(id) {
-		window.open('pages/visualiza-tcc.zul?tcc='+id,'_blank'); }
+		window.open('pages/visualiza.zul?id='+id,'_blank'); }
 	</script>
 	<style src="/style.css" />
 	<div apply="org.zkoss.bind.BindComposer"

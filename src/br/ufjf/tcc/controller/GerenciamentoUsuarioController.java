@@ -39,7 +39,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 			usuariosCSV = new ArrayList<Usuario>();
 	private Map<Integer, Usuario> editTemp = new HashMap<Integer, Usuario>();
 	private List<TipoUsuario> tiposUsuario = (new TipoUsuarioBusiness())
-			.getTiposUsuarios();
+			.getAll();
 	private List<Curso> cursos = this.getAllCursos();
 	private List<Departamento> departamentos = this.getAllDepartamentos();
 	private String filterString = "";
@@ -54,8 +54,6 @@ public class GerenciamentoUsuarioController extends CommonsController {
 	 */
 	@Init
 	public void init() throws HibernateException, Exception {
-		if (!checaPermissao("guc__"))
-			super.paginaProibida();
 		if (getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ADMINISTRADOR)
 			allUsuarios = usuarioBusiness.getAll();
 		else if (getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.COORDENADOR)

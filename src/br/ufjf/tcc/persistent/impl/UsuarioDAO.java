@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Query;
-import org.hibernate.Session;
 
 import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.model.Departamento;
@@ -13,7 +12,6 @@ import br.ufjf.tcc.model.TCC;
 import br.ufjf.tcc.model.TipoUsuario;
 import br.ufjf.tcc.model.Usuario;
 import br.ufjf.tcc.persistent.GenericoDAO;
-import br.ufjf.tcc.persistent.HibernateUtil;
 
 public class UsuarioDAO extends GenericoDAO {
 
@@ -132,25 +130,6 @@ public class UsuarioDAO extends GenericoDAO {
 		return false;
 	}
 
-	@SuppressWarnings("unchecked")
-	public List<Usuario> buscar(String expressão) {
-		Session session = null;
-		try {
-			session = HibernateUtil.getInstance();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		session.beginTransaction();
-
-		Query query = session
-				.createQuery("from Usuario where nomeUsuario LIKE :pesquisa");
-		query.setParameter("pesquisa", "%" + expressão + "%");
-		List<Usuario> usuarios = query.list();
-		session.close();
-		return usuarios;
-	}
-
 	public List<Permissao> getPermissoes(Usuario usuario) {
 		try {
 			getSession().update(usuario);
@@ -162,7 +141,6 @@ public class UsuarioDAO extends GenericoDAO {
 
 			return ((TipoUsuario) query.uniqueResult()).getPermissoes();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

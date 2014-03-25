@@ -1,15 +1,16 @@
 # Arquivo de Configuração
-GENERAL.URL = http://monografias.nrc.ice.ufjf.br/tcc-web
+#GENERAL.URL = http://monografias.nrc.ice.ufjf.br/tcc-web
+GENERAL.URL = localhost:8080/tcc-web
 
 # Hibernate
 HIBERNATE.DRIVE = com.mysql.jdbc.Driver
 HIBERNATE.DIALECT = org.hibernate.dialect.MySQLDialect
-HIBERNATE.DB = jdbc:mysql://localhost/tcc
+HIBERNATE.DB = jdbc:mysql://localhost/tccweb
 HIBERNATE.USER = root
 HIBERNATE.PASS = root
 
 # File Manager
-FILE.PATH = /Applications/MAMP/htdocs/tcc/files/
+FILE.PATH = /Users/Matheus/Desenvolvimento/htdocs/tcc/files/
 #FILE.PATH = /TCCFiles/
 
 # Mail

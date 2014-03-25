@@ -1,4 +1,4 @@
-<?page title="Visualizar TCC" contentType="text/html;charset=UTF-8"?>
+<?page title="Visualizar Trabalho" contentType="text/html;charset=UTF-8"?>
 <?script content="zk.useStack='auto'" ?>
 <zk>
 	<style src="/style.css" />
@@ -11,7 +11,7 @@
 				style="padding: 10px;float: left;background-color:#efefef;">
 				<tabbox id="tb" height="100%">
 					<tabs id="tabs" height="100%">
-						<tab id="A" label="Informações do TCC" />
+						<tab id="A" label="Informações do Trablho" />
 						<tab id="B" label="Preencher ficha de respostas"
 							visible="@load(vm.canAnswer ? 'true' : 'false')" />
 					</tabs>
@@ -76,7 +76,7 @@
 										style="font-size: 14px; font-weight: bold;float: left;margin:5px;" />
 								</div>
 							</div>
-							<button label="Editar TCC" width="100%"
+							<button label="Editar Trabalho" width="100%"
 								height="30px" style="margin-top:10px"
 								visible="@load(vm.canEdit ? 'true' : 'false')"
 								onClick="@command('editTCC')" />

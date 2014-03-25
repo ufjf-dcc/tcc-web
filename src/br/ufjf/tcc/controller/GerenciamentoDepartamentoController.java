@@ -5,11 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.hibernate.HibernateException;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
-import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -29,16 +27,10 @@ public class GerenciamentoDepartamentoController extends CommonsController {
 	private String filterString = "";
 	private boolean submitUserListenerExists = false;
 
-	@Init
-	public void init() throws HibernateException, Exception {
-		if (!checaPermissao("gcc__"))
-			super.paginaProibida();
-	}
-
 	public List<Departamento> getFilterDepartamentos() {
 		return filterDepartamentos;
 	}
-	
+
 	public Departamento getNovoDepartamento() {
 		return this.novoDepartamento;
 	}
@@ -56,7 +48,8 @@ public class GerenciamentoDepartamentoController extends CommonsController {
 	}
 
 	@Command
-	public void changeEditableStatus(@BindingParam("departamento") Departamento departamento) {
+	public void changeEditableStatus(
+			@BindingParam("departamento") Departamento departamento) {
 		if (!departamento.getEditingStatus()) {
 			Departamento temp = new Departamento();
 			temp.copy(departamento);
@@ -72,11 +65,12 @@ public class GerenciamentoDepartamentoController extends CommonsController {
 
 	@Command
 	public void confirm(@BindingParam("departamento") Departamento departamento) {
-		if (departamentoBusiness.validate(departamento, editTemp.get(departamento.getIdDepartamento())
-				.getCodigoDepartamento())) {
+		if (departamentoBusiness.validate(departamento,
+				editTemp.get(departamento.getIdDepartamento())
+						.getCodigoDepartamento())) {
 			if (!departamentoBusiness.editar(departamento))
-				Messagebox.show("Não foi possível editar o departamento.", "Erro",
-						Messagebox.OK, Messagebox.ERROR);
+				Messagebox.show("Não foi possível editar o departamento.",
+						"Erro", Messagebox.OK, Messagebox.ERROR);
 			editTemp.remove(departamento.getIdDepartamento());
 			departamento.setEditingStatus(false);
 			refreshRowTemplate(departamento);
@@ -91,10 +85,10 @@ public class GerenciamentoDepartamentoController extends CommonsController {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Command
-	public void delete(@BindingParam("departamento") final Departamento departamento) {
-		Messagebox.show(
-				"Você tem certeza que deseja deletar o departamento: "
-						+ departamento.getNomeDepartamento() + "?", "Confirmação",
+	public void delete(
+			@BindingParam("departamento") final Departamento departamento) {
+		Messagebox.show("Você tem certeza que deseja deletar o departamento: "
+				+ departamento.getNomeDepartamento() + "?", "Confirmação",
 				Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION,
 				new org.zkoss.zk.ui.event.EventListener() {
 					public void onEvent(Event e) {
@@ -102,13 +96,14 @@ public class GerenciamentoDepartamentoController extends CommonsController {
 
 							if (departamentoBusiness.exclui(departamento)) {
 								removeFromList(departamento);
-								Messagebox.show(
-										"O departamento foi excluído com sucesso.",
-										"Sucesso", Messagebox.OK,
-										Messagebox.INFORMATION);
+								Messagebox
+										.show("O departamento foi excluído com sucesso.",
+												"Sucesso", Messagebox.OK,
+												Messagebox.INFORMATION);
 							} else {
 								String errorMessage = "O departamento não pôde ser excluído.\n";
-								for (String error : departamentoBusiness.getErrors())
+								for (String error : departamentoBusiness
+										.getErrors())
 									errorMessage += error;
 								Messagebox.show(errorMessage, "Erro",
 										Messagebox.OK, Messagebox.ERROR);
@@ -157,16 +152,18 @@ public class GerenciamentoDepartamentoController extends CommonsController {
 					new EventListener<Event>() {
 						@Override
 						public void onEvent(Event event) throws Exception {
-							if (departamentoBusiness.validate(novoDepartamento, null)) {
-								if (departamentoBusiness.salvar(novoDepartamento)) {
+							if (departamentoBusiness.validate(novoDepartamento,
+									null)) {
+								if (departamentoBusiness
+										.salvar(novoDepartamento)) {
 									allDepartamentos.add(novoDepartamento);
 									filterDepartamentos = allDepartamentos;
 									notifyDepartamentos();
 									Clients.clearBusy(window);
-									Messagebox.show(
-											"Departamento adicionado com sucesso!",
-											"Sucesso", Messagebox.OK,
-											Messagebox.INFORMATION);
+									Messagebox
+											.show("Departamento adicionado com sucesso!",
+													"Sucesso", Messagebox.OK,
+													Messagebox.INFORMATION);
 									limpa();
 								} else {
 									Clients.clearBusy(window);
@@ -177,7 +174,8 @@ public class GerenciamentoDepartamentoController extends CommonsController {
 								}
 							} else {
 								String errorMessage = "";
-								for (String error : departamentoBusiness.getErrors())
+								for (String error : departamentoBusiness
+										.getErrors())
 									errorMessage += error;
 								Clients.clearBusy(window);
 								Messagebox.show(errorMessage,

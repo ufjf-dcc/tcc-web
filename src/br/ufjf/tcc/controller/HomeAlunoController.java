@@ -14,7 +14,6 @@ import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Label;
@@ -97,7 +96,7 @@ public class HomeAlunoController extends CommonsController {
 		switch (tipo) {
 		case Prazo.ENTREGA_TCC_BANCA:
 			if (getUsuario().getTcc().size() != 0) {
-				Executions.sendRedirect("/pages/editor-tcc.zul");
+				Executions.sendRedirect("/pages/editor.zul");
 			} else {
 				if (departamentos == null) {
 					departamentos = new DepartamentoBusiness().getAll();
@@ -126,18 +125,12 @@ public class HomeAlunoController extends CommonsController {
 			TCCBusiness tccBusiness = new TCCBusiness();
 			newTcc.setAluno(getUsuario());
 			newTcc.setCalendarioSemestre(getCurrentCalendar());
-			if (tccBusiness.save(newTcc)) {
-				Sessions.getCurrent().setAttribute("tcc", newTcc);
-				Executions.sendRedirect("/pages/editor-tcc.zul");
-			} else {
+			if (tccBusiness.save(newTcc))
+				Executions.sendRedirect("/pages/editor.zul");
+			else {
 				Messagebox.show("Devido a um erro, o TCC não foi criado.",
 						"Erro", Messagebox.OK, Messagebox.ERROR);
 			}
-			List<TCC> tccs = new ArrayList<TCC>();
-			tccs.add(newTcc);
-			getUsuario().setTcc(tccs);
-			Sessions.getCurrent().setAttribute("tcc", newTcc);
-			Executions.sendRedirect("/pages/editor-tcc.zul");
 		} else {
 			Messagebox.show("Selecione um Orientador", "Erro", Messagebox.OK,
 					Messagebox.ERROR);

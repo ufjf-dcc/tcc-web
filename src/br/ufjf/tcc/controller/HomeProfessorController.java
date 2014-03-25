@@ -21,7 +21,6 @@ import br.ufjf.tcc.business.QuestionarioBusiness;
 import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.model.Questionario;
 import br.ufjf.tcc.model.TCC;
-import br.ufjf.tcc.model.Usuario;
 
 public class HomeProfessorController extends CommonsController {
 	private List<TCC> allTccs = new ArrayList<TCC>(); // inclui TCCs finalizados
@@ -38,36 +37,30 @@ public class HomeProfessorController extends CommonsController {
 	 */
 	@Init
 	public void init() {
-		if (getUsuario().getTipoUsuario().getIdTipoUsuario() < Usuario.PROFESSOR
-				&& !checaPermissao("hc__"))
-			super.paginaProibida();
+		allTccs.addAll(new TCCBusiness()
+				.getTCCsByUserParticipacao(getUsuario()));
+		allTccs.addAll(new TCCBusiness().getTCCsByOrientador(getUsuario()));
 
-		else {
-			allTccs.addAll(new TCCBusiness()
-					.getTCCsByUserParticipacao(getUsuario()));
-			allTccs.addAll(new TCCBusiness().getTCCsByOrientador(getUsuario()));
+		Collections.sort(allTccs, new Comparator<TCC>() {
+			@Override
+			public int compare(TCC arg0, TCC arg1) {
+				if (arg0.getDataApresentacao() == null)
+					return -1;
+				else if (arg1.getDataApresentacao() == null)
+					return 1;
+				else
+					return (arg0.getDataApresentacao().before(
+							arg1.getDataApresentacao()) ? -1 : (arg0
+							.getDataApresentacao().equals(
+									arg1.getDataApresentacao()) ? 0 : 1));
+			}
+		});
 
-			Collections.sort(allTccs, new Comparator<TCC>() {
-				@Override
-				public int compare(TCC arg0, TCC arg1) {
-					if (arg0.getDataApresentacao() == null)
-						return -1;
-					else if (arg1.getDataApresentacao() == null)
-						return 1;
-					else
-						return (arg0.getDataApresentacao().before(
-								arg1.getDataApresentacao()) ? -1 : (arg0
-								.getDataApresentacao().equals(
-										arg1.getDataApresentacao()) ? 0 : 1));
-				}
-			});
+		for (TCC tcc : allTccs)
+			if (tcc.getDataEnvioFinal() == null)
+				tccs.add(tcc);
 
-			for (TCC tcc : allTccs)
-				if (tcc.getDataEnvioFinal() == null)
-					tccs.add(tcc);
-
-			filterTccs = tccs;
-		}
+		filterTccs = tccs;
 
 		currentCalendarExists = getCurrentCalendar() != null;
 		if (getCurrentCalendar() != null) {
@@ -196,7 +189,7 @@ public class HomeProfessorController extends CommonsController {
 
 	@Command
 	public void showTCC(@BindingParam("tcc") TCC tcc) {
-		Executions.sendRedirect("/pages/visualiza-tcc.zul?tcc="
+		Executions.sendRedirect("/pages/visualiza.zul?id="
 				+ tcc.getIdTCC());
 	}
 

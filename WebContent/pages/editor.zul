@@ -1,4 +1,4 @@
-<?page title="Editor de TCC" contentType="text/html;charset=UTF-8"?>
+<?page title="Editor de Trabalho" contentType="text/html;charset=UTF-8"?>
 <?init class="br.ufjf.tcc.controller.AuthController"?>
 <zk>
 	<style src="/style.css" />
@@ -156,10 +156,10 @@
 
 						<hlayout style="margin:5px;line-height:20px;"
 							visible="@load(vm.userSecretaria)">
-							<label value="Data do TCC: "
+							<label value="Data do Trabalho: "
 								style="margin-top:5px" />
 							<datebox width="100%"
-								value="@bind(vm.tcc.dataEnvioFinal)" format="dd/MM/yyyy"
+								value="@bind(vm.tcc.dataEnvioFinal)" format="dd/MM/yyyy KK:mm:ss"
 								hflex="1" />
 						</hlayout>
 
@@ -168,7 +168,7 @@
 							<label value="Data de Apresentação: "
 								style="margin-top:5px" />
 							<datebox width="100%"
-								value="@bind(vm.tcc.dataApresentacao)" format="dd/MM/yyyy"
+								value="@bind(vm.tcc.dataApresentacao)" format="dd/MM/yyyy KK:mm:ss"
 								hflex="1" />
 						</hlayout>
 

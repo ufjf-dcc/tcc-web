@@ -11,6 +11,7 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
+import br.ufjf.tcc.business.PermissaoBusiness;
 import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.business.UsuarioBusiness;
 import br.ufjf.tcc.library.SendMail;
@@ -57,6 +58,9 @@ public class MenuController extends CommonsController {
 				&& usuarioForm.getSenha().trim().length() > 0) {
 			if (usuarioBusiness.login(usuarioForm.getMatricula(),
 					usuarioForm.getSenha())) {
+				
+				getUsuario().getTipoUsuario().setPermissoes(new PermissaoBusiness().getPermissaoByTipoUsuario(getUsuario().getTipoUsuario()));
+				
 				if (getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ALUNO) {
 					TCCBusiness tccBusiness = new TCCBusiness();
 					TCC tempTcc = tccBusiness.getCurrentTCCByAuthor(

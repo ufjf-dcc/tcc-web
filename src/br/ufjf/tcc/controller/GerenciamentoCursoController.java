@@ -5,11 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.hibernate.HibernateException;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
-import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -38,12 +36,6 @@ public class GerenciamentoCursoController extends CommonsController {
 	private Usuario coordenador = null;
 	private List<Departamento> departamentos = new DepartamentoBusiness()
 			.getAll();
-
-	@Init
-	public void init() throws HibernateException, Exception {
-		if (!checaPermissao("gcc__"))
-			super.paginaProibida();
-	}
 
 	public List<Curso> getFilterCursos() {
 		return filterCursos;

@@ -190,10 +190,6 @@ public class UsuarioBusiness {
 		return usuarioDAO.getOrientados(usuario);
 	}
 
-	public List<Usuario> buscar(String expressão) {
-		return usuarioDAO.buscar(expressão);
-	}
-
 	public boolean editar(Usuario usuario) {
 		return usuarioDAO.editar(usuario);
 	}

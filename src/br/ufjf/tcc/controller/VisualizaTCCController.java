@@ -45,13 +45,13 @@ public class VisualizaTCCController extends CommonsController {
 
 	@Init
 	public void init() {
-		String tccId = Executions.getCurrent().getParameter("tcc");
+		String tccId = Executions.getCurrent().getParameter("id");
 		if (tccId != null) {
 			TCCBusiness tccBusiness = new TCCBusiness();
 			tcc = tccBusiness.getTCCById(Integer.parseInt(tccId));
 		}
 		if (tcc != null && canViewTCC()) {
-			if (getUsuario() != null && recheckLogin()) {
+			if (getUsuario() != null && checkLogin()) {
 				if (canAnswer) {
 					List<Pergunta> questions = new PerguntaBusiness()
 							.getQuestionsByQuestionary(new QuestionarioBusiness()
@@ -260,6 +260,6 @@ public class VisualizaTCCController extends CommonsController {
 
 	@Command
 	public void editTCC() {
-		Executions.sendRedirect("/pages/editor-tcc.zul?tcc=" + tcc.getIdTCC());
+		Executions.sendRedirect("/pages/editor.zul?id=" + tcc.getIdTCC());
 	}
 }

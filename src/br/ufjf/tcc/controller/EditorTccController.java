@@ -50,7 +50,7 @@ public class EditorTccController extends CommonsController {
 
 	@Init
 	public void init() {
-		String tccId = Executions.getCurrent().getParameter("tcc");
+		String tccId = Executions.getCurrent().getParameter("id");
 
 		switch (getUsuario().getTipoUsuario().getIdTipoUsuario()) {
 		case Usuario.ALUNO:

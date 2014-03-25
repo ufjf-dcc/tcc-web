@@ -10,6 +10,7 @@ import br.ufjf.tcc.business.UsuarioBusiness;
 import br.ufjf.tcc.library.SessionManager;
 import br.ufjf.tcc.model.CalendarioSemestre;
 import br.ufjf.tcc.model.Curso;
+import br.ufjf.tcc.model.Permissao;
 import br.ufjf.tcc.model.Usuario;
 
 public class CommonsController {
@@ -33,16 +34,14 @@ public class CommonsController {
 		return getCurrentCalendar(getUsuario().getCurso());
 	}
 
-	public boolean checaPermissao(String nomePermissao) {
+	public boolean checkPermission(String permission) {
+		for (Permissao permissao : getUsuario().getTipoUsuario()
+				.getPermissoes()) {
+			if (permissao.getNomePermissao().equals(permission))
+				return true;
+		}
 
-		/*
-		 * for (int i = 0; i < usuario.getTipoUsuario().getPermissoes().size();
-		 * i++) { if
-		 * (usuario.getTipoUsuario().getPermissoes().get(i).getNomePermissao
-		 * ().contains(nomePermissao)){ return true; } }
-		 */
-
-		return true;
+		return false;
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -98,7 +97,7 @@ public class CommonsController {
 
 	}
 
-	public boolean recheckLogin() {
+	public boolean checkLogin() {
 		UsuarioBusiness usuarioBusiness = new UsuarioBusiness();
 		if (!usuarioBusiness.checaLogin(getUsuario())) {
 			Executions.sendRedirect("/index.zul");

@@ -3,7 +3,7 @@
 <zk>
 	<style src="/style.css" />
 	<div apply="org.zkoss.bind.BindComposer"
-		viewModel="@id('vm') @init('br.ufjf.tcc.controller.GerenciamentoPermissoesController')" width="100%" >
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.GerenciamentoPermissoesController')" width="100%" height="100%" >
 		<include src="@load(vm.menu)" />
 		<hlayout spacing="0">
 			<listbox vflex="true" hflex="1" model="@load(vm.types)" style="margin:10px"
@@ -21,15 +21,13 @@
 				model="@load(vm.permissions)" style="margin:10px"
 				autopaging="true">
 				<listhead>
-					<listheader label="Código" align="center" hflex="1" />
-					<listheader label="Descrição" align="center" hflex="5" />
+					<listheader label="Código" align="center" hflex="5" />
 					<listheader label="Ativada" align="center" hflex="1" />
 				</listhead>
 				<template name="model" var="permission">
 					<listitem>
 						<listcell
 							label="@load(permission.nomePermissao)" />
-						<listcell label="Descrição da permissão" />
 						<listcell>
 							<checkbox onCreate="@command('verify', permissionName=permission.nomePermissao, checkbox=self)"
 							onCheck="@command('edit', permission=permission, checkbox=self)" />
