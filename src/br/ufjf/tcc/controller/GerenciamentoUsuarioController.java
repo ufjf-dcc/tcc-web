@@ -19,6 +19,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
@@ -26,7 +27,6 @@ import br.ufjf.tcc.business.CursoBusiness;
 import br.ufjf.tcc.business.DepartamentoBusiness;
 import br.ufjf.tcc.business.TipoUsuarioBusiness;
 import br.ufjf.tcc.business.UsuarioBusiness;
-import br.ufjf.tcc.library.SendMail;
 import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.model.Departamento;
 import br.ufjf.tcc.model.TipoUsuario;
@@ -40,8 +40,9 @@ public class GerenciamentoUsuarioController extends CommonsController {
 	private Map<Integer, Usuario> editTemp = new HashMap<Integer, Usuario>();
 	private List<TipoUsuario> tiposUsuario = (new TipoUsuarioBusiness())
 			.getAll();
-	private List<Curso> cursos = this.getAllCursos();
-	private List<Departamento> departamentos = this.getAllDepartamentos();
+	private List<Curso> cursos = (new CursoBusiness()).getAll();
+	private List<Departamento> departamentos = (new DepartamentoBusiness())
+			.getAll();
 	private String filterString = "";
 	private Usuario newUsuario;
 	private boolean submitUserListenerExists = false,
@@ -73,8 +74,11 @@ public class GerenciamentoUsuarioController extends CommonsController {
 		cursoss.addAll((new CursoBusiness()).getAll());
 		return cursoss;
 	}
-	
-	/* Método para fornecer a lista de departamentos às Combobox de departamento. */
+
+	/*
+	 * Método para fornecer a lista de departamentos às Combobox de
+	 * departamento.
+	 */
 	private List<Departamento> getAllDepartamentos() {
 		List<Departamento> departamentoss = new ArrayList<Departamento>();
 		Departamento empty = new Departamento();
@@ -148,12 +152,43 @@ public class GerenciamentoUsuarioController extends CommonsController {
 	 * Professor, desabilita a opção de selecionar o curso. Se for aluno,
 	 * desabilita a opção de informar a titulação.
 	 */
+
 	@Command
-	public void onChangeType() {
-		if (newUsuario.getTipoUsuario().getIdTipoUsuario() == 1)
+	public void typeChange(@BindingParam("comboc") Combobox cmbCurso,
+			@BindingParam("combod") Combobox cmbDep) {
+
+		switch (newUsuario.getTipoUsuario().getIdTipoUsuario()) {
+		case Usuario.ALUNO:
+			cmbCurso.setDisabled(false);
 			newUsuario.setDepartamento(null);
-		else if (newUsuario.getTipoUsuario().getIdTipoUsuario() == 2)
+			cmbDep.setDisabled(true);
+			break;
+		case Usuario.PROFESSOR:
 			newUsuario.setCurso(null);
+			cmbCurso.setDisabled(true);
+			cmbDep.setDisabled(false);
+			break;
+		case Usuario.COORDENADOR:
+			cmbCurso.setDisabled(false);
+			cmbDep.setDisabled(false);
+			break;
+		case Usuario.ADMINISTRADOR:
+			newUsuario.setCurso(null);
+			cmbCurso.setDisabled(true);
+			newUsuario.setDepartamento(null);
+			cmbDep.setDisabled(true);
+			break;
+		case Usuario.SECRETARIA:
+			cmbCurso.setDisabled(false);
+			newUsuario.setDepartamento(null);
+			cmbDep.setDisabled(true);
+			break;
+		default:
+			cmbCurso.setDisabled(false);
+
+			cmbDep.setDisabled(false);
+
+		}
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -221,10 +256,11 @@ public class GerenciamentoUsuarioController extends CommonsController {
 		String filter = filterString.toLowerCase().trim();
 		filterUsuarios = new ArrayList<Usuario>();
 		for (Usuario u : allUsuarios) {
-			if ((filterType == 0 || u.getTipoUsuario().getIdTipoUsuario() == filterType) && (u.getNomeUsuario().toLowerCase().contains(filter)
-					|| u.getEmail().toLowerCase().contains(filter)
-					|| u.getMatricula().toLowerCase().contains(filter)
-					|| (u.getCurso() != null && u.getCurso().getNomeCurso()
+			if ((filterType == 0 || u.getTipoUsuario().getIdTipoUsuario() == filterType)
+					&& (u.getNomeUsuario().toLowerCase().contains(filter)
+							|| u.getEmail().toLowerCase().contains(filter)
+							|| u.getMatricula().toLowerCase().contains(filter) || (u
+							.getCurso() != null && u.getCurso().getNomeCurso()
 							.toLowerCase().contains(filter)))) {
 				filterUsuarios.add(u);
 			}
@@ -259,30 +295,33 @@ public class GerenciamentoUsuarioController extends CommonsController {
 					new EventListener<Event>() {
 						@Override
 						public void onEvent(Event event) throws Exception {
-							if (usuarioBusiness.validate(newUsuario, null, true)) {
+							if (usuarioBusiness
+									.validate(newUsuario, null, true)) {
 								String newPassword = usuarioBusiness
 										.generatePassword();
 								newUsuario.setSenha(usuarioBusiness
 										.encripta(newPassword));
+								newUsuario.setAtivo(true);
 								if (usuarioBusiness.salvar(newUsuario)) {
-									if (!new SendMail().onSubmitUser(
-											newUsuario, newPassword)) {
-										Messagebox
-												.show("O sistema não conseguiu enviar o e-mail de confirmação. Tente novamente.",
-														"Erro", Messagebox.OK,
-														Messagebox.ERROR);
-										usuarioBusiness.exclui(newUsuario);
-										return;
-									}
+									/*
+									 * if (!new SendMail().onSubmitUser(
+									 * newUsuario, newPassword)) { Messagebox
+									 * .show(
+									 * "O sistema não conseguiu enviar o e-mail de confirmação. Tente novamente."
+									 * , "Erro", Messagebox.OK,
+									 * Messagebox.ERROR);
+									 * usuarioBusiness.exclui(newUsuario);
+									 * return; }
+									 */
 
 									allUsuarios.add(newUsuario);
 									filterUsuarios = allUsuarios;
 									notifyFilterUsuarios();
 									Clients.clearBusy(window);
-									Messagebox
-											.show("Usuário adicionado com sucesso! Um e-mail de confirmação foi enviado.",
-													"Sucesso", Messagebox.OK,
-													Messagebox.INFORMATION);
+									Messagebox.show(
+											"Usuário adicionado com sucesso!",
+											"Sucesso", Messagebox.OK,
+											Messagebox.INFORMATION);
 									limpa();
 								} else {
 									Clients.clearBusy(window);
@@ -428,7 +467,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 									notifyFilterUsuarios();
 									Clients.clearBusy(window);
 									window.setVisible(false);
-									//new SendMail().onSubmitCSV(usuariosCSV);
+									// new SendMail().onSubmitCSV(usuariosCSV);
 									Messagebox.show(
 											usuariosCSV.size()
 													+ " usuários foram cadastrados com sucesso",

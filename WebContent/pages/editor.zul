@@ -56,7 +56,7 @@
 
 				<groupbox id="orientadorForm" mold="3d" width="100%"
 					open="@load(not vm.userSecretaria)">
-					<caption label="Orientador(a)" />
+					<caption label="Orientação" />
 					<vlayout hflex="1" style="margin:15px">
 
 						<hlayout style="margin:5px;line-height:20px;">
@@ -127,7 +127,7 @@
 
 				<groupbox id="tccForm" mold="3d" width="100%"
 					closable="@load(vm.userSecretaria)">
-					<caption label="Trabalho de Conclusão de Curso" />
+					<caption label="Trabalho" />
 					<vlayout hflex="1" style="margin:15px">
 						<hlayout
 							style="margin-right:5px;margin-top:5px;margin-left:5px;line-height:20px;">

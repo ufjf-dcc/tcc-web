@@ -6,18 +6,14 @@
 			<menuitem label="Página Inicial"
 				onClick="@command('redirectHome')" />
 			<menuitem label="Lista Pública" href="/" />
-			<menu label="Gerenciar...">
-				<menupopup>
-					<menuitem label="Usuários"
-						href="/pages/gerenciamento-usuario.zul" />
-					<menuitem label="Cursos"
-						href="/pages/gerenciamento-curso.zul" />
-					<menuitem label="Departamentos"
-						href="/pages/gerenciamento-departamentos.zul" />
-					<menuitem label="Permissões"
-						href="/pages/gerenciamento-permissoes.zul" />
-				</menupopup>
-			</menu>
+			<menuitem label="Usuários"
+				href="/pages/gerenciamento-usuario.zul" />
+			<menuitem label="Cursos"
+				href="/pages/gerenciamento-curso.zul" />
+			<menuitem label="Departamentos"
+				href="/pages/gerenciamento-departamentos.zul" />
+			<menuitem label="Permissões"
+				href="/pages/gerenciamento-permissoes.zul" />
 			<menuitem label="Sair" onClick="@command('sair')"
 				style="float:right" />
 			<menuitem label="Configurações" style="float:right"

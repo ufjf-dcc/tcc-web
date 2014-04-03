@@ -3,8 +3,6 @@ package br.ufjf.tcc.controller;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -60,14 +58,6 @@ public class HomeAlunoController extends CommonsController {
 		CalendarioSemestre currentCalendar = getCurrentCalendar();
 		if (currentCalendar != null) {
 			prazos = getCurrentCalendar().getPrazos();
-			Collections.sort(prazos, new Comparator<Prazo>() {
-
-				@Override
-				public int compare(Prazo arg0, Prazo arg1) {
-					return (arg0.getTipo() < arg1.getTipo() ? -1 : (arg0
-							.getTipo() == arg1.getTipo() ? 0 : 1));
-				}
-			});
 
 			DateTime currentDay = new DateTime(new Date());
 
