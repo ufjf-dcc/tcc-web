@@ -21,6 +21,7 @@ import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
 import br.ufjf.tcc.business.CursoBusiness;
@@ -40,9 +41,8 @@ public class GerenciamentoUsuarioController extends CommonsController {
 	private Map<Integer, Usuario> editTemp = new HashMap<Integer, Usuario>();
 	private List<TipoUsuario> tiposUsuario = (new TipoUsuarioBusiness())
 			.getAll();
-	private List<Curso> cursos = (new CursoBusiness()).getAll();
-	private List<Departamento> departamentos = (new DepartamentoBusiness())
-			.getAll();
+	private List<Curso> cursos = this.getAllCursos();
+	private List<Departamento> departamentos = this.getAllDepartamentos();
 	private String filterString = "";
 	private Usuario newUsuario;
 	private boolean submitUserListenerExists = false,
@@ -154,41 +154,46 @@ public class GerenciamentoUsuarioController extends CommonsController {
 	 */
 
 	@Command
-	public void typeChange(@BindingParam("comboc") Combobox cmbCurso,
+	public void typeChange(@BindingParam("titu") Textbox titulacao,
+			@BindingParam("comboc") Combobox cmbCurso,
 			@BindingParam("combod") Combobox cmbDep) {
 
 		switch (newUsuario.getTipoUsuario().getIdTipoUsuario()) {
 		case Usuario.ALUNO:
+			newUsuario.setTitulacao(null);
+			titulacao.setReadonly(true);
 			cmbCurso.setDisabled(false);
 			newUsuario.setDepartamento(null);
 			cmbDep.setDisabled(true);
 			break;
 		case Usuario.PROFESSOR:
+			titulacao.setReadonly(false);
 			newUsuario.setCurso(null);
 			cmbCurso.setDisabled(true);
 			cmbDep.setDisabled(false);
 			break;
 		case Usuario.COORDENADOR:
+			titulacao.setReadonly(false);
 			cmbCurso.setDisabled(false);
 			cmbDep.setDisabled(false);
 			break;
 		case Usuario.ADMINISTRADOR:
+			newUsuario.setTitulacao(null);
+			titulacao.setReadonly(true);
 			newUsuario.setCurso(null);
 			cmbCurso.setDisabled(true);
 			newUsuario.setDepartamento(null);
 			cmbDep.setDisabled(true);
 			break;
 		case Usuario.SECRETARIA:
+			newUsuario.setTitulacao(null);
+			titulacao.setReadonly(true);
 			cmbCurso.setDisabled(false);
 			newUsuario.setDepartamento(null);
 			cmbDep.setDisabled(true);
 			break;
-		default:
-			cmbCurso.setDisabled(false);
-
-			cmbDep.setDisabled(false);
-
 		}
+		BindUtils.postNotifyChange(null, null, this, "newUsuario");
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

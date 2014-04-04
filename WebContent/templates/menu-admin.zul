@@ -6,13 +6,13 @@
 			<menuitem label="Página Inicial"
 				onClick="@command('redirectHome')" />
 			<menuitem label="Lista Pública" href="/" />
-			<menuitem label="Usuários"
+			<menuitem label="Gerenciar Usuários"
 				href="/pages/gerenciamento-usuario.zul" />
-			<menuitem label="Cursos"
+			<menuitem label="Gerenciar Cursos"
 				href="/pages/gerenciamento-curso.zul" />
-			<menuitem label="Departamentos"
+			<menuitem label="Gerenciar Departamentos"
 				href="/pages/gerenciamento-departamentos.zul" />
-			<menuitem label="Permissões"
+			<menuitem label="Gerenciar Permissões"
 				href="/pages/gerenciamento-permissoes.zul" />
 			<menuitem label="Sair" onClick="@command('sair')"
 				style="float:right" />

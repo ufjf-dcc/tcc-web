@@ -168,7 +168,7 @@
 						<combobox id="cmbTipoUsuario" width="100%"
 							readonly="true" model="@load(vm.tiposUsuario)"
 							selectedItem="@bind(vm.newUsuario.tipoUsuario)"
-							onChange="@command('typeChange', comboc=comboCurso, combod=comboDepartamento)">
+							onChange="@command('typeChange', titu=txtTitu, comboc=comboCurso, combod=comboDepartamento)">
 							<template name="model">
 								<comboitem
 									label="@load(each.nomeTipoUsuario)" />
@@ -200,7 +200,7 @@
 
 					<row>
 						<label value="Titulação:" />
-						<textbox id="txtTitulacao"
+						<textbox id="txtTitu"
 							value="@bind(vm.newUsuario.titulacao)"
 							tabindex="1" width="100%" disabled="@load(vm.newUsuario.tipoUsuario eq null)"/>
 					</row>
