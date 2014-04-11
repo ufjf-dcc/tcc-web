@@ -186,8 +186,8 @@
 							visible="@load(not vm.userSecretaria)">
 							<label value="Data de Apresentação: "
 								style="margin-top:5px" />
-							<datebox width="100%"
-								value="@bind(vm.tcc.dataApresentacao)" format="dd/MM/yyyy KK:mm:ss"
+							<datebox
+								value="@bind(vm.tcc.dataApresentacao)" format="dd/MM/yyyy hh:mm a"
 								hflex="1" />
 						</hlayout>
 
@@ -195,8 +195,8 @@
 							visible="@load(not vm.userSecretaria)">
 							<label value="Sala de Defesa: "
 								style="margin-top:5px" />
-							<textbox width="100%"
-								value="@bind(vm.tcc.salaDefesa)" hflex="1" maxlength="50" />
+							<textbox width="80px"
+								value="@bind(vm.tcc.salaDefesa)" maxlength="50" />
 						</hlayout>
 
 						<label value="Resumo: " style="margin:5px;" />

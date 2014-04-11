@@ -66,11 +66,11 @@ public class CadastroPrazosController extends CommonsController {
 				aux.setCalendarioSemestre(this.calendar);
 				aux.setTipo(i);
 				switch (i) {
-				case Prazo.ENTREGA_FORM_BANCA:
-					aux.setDataFinal(finalDate.minusDays(22).toDate());
-					break;
 				case Prazo.ENTREGA_TCC_BANCA:
-					aux.setDataFinal(finalDate.minusDays(22).toDate());
+					aux.setDataFinal(finalDate.minusDays(15).toDate());
+					break;
+				case Prazo.ENTREGA_FORM_BANCA:
+					aux.setDataFinal(finalDate.minusDays(14).toDate());
 					break;
 				case Prazo.DEFESA:
 					aux.setDataFinal(finalDate.minusDays(7).toDate());
