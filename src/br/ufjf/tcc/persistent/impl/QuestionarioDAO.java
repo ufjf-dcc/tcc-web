@@ -17,7 +17,7 @@ public class QuestionarioDAO extends GenericoDAO {
 			Date currentDay = new Date();
 			Query query = getSession()
 					.createQuery(
-							"SELECT q FROM Questionario q JOIN FETCH q.curso JOIN FETCH q.calendarioSemestre AS c WHERE q.curso = :curso  AND c.inicioSemestre <= :currentDay AND c.finalSemestre >= :currentDay");
+							"SELECT q FROM Questionario q JOIN FETCH q.curso JOIN FETCH q.calendarioSemestre AS c WHERE q.curso = :curso  AND c.finalSemestre >= :currentDay");
 			query.setParameter("currentDay", currentDay);
 			query.setParameter("curso", curso);
 

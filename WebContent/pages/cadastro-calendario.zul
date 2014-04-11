@@ -29,11 +29,6 @@
 					</combobox>
 				</row>
 				<row>
-					<label value="Data inicial:" />
-					<datebox value="@bind(vm.newCalendar.inicioSemestre)"
-						format="dd/MM/yyyy" constraint="no empty" width="100%" />
-				</row>
-				<row>
 					<label value="Data final:" />
 					<datebox value="@bind(vm.newCalendar.finalSemestre)"
 						format="dd/MM/yyyy" constraint="no empty" width="100%" />

@@ -145,6 +145,16 @@ public class Usuario implements Serializable {
 	private List<TCC> orienta = new ArrayList<TCC>();
 
 	/**
+	 * Relacionamento 1 para N entre Usuario e TCC. Mapeada em {@link TCC} pela
+	 * variável {@code coOrientador} e retorno do tipo {@code LAZY} que indica
+	 * que não será carregado automáticamente este dado quando retornarmos o
+	 * {@link Usuario} .
+	 * 
+	 */
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "coOrientador")
+	private List<TCC> coOrienta = new ArrayList<TCC>();
+
+	/**
 	 * Relacionamento 1 para N entre Participacao e TCC. Mapeada em
 	 * {@link Participacao} pela variável {@code professor} e retorno do tipo
 	 * {@code LAZY} que indica que não será carregado automáticamente este dado
@@ -260,6 +270,14 @@ public class Usuario implements Serializable {
 		this.orienta = orienta;
 	}
 
+	public List<TCC> getCoOrienta() {
+		return coOrienta;
+	}
+
+	public void setCoOrienta(List<TCC> coOrienta) {
+		this.coOrienta = coOrienta;
+	}
+
 	public List<Participacao> getParticipacoes() {
 		return participacoes;
 	}
@@ -295,6 +313,7 @@ public class Usuario implements Serializable {
 		this.curso = another.curso;
 		this.tcc = another.tcc;
 		this.orienta = another.orienta;
+		this.coOrienta = another.coOrienta;
 		this.participacoes = another.participacoes;
 		this.editingStatus = another.editingStatus;
 	}

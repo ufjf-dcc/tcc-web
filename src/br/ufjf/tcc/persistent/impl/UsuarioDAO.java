@@ -1,6 +1,5 @@
 package br.ufjf.tcc.persistent.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Query;
@@ -8,7 +7,6 @@ import org.hibernate.Query;
 import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.model.Departamento;
 import br.ufjf.tcc.model.Permissao;
-import br.ufjf.tcc.model.TCC;
 import br.ufjf.tcc.model.TipoUsuario;
 import br.ufjf.tcc.model.Usuario;
 import br.ufjf.tcc.persistent.GenericoDAO;
@@ -178,29 +176,6 @@ public class UsuarioDAO extends GenericoDAO {
 			List<Usuario> usuarios = query.list();
 			getSession().close();
 			return usuarios;
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	@SuppressWarnings("unchecked")
-	public List<Usuario> getOrientados(Usuario orientador) {
-		try {
-			Query query = getSession().createQuery(
-					"select t from TCC t where t.orientador = :orientador");
-			query.setParameter("orientador", orientador);
-
-			List<TCC> tccs = query.list();
-			List<Usuario> alunos = new ArrayList<Usuario>();
-
-			for (int i = 0; i < tccs.size(); i++)
-				alunos.add(tccs.get(i).getAluno());
-			getSession().close();
-			return alunos;
-
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

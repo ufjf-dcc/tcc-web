@@ -58,6 +58,27 @@
 					</row>
 				</template>
 			</grid>
+			
+			<grid style="margin:10px">
+				<columns>
+					<column>
+						<div align="center">
+							<hlayout>
+								<label value="Atenção!"
+									style="font-weight:bold;" />
+							</hlayout>
+						</div>
+					</column>
+				</columns>
+				<rows>
+					<row>
+						<div align="center">
+							<label
+								value="TODO list" />
+						</div>
+					</row>
+				</rows>
+			</grid>
 		</vlayout>
 		<window id="registrarTCC" title="Informe o(a) Orientaor(a)"
 			visible="false" width="400px" border="normal"

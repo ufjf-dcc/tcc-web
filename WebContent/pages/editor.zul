@@ -66,7 +66,26 @@
 								value="@load(vm.tcc.orientador.nomeUsuario)" hflex="1"
 								readonly="true" />
 							<button id="butOrientador" label="Alterar"
-								onClick="@command('changeOrientador', window=changeOrientador)" />
+								onClick="@command('changeOrientador', window=changeOrientacao)" />
+						</hlayout>
+						
+						<div
+							style="text-align:center;margin-left:20px">
+							<label
+								value="@load(not vm.hasCoOrientador ? 'adicionar co-orientador' : 'remover co-orientador')"
+								style="text-decoration: underline;cursor:pointer;size:10px"
+								width="100%" onClick="@command('setHasCoOrientador')" />
+						</div>
+							
+						<hlayout style="margin:5px;line-height:20px;"
+						visible="@load(vm.hasCoOrientador ? 'true' : 'false')">
+							<label value="Co-Orientador: "
+								style="margin-top:5px;" />
+							<textbox
+								value="@load(vm.tcc.coOrientador.nomeUsuario)" hflex="1"
+								readonly="true" />
+							<button id="butCoOrientador" label="Alterar"
+								onClick="@command('changeCoOrientador', window=changeOrientacao)" />
 						</hlayout>
 					</vlayout>
 				</groupbox>
@@ -214,7 +233,7 @@
 				onCreate="@command('showTCC', iframe=self)" />
 			</div>
 		</div>
-		<window id="changeOrientador" title="Alterar Orientador"
+		<window id="changeOrientacao" title="@load(vm.orientadorWindow ? 'Alterar Orientador' : 'Alterar Co-Orientador')"
 			visible="false" width="400px" border="normal"
 			position="center,center" closable="true"
 			onClose="self.setVisible(false); event.stopPropagation();">
@@ -236,10 +255,10 @@
 						</combobox>
 					</row>
 					<row>
-						<label value="Selecione o Orientador: " />
+						<label value="@load(vm.orientadorWindow ? 'Selecione o Orientador: ' : 'Selecione o Co-Orientador: ')" />
 						<combobox id="cmbOrientadores" hflex="1"
 							model="@load(vm.orientadores)" readonly="true"
-							selectedItem="@load(vm.tempUser) @save(vm.tempUser, before='selectOrientador')">
+							selectedItem="@load(vm.tempUser) @save(vm.tempUser, before='selectOrientacao')">
 							<template name="model">
 								<comboitem
 									label="@load(each.nomeUsuario)" />
@@ -250,10 +269,8 @@
 			</grid>
 			<div align="center">
 				<button label="Selecionar"
-					onClick="@command('selectOrientador', window=changeOrientador)"
+					onClick="@command('selectOrientacao', window=changeOrientacao)"
 					style="margin-top:5px" />
-				<button label="Cancelar"
-					onClick="changeOrientador.onClose()" style="margin-top:5px" />
 			</div>
 		</window>
 	</div>

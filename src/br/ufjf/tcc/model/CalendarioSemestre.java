@@ -44,14 +44,6 @@ public class CalendarioSemestre implements Serializable {
 	private int idCalendarioSemestre;
 
 	/**
-	 * Campo com a data do início do semestre. Relaciona com a coluna
-	 * {@code inicioSemestre} do banco através da anotação
-	 * {@code @Column(name = "inicioSemestre", nullable = false)}.
-	 */
-	@Column(name = "inicioSemestre", nullable = false)
-	private Date inicioSemestre;
-
-	/**
 	 * Campo com a data do final do semestre. Relaciona com a coluna
 	 * {@code finalSemestre} do banco através da anotação
 	 * {@code @Column(name = "finalSemestre", nullable = false)}.
@@ -105,14 +97,6 @@ public class CalendarioSemestre implements Serializable {
 
 	public void setIdCalendarioSemestre(int idCalendarioSemestre) {
 		this.idCalendarioSemestre = idCalendarioSemestre;
-	}
-
-	public Date getInicioSemestre() {
-		return inicioSemestre;
-	}
-
-	public void setInicioSemestre(Date inicioSemestre) {
-		this.inicioSemestre = inicioSemestre;
 	}
 
 	public Date getFinalSemestre() {

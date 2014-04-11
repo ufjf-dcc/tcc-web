@@ -22,7 +22,6 @@ public class TCCBusiness {
 		return errors;
 	}
 
-	// validação dos formulários
 	public boolean validate(TCC tcc) {
 		errors.clear();
 
@@ -43,9 +42,6 @@ public class TCCBusiness {
 		if (orientador == null)
 			errors.add("Informe o orientador;\n");
 	}
-
-	// Comunicação com o TCCDAO
-
 
 	public List<TCC> getAll() {
 		return tccDao.getAll();

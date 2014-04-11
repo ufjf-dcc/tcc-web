@@ -48,10 +48,10 @@ public class TCC implements Serializable {
 	 */
 	@Column(name = "nomeTCC", length = 255, nullable = true)
 	private String nomeTCC;
-	
+
 	/**
-	 * Campo com o sub nome do TCC. Relaciona com a coluna {@code subNomeTCC} do banco
-	 * através da anotação
+	 * Campo com o sub nome do TCC. Relaciona com a coluna {@code subNomeTCC} do
+	 * banco através da anotação
 	 * {@code @Column(name = "subNomeTCC", length = 255, nullable = true)}.
 	 */
 	@Column(name = "subNomeTCC", length = 255, nullable = true)
@@ -64,15 +64,15 @@ public class TCC implements Serializable {
 	 */
 	@Column(name = "resumoTCC", nullable = true)
 	private String resumoTCC;
-	
+
 	/**
-	 * Campo com as palavras chaves do TCC. Relaciona com a coluna {@code palavrasChave} do
-	 * banco através da anotação
+	 * Campo com as palavras chaves do TCC. Relaciona com a coluna
+	 * {@code palavrasChave} do banco através da anotação
 	 * {@code @Column(name = "palavrasChave", length = 255, nullable = true)}.
 	 */
 	@Column(name = "palavrasChave", length = 255, nullable = true)
 	private String palavrasChave;
-	
+
 	/**
 	 * Campo com o arquivo do TCC. Relaciona com a coluna
 	 * {@code arquivoTCCBanca} do banco através da anotação
@@ -88,19 +88,21 @@ public class TCC implements Serializable {
 	 */
 	@Column(name = "arquivoTCCFinal", length = 255, nullable = true)
 	private String arquivoTCCFinal;
-	
+
 	/**
 	 * Campo com o arquivo extra final do TCC. Relaciona com a coluna
 	 * {@code arquivoExtraTCCBanca} do banco através da anotação
-	 * {@code @Column(name = "arquivoExtraTCCBanca", length = 255, nullable = true)}.
+	 * {@code @Column(name = "arquivoExtraTCCBanca", length = 255, nullable = true)}
+	 * .
 	 */
 	@Column(name = "arquivoExtraTCCBanca", length = 255, nullable = true)
 	private String arquivoExtraTCCBanca;
-	
+
 	/**
 	 * Campo com o arquivo extra final do TCC. Relaciona com a coluna
 	 * {@code arquivoExtraTCCFinal} do banco através da anotação
-	 * {@code @Column(name = "arquivoExtraTCCFinal", length = 255, nullable = true)}.
+	 * {@code @Column(name = "arquivoExtraTCCFinal", length = 255, nullable = true)}
+	 * .
 	 */
 	@Column(name = "arquivoExtraTCCFinal", length = 255, nullable = true)
 	private String arquivoExtraTCCFinal;
@@ -154,6 +156,14 @@ public class TCC implements Serializable {
 	private Timestamp dataEnvioFinal;
 
 	/**
+	 * Campo com a situação do tcc (publicado ou não). Relaciona com a coluna
+	 * {@code publicado} do banco através da anotação
+	 * {@code @Column(name = "publicado", nullable = false)}.
+	 */
+	@Column(name = "publicado", nullable = true)
+	private boolean publicado;
+
+	/**
 	 * Relacionamento N para 1 entre TCC e Usuario. Mapeando {@link Usuario} na
 	 * variável {@code aluno} e retorno do tipo {@code LAZY} que indica que não
 	 * será carregado automáticamente este dado quando retornarmos o {@link TCC}
@@ -176,6 +186,17 @@ public class TCC implements Serializable {
 	private Usuario orientador;
 
 	/**
+	 * Relacionamento N para 1 entre TCC e Usuario. Mapeando {@link Usuario} na
+	 * variável {@code coOrientador} e retorno do tipo {@code LAZY} que indica
+	 * que não será carregado automáticamente este dado quando retornarmos o
+	 * {@link TCC}.
+	 * 
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "idCoOrientador", nullable = true)
+	private Usuario coOrientador;
+
+	/**
 	 * Relacionamento 1 para N entre TCC e Participacao. Mapeada em
 	 * {@link Participacao} pela variável {@code tcc} e retorno do tipo
 	 * {@code LAZY} que indica que não será carregado automáticamente este dado
@@ -184,20 +205,20 @@ public class TCC implements Serializable {
 	 */
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "tcc")
 	private List<Participacao> participacoes = new ArrayList<Participacao>();
-	
+
 	/**
-	 * Relacionamento 1 para 1 entre TCC e CalendarioSemestre. Mapeando {@link CalendarioSemestre} na
-	 * variável {@code calendarioSemestre} e retorno do tipo {@code LAZY} que indica que
-	 * não será carregado automáticamente este dado quando retornarmos o
-	 * {@link TCC}.
+	 * Relacionamento 1 para 1 entre TCC e CalendarioSemestre. Mapeando
+	 * {@link CalendarioSemestre} na variável {@code calendarioSemestre} e
+	 * retorno do tipo {@code LAZY} que indica que não será carregado
+	 * automáticamente este dado quando retornarmos o {@link TCC}.
 	 * 
 	 */
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "idCalendarioSemestre", nullable = true)
 	private CalendarioSemestre calendarioSemestre = null;
-	
-	public TCC(){
-		
+
+	public TCC() {
+
 	}
 
 	public TCC(String nomeTCC, String subNomeTCC, String resumoTCC,
@@ -231,7 +252,7 @@ public class TCC implements Serializable {
 	public void setNomeTCC(String nomeTCC) {
 		this.nomeTCC = nomeTCC;
 	}
-	
+
 	public String getSubNomeTCC() {
 		return subNomeTCC;
 	}
@@ -271,7 +292,7 @@ public class TCC implements Serializable {
 	public void setArquivoExtraTCCFinal(String arquivoExtraTCCFinal) {
 		this.arquivoExtraTCCFinal = arquivoExtraTCCFinal;
 	}
-	
+
 	public String getSalaDefesa() {
 		return salaDefesa;
 	}
@@ -328,6 +349,14 @@ public class TCC implements Serializable {
 		this.dataEnvioFinal = dataEnvioFinal;
 	}
 
+	public boolean isPublicado() {
+		return publicado;
+	}
+
+	public void setPublicado(boolean publicado) {
+		this.publicado = publicado;
+	}
+
 	public Usuario getAluno() {
 		return aluno;
 	}
@@ -342,6 +371,14 @@ public class TCC implements Serializable {
 
 	public void setOrientador(Usuario orientador) {
 		this.orientador = orientador;
+	}
+
+	public Usuario getCoOrientador() {
+		return coOrientador;
+	}
+
+	public void setCoOrientador(Usuario coOrientador) {
+		this.coOrientador = coOrientador;
 	}
 
 	public List<Participacao> getParticipacoes() {

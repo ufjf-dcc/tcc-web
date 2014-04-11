@@ -116,10 +116,7 @@ public class CadastroQuestionarioController extends CommonsController {
 			if (currentCalendar != null) {
 				title = "Questionário - "
 						+ currentCalendar.getNomeCalendarioSemestre()
-						+ " ("
-						+ dateFormat
-								.format(currentCalendar.getInicioSemestre())
-						+ " a "
+						+ " (Fim do semestre: "
 						+ dateFormat.format(currentCalendar.getFinalSemestre())
 						+ ")";
 				this.currentCalendar = currentCalendar;

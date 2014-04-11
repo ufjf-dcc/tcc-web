@@ -16,7 +16,7 @@ public class CalendarioSemestreDAO extends GenericoDAO {
 		try {
 			Query query = getSession()
 					.createQuery(
-							"SELECT c FROM CalendarioSemestre AS c LEFT JOIN FETCH c.prazos AS p WHERE c.curso = :curso AND c.inicioSemestre <= :date AND c.finalSemestre >= :date ORDER BY p.tipo");
+							"SELECT c FROM CalendarioSemestre AS c LEFT JOIN FETCH c.prazos AS p WHERE c.curso = :curso AND c.finalSemestre >= :date ORDER BY p.tipo");
 			query.setParameter("date", date);
 			query.setParameter("curso", curso);
 			

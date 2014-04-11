@@ -19,7 +19,7 @@ public class TCCDAO extends GenericoDAO {
 		try {
 			Query query = getSession()
 					.createQuery(
-							"select t from TCC as t join fetch t.aluno as a join fetch t.orientador WHERE t.conceitoFinal = -1");
+							"SELECT t FROM TCC AS t JOIN FETCH t.aluno AS a JOIN FETCH t.orientador LEFT JOIN FETCH t.coOrientador WHERE t.conceitoFinal = -1");
 			results = query.list();
 			getSession().close();
 
@@ -49,7 +49,7 @@ public class TCCDAO extends GenericoDAO {
 		try {
 			Query query = getSession()
 					.createQuery(
-							"SELECT t FROM TCC AS t JOIN FETCH t.aluno AS a JOIN FETCH t.orientador WHERE a.curso = :curso ORDER BY t.dataEnvioFinal DESC");
+							"SELECT t FROM TCC AS t JOIN FETCH t.aluno AS a JOIN FETCH t.orientador LEFT JOIN FETCH t.coOrientador WHERE a.curso = :curso ORDER BY t.dataEnvioFinal DESC");
 			query.setParameter("curso", curso);
 
 			List<TCC> resultados = query.list();
@@ -72,7 +72,7 @@ public class TCCDAO extends GenericoDAO {
 		try {
 			Query query = getSession()
 					.createQuery(
-							"SELECT t FROM TCC AS t JOIN FETCH t.aluno AS a JOIN FETCH a.curso JOIN FETCH t.orientador LEFT JOIN FETCH t.participacoes AS p  LEFT JOIN FETCH p.professor WHERE t.aluno = :user AND t.calendarioSemestre = :currentCalendar");
+							"SELECT t FROM TCC AS t JOIN FETCH t.aluno AS a JOIN FETCH a.curso JOIN FETCH t.orientador LEFT JOIN FETCH t.coOrientador LEFT JOIN FETCH t.participacoes AS p  LEFT JOIN FETCH p.professor WHERE t.aluno = :user AND t.calendarioSemestre = :currentCalendar");
 			query.setParameter("user", user);
 			query.setParameter("currentCalendar", currentCalendar);
 
@@ -92,7 +92,7 @@ public class TCCDAO extends GenericoDAO {
 		try {
 			Query query = getSession()
 					.createQuery(
-							"SELECT t FROM TCC AS t JOIN FETCH t.aluno AS a JOIN FETCH a.curso JOIN FETCH t.orientador LEFT JOIN FETCH t.participacoes AS p LEFT JOIN FETCH p.professor WHERE t.idTCC = :id");
+							"SELECT t FROM TCC AS t JOIN FETCH t.aluno AS a JOIN FETCH a.curso JOIN FETCH t.orientador LEFT JOIN FETCH t.coOrientador LEFT JOIN FETCH t.participacoes AS p LEFT JOIN FETCH p.professor WHERE t.idTCC = :id");
 			query.setParameter("id", id);
 
 			resultado = (TCC) query.uniqueResult();
@@ -112,7 +112,7 @@ public class TCCDAO extends GenericoDAO {
 		try {
 			Query query = getSession()
 					.createQuery(
-							"SELECT t FROM TCC AS t JOIN FETCH t.aluno JOIN FETCH t.orientador WHERE t.orientador = :user");
+							"SELECT t FROM TCC AS t JOIN FETCH t.aluno JOIN FETCH t.orientador LEFT JOIN FETCH t.coOrientador WHERE t.orientador = :user OR t.coOrientador = :user");
 			query.setParameter("user", user);
 			results = query.list();
 			getSession().close();
@@ -130,7 +130,7 @@ public class TCCDAO extends GenericoDAO {
 		try {
 			Query query = getSession()
 					.createQuery(
-							"SELECT t FROM TCC AS t JOIN FETCH t.aluno JOIN FETCH t.orientador LEFT JOIN t.participacoes AS p WHERE p.professor = :user");
+							"SELECT t FROM TCC AS t JOIN FETCH t.aluno JOIN FETCH t.orientador LEFT JOIN FETCH t.coOrientador LEFT JOIN t.participacoes AS p WHERE p.professor = :user");
 			query.setParameter("user", user);
 			results = query.list();
 			getSession().close();
@@ -164,7 +164,7 @@ public class TCCDAO extends GenericoDAO {
 		try {
 			Query query = getSession()
 					.createQuery(
-							"SELECT t FROM TCC AS t JOIN FETCH t.aluno AS a JOIN FETCH t.orientador WHERE a.curso = :curso AND t.dataEnvioFinal IS NOT NULL ORDER BY t.dataEnvioFinal DESC");
+							"SELECT t FROM TCC AS t JOIN FETCH t.aluno AS a JOIN FETCH t.orientador LEFT JOIN FETCH t.coOrientador WHERE a.curso = :curso AND t.dataEnvioFinal IS NOT NULL AND t.arquivoTCCFinal IS NOT NULL ORDER BY t.dataEnvioFinal DESC");
 			query.setParameter("curso", curso);
 
 			List<TCC> resultados = query.list();

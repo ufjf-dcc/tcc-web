@@ -46,7 +46,8 @@ public class EditorTccController extends CommonsController {
 	private List<Usuario> orientadores = new ArrayList<Usuario>();
 	private boolean alunoEditBlock = true, canChangeMatricula = false,
 			canEditUser = false, alunoVerified = false, tccFileChanged = false,
-			extraFileChanged = false, hasSubtitulo = false;
+			extraFileChanged = false, hasSubtitulo = false,
+			hasCoOrientador = false, orientadorWindow = true;
 
 	@Init
 	public void init() {
@@ -87,7 +88,8 @@ public class EditorTccController extends CommonsController {
 				redirectHome();
 
 		}
-
+		hasCoOrientador = (tcc.getCoOrientador() != null);
+		hasSubtitulo = (tcc.getSubNomeTCC() != null);
 		departamentos = new DepartamentoBusiness().getAll();
 	}
 
@@ -119,6 +121,18 @@ public class EditorTccController extends CommonsController {
 		return departamentos;
 	}
 
+	public boolean getHasCoOrientador() {
+		return hasCoOrientador;
+	}
+
+	@Command("setHasCoOrientador")
+	@NotifyChange("hasCoOrientador")
+	public void setHasCoOrientador() {
+		hasCoOrientador = !hasCoOrientador;
+		if (!hasCoOrientador)
+			tcc.setCoOrientador(null);
+	}
+
 	public boolean getHasSubtitulo() {
 		return hasSubtitulo;
 	}
@@ -133,6 +147,10 @@ public class EditorTccController extends CommonsController {
 
 	public List<Usuario> getOrientadores() {
 		return orientadores;
+	}
+
+	public boolean isOrientadorWindow() {
+		return orientadorWindow;
 	}
 
 	public boolean isCanChangeMatricula() {
@@ -157,8 +175,8 @@ public class EditorTccController extends CommonsController {
 
 	@NotifyChange({ "tcc", "alunoEditBlock" })
 	@Command
-	public void verifyAluno(@BindingParam("textBox") Textbox textb, @BindingParam("button") Button bt,
-			@BindingParam("label") Label lbl) {
+	public void verifyAluno(@BindingParam("textBox") Textbox textb,
+			@BindingParam("button") Button bt, @BindingParam("label") Label lbl) {
 		if (bt.getLabel().equals("Verificar")) {
 			lbl.setVisible(true);
 			if (tcc.getAluno().getMatricula() != null
@@ -262,24 +280,51 @@ public class EditorTccController extends CommonsController {
 	// Editor Orientador
 
 	@Command
+	@NotifyChange("orientadorWindow")
 	public void changeOrientador(@BindingParam("window") Window window) {
+		orientadorWindow = true;
 		window.doModal();
 	}
 
 	@Command
-	public void selectOrientador(@BindingParam("window") Window window) {
-		if (tempUser != null)
-			if (!participacoesContains(tempUser)) {
-				tcc.setOrientador(tempUser);
-				BindUtils.postNotifyChange(null, null, this, "tcc");
-			} else {
+	@NotifyChange("orientadorWindow")
+	public void changeCoOrientador(@BindingParam("window") Window window) {
+		orientadorWindow = false;
+		window.doModal();
+	}
+
+	@Command
+	public void selectOrientacao(@BindingParam("window") Window window) {
+		if (tempUser != null) {
+			if (participacoesContains(tempUser)) {
 				Messagebox
 						.show("Você escolheu um professor que já está incluído na Banca Examinadora. Se ele é seu Orientador, por favor retire-o da Banca antes.",
 								"Inválido", Messagebox.OK, Messagebox.ERROR);
+			} else if (orientadorWindow
+					&& tcc.getCoOrientador() != null
+					&& tcc.getCoOrientador().getIdUsuario() == tempUser
+							.getIdUsuario()) {
+				Messagebox
+						.show("Você escolheu um professor que já é seu Co-Orientador.",
+								"Inválido", Messagebox.OK, Messagebox.ERROR);
+			} else if (!orientadorWindow
+					&& tcc.getOrientador().getIdUsuario() == tempUser
+							.getIdUsuario()) {
+				Messagebox.show(
+						"Você escolheu um professor que já é seu Orientador.",
+						"Inválido", Messagebox.OK, Messagebox.ERROR);
+			} else {
+				if(orientadorWindow)
+					tcc.setOrientador(tempUser);
+				else
+					tcc.setCoOrientador(tempUser);
+				BindUtils.postNotifyChange(null, null, this, "tcc");
 			}
-		else
-			Messagebox.show("Você não selecionou nenhum professor.", "Erro",
+		} else
+			Messagebox.show("Você não selecionou um professor.", "Erro",
 					Messagebox.OK, Messagebox.ERROR);
+		tempUser = null;
+		BindUtils.postNotifyChange(null, null, this, "tempUser");
 		window.setVisible(false);
 	}
 
@@ -301,7 +346,10 @@ public class EditorTccController extends CommonsController {
 		if (tempUser != null) {
 			if (!participacoesContains(tempUser)
 					&& tempUser.getIdUsuario() != tcc.getOrientador()
-							.getIdUsuario()) {
+							.getIdUsuario()
+					&& (tcc.getCoOrientador() == null || tempUser
+							.getIdUsuario() != tcc.getCoOrientador()
+							.getIdUsuario())) {
 				Participacao p = new Participacao();
 				p.setProfessor(tempUser);
 				p.setTcc(tcc);
@@ -311,7 +359,7 @@ public class EditorTccController extends CommonsController {
 				BindUtils.postNotifyChange(null, null, this, "tcc");
 			} else {
 				Messagebox
-						.show("Esse professor já está na lista ou é o orientador do TCC",
+						.show("Esse professor já está na lista ou é o orientador/co-orientador do TCC",
 								"Erro", Messagebox.OK, Messagebox.ERROR);
 			}
 		}

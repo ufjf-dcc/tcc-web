@@ -193,10 +193,6 @@ public class UsuarioBusiness {
 		return usuarioDAO.getProfessoresECoordenadores();
 	}
 
-	public List<Usuario> getOrientados(Usuario usuario) {
-		return usuarioDAO.getOrientados(usuario);
-	}
-
 	public boolean editar(Usuario usuario) {
 		return usuarioDAO.editar(usuario);
 	}

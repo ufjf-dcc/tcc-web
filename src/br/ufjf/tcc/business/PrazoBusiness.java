@@ -49,11 +49,7 @@ public class PrazoBusiness {
 			else
 				return "Registrar TCC";
 		case Prazo.ENTREGA_FORM_BANCA:
-			return "Preencher formulário";
-		case Prazo.DEFESA:
-			return "Agendar defesa";
-		case Prazo.ENTREGA_FINAL:
-			return "Enviar ata final";
+			return "Gerar formulário";
 		}
 		return "";
 	}

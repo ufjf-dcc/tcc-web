@@ -33,7 +33,6 @@ public class HibernateUtil {
 			Configuration configuration = new Configuration().configure();
 			StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder()
 					.applySettings(configuration.getProperties())
-					.applySettings(configuration.getProperties())
 					.applySetting("hibernate.connection.driver_class",ConfHandler.getConf("HIBERNATE.DRIVE"))
 					.applySetting("hibernate.connection.url",ConfHandler.getConf("HIBERNATE.DB"))
 					.applySetting("hibernate.connection.username",ConfHandler.getConf("HIBERNATE.USER"))

@@ -71,9 +71,8 @@ public class HomeAlunoController extends CommonsController {
 			DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
 			gridTitle = "Calendário "
-					+ currentCalendar.getNomeCalendarioSemestre() + " ("
-					+ dateFormat.format(currentCalendar.getInicioSemestre())
-					+ " a "
+					+ currentCalendar.getNomeCalendarioSemestre()
+					+ " (Fim do semestre: "
 					+ dateFormat.format(currentCalendar.getFinalSemestre())
 					+ ")";
 
@@ -154,8 +153,11 @@ public class HomeAlunoController extends CommonsController {
 	@Command
 	public void getAction(@BindingParam("tipo") int type,
 			@BindingParam("button") Button button) {
-		button.setLabel(prazoBusiness.getAction(type, (getUsuario().getTcc()
-				.size() != 0)));
+		String bLabel = prazoBusiness.getAction(type, (getUsuario().getTcc().size() != 0));
+		if(!bLabel.isEmpty())
+			button.setLabel(bLabel);
+		else
+			button.setVisible(false);
 	}
 
 	@Command

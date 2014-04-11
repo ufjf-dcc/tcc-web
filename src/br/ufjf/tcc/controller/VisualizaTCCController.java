@@ -104,7 +104,7 @@ public class VisualizaTCCController extends CommonsController {
 			}
 		}
 
-		return tcc.getDataEnvioFinal() != null;
+		return (tcc.getDataEnvioFinal() != null && tcc.getArquivoTCCFinal() != null);
 	}
 
 	public TCC getTcc() {
