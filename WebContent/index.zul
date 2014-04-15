@@ -91,6 +91,10 @@
 									style="font-size: 14px; font-weight: bold; text-align: justify; display: block;" />
 								<label
 									value="@load(each.orientador.nomeUsuario)" />
+								<label value="Co-Orientador" visible="@load(not empty each.coOrientador)"
+									style="font-size: 14px; font-weight: bold; text-align: justify; display: block;" />
+								<label
+									value="@load(each.coOrientador.nomeUsuario)" />
 								<label value="Palavras-chave"
 									visible="@load(not empty each.palavrasChave)"
 									style="font-size: 14px; font-weight: bold; text-align: justify; display: block;" />
