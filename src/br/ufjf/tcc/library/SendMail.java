@@ -1,6 +1,5 @@
 package br.ufjf.tcc.library;
 
-import java.util.List;
 import java.util.Properties;
 
 import javax.mail.Message;
@@ -44,7 +43,7 @@ public class SendMail {
 	/*
 	 * Envia um e-mail informando que os usários foram cadastrados no sistema e
 	 * solicitando a criação da primeira senha.
-	 */
+	 
 	public boolean onSubmitCSV(List<Usuario> usuariosCSV) {
 		try {
 			message.setFrom(new InternetAddress(ConfHandler
@@ -75,11 +74,11 @@ public class SendMail {
 		}
 		return false;
 	}
-
+*/
 	/*
-	 * Envia um e-mail com a senha provisória para o usuário recém-cadastrado
-	 * usando o SMTP do Gmail.
-	 */
+	Envia um e-mail com a senha provisória para o usuário recém-cadastrado
+	usando o SMTP do Gmail.
+	 
 	public boolean onSubmitUser(Usuario newUser, String newPassword) {
 		try {
 			message.setFrom(new InternetAddress(ConfHandler
@@ -106,7 +105,7 @@ public class SendMail {
 		}
 		return false;
 	}
-
+*/
 	public boolean sendNewPassword(Usuario user, String newPassword) {
 		try {
 			message.setFrom(new InternetAddress(ConfHandler
@@ -117,7 +116,7 @@ public class SendMail {
 			message.setText("Prezado(a) "
 					+ user.getNomeUsuario()
 					+ ",\n\n"
-					+ "Segue, abaixo, a sua nova senha de acesso ao TCCs UFJF.\n"
+					+ "Segue, abaixo, a sua nova senha de acesso Sistema de Trabalhos da UFJF.\n"
 					+ "Recomendamos que a altere no primeiro acesso ao sistema.\n"
 					+ newPassword + "\n\n" + "Atenciosamente,\n" + "(...)");
 

@@ -139,7 +139,7 @@ public class UsuarioBusiness {
 			usuario = usuarioDAO.retornaUsuario(usuario.getMatricula(),
 					usuario.getSenha());
 
-			if (usuario != null) {
+			if (usuario != null && usuario.isAtivo()) {
 				return true;
 			}
 		}
