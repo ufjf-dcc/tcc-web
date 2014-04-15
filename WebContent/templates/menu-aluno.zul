@@ -6,6 +6,8 @@
 			style="text-align: center;">
 			<menuitem label="Página Inicial"
 				onClick="@command('redirectHome')" />
+			<menuitem label="Meu Trabalho"
+				onClick="@command('myTcc')" />
 			<menuitem label="Lista Pública" href="/" />
 			<menuitem label="Sair" onClick="@command('sair')"
 				style="float:right" />

@@ -24,7 +24,7 @@ import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.model.Departamento;
 import br.ufjf.tcc.model.Usuario;
 
-public class MatriculaController extends CommonsController {
+public class SolicitarAcessoController extends CommonsController {
 	private Usuario tempUser = null;
 	private List<ItemFormulario> itens;
 	private List<Curso> cursos;

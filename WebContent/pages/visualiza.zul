@@ -35,10 +35,15 @@
 									style="font-size: 14px; font-weight: bold; margin-top:5px;" />
 								<label
 									value="@load(vm.tcc.orientador.nomeUsuario)" />
-								<label value="Resumo" hyphen="true"
+								<label value="Co-Orientador"
+									visible="@load(not empty vm.tcc.coOrientador)"
+									style="font-size: 14px; font-weight: bold; margin-top:5px;" />
+								<label
+									value="@load(vm.tcc.coOrientador.nomeUsuario)" />
+								<label value="Resumo"
 									visible="@load(not empty vm.tcc.resumoTCC)"
 									style="font-size: 14px; font-weight: bold; margin-top:5px;" />
-								<label value="@load(vm.tcc.resumoTCC)" />
+								<label value="@load(vm.tcc.resumoTCC)" style="text-align:justify;"/>
 								<div style="margin-top:5px">
 									<label value="Ano:  "
 										style="font-weight:bold;float:left" />

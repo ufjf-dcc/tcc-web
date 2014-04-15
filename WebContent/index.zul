@@ -1,4 +1,4 @@
-<?page title="Lista Pública de Monografias - UFJF"?>
+<?page title="Lista Pública de Trabalhos Acadêmicos - UFJF"?>
 
 <zk>
 	<script type="text/javascript">
@@ -14,7 +14,7 @@
 			emptyMessage="@load(vm.emptyMessage)" mold="paging" autopaging="true"
 			vflex="true">
 			<auxhead style="text-align: center;">
-				<auxheader label="Lista Pública de Monografias"
+				<auxheader label="Lista Pública de Trabalhos Acadêmicos"
 					colspan="4" />
 			</auxhead>
 			<auxhead>

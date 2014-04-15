@@ -1,8 +1,8 @@
-<?page title="Solicitação de Matrícula"?>
+<?page title="Solicitação de Acesso"?>
 <zk>
 	<style src="/style.css" />
 	<div apply="org.zkoss.bind.BindComposer" align="center"
-		viewModel="@id('vm') @init('br.ufjf.tcc.controller.MatriculaController')">
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.SolicitarAcessoController')">
 		<include src="@load(vm.menu)" />
 		<grid model="@load(vm.itens) @template('formulario')" style="margin-top:10px"
 			width="60%">

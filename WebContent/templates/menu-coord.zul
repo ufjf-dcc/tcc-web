@@ -9,7 +9,7 @@
 			<menuitem label="Lista Pública" href="/" />
 			<menuitem label="Gerenciar Alunos"
 				href="/pages/gerenciamento-usuario.zul" />
-			<menuitem label="Gerenciar TCCs"
+			<menuitem label="Gerenciar Trabalhos"
 				href="/pages/tccs-curso.zul" />
 			<menuitem label="Sair" onClick="@command('sair')"
 				style="float:right" />

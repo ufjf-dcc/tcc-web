@@ -44,7 +44,7 @@ public class EditorTccController extends CommonsController {
 	private AMedia pdf = null;
 	private List<Departamento> departamentos;
 	private List<Usuario> orientadores = new ArrayList<Usuario>();
-	private boolean alunoEditBlock = true, canChangeMatricula = false,
+	private boolean canChangeOrientacao = true, alunoEditBlock = true, canChangeMatricula = false,
 			canEditUser = false, alunoVerified = false, tccFileChanged = false,
 			extraFileChanged = false, hasSubtitulo = false,
 			hasCoOrientador = false, orientadorWindow = true;
@@ -64,6 +64,8 @@ public class EditorTccController extends CommonsController {
 			} else
 				redirectHome();
 
+			canChangeOrientacao = false;
+			
 			break;
 
 		case Usuario.ADMINISTRADOR:
@@ -104,6 +106,10 @@ public class EditorTccController extends CommonsController {
 				&& getUsuario().getCurso().getIdCurso() == tcc.getAluno()
 						.getCurso().getIdCurso()));
 	}
+	
+	public boolean isCanChangeOrientacao() {
+		return canChangeOrientacao;
+	}
 
 	public TCC getTcc() {
 		return tcc;
@@ -126,7 +132,7 @@ public class EditorTccController extends CommonsController {
 	}
 
 	@Command("setHasCoOrientador")
-	@NotifyChange("hasCoOrientador")
+	@NotifyChange({"hasCoOrientador","tcc"})
 	public void setHasCoOrientador() {
 		hasCoOrientador = !hasCoOrientador;
 		if (!hasCoOrientador)

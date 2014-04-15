@@ -65,11 +65,11 @@
 							<textbox
 								value="@load(vm.tcc.orientador.nomeUsuario)" hflex="1"
 								readonly="true" />
-							<button id="butOrientador" label="Alterar"
+							<button id="butOrientador" label="Alterar" visible="@load(vm.canChangeOrientacao)"
 								onClick="@command('changeOrientador', window=changeOrientacao)" />
 						</hlayout>
 						
-						<div
+						<div visible="@load(vm.canChangeOrientacao)"
 							style="text-align:center;margin-left:20px">
 							<label
 								value="@load(not vm.hasCoOrientador ? 'adicionar co-orientador' : 'remover co-orientador')"
@@ -85,7 +85,7 @@
 								value="@load(vm.tcc.coOrientador.nomeUsuario)" hflex="1"
 								readonly="true" />
 							<button id="butCoOrientador" label="Alterar"
-								onClick="@command('changeCoOrientador', window=changeOrientacao)" />
+								onClick="@command('changeCoOrientador', window=changeOrientacao)" visible="@load(vm.canChangeOrientacao)" />
 						</hlayout>
 					</vlayout>
 				</groupbox>
@@ -178,7 +178,7 @@
 							<label value="Data do Trabalho: "
 								style="margin-top:5px" />
 							<datebox width="100%"
-								value="@bind(vm.tcc.dataEnvioFinal)" format="dd/MM/yyyy KK:mm:ss"
+								value="@bind(vm.tcc.dataEnvioFinal)" format="dd/MM/yyyy"
 								hflex="1" />
 						</hlayout>
 

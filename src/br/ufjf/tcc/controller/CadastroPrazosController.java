@@ -67,7 +67,7 @@ public class CadastroPrazosController extends CommonsController {
 				aux.setTipo(i);
 				switch (i) {
 				case Prazo.ENTREGA_TCC_BANCA:
-					aux.setDataFinal(finalDate.minusDays(15).toDate());
+					aux.setDataFinal(finalDate.minusDays(14).toDate());
 					break;
 				case Prazo.ENTREGA_FORM_BANCA:
 					aux.setDataFinal(finalDate.minusDays(14).toDate());

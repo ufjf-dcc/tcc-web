@@ -23,18 +23,37 @@ public class MenuController extends CommonsController {
 	private Usuario usuarioForm = new Usuario();
 	private UsuarioBusiness usuarioBusiness;
 
-	public Usuario getUsuarioForm() {
-		return usuarioForm;
-	}
-
-	public void setUsuarioForm(Usuario usuarioForm) {
-		this.usuarioForm = usuarioForm;
+	@Command
+	public void myTcc() {
+		if (getUsuario() != null
+				&& getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ALUNO) {
+			if (getCurrentCalendar() != null) {
+				if (getUsuario().getTcc() != null)
+					Executions.sendRedirect("/pages/editor.zul");
+				else
+					Messagebox
+							.show("Você ainda não possui um Trabalho cadastrado no semestre atual.\n Entre em contato com o coordenador do curso.",
+									"Erro", Messagebox.OK, Messagebox.ERROR);
+			} else {
+				Messagebox.show(
+						"Não há nenhum Calendário cadastrado no Sistema!",
+						"Erro", Messagebox.OK, Messagebox.ERROR);
+			}
+		}
 	}
 
 	@Command
 	public void sair() {
 		SessionManager.setAttribute("usuario", null);
 		Executions.sendRedirect("/index.zul");
+	}
+
+	public Usuario getUsuarioForm() {
+		return usuarioForm;
+	}
+
+	public void setUsuarioForm(Usuario usuarioForm) {
+		this.usuarioForm = usuarioForm;
 	}
 
 	@Command
@@ -50,7 +69,8 @@ public class MenuController extends CommonsController {
 	}
 
 	@Command
-	public void login(@BindingParam("window") Window window, @BindingParam("label") Label errorLbl) {
+	public void login(@BindingParam("window") Window window,
+			@BindingParam("label") Label errorLbl) {
 		usuarioBusiness = new UsuarioBusiness();
 		if (usuarioForm != null && usuarioForm.getMatricula() != null
 				&& usuarioForm.getSenha() != null
@@ -58,9 +78,12 @@ public class MenuController extends CommonsController {
 				&& usuarioForm.getSenha().trim().length() > 0) {
 			if (usuarioBusiness.login(usuarioForm.getMatricula(),
 					usuarioForm.getSenha())) {
-				
-				getUsuario().getTipoUsuario().setPermissoes(new PermissaoBusiness().getPermissaoByTipoUsuario(getUsuario().getTipoUsuario()));
-				
+
+				getUsuario().getTipoUsuario().setPermissoes(
+						new PermissaoBusiness()
+								.getPermissaoByTipoUsuario(getUsuario()
+										.getTipoUsuario()));
+
 				if (getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ALUNO) {
 					TCCBusiness tccBusiness = new TCCBusiness();
 					TCC tempTcc = tccBusiness.getCurrentTCCByAuthor(
@@ -94,7 +117,8 @@ public class MenuController extends CommonsController {
 			@BindingParam("matricula") String matricula,
 			@BindingParam("window") Window forgot) {
 		// Verfica se o usuário realmente existe
-		if (email == null || matricula == null || email.trim().length() == 0 || matricula.trim().length() == 0) {
+		if (email == null || matricula == null || email.trim().length() == 0
+				|| matricula.trim().length() == 0) {
 			Messagebox.show("Digite as informações solicitadas",
 					"Dados inválidos", Messagebox.OK, Messagebox.ERROR);
 			return;

@@ -12,7 +12,6 @@ import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zul.Button;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
@@ -148,16 +147,6 @@ public class HomeAlunoController extends CommonsController {
 			@BindingParam("label") Label label) {
 		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 		label.setValue(df.format(dataFinal));
-	}
-
-	@Command
-	public void getAction(@BindingParam("tipo") int type,
-			@BindingParam("button") Button button) {
-		String bLabel = prazoBusiness.getAction(type, (getUsuario().getTcc().size() != 0));
-		if(!bLabel.isEmpty())
-			button.setLabel(bLabel);
-		else
-			button.setVisible(false);
 	}
 
 	@Command
