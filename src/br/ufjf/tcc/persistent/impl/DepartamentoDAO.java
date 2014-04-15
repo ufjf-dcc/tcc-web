@@ -6,16 +6,15 @@ import org.hibernate.Query;
 
 import br.ufjf.tcc.model.Departamento;
 import br.ufjf.tcc.persistent.GenericoDAO;
-import br.ufjf.tcc.persistent.IDepartamentoDAO;
 
-public class DepartamentoDAO extends GenericoDAO implements IDepartamentoDAO {
+public class DepartamentoDAO extends GenericoDAO {
 
-	@Override
 	@SuppressWarnings("unchecked")
 	public List<Departamento> getAll() {
 		try {
-			Query query = getSession().createQuery(
-					"SELECT d FROM Departamento as d ORDER BY d.nomeDepartamento");
+			Query query = getSession()
+					.createQuery(
+							"SELECT d FROM Departamento as d ORDER BY d.nomeDepartamento");
 			List<Departamento> departamentos = query.list();
 			getSession().close();
 
@@ -27,7 +26,6 @@ public class DepartamentoDAO extends GenericoDAO implements IDepartamentoDAO {
 		return null;
 	}
 
-	@Override
 	public List<Departamento> buscar(String expressão) {
 		try {
 			Query query = getSession().createQuery(
@@ -44,7 +42,6 @@ public class DepartamentoDAO extends GenericoDAO implements IDepartamentoDAO {
 		return null;
 	}
 
-	@Override
 	public boolean jaExiste(String codigoDepartamento, String oldCodigo) {
 		try {
 			Query query;

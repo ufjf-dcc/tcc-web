@@ -27,9 +27,7 @@ public class ListaQuestionariosController extends CommonsController {
 	}
 	
 	@Command
-	public void select(@BindingParam("quest") Questionario q, @BindingParam("window") Window window) {
-		new QuestionarioBusiness().update(q, true, true);
-		
+	public void select(@BindingParam("quest") Questionario q, @BindingParam("window") Window window) {		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("quest", q);
 		map.put("editing", false);

@@ -7,9 +7,8 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.service.ServiceRegistry;
-import org.hibernate.service.ServiceRegistryBuilder;
 
 import br.ufjf.tcc.library.ConfHandler;
 
@@ -19,7 +18,6 @@ import br.ufjf.tcc.library.ConfHandler;
  */
 public class HibernateUtil {
 	private static SessionFactory sessionFactory;
-	private static ServiceRegistry serviceRegistry;
 	private static Transaction transaction;
 	private static Session session;
 
@@ -32,17 +30,15 @@ public class HibernateUtil {
 	 */
 	private static void start() {
 		try {
-			Configuration configuration = new Configuration();
-			configuration.configure();
-			serviceRegistry = new ServiceRegistryBuilder()
+			Configuration configuration = new Configuration().configure();
+			StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder()
 					.applySettings(configuration.getProperties())
-					.applySetting("hibernate.connection.driver_class", ConfHandler.getConf("HIBERNATE.DRIVE"))
-					.applySetting("hibernate.connection.url", ConfHandler.getConf("HIBERNATE.DB"))
-					.applySetting("hibernate.connection.username", ConfHandler.getConf("HIBERNATE.USER"))
-					.applySetting("hibernate.connection.password", ConfHandler.getConf("HIBERNATE.PASS"))
-					.applySetting("dialect", ConfHandler.getConf("HIBERNATE.DIALECT"))
-					.buildServiceRegistry();
-			sessionFactory = configuration.buildSessionFactory(serviceRegistry);
+					.applySetting("hibernate.connection.driver_class",ConfHandler.getConf("HIBERNATE.DRIVE"))
+					.applySetting("hibernate.connection.url",ConfHandler.getConf("HIBERNATE.DB"))
+					.applySetting("hibernate.connection.username",ConfHandler.getConf("HIBERNATE.USER"))
+					.applySetting("hibernate.connection.password",ConfHandler.getConf("HIBERNATE.PASS"))
+					.applySetting("dialect",ConfHandler.getConf("HIBERNATE.DIALECT"));
+			sessionFactory = configuration.buildSessionFactory(builder.build());
 		} catch (Throwable e) {
 			throw new ExceptionInInitializerError(e);
 		}

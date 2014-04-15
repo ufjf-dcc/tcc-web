@@ -110,8 +110,7 @@
 							onCreate="@command('getTCCApresentacao', tcc=each, lbl=self)" />
 						<div align="center">
 							<button label="Detalhes"
-								onClick="@command('showTCC', tcc=each)"
-								onCreate="@command('canAnswerTCC', tcc=each, btn=self)" />
+								onClick="@command('showTCC', tcc=each)"/>
 						</div>
 					</row>
 				</template>

@@ -1,6 +1,5 @@
 package br.ufjf.tcc.business;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import br.ufjf.tcc.model.TipoUsuario;
@@ -13,17 +12,12 @@ public class TipoUsuarioBusiness {
 		this.tipoUsuarioDAO = new TipoUsuarioDAO();
 	}
 
-	public List<TipoUsuario> getTiposUsuarios() {
-		List<TipoUsuario> resultados = new ArrayList<TipoUsuario>();
-		for (Object tipoUsuario : tipoUsuarioDAO.procuraTodos(
-				TipoUsuario.class, -1, -1)) {
-			resultados.add((TipoUsuario) tipoUsuario);
-		}
-		return resultados;
+	public List<TipoUsuario> getAll() {
+		return tipoUsuarioDAO.getAll();
 	}
-
-	public TipoUsuario update(TipoUsuario tipoUsuario) {
-		return tipoUsuarioDAO.update(tipoUsuario);
+	
+	public List<TipoUsuario> getAllWithPermissions() {
+		return tipoUsuarioDAO.getAllWithPermissions();
 	}
 
 	public TipoUsuario getTipoUsuario(int id) {

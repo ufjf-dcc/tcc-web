@@ -1,0 +1,138 @@
+<?page title="Visualizar Trabalho" contentType="text/html;charset=UTF-8"?>
+<?script content="zk.useStack='auto'" ?>
+<zk>
+	<style src="/style.css" />
+	<div apply="org.zkoss.bind.BindComposer"
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.VisualizaTCCController')"
+		style="background-color:#efefef;" height="94.3%">
+		<include src="@load(vm.menu)" />
+		<div height="100%">
+			<div height="100%" width="30%"
+				style="padding: 10px;float: left;background-color:#efefef;">
+				<tabbox id="tb" height="100%">
+					<tabs id="tabs" height="100%">
+						<tab id="A" label="Informações do Trablho" />
+						<tab id="B" label="Preencher ficha de respostas"
+							visible="@load(vm.canAnswer ? 'true' : 'false')" />
+					</tabs>
+					<tabpanels height="100%">
+						<tabpanel height="100%"
+							style="overflow:scroll;">
+							<div
+								onCreate="@command('setInformacoes', adiv=self)">
+								<label value="Título"
+									style="font-size: 14px; font-weight: bold; margin-top:5px;" />
+								<label value="@load(vm.tcc.nomeTCC)" />
+								<label value="Subtítulo"
+									visible="@load(not empty vm.tcc.subNomeTCC)"
+									style="font-size: 14px; font-weight: bold; margin-top:5px;" />
+								<label value="@load(vm.tcc.subNomeTCC)" />
+								<label value="Autor"
+									style="font-size: 14px; font-weight: bold; margin-top:5px;" />
+								<label
+									value="@load(vm.tcc.aluno.nomeUsuario)" />
+								<label value="Orientador"
+									style="font-size: 14px; font-weight: bold; margin-top:5px;" />
+								<label
+									value="@load(vm.tcc.orientador.nomeUsuario)" />
+								<label value="Co-Orientador"
+									visible="@load(not empty vm.tcc.coOrientador)"
+									style="font-size: 14px; font-weight: bold; margin-top:5px;" />
+								<label
+									value="@load(vm.tcc.coOrientador.nomeUsuario)" />
+								<label value="Resumo"
+									visible="@load(not empty vm.tcc.resumoTCC)"
+									style="font-size: 14px; font-weight: bold; margin-top:5px;" />
+								<label value="@load(vm.tcc.resumoTCC)" style="text-align:justify;"/>
+								<div style="margin-top:5px">
+									<label value="Ano:  "
+										style="font-weight:bold;float:left" />
+									<label
+										onCreate="@command('getTccYear', lbl=self)"
+										style="padding-left: 30px;" />
+								</div>
+								<label value="Palavras-chave"
+									visible="@load(not empty vm.tcc.palavrasChave)"
+									style="font-size: 14px; font-weight: bold; margin-top:5px" />
+								<label
+									value="@load(vm.tcc.palavrasChave)" />
+								<div
+									style="cursor: pointer; margin-top:10px"
+									visible="@load(vm.canDonwloadFileBanca and not empty vm.tcc.arquivoTCCBanca ? 'true' : 'false')"
+									onClick="@command('downloadPDFBanca', tcc=each)">
+									<image src="/img/pdf.png" />
+									<label value="Obter PDF (Banca)"
+										style="font-size: 14px; font-weight: bold; float:left;margin:5px;" />
+								</div>
+								<div
+									style="cursor: pointer; margin-top:10px"
+									visible="@load(not empty vm.tcc.arquivoTCCFinal ? 'true' : 'false')"
+									onClick="@command('downloadPDF', tcc=each)">
+									<image src="/img/pdf.png" />
+									<label value="Obter PDF"
+										style="font-size: 14px; font-weight: bold;float: left;margin:5px;" />
+								</div>
+								<div
+									style="cursor: pointer; margin-top:10px"
+									visible="@load(not empty vm.tcc.arquivoExtraTCCFinal ? 'true' : 'false')"
+									onClick="@command('downloadExtra', tcc=each)">
+									<image src="/img/rar.png" />
+									<label value="Obter arquivos extras"
+										style="font-size: 14px; font-weight: bold;float: left;margin:5px;" />
+								</div>
+							</div>
+							<button label="Editar Trabalho" width="100%"
+								height="30px" style="margin-top:10px"
+								visible="@load(vm.canEdit ? 'true' : 'false')"
+								onClick="@command('editTCC')" />
+						</tabpanel>
+						<tabpanel
+							visible="@load(vm.canAnswer ? 'true' : 'false')" height="100%"
+							style="overflow:scroll;">
+							<div visible="false"
+								onCreate="@command('setFicha', adiv=self)">
+								<grid model="@load(vm.answers)"
+									style="margin:10px;">
+									<columns>
+										<column />
+										<column width="125px" />
+									</columns>
+									<template name="model">
+										<row>
+											<div>
+												<label
+													value="Pergunta ${forEachStatus.index + 1}: " />
+												<label
+													value="@load(each.pergunta.titulo)" />
+												<label value=" (" />
+												<label
+													value="@load(each.pergunta.valor)" />
+												<label value=" pts )" />
+											</div>
+											<div>
+												<label
+													value="Resposta: " />
+												<textbox
+													value="@bind(each.nota)" width="95%" />
+											</div>
+										</row>
+									</template>
+								</grid>
+								<div align="center">
+									<button label="Cadastrar Respostas"
+										onClick="@command('submitFicha', window=prquest)"
+										style="margin-bottom:10px;" />
+								</div>
+							</div>
+						</tabpanel>
+					</tabpanels>
+				</tabbox>
+
+			</div>
+			<div style="float: left;width: 70%; height: 100%;">
+				<iframe autohide="true" height="100%" width="100%"
+					onCreate="@command('showTCC', iframe=self)" />
+			</div>
+		</div>
+	</div>
+</zk>

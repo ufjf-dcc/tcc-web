@@ -7,18 +7,16 @@ import org.hibernate.Query;
 import br.ufjf.tcc.model.CalendarioSemestre;
 import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.persistent.GenericoDAO;
-import br.ufjf.tcc.persistent.ICalendarioSemestreDAO;
 
 
-public class CalendarioSemestreDAO extends GenericoDAO implements ICalendarioSemestreDAO {
+public class CalendarioSemestreDAO extends GenericoDAO {
 	
-	@Override
 	public CalendarioSemestre getCalendarByDateAndCurso (Date date, Curso curso) {
 		CalendarioSemestre currentCalendar = null;
 		try {
 			Query query = getSession()
 					.createQuery(
-							"SELECT c FROM CalendarioSemestre AS c LEFT JOIN FETCH c.prazos AS p WHERE c.curso = :curso AND c.inicioSemestre <= :date AND c.finalSemestre >= :date ORDER BY p.dataFinal");
+							"SELECT c FROM CalendarioSemestre AS c LEFT JOIN FETCH c.prazos AS p WHERE c.curso = :curso AND c.finalSemestre >= :date ORDER BY p.tipo");
 			query.setParameter("date", date);
 			query.setParameter("curso", curso);
 			
@@ -39,7 +37,7 @@ public class CalendarioSemestreDAO extends GenericoDAO implements ICalendarioSem
 		try {
 			Query query = getSession()
 					.createQuery(
-							"SELECT c FROM CalendarioSemestre AS c LEFT JOIN FETCH c.prazos AS p WHERE c.idCalendarioSemestre = :id ORDER BY p.dataFinal");
+							"SELECT c FROM CalendarioSemestre AS c LEFT JOIN FETCH c.prazos AS p WHERE c.idCalendarioSemestre = :id ORDER BY p.tipo");
 			query.setParameter("id", id);
 			
 			currentCalendar = (CalendarioSemestre) query.uniqueResult();

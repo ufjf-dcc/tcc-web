@@ -28,13 +28,15 @@ public class UsuarioBusiness {
 	}
 
 	// validação dos formulários
-	public boolean validate(Usuario usuario, String oldMatricula, boolean validateTipo) {
+	public boolean validate(Usuario usuario, String oldMatricula,
+			boolean validateTipo) {
 		errors.clear();
 
 		validarMatricula(usuario.getMatricula(), oldMatricula);
 		validarNome(usuario.getNomeUsuario());
 		validateEmail(usuario.getEmail(), null);
-		if (validateTipo) validateTipo(usuario);
+		if (validateTipo)
+			validateTipo(usuario);
 
 		return errors.size() == 0;
 	}
@@ -54,7 +56,7 @@ public class UsuarioBusiness {
 	public void validateEmail(String email, String retype) {
 		if (email == null || email.trim().length() == 0)
 			errors.add("É necessário informar o e-mail;\n");
-		else if (email == null || !email.matches(".+@.+\\.[a-z]+"))
+		else if (email == null || !email.matches(".+@.+\\.[a-zA-Z]+"))
 			errors.add("Informe um e-mail válido;\n");
 		if (retype != null)
 			if (!email.equals(retype))
@@ -73,27 +75,43 @@ public class UsuarioBusiness {
 	}
 
 	public void validateTipo(Usuario usuario) {
-		switch (usuario.getTipoUsuario().getIdTipoUsuario()) {
-		case 1:
-			if (usuario.getCurso() == null)
-				errors.add("Um aluno deve pertencer a um curso.\n");
-			if (usuario.getDepartamento() != null)
-				errors.add("Um aluno não pode pertencer a um departamento.\n");
-			break;
-		case 2:
-			if (usuario.getDepartamento() == null)
-				errors.add("Um professor deve pertencer a um departamento.\n");
-			if (usuario.getCurso() != null)
-				errors.add("Um professor não deve pertencer a um curso.\n");
-			break;
-		case 3:
-			if(getCoordenadorByCurso(usuario.getCurso()) != null)
-				errors.add("Já existe um coordenador para o curso escolhido.\n");
-			if (usuario.getCurso() == null)
-				errors.add("Um coordenador deve pertencer a um curso.\n");
-			if (usuario.getDepartamento() == null)
-				errors.add("Um coordenador deve pertencer a um departamento.\n");
-		}
+		if (usuario.getTipoUsuario() != null) {
+			switch (usuario.getTipoUsuario().getIdTipoUsuario()) {
+			case Usuario.ALUNO:
+				if (usuario.getCurso() == null)
+					errors.add("Um aluno deve pertencer a um curso.\n");
+				if (usuario.getDepartamento() != null)
+					errors.add("Um aluno não pode pertencer a um departamento.\n");
+				break;
+			case Usuario.PROFESSOR:
+				if (usuario.getCurso() != null)
+					errors.add("Um professor não deve pertencer a um curso.\n");
+				if (usuario.getDepartamento() == null)
+					errors.add("Um professor deve pertencer a um departamento.\n");
+				break;
+			case Usuario.COORDENADOR:
+				if (usuario.getCurso() == null)
+					errors.add("Um coordenador deve pertencer a um curso.\n");
+				if (usuario.getDepartamento() == null)
+					errors.add("Um coordenador deve pertencer a um departamento.\n");
+				break;
+			case Usuario.ADMINISTRADOR:
+				if (usuario.getCurso() != null)
+					errors.add("Um Administrador não deve pertencer a um curso.\n");
+				if (usuario.getDepartamento() != null)
+					errors.add("Um Administrador não deve pertencer a um departamento.\n");
+				break;
+			case Usuario.SECRETARIA:
+				if (usuario.getCurso() == null)
+					errors.add("Um(a) secretário(a) deve pertencer a um curso.\n");
+				if (usuario.getDepartamento() != null)
+					errors.add("Um(a) secretário(a) não pode pertencer a um departamento.\n");
+				break;
+			default:
+				errors.add("Tipo inválido de usuário.\n");
+			}
+		} else
+			errors.add("Selecione o Tipo de Usuário.\n");
 	}
 
 	// comunicação com o UsuarioDAO
@@ -121,7 +139,7 @@ public class UsuarioBusiness {
 			usuario = usuarioDAO.retornaUsuario(usuario.getMatricula(),
 					usuario.getSenha());
 
-			if (usuario != null) {
+			if (usuario != null && usuario.isAtivo()) {
 				return true;
 			}
 		}
@@ -166,21 +184,13 @@ public class UsuarioBusiness {
 	public List<Permissao> getPermissoes(Usuario usuario) {
 		return usuarioDAO.getPermissoes(usuario);
 	}
-	
+
 	public List<Usuario> getProfessores() {
 		return usuarioDAO.getProfessores();
 	}
 
 	public List<Usuario> getProfessoresECoordenadores() {
 		return usuarioDAO.getProfessoresECoordenadores();
-	}
-
-	public List<Usuario> getOrientados(Usuario usuario) {
-		return usuarioDAO.getOrientados(usuario);
-	}
-
-	public List<Usuario> buscar(String expressão) {
-		return usuarioDAO.buscar(expressão);
 	}
 
 	public boolean editar(Usuario usuario) {
@@ -213,11 +223,6 @@ public class UsuarioBusiness {
 			return false;
 	}
 
-	public Usuario update(Usuario usuario, boolean curso, boolean tipo,
-			boolean participacoes) {
-		return usuarioDAO.update(usuario, curso, tipo, participacoes);
-	}
-
 	public Usuario getByEmailAndMatricula(String email, String matricula) {
 		return usuarioDAO.getByEmailAndMatricula(email, matricula);
 	}
@@ -229,7 +234,7 @@ public class UsuarioBusiness {
 	public Usuario getByMatricula(String matricula) {
 		return usuarioDAO.getByMatricula(matricula);
 	}
-	
+
 	public Usuario getCoordenadorByCurso(Curso curso) {
 		return usuarioDAO.getCoordenadorByCurso(curso);
 	}

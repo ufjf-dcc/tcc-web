@@ -3,8 +3,6 @@ package br.ufjf.tcc.controller;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -14,8 +12,6 @@ import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.Sessions;
-import org.zkoss.zul.Button;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
@@ -61,14 +57,6 @@ public class HomeAlunoController extends CommonsController {
 		CalendarioSemestre currentCalendar = getCurrentCalendar();
 		if (currentCalendar != null) {
 			prazos = getCurrentCalendar().getPrazos();
-			Collections.sort(prazos, new Comparator<Prazo>() {
-
-				@Override
-				public int compare(Prazo arg0, Prazo arg1) {
-					return (arg0.getTipo() < arg1.getTipo() ? -1 : (arg0
-							.getTipo() == arg1.getTipo() ? 0 : 1));
-				}
-			});
 
 			DateTime currentDay = new DateTime(new Date());
 
@@ -82,9 +70,8 @@ public class HomeAlunoController extends CommonsController {
 			DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
 			gridTitle = "Calendário "
-					+ currentCalendar.getNomeCalendarioSemestre() + " ("
-					+ dateFormat.format(currentCalendar.getInicioSemestre())
-					+ " a "
+					+ currentCalendar.getNomeCalendarioSemestre()
+					+ " (Fim do semestre: "
 					+ dateFormat.format(currentCalendar.getFinalSemestre())
 					+ ")";
 
@@ -97,7 +84,7 @@ public class HomeAlunoController extends CommonsController {
 		switch (tipo) {
 		case Prazo.ENTREGA_TCC_BANCA:
 			if (getUsuario().getTcc().size() != 0) {
-				Executions.sendRedirect("/pages/editor-tcc.zul");
+				Executions.sendRedirect("/pages/editor.zul");
 			} else {
 				if (departamentos == null) {
 					departamentos = new DepartamentoBusiness().getAll();
@@ -126,18 +113,12 @@ public class HomeAlunoController extends CommonsController {
 			TCCBusiness tccBusiness = new TCCBusiness();
 			newTcc.setAluno(getUsuario());
 			newTcc.setCalendarioSemestre(getCurrentCalendar());
-			if (tccBusiness.save(newTcc)) {
-				Sessions.getCurrent().setAttribute("tcc", newTcc);
-				Executions.sendRedirect("/pages/editor-tcc.zul");
-			} else {
+			if (tccBusiness.save(newTcc))
+				Executions.sendRedirect("/pages/editor.zul");
+			else {
 				Messagebox.show("Devido a um erro, o TCC não foi criado.",
 						"Erro", Messagebox.OK, Messagebox.ERROR);
 			}
-			List<TCC> tccs = new ArrayList<TCC>();
-			tccs.add(newTcc);
-			getUsuario().setTcc(tccs);
-			Sessions.getCurrent().setAttribute("tcc", newTcc);
-			Executions.sendRedirect("/pages/editor-tcc.zul");
 		} else {
 			Messagebox.show("Selecione um Orientador", "Erro", Messagebox.OK,
 					Messagebox.ERROR);
@@ -166,13 +147,6 @@ public class HomeAlunoController extends CommonsController {
 			@BindingParam("label") Label label) {
 		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 		label.setValue(df.format(dataFinal));
-	}
-
-	@Command
-	public void getAction(@BindingParam("tipo") int type,
-			@BindingParam("button") Button button) {
-		button.setLabel(prazoBusiness.getAction(type, (getUsuario().getTcc()
-				.size() != 0)));
 	}
 
 	@Command

@@ -1,6 +1,5 @@
 package br.ufjf.tcc.library;
 
-import java.util.List;
 import java.util.Properties;
 
 import javax.mail.Message;
@@ -17,34 +16,38 @@ import org.joda.time.DateTime;
 import br.ufjf.tcc.model.Usuario;
 
 public class SendMail {
-	private final String username = "ttest4318@gmail.com";
-	private final String password = "tcc12345";
 	private Properties props;
 	private Message message;
 
 	public SendMail() {
 		props = new Properties();
-		props.put("mail.smtp.auth", "true");
-		props.put("mail.smtp.starttls.enable", "true");
 		props.put("mail.smtp.host", "smtp.gmail.com");
-		props.put("mail.smtp.port", "587");
+		props.put("mail.smtp.socketFactory.port", "465");
+		props.put("mail.smtp.socketFactory.class",
+				"javax.net.ssl.SSLSocketFactory");
+		props.put("mail.smtp.auth", "true");
+		props.put("mail.smtp.port", "465");
 
-		Session session = Session.getInstance(props,
+		Session session = Session.getDefaultInstance(props,
 				new javax.mail.Authenticator() {
 					protected PasswordAuthentication getPasswordAuthentication() {
-						return new PasswordAuthentication(username, password);
+						return new PasswordAuthentication(ConfHandler
+								.getConf("MAIL.USERNAME"), ConfHandler
+								.getConf("MAIL.PASS"));
 					}
 				});
-		message = new MimeMessage(session);
+
+		this.message = new MimeMessage(session);
 	}
 
 	/*
 	 * Envia um e-mail informando que os usários foram cadastrados no sistema e
 	 * solicitando a criação da primeira senha.
-	 */
+	 
 	public boolean onSubmitCSV(List<Usuario> usuariosCSV) {
 		try {
-			message.setFrom(new InternetAddress("ttest4318@gmail.com"));
+			message.setFrom(new InternetAddress(ConfHandler
+					.getConf("MAIL.FROM")));
 			for (Usuario usuario : usuariosCSV) {
 				message.addRecipients(Message.RecipientType.BCC,
 						InternetAddress.parse(usuario.getEmail()));
@@ -71,14 +74,15 @@ public class SendMail {
 		}
 		return false;
 	}
-
+*/
 	/*
-	 * Envia um e-mail com a senha provisória para o usuário recém-cadastrado
-	 * usando o SMTP do Gmail.
-	 */
+	Envia um e-mail com a senha provisória para o usuário recém-cadastrado
+	usando o SMTP do Gmail.
+	 
 	public boolean onSubmitUser(Usuario newUser, String newPassword) {
 		try {
-			message.setFrom(new InternetAddress("ttest4318@gmail.com"));
+			message.setFrom(new InternetAddress(ConfHandler
+					.getConf("MAIL.FROM")));
 			message.setRecipients(Message.RecipientType.TO,
 					InternetAddress.parse(newUser.getEmail()));
 			message.setSubject("Confirmação de cadastro");
@@ -101,17 +105,18 @@ public class SendMail {
 		}
 		return false;
 	}
-
+*/
 	public boolean sendNewPassword(Usuario user, String newPassword) {
 		try {
-			message.setFrom(new InternetAddress("ttest4318@gmail.com"));
+			message.setFrom(new InternetAddress(ConfHandler
+					.getConf("MAIL.FROM")));
 			message.setRecipients(Message.RecipientType.TO,
 					InternetAddress.parse(user.getEmail()));
 			message.setSubject("Recuperação de senha");
 			message.setText("Prezado(a) "
 					+ user.getNomeUsuario()
 					+ ",\n\n"
-					+ "Segue, abaixo, a sua nova senha de acesso ao TCCs UFJF.\n"
+					+ "Segue, abaixo, a sua nova senha de acesso Sistema de Trabalhos da UFJF.\n"
 					+ "Recomendamos que a altere no primeiro acesso ao sistema.\n"
 					+ newPassword + "\n\n" + "Atenciosamente,\n" + "(...)");
 
@@ -133,7 +138,8 @@ public class SendMail {
 	 */
 	public boolean confirmEmail(Usuario user, String newEmail) {
 		try {
-			message.setFrom(new InternetAddress("ttest4318@gmail.com"));
+			message.setFrom(new InternetAddress(ConfHandler
+					.getConf("MAIL.FROM")));
 			message.setRecipients(Message.RecipientType.TO,
 					InternetAddress.parse(user.getEmail()));
 			message.setSubject("Confirmação de e-mail");
@@ -141,60 +147,11 @@ public class SendMail {
 					+ user.getNomeUsuario()
 					+ ",\n\n"
 					+ "Por favor clique no link abaixo para confirmar seu endereço de e-mail:\n"
-					+ "http://localhost:8080/tcc-web/pages/confirmacao.zul?data="
+					+ ConfHandler.getConf("GENERAL.URL")
+					+ "/pages/confirmacao.zul?data="
 					+ EncryptionUtil.encode(user.getMatricula() + ";"
 							+ newEmail + ";" + DateTime.now().toString())
 					+ "\n\n" + "Atenciosamente,\n" + "(...)");
-
-			Transport.send(message);
-			return true;
-		} catch (AddressException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (MessagingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return false;
-	}
-
-	public boolean onSubmitCoordenador(Usuario newUser, String newPassword) {
-		try {
-			message.setFrom(new InternetAddress("ttest4318@gmail.com"));
-			message.setRecipients(Message.RecipientType.TO,
-					InternetAddress.parse(newUser.getEmail()));
-			message.setSubject("Informação");
-			message.setText("Prezado(a) "
-					+ newUser.getNomeUsuario()
-					+ ",\n\n"
-					+ "Você foi cadastrado no sistema de envio de TCCs da UFJF como coordenador de curso. "
-					+ "Segue, abaixo, a sua senha de acesso. "
-					+ "Recomendamos que a altere no primeiro acesso ao sistema.\n"
-					+ newPassword + "\n\n" + "Atenciosamente,\n" + "(...)");
-
-			Transport.send(message);
-			return true;
-		} catch (AddressException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (MessagingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return false;
-	}
-
-	public boolean onSetUserAsCoordenador(Usuario coordenador) {
-		try {
-			message.setFrom(new InternetAddress("ttest4318@gmail.com"));
-			message.setRecipients(Message.RecipientType.TO,
-					InternetAddress.parse(coordenador.getEmail()));
-			message.setSubject("Informação");
-			message.setText("Prezado(a) "
-					+ coordenador.getNomeUsuario()
-					+ ",\n\n"
-					+ "Sua função no sistema de envio de TCCs da UFJF foi alterada para coordenador. Acesse o site para mais informações.\n"
-					+ "Atenciosamente,\n" + "(...)");
 
 			Transport.send(message);
 			return true;

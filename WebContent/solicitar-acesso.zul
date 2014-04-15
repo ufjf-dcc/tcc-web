@@ -1,0 +1,83 @@
+<?page title="Solicitação de Acesso"?>
+<zk>
+	<style src="/style.css" />
+	<div apply="org.zkoss.bind.BindComposer" align="center"
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.SolicitarAcessoController')">
+		<include src="@load(vm.menu)" />
+		<grid model="@load(vm.itens) @template('formulario')" style="margin-top:10px"
+			width="60%">
+			<columns>
+				<column width="100px"/>
+				<column />
+			</columns>
+			<template name="formulario">
+				<row>
+					<label value="@load(each.pergunta)" />
+					<div>
+						<combobox readonly="true" width="98%"
+							visible="@load(forEachStatus.index eq 2)"
+							value="@bind(each.resposta)" model="@load(vm.cursos)">
+							<template name="model">
+								<comboitem
+									label="@load(each.nomeCurso)" />
+							</template>
+						</combobox>
+
+						<hlayout visible="@load(forEachStatus.index eq 3)" >
+							<textbox value="@bind(each.resposta)" hflex="1"
+								readonly="true"/>
+							<button label="Escolher" style="margin-right:12px"
+								onClick="@command('chooseOrientador', window=chooseOrientador)" />
+						</hlayout>
+
+						<textbox
+							visible="@load(forEachStatus.index ne 2 and forEachStatus.index ne 3)"
+							value="@bind(each.resposta)" width="98%" />
+					</div>
+				</row>
+			</template>
+		</grid>
+		<button style="margin:5px" label="Obter PDF"
+			onClick="@command('exportPDF')" />
+		<window id="chooseOrientador" title="Escolher Orientador(a)"
+			visible="false" width="400px" border="normal"
+			position="center,center" closable="true"
+			onClose="self.setVisible(false); event.stopPropagation();">
+			<grid>
+				<columns>
+					<column width="170px" />
+					<column />
+				</columns>
+				<rows>
+					<row>
+						<label value="Selecione o Departamento " />
+						<combobox id="cmbDepartamento" hflex="1"
+							model="@load(vm.departamentos)" readonly="true"
+							onSelect="@command('selectedDepartamento', dep=self.selectedItem)">
+							<template name="model">
+								<comboitem
+									label="@load(each.nomeDepartamento)" />
+							</template>
+						</combobox>
+					</row>
+					<row>
+						<label value="Selecione o Orientador: " />
+						<combobox id="cmbOrientadores" hflex="1"
+							model="@load(vm.orientadores)" readonly="true"
+							selectedItem="@load(vm.tempUser) @save(vm.tempUser, before='selectOrientador')">
+							<template name="model">
+								<comboitem
+									label="@load(each.nomeUsuario)" />
+							</template>
+						</combobox>
+					</row>
+				</rows>
+			</grid>
+			<div align="center">
+				<button label="Selecionar"
+					onClick="@command('selectOrientador', window=chooseOrientador)"
+					width="75px" style="margin-top:5px" />
+			</div>
+		</window>
+	</div>
+</zk>

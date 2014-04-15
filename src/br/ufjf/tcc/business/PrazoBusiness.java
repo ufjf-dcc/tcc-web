@@ -20,42 +20,20 @@ public class PrazoBusiness {
 		return errors;
 	}
 
-	// validação dos formulários
 	public boolean validate(List<Prazo> prazos) {
 		errors.clear();
-		
+
 		for (int i = prazos.size() - 1; i > 0; i--)
-			for (int j = i - 1; j > 0; j--){
-				System.out.println("Comparando se " + i + " antes de "
-						+ j);
-			
+			for (int j = i - 1; j > 0; j--) {
+
 				if (prazos.get(i).getDataFinal()
-						.before(prazos.get(j).getDataFinal())){
+						.before(prazos.get(j).getDataFinal())) {
 					errors.add("O " + i + "º prazo não pode terminar antes do "
-							+ j + "º.");
-					System.out.println("O " + i + "º prazo não pode terminar antes do "
 							+ j + "º.");
 				}
 			}
 
 		return errors.size() == 0;
-	}
-
-	public String getAction(int type, boolean userHasTcc) {
-		switch (type) {
-		case Prazo.ENTREGA_TCC_BANCA:
-			if (userHasTcc)
-				return "Editar TCC";
-			else
-				return "Registrar TCC";
-		case Prazo.ENTREGA_FORM_BANCA:
-			return "Preencher formulário";
-		case Prazo.DEFESA:
-			return "Agendar defesa";
-		case Prazo.ENTREGA_FINAL:
-			return "Enviar ata final";
-		}
-		return "";
 	}
 
 	public String getDescription(int type) {

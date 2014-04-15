@@ -53,10 +53,5 @@ public class QuestionarioBusiness {
 				.getAnswersFromQuestionary(questionario);
 		return q.size() > 0;
 	}
-
-	public Questionario update(Questionario questionario, boolean curso,
-			boolean calendario) {
-		return questionarioDAO.update(questionario, curso, calendario);
-	}
-
+	
 }

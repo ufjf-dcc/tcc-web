@@ -23,13 +23,11 @@ public class CalendarioSemestreBusiness {
 		return errors;
 	}
 
-	// validação dos formulários
 	public boolean validate(CalendarioSemestre calendarioSemestre) {
 		errors.clear();
 
 		validateName(calendarioSemestre.getNomeCalendarioSemestre());
-		validateDates(calendarioSemestre.getInicioSemestre(),
-				calendarioSemestre.getFinalSemestre(),
+		validateDates(calendarioSemestre.getFinalSemestre(),
 				calendarioSemestre.getCurso());
 
 		return errors.size() == 0;
@@ -40,23 +38,14 @@ public class CalendarioSemestreBusiness {
 			errors.add("É necessário informar o nome do calendário;\n");
 	}
 
-	public void validateDates(Date begin, Date end, Curso curso) {
-		DateTime beginDate = new DateTime(begin);
-		DateTime endDate = new DateTime(end);
-		if (begin == null)
-			errors.add("É necessário informar a data inicial;\n");
-		else if (calendarioSemestreDAO.getCalendarByDateAndCurso(begin, curso) != null)
-			errors.add("A data inicial está coincidindo com um semestre anterior;\n");
+	public void validateDates(Date end, Curso curso) {
 		if (end == null)
-			errors.add("É necessário informar a data final;\n");		
-		else {if (endDate.isBefore(beginDate) || endDate.isEqual(beginDate))
-			errors.add("O final do semestre deve ser depois de seu início.");
-		if (new DateTime(end).isBeforeNow())
+			errors.add("É necessário informar a data final;\n");
+		else if (new DateTime(end).isBeforeNow())
 			errors.add("O final do semestre deve ser em uma data futura;\n");
-		}
+
 	}
 
-	// Comunicação com o CalendarioSemestreDAO
 	public boolean save(CalendarioSemestre calendarioSemestre) {
 		return calendarioSemestreDAO.salvar(calendarioSemestre);
 	}

@@ -1,9 +1,9 @@
-<?page title="Gerenciamento de TCCs"?>
+<?page title="Gerenciamento de Trabalhos"?>
 <?init class="br.ufjf.tcc.controller.AuthController"?>
 <zk>
 	<script type="text/javascript">
 		function visualzarTCC(id) {
-		window.open('visualiza-tcc.zul?tcc='+id,'_blank'); }
+		window.open('visualiza.zul?id='+id,'_blank'); }
 	</script>
 	<style src="/style.css" />
 	<div apply="org.zkoss.bind.BindComposer"
@@ -44,7 +44,7 @@
 									tooltip="filterHelp" style="cursor: help" />
 							</hlayout>
 							<button style="float:right"
-								label="Cadastrar novo TCC" href="/pages/editor-tcc.zul" />
+								label="Cadastrar novo Trabalho" href="/pages/editor.zul" />
 						</div>
 					</div>
 				</auxheader>
@@ -98,33 +98,12 @@
 	<popup id="filterHelp">
 		<html>
 
-
-
-
-
-
-
-
-
-
-
-
 			
-			<![CDATA[ Permite filtrar a lista de TCCs com o termo e o
+			<![CDATA[ Permite filtrar a lista de Trabalhos com o termo e o
 			ano <br> escolhidos. O termo pode ser, por exemplo:
-			<ul><li>Autor ou orientador;</li> <li>Nome do TCC;</li>
+			<ul><li>Autor ou orientador;</li> <li>Nome do Trabalho;</li>
 			<li>Palavra-chave;</li> <li>Conteúdo dos resumos.</li>
 			<ul>]]>
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
 			
 			
 			

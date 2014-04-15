@@ -7,11 +7,9 @@ import org.hibernate.Query;
 import br.ufjf.tcc.model.Pergunta;
 import br.ufjf.tcc.model.Questionario;
 import br.ufjf.tcc.persistent.GenericoDAO;
-import br.ufjf.tcc.persistent.IPerguntaDAO;
 
-public class PerguntaDAO extends GenericoDAO implements IPerguntaDAO {
+public class PerguntaDAO extends GenericoDAO {
 	
-	@Override
 	@SuppressWarnings("unchecked")
 	public List<Pergunta> getQuestionsByQuestionary (Questionario questionary) {
 		List<Pergunta> questions = null;

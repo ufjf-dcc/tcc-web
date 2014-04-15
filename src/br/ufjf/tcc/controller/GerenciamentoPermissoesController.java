@@ -5,7 +5,6 @@ import java.util.List;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
-import org.zkoss.bind.annotation.Init;
 import org.zkoss.zul.Checkbox;
 
 import br.ufjf.tcc.business.PermissaoBusiness;
@@ -14,18 +13,10 @@ import br.ufjf.tcc.model.Permissao;
 import br.ufjf.tcc.model.TipoUsuario;
 
 public class GerenciamentoPermissoesController extends CommonsController {
-	private TipoUsuario selectedType;
+	private List<Permissao> permissions = new PermissaoBusiness().getAll();
 	private TipoUsuarioBusiness tipoUsuarioBusiness = new TipoUsuarioBusiness();
-	private List<TipoUsuario> types = tipoUsuarioBusiness.getTiposUsuarios();
-	private List<Permissao> permissions = new PermissaoBusiness()
-			.getAll();
-
-	@Init
-	public void init() {
-		for (TipoUsuario type : types)
-			tipoUsuarioBusiness.update(type);
-		selectedType = types.get(0);
-	}
+	private List<TipoUsuario> types = tipoUsuarioBusiness.getAllWithPermissions();
+	private TipoUsuario selectedType = types.get(0);
 
 	public List<TipoUsuario> getTypes() {
 		return types;
@@ -58,7 +49,7 @@ public class GerenciamentoPermissoesController extends CommonsController {
 	public void edit(@BindingParam("permission") Permissao permission,
 			@BindingParam("checkbox") Checkbox checkbox) {
 		if (checkbox.isChecked())
-			selectedType.getPermissoes().add(permission);			
+			selectedType.getPermissoes().add(permission);
 		else {
 			for (Permissao aux : selectedType.getPermissoes())
 				if (aux.getNomePermissao()
@@ -67,7 +58,7 @@ public class GerenciamentoPermissoesController extends CommonsController {
 					break;
 				}
 		}
-		
+
 		tipoUsuarioBusiness.editar(selectedType);
 
 	}

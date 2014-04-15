@@ -40,29 +40,43 @@
 				<columns>
 					<column label="Data" width="80px" />
 					<column label="Descrição" />
-					<column label="Ação" width="170px" />
 				</columns>
 				<template name="prazos">
 					<row>
 						<label
 							onCreate="@command('formatDate', dataFinal=each.dataFinal, label=self)"
-							style="@load(each.tipo eq vm.currentPrazo ? 'font-weight:bold;' : '')" />
+							style="@load(each.tipo eq vm.currentPrazo ? 'font-weight:bold;' : (each.tipo lt vm.currentPrazo ? 'color:#FF3333' : ''))" />
 						<label
 							onCreate="@command('getDescription', tipo=each.tipo, label=self)"
-							style="@load(each.tipo eq vm.currentPrazo ? 'font-weight:bold;' : '')" />
-						<div align="center">
-							<button width="100%"
-								onCreate="@command('getAction', tipo=each.tipo, button=self)"
-								onClick="@command('action', tipo=each.tipo, window=registrarTCC)"
-								disabled="@load(each.tipo lt vm.currentPrazo)"/>
-						</div>
+							style="@load(each.tipo eq vm.currentPrazo ? 'font-weight:bold;' : (each.tipo lt vm.currentPrazo ? 'color:#FF3333' : ''))" />
 					</row>
 				</template>
 			</grid>
+			
+			<grid style="margin:10px">
+				<columns>
+					<column>
+						<div align="center">
+							<hlayout>
+								<label value="Atenção!"
+									style="font-weight:bold;" />
+							</hlayout>
+						</div>
+					</column>
+				</columns>
+				<rows>
+					<row>
+						<div align="center">
+							<label
+								value="TODO list" />
+						</div>
+					</row>
+				</rows>
+			</grid>
 		</vlayout>
-		<window id="registrarTCC" title="Informe o(a) Orientaor(a)" visible="false"
-			width="400px" border="normal" position="center,center"
-			closable="true"
+		<window id="registrarTCC" title="Informe o(a) Orientaor(a)"
+			visible="false" width="400px" border="normal"
+			position="center,center" closable="true"
 			onClose="self.setVisible(false); event.stopPropagation();">
 			<grid>
 				<columns>

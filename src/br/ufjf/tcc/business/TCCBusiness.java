@@ -22,7 +22,6 @@ public class TCCBusiness {
 		return errors;
 	}
 
-	// validação dos formulários
 	public boolean validate(TCC tcc) {
 		errors.clear();
 
@@ -41,12 +40,7 @@ public class TCCBusiness {
 
 	public void validateOrientador(Usuario orientador) {
 		if (orientador == null)
-			errors.add("Informe o seu orientador;\n");
-	}
-
-	// Comunicação com o TCCDAO
-	public List<TCC> getPublicListByCurso(Curso curso) {
-		return tccDao.getPublicListByCurso(curso);
+			errors.add("Informe o orientador;\n");
 	}
 
 	public List<TCC> getAll() {
@@ -90,6 +84,10 @@ public class TCCBusiness {
 	
 	public List<TCC> getTCCsByOrientador(Usuario user) {
 		return tccDao.getTCCsByOrientador(user);
+	}
+	
+	public List<TCC> getTCCsByUserParticipacao(Usuario user) {
+		return tccDao.getTCCsByUserParticipacao(user);
 	}
 
 	public List<TCC> getFinishedTCCsByCurso(Curso curso) {
