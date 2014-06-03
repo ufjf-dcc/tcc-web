@@ -7,6 +7,10 @@ import java.util.Random;
 
 import jonelo.jacksum.JacksumAPI;
 import jonelo.jacksum.algorithm.AbstractChecksum;
+
+import org.zkoss.json.JSONArray;
+
+import br.ufjf.tcc.library.IntegraHandler;
 import br.ufjf.tcc.library.SessionManager;
 import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.model.Departamento;
@@ -117,20 +121,41 @@ public class UsuarioBusiness {
 	// comunicação com o UsuarioDAO
 	public boolean login(String matricula, String senha) {
 		errors.clear();
-		Usuario usuario = usuarioDAO.retornaUsuario(matricula,
-				this.encripta(senha));
+		List<Usuario> users = new ArrayList<Usuario>();
+		if (matricula.matches("[0-9\\-\\.]+")) {
+			IntegraHandler integra = new IntegraHandler(matricula.trim());
+			if (integra.getError() != null) {
+				errors.add(integra.getError());
+				return false;
+			} else {
+				if (integra.getUser() != null
+						&& ((String) integra.getUser().get("passmd5"))
+								.equals(this.encripta(senha, "md5"))) {
+					users = usuarioDAO.getByMatricula((JSONArray) integra
+							.getUser().get("profile"));
+				}
+			}
+		} else
+			users.add(usuarioDAO.retornaUsuario(matricula, this.encripta(senha)));
 
-		if (usuario != null) {
-			if (usuario.isAtivo()) {
-				SessionManager.setAttribute("usuario", usuario);
+		if (users != null) {
+			List<Usuario> usuarios = new ArrayList<Usuario>();
+			for (Usuario user : users) {
+				if (user.isAtivo()) {
+					usuarios.add(user);
+				}
+			}
+
+			if (usuarios.size() > 0) {
+				SessionManager.setAttribute("usuarios", usuarios);
 				return true;
 			} else {
-				errors.add("Seu casdastro não está ativo. Por favor contate o coordenador de seu curso.");
+				errors.add("Você não possui uma conta ativa. Por favor contate o coordenador de seu curso.");
 				return false;
 			}
 		}
 
-		errors.add("Usuário ou senha inválidos!");
+		errors.add("Identificador ou senha inválidos! Ou não cadastrado!");
 		return false;
 	}
 
@@ -147,16 +172,20 @@ public class UsuarioBusiness {
 		return false;
 	}
 
-	public String encripta(String senha) {
+	public String encripta(String senha, String crypt) {
 		try {
 			AbstractChecksum checksum = null;
-			checksum = JacksumAPI.getChecksumInstance("whirlpool-1");
+			checksum = JacksumAPI.getChecksumInstance(crypt);
 			checksum.update(senha.getBytes());
 			return checksum.getFormattedValue();
 		} catch (NoSuchAlgorithmException ns) {
 			ns.printStackTrace();
 			return null;
 		}
+	}
+
+	public String encripta(String senha) {
+		return this.encripta(senha, "whirlpool-1");
 	}
 
 	/* Método para gerar a senha provisória (10 caracteres aleatórios). */

@@ -14,6 +14,7 @@ import org.zkoss.zul.Window;
 import br.ufjf.tcc.business.PermissaoBusiness;
 import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.business.UsuarioBusiness;
+import br.ufjf.tcc.library.PDFHandler;
 import br.ufjf.tcc.library.SendMail;
 import br.ufjf.tcc.library.SessionManager;
 import br.ufjf.tcc.model.TCC;
@@ -22,6 +23,11 @@ import br.ufjf.tcc.model.Usuario;
 public class MenuController extends CommonsController {
 	private Usuario usuarioForm = new Usuario();
 	private UsuarioBusiness usuarioBusiness;
+	@SuppressWarnings("unchecked")
+	private List<Usuario> users = (List<Usuario>) SessionManager
+			.getAttribute("usuarios");
+	private boolean canChangeProfile = ((users != null && users.size() > 1) ? true
+			: false);
 
 	@Command
 	public void myTcc() {
@@ -43,8 +49,32 @@ public class MenuController extends CommonsController {
 	}
 
 	@Command
+	public void generate() {
+		if (getUsuario() != null
+				&& getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ALUNO) {
+			if (getUsuario().getTcc() != null){
+				TCCBusiness tccBusiness = new TCCBusiness();
+				if(!tccBusiness.getMissing(getUsuario().getTcc().get(0))){
+					try {
+						(new PDFHandler()).generateAta(getUsuario().getTcc().get(0));
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				} else
+					Messagebox.show("Para gerar a Ata você deve preencher todas informações do seu Trabalho.\n",
+							"Erro", Messagebox.OK, Messagebox.ERROR);
+			} else
+				Messagebox
+						.show("Você ainda não possui um Trabalho cadastrado no semestre atual.\n",
+								"Erro", Messagebox.OK, Messagebox.ERROR);
+		}
+	}
+
+	@Command
 	public void sair() {
 		SessionManager.setAttribute("usuario", null);
+		SessionManager.setAttribute("usuarios", null);
 		Executions.sendRedirect("/index.zul");
 	}
 
@@ -64,6 +94,15 @@ public class MenuController extends CommonsController {
 	}
 
 	@Command
+	public void changeProf() {
+		if (canChangeProfile) {
+			final Window dialog = (Window) Executions.createComponents(
+					"/pages/mudar-perfil.zul", null, null);
+			dialog.doModal();
+		}
+	}
+
+	@Command
 	public void showForm(@BindingParam("window") Window window) {
 		window.doModal();
 	}
@@ -78,22 +117,7 @@ public class MenuController extends CommonsController {
 				&& usuarioForm.getSenha().trim().length() > 0) {
 			if (usuarioBusiness.login(usuarioForm.getMatricula(),
 					usuarioForm.getSenha())) {
-
-				getUsuario().getTipoUsuario().setPermissoes(
-						new PermissaoBusiness()
-								.getPermissaoByTipoUsuario(getUsuario()
-										.getTipoUsuario()));
-
-				if (getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ALUNO) {
-					TCCBusiness tccBusiness = new TCCBusiness();
-					TCC tempTcc = tccBusiness.getCurrentTCCByAuthor(
-							getUsuario(), getCurrentCalendar());
-					List<TCC> tccs = new ArrayList<TCC>();
-					if (tempTcc != null)
-						tccs.add(tempTcc);
-					getUsuario().setTcc(tccs);
-				}
-				redirectHome();
+				changeProfile(0);
 			} else {
 				Clients.evalJavaScript("loginFailed()");
 				errorLbl.setValue(usuarioBusiness.getErrors().get(0));
@@ -105,6 +129,44 @@ public class MenuController extends CommonsController {
 			errorLbl.setVisible(true);
 		}
 
+	}
+
+	@Command
+	public void changeProfile(@BindingParam("user") Usuario user) {
+		for (int i = 0; i < users.size(); i++) {
+			if (users.get(i).getMatricula().equals(user.getMatricula())) {
+				if (users.get(i).getMatricula()
+						.equals(getUsuario().getMatricula())) {
+					redirectHome();
+				} else
+					changeProfile(i);
+				return;
+			}
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public void changeProfile(int index) {
+		users = (List<Usuario>) SessionManager.getAttribute("usuarios");
+		if (index < users.size()) {
+			SessionManager.setAttribute("usuario", users.get(index));
+			getUsuario().getTipoUsuario().setPermissoes(
+					new PermissaoBusiness()
+							.getPermissaoByTipoUsuario(getUsuario()
+									.getTipoUsuario()));
+
+			if (getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ALUNO) {
+				TCCBusiness tccBusiness = new TCCBusiness();
+				TCC tempTcc = tccBusiness.getCurrentTCCByAuthor(getUsuario(),
+						getCurrentCalendar());
+				List<TCC> tccs = new ArrayList<TCC>();
+				if (tempTcc != null)
+					tccs.add(tempTcc);
+				getUsuario().setTcc(tccs);
+			}
+
+			redirectHome();
+		}
 	}
 
 	@Command
@@ -144,6 +206,14 @@ public class MenuController extends CommonsController {
 		}
 
 		forgot.detach();
+	}
+
+	public boolean isCanChangeProfile() {
+		return canChangeProfile;
+	}
+
+	public List<Usuario> getUsers() {
+		return users;
 	}
 
 }

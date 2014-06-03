@@ -35,7 +35,7 @@
 				emptyMessage="O calendário do semestre ainda não foi cadastrado no sistema. Volte mais tarde."
 				model="@load(vm.prazos) @template('prazos')" style="margin:10px">
 				<auxhead sclass="text-center">
-					<auxheader colspan="3" label="@load(vm.gridTitle)" />
+					<auxheader colspan="2" label="@load(vm.gridTitle)" />
 				</auxhead>
 				<columns>
 					<column label="Data" width="80px" />
@@ -53,7 +53,9 @@
 				</template>
 			</grid>
 			
-			<grid style="margin:10px">
+			<grid
+				emptyMessage="Nenhuma mensagem para ser mostrada."
+				model="@load(vm.infos) @template('infos')" style="margin:10px">
 				<columns>
 					<column>
 						<div align="center">
@@ -64,14 +66,11 @@
 						</div>
 					</column>
 				</columns>
-				<rows>
+				<template name="infos">
 					<row>
-						<div align="center">
-							<label
-								value="TODO list" />
-						</div>
+						<label value="@load(each)" />
 					</row>
-				</rows>
+				</template>
 			</grid>
 		</vlayout>
 		<window id="registrarTCC" title="Informe o(a) Orientaor(a)"

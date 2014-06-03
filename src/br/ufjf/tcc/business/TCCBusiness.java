@@ -1,10 +1,12 @@
 package br.ufjf.tcc.business;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
 import br.ufjf.tcc.model.CalendarioSemestre;
 import br.ufjf.tcc.model.Curso;
+import br.ufjf.tcc.model.Participacao;
 import br.ufjf.tcc.model.TCC;
 import br.ufjf.tcc.model.Usuario;
 import br.ufjf.tcc.persistent.impl.TCCDAO;
@@ -22,6 +24,25 @@ public class TCCBusiness {
 		return errors;
 	}
 
+	public boolean getMissing(TCC tcc, boolean checkFile){
+		errors.clear();
+		
+		validateOrientador(tcc.getOrientador());
+		validateName(tcc.getNomeTCC());
+		validateResumo(tcc.getResumoTCC());
+		validateData(tcc.getDataApresentacao());
+		validateSala(tcc.getSalaDefesa());
+		validateBanca(tcc.getParticipacoes());
+		if(checkFile)
+			validateArquivoBanca(tcc.getArquivoTCCBanca());
+		
+		return errors.size() == 0 ? false : true;
+	}
+	
+	public boolean getMissing(TCC tcc){
+		return getMissing(tcc, false);
+	}
+	
 	public boolean validate(TCC tcc) {
 		errors.clear();
 
@@ -35,14 +56,39 @@ public class TCCBusiness {
 
 	public void validateName(String nomeTCC) {
 		if (nomeTCC == null || nomeTCC.trim().length() == 0)
-			errors.add("Informe o nome do TCC;\n");		
+			errors.add("É necessário informar o nome do seu Trabalho\n");		
 	}
 
 	public void validateOrientador(Usuario orientador) {
 		if (orientador == null)
-			errors.add("Informe o orientador;\n");
+			errors.add("É necessário informar o orientador\n");
+	}
+	
+	public void validateResumo(String resumo) {
+		if (resumo == null || resumo.trim().length() == 0)
+			errors.add("É necessário informar o Resumo do TCC\n");		
 	}
 
+	public void validateData(Timestamp timestamp) {
+		if (timestamp == null)
+			errors.add("É necessário informar a Data de Apresentação\n");		
+	}
+	
+	public void validateSala(String sala) {
+		if (sala  == null || sala.trim().length() == 0)
+			errors.add("É necessário informar a sala de Apresentação\n");		
+	}
+	
+	public void validateBanca(List<Participacao> list) {
+		if (list  == null || list.size() == 0)
+			errors.add("É necessário informar a Banca\n");		
+	}
+	
+	public void validateArquivoBanca(String arquivo) {
+		if (arquivo == null || arquivo.trim().length() == 0)
+			errors.add("É necessário fazer o Upload do seu Trabalho\n");		
+	}
+	
 	public List<TCC> getAll() {
 		return tccDao.getAll();
 	}

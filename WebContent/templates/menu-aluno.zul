@@ -8,9 +8,13 @@
 				onClick="@command('redirectHome')" />
 			<menuitem label="Meu Trabalho"
 				onClick="@command('myTcc')" />
+			<menuitem label="Gerar Ata"
+				onClick="@command('generate')" />
 			<menuitem label="Lista Pública" href="/" />
 			<menuitem label="Sair" onClick="@command('sair')"
 				style="float:right" />
+			<menuitem label="Trocar de Perfil" style="float:right" visible="@load(hf.canChangeProfile)"
+				onClick="@command('changeProf')" />
 			<menuitem label="Configurações" style="float:right"
 				onClick="@command('settings')" />
 		</menubar>

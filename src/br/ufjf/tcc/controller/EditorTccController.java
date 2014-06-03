@@ -238,7 +238,7 @@ public class EditorTccController extends CommonsController {
 		this.iframe = iframe;
 
 		AMedia pdf;
-		if (tcc.getArquivoTCCBanca() == null) {
+		if (tcc.getArquivoTCCBanca() == null || tcc.getArquivoTCCBanca().trim().length() == 0) {
 			InputStream is = FileManager.getFileInputSream("modelo.pdf");
 			pdf = new AMedia("modelo.pdf", "pdf", "application/pdf", is);
 		} else {

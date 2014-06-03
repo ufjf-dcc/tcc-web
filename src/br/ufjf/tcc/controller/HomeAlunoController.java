@@ -39,6 +39,15 @@ public class HomeAlunoController extends CommonsController {
 	public List<Prazo> getPrazos() {
 		return prazos;
 	}
+	
+	public List<String> getInfos() {
+		List<String> infos = new ArrayList<String>();
+		TCCBusiness tccBusiness = new TCCBusiness();
+		if(tccBusiness.getMissing(getUsuario().getTcc().get(0), true)){
+			infos.addAll(tccBusiness.getErrors());
+		}
+		return infos;
+	}
 
 	public void setPrazos(List<Prazo> prazos) {
 		this.prazos = prazos;

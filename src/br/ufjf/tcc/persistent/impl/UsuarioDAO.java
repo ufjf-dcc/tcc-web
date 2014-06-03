@@ -3,6 +3,7 @@ package br.ufjf.tcc.persistent.impl;
 import java.util.List;
 
 import org.hibernate.Query;
+import org.zkoss.json.JSONArray;
 
 import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.model.Departamento;
@@ -214,6 +215,28 @@ public class UsuarioDAO extends GenericoDAO {
 			query.setParameter("matricula", matricula);
 
 			Usuario resultado = (Usuario) query.uniqueResult();
+
+			getSession().close();
+
+			if (resultado != null)
+				return resultado;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	public List<Usuario> getByMatricula(JSONArray matriculas) {
+		try {
+			Query query = getSession()
+					.createQuery(
+							"SELECT u FROM Usuario AS u LEFT JOIN FETCH u.curso JOIN FETCH u.tipoUsuario WHERE u.matricula in (:matriculas)");
+			query.setParameterList("matriculas", matriculas);
+
+			@SuppressWarnings("unchecked")
+			List<Usuario> resultado = query.list();
 
 			getSession().close();
 

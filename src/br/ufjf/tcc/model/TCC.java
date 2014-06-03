@@ -13,7 +13,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -207,13 +206,13 @@ public class TCC implements Serializable {
 	private List<Participacao> participacoes = new ArrayList<Participacao>();
 
 	/**
-	 * Relacionamento 1 para 1 entre TCC e CalendarioSemestre. Mapeando
+	 * Relacionamento N para 1 entre TCC e CalendarioSemestre. Mapeando
 	 * {@link CalendarioSemestre} na variável {@code calendarioSemestre} e
 	 * retorno do tipo {@code LAZY} que indica que não será carregado
 	 * automáticamente este dado quando retornarmos o {@link TCC}.
 	 * 
 	 */
-	@OneToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "idCalendarioSemestre", nullable = true)
 	private CalendarioSemestre calendarioSemestre = null;
 
