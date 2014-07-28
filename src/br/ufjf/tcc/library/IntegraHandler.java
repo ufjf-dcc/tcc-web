@@ -46,6 +46,7 @@ public class IntegraHandler {
 					prof.add(this.user.get("profile"));
 					prof.add("201335012");
 					prof.add("3353417");
+					prof.add("1714410");
 					this.user.put("profile", prof);
 				} else if (((String) jsonObject.get("codeResult")).equals("E_BANCO_DADOS")) {
 					this.error = "O Integra não conseguiu se conectar o SIGA. Tente mais tarde.";

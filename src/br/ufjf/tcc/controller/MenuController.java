@@ -34,7 +34,7 @@ public class MenuController extends CommonsController {
 		if (getUsuario() != null
 				&& getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ALUNO) {
 			if (getCurrentCalendar() != null) {
-				if (getUsuario().getTcc() != null)
+				if (getUsuario().getTcc() != null && getUsuario().getTcc().size() != 0)
 					Executions.sendRedirect("/pages/editor.zul");
 				else
 					Messagebox
@@ -52,9 +52,9 @@ public class MenuController extends CommonsController {
 	public void generate() {
 		if (getUsuario() != null
 				&& getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ALUNO) {
-			if (getUsuario().getTcc() != null){
+			if (getUsuario().getTcc() != null  && getUsuario().getTcc().size() != 0){
 				TCCBusiness tccBusiness = new TCCBusiness();
-				if(!tccBusiness.getMissing(getUsuario().getTcc().get(0))){
+				if(!tccBusiness.getMissing(getUsuario().getTcc().get(0), true)){
 					try {
 						(new PDFHandler()).generateAta(getUsuario().getTcc().get(0));
 					} catch (Exception e) {

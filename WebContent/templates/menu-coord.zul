@@ -7,6 +7,8 @@
 			<menuitem label="Página Inicial"
 				onClick="@command('redirectHome')" />
 			<menuitem label="Lista Pública" href="/" />
+			<menuitem label="Trabalhos do Semestre"
+				href="/pages/tccs-semestre.zul" />
 			<menuitem label="Gerenciar Alunos"
 				href="/pages/gerenciamento-usuario.zul" />
 			<menuitem label="Gerenciar Trabalhos"

@@ -1,0 +1,97 @@
+<?page title="Gerenciamento de TCCs do semestre" contentType="text/html;charset=UTF-8"?>
+<?init class="br.ufjf.tcc.controller.AuthController"?>
+<zk>
+	<style src="/style.css" />
+	<div apply="org.zkoss.bind.BindComposer" align="center"
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.TCCSemestreController')"
+		height="100%">
+		<include src="@load(vm.menu)" />
+		<hlayout spacing="10px" height="100%" style="margin-top:10px">
+			<div hflex="2">
+				<grid>
+					<columns>
+						<column label="Adicionar Trabalho"
+							style="font-weight:bold;text-align:center" />
+					</columns>
+					<rows>
+						<row>
+							<grid>
+								<columns>
+									<column width="170px" />
+									<column />
+								</columns>
+								<rows>
+									<row>
+										<label
+											value="Matricula do Aluno: " />
+										<textbox
+											value="@bind(vm.newTcc.aluno.matricula)" hflex="1" />
+									</row>
+									<row>
+										<label
+											value="Selecione o Departamento: " />
+										<combobox id="cmbDepartamento"
+											hflex="1" model="@load(vm.departamentos)" readonly="true"
+											onSelect="@command('selectedDepartamento', dep=self.selectedItem)">
+											<template name="model">
+												<comboitem
+													label="@load(each.nomeDepartamento)" />
+											</template>
+										</combobox>
+									</row>
+									<row>
+										<label
+											value="Selecione o Orientador: " />
+										<combobox id="cmbOrientadores"
+											hflex="1" model="@load(vm.orientadores)" readonly="true"
+											selectedItem="@bind(vm.newTcc.orientador)">
+											<template name="model">
+												<comboitem
+													label="@load(each.nomeUsuario)" />
+											</template>
+										</combobox>
+									</row>
+									<row>
+										<label value=" " />
+										<div align="center">
+											<button
+												label="Adicionar Trabalho"
+												onClick="@command('submit')"
+												style="margin-top:5px" />
+										</div>
+									</row>
+								</rows>
+							</grid>
+						</row>
+					</rows>
+				</grid>
+			</div>
+			<grid hflex="4"
+				model="@load(vm.tccsSemestre) @template('tccs')" width="700px"
+				mold="paging" autopaging="true" vflex="true">
+				<auxhead sclass="text-center">
+					<auxheader colspan="4"
+						label="Trabalhos do Semestre" />
+				</auxhead>
+				<columns>
+					<column label="Matricula" hflex="1" />
+					<column label="Aluno" hflex="1" />
+					<column label="Orientador(a)" hflex="1" />
+					<column width="100px" />
+				</columns>
+				<template name="tccs">
+					<row>
+						<label value="@load(each.aluno.matricula)" />
+						<label value="@load(each.aluno.nomeUsuario)" />
+						<label
+							value="@load(each.orientador.nomeUsuario)" />
+						<div align="center">
+							<button label="Detalhes"
+								onClick="@command('showTCC', tcc=each)" />
+						</div>
+					</row>
+				</template>
+			</grid>
+		</hlayout>
+	</div>
+</zk>

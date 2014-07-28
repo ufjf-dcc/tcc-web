@@ -3,22 +3,21 @@ package br.ufjf.tcc.teste;
 import java.io.FileOutputStream;
 
 import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfWriter;
 
 public class Teste {
 	private static String FILE = "/Users/Matheus/Desktop/FirstPdf.pdf";
+	private static Font titleFont = new Font(Font.FontFamily.TIMES_ROMAN, 15,
+			Font.BOLD);
 	private static Font defaultFont = new Font(Font.FontFamily.TIMES_ROMAN, 12,
 			Font.NORMAL);
-	private static Font titleFont = new Font(Font.FontFamily.TIMES_ROMAN, 15,
-			Font.NORMAL);
-	private static Font subTitleFont = new Font(Font.FontFamily.TIMES_ROMAN,
-			12, Font.UNDERLINE);
-	private static Font catFont = new Font(Font.FontFamily.TIMES_ROMAN, 18,
+	private static Font infoFont = new Font(Font.FontFamily.TIMES_ROMAN, 12,
 			Font.BOLD);
 
 	/**
@@ -27,47 +26,115 @@ public class Teste {
 	 */
 	public static void main(String[] args) throws Exception {
 		try {
-			Document document = new Document();
+			Document document = new Document(PageSize.A4, 80, 80, 20, 20);
 			PdfWriter.getInstance(document, new FileOutputStream(FILE));
+
 			document.open();
 
-			Paragraph paragraph = new Paragraph(
-					"CURSO DE CIÊNCIA DA COMPUTAÇÃO", titleFont);
-			paragraph.setAlignment(Element.ALIGN_CENTER);
-			document.add(paragraph);
+			Paragraph paragraph;
+			Phrase phrase;
 
-			addEmptyLine(document, 2);
+			Image image = Image.getInstance("/Users/Matheus/Desktop/ufjf.png");
+			image.scalePercent(7);
+			image.setAlignment(Element.ALIGN_RIGHT);
+			document.add(image);
 
 			paragraph = new Paragraph(
-					"Composição da Banca do Trabalho de Conclusão do curso",
-					subTitleFont);
+					"AVALIAÇÃO FINAL DO TRABALHO DE BACHARELADO", titleFont);
 			paragraph.setAlignment(Element.ALIGN_CENTER);
+			paragraph.setSpacingAfter(35);
 			document.add(paragraph);
 
-			// Left
-			paragraph = new Paragraph("This is left aligned text");
-			paragraph.setAlignment(Element.ALIGN_LEFT);
+			phrase = new Phrase("");
+			phrase.add(new Phrase("Acadêmico (a): ", infoFont));
+			phrase.add(new Phrase("Matheus de Oliveira do Carmo Marques",
+					defaultFont));
+			paragraph = new Paragraph(phrase);
+			paragraph.setSpacingAfter(15);
 			document.add(paragraph);
-			// Left with indentation
+
+			phrase = new Phrase("");
+			phrase.add(new Phrase("Número de Matrícula: ", infoFont));
+			phrase.add(new Phrase("201235027", defaultFont));
+			paragraph = new Paragraph(phrase);
+			paragraph.setSpacingAfter(15);
+			document.add(paragraph);
+
+			phrase = new Phrase("");
+			phrase.add(new Phrase("Título da Monografia: ", infoFont));
+			phrase.add(new Phrase("Inferência de Contexto", defaultFont));
+			paragraph = new Paragraph(phrase);
+			paragraph.setSpacingAfter(15);
+			document.add(paragraph);
+
+			paragraph = new Paragraph("APRESENTAÇÃO DO TRABALHO:", infoFont);
+			paragraph.setSpacingAfter(15);
+			document.add(paragraph);
+
+			phrase = new Phrase("");
+			phrase.add(new Phrase("Data: ", infoFont));
+			phrase.add(new Phrase("03/07/2014", defaultFont));
+			phrase.add(new Phrase("  Horário: ", infoFont));
+			phrase.add(new Phrase("17:00", defaultFont));
+			phrase.add(new Phrase("  Local: ", infoFont));
+			phrase.add(new Phrase("sala 304", defaultFont));
+			paragraph = new Paragraph(phrase);
+			paragraph.setSpacingAfter(15);
+			document.add(paragraph);
+
+			paragraph = new Paragraph("Parecer da Banca Examinadora: ",
+					infoFont);
+			paragraph.setSpacingAfter(6);
+			document.add(paragraph);
+
 			paragraph = new Paragraph(
-					"Aliquam erat volutpat. Ut hendrerit, eros adipiscing cursus sodales, ipsum diam posuere tortor, eget venenatis turpis magna non ante. Nulla euismod et tellus posuere suscipit. Sed quis lectus ut ipsum scelerisque ultricies. Etiam vitae congue velit. Integer sagittis laoreet dapibus. Donec condimentum, tortor quis rutrum consequat, arcu mauris commodo ipsum, a pretium felis libero id neque. Vivamus sed tortor in ipsum sodales venenatis nec eget ligula. Vivamus nec tellus a mi varius aliquet et non mi. Phasellus luctus purus eu dignissim mollis. Aliquam vitae mi nisi. Sed vitae diam volutpat lorem porttitor euismod. Cras tincidunt enim sed adipiscing mollis. Phasellus consectetur nibh vitae nibh hendrerit ultricies vitae eget leo. Integer pharetra libero et dolor egestas, vel venenatis neque porta.");
+					"________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________",
+					defaultFont);
+			paragraph.setSpacingAfter(30);
 			document.add(paragraph);
 
-			PdfPTable table = new PdfPTable(1);
-			table.setWidthPercentage(100);
-			table.addCell("Aliquam erat volutpat. Ut hendrerit, eros adipiscing cursus sodales, ipsum diam posuere tortor, eget venenatis turpis magna non ante. Nulla euismod et tellus posuere suscipit. Sed quis lectus ut ipsum scelerisque ultricies. Etiam vitae congue velit. Integer sagittis laoreet dapibus. Donec condimentum, tortor quis rutrum consequat, arcu mauris commodo ipsum, a pretium felis libero id neque. Vivamus sed tortor in ipsum sodales venenatis nec eget ligula. Vivamus nec tellus a mi varius aliquet et non mi. Phasellus luctus purus eu dignissim mollis. Aliquam vitae mi nisi. Sed vitae diam volutpat lorem porttitor euismod. Cras tincidunt enim sed adipiscing mollis. Phasellus consectetur nibh vitae nibh hendrerit ultricies vitae eget leo. Integer pharetra libero et dolor egestas, vel venenatis neque porta.");
-			document.add(table);
+			phrase = new Phrase("");
+			phrase.add(new Phrase("Conceito Final:  ", infoFont));
+			phrase.add(new Phrase(
+					"______ (__________________________________________)",
+					defaultFont));
+			paragraph = new Paragraph(phrase);
+			paragraph.setSpacingAfter(15);
+			document.add(paragraph);
+
+			phrase = new Phrase("");
+			phrase.add(new Phrase("Banca Examinadora:  ", infoFont));
+			phrase.add(new Phrase(
+					"_____________________________________________",
+					defaultFont));
+			paragraph = new Paragraph(phrase);
+			paragraph.setSpacingAfter(15);
+			document.add(paragraph);
+
+			paragraph = new Paragraph(
+					"_____________________________________________",
+					defaultFont);
+			paragraph.setIndentationLeft(115);
+			paragraph.setSpacingAfter(15);
+			document.add(paragraph);
+
+			paragraph = new Paragraph(
+					"_____________________________________________",
+					defaultFont);
+			paragraph.setIndentationLeft(115);
+			paragraph.setSpacingAfter(15);
+			document.add(paragraph);
+
+			phrase = new Phrase("");
+			phrase.add(new Phrase("Em: ", infoFont));
+			phrase.add(new Phrase("___/___/_____", defaultFont));
+			paragraph = new Paragraph(phrase);
+			paragraph.setSpacingBefore(20);
+			document.add(paragraph);
 
 			document.close();
 		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	private static void addEmptyLine(Document document, int number)
-			throws DocumentException {
-		for (int i = 0; i < number; i++) {
-			document.add(new Paragraph(" "));
+			throw e;
 		}
 	}
 

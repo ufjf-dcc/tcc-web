@@ -5,8 +5,12 @@
 -->
 
 <zk>
+	<system-conifg>
+		<crawlable>true</crawlable>
+	</system-conifg>
 	<device-config>
 		<device-type>ajax</device-type>
+		<crawlable>true</crawlable>
 		<timeout-uri>/timeout.zul</timeout-uri><!-- An empty URL can cause the browser to reload the same URL -->
 	</device-config>
 	<library-property>

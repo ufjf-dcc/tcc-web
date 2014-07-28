@@ -92,7 +92,7 @@ public class EditorTccController extends CommonsController {
 		}
 		hasCoOrientador = (tcc.getCoOrientador() != null);
 		hasSubtitulo = (tcc.getSubNomeTCC() != null);
-		departamentos = new DepartamentoBusiness().getAll();
+		departamentos = (new DepartamentoBusiness()).getAll();
 	}
 
 	private boolean canEdit() {

@@ -124,6 +124,13 @@ public class TCCBusiness {
 			return null;
 	}
 	
+	public List<TCC> getTCCByCursoAndCalendar(Curso curso, CalendarioSemestre currentCalendar) {
+		if(currentCalendar != null)
+			return tccDao.getTCCByCursoAndCalendar(curso, currentCalendar);
+		else
+			return null;
+	}
+	
 	public TCC getTCCById(int id) {
 		return tccDao.getTCCById(id);
 	}

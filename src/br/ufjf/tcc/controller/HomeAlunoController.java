@@ -17,10 +17,12 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
+import br.ufjf.tcc.business.AvisoBusiness;
 import br.ufjf.tcc.business.DepartamentoBusiness;
 import br.ufjf.tcc.business.PrazoBusiness;
 import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.business.UsuarioBusiness;
+import br.ufjf.tcc.model.Aviso;
 import br.ufjf.tcc.model.CalendarioSemestre;
 import br.ufjf.tcc.model.Departamento;
 import br.ufjf.tcc.model.Prazo;
@@ -35,31 +37,6 @@ public class HomeAlunoController extends CommonsController {
 	private List<Departamento> departamentos;
 	private PrazoBusiness prazoBusiness = new PrazoBusiness();
 	private String gridTitle = "Semestre ?";
-
-	public List<Prazo> getPrazos() {
-		return prazos;
-	}
-	
-	public List<String> getInfos() {
-		List<String> infos = new ArrayList<String>();
-		TCCBusiness tccBusiness = new TCCBusiness();
-		if(tccBusiness.getMissing(getUsuario().getTcc().get(0), true)){
-			infos.addAll(tccBusiness.getErrors());
-		}
-		return infos;
-	}
-
-	public void setPrazos(List<Prazo> prazos) {
-		this.prazos = prazos;
-	}
-
-	public int getCurrentPrazo() {
-		return currentPrazo;
-	}
-
-	public String getGridTitle() {
-		return gridTitle;
-	}
 
 	@Init
 	public void init() {
@@ -85,6 +62,37 @@ public class HomeAlunoController extends CommonsController {
 					+ ")";
 
 		}
+	}
+
+	public List<Prazo> getPrazos() {
+		return prazos;
+	}
+
+	public List<String> getInfos() {
+		List<String> infos = new ArrayList<String>();
+
+		for (Aviso aviso : (new AvisoBusiness()).getAvisosByCurso(getUsuario()
+				.getCurso()))
+			infos.add(aviso.getMensagem());
+
+		TCCBusiness tccBusiness = new TCCBusiness();
+		if (getUsuario().getTcc() != null && getUsuario().getTcc().size() != 0
+				&& tccBusiness.getMissing(getUsuario().getTcc().get(0), true)) {
+			infos.addAll(tccBusiness.getErrors());
+		}
+		return infos;
+	}
+
+	public void setPrazos(List<Prazo> prazos) {
+		this.prazos = prazos;
+	}
+
+	public int getCurrentPrazo() {
+		return currentPrazo;
+	}
+
+	public String getGridTitle() {
+		return gridTitle;
 	}
 
 	@Command

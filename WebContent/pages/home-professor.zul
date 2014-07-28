@@ -6,61 +6,97 @@
 		viewModel="@id('vm') @init('br.ufjf.tcc.controller.HomeProfessorController')" height="100%">
 		<include src="@load(vm.menu)" />
 		<hlayout spacing="10px" height="100%" style="margin-top:10px">
-
-			<grid hflex="1"
-				visible="@load(vm.usuario.tipoUsuario.idTipoUsuario gt 2 and (not vm.currentCalendarExists or not vm.currentQuestionaryExists or not vm.currentQuestionaryUsed ? 'true' : 'false'))">
-				<columns>
-					<column label="Funções de coordenador"
-						style="font-weight:bold;text-align:center" />
-				</columns>
-				<rows>
-					<row
-						visible="@load(vm.currentQuestionaryExists ? 'false' : 'true')">
-						<div align="center">
+			<div hflex="1">
+				<grid
+					visible="@load(vm.usuario.tipoUsuario.idTipoUsuario gt 2 and (not vm.currentCalendarExists or not vm.currentQuestionaryExists or not vm.currentQuestionaryUsed ? 'true' : 'false'))">
+					<columns>
+						<column label="Funções de coordenador"
+							style="font-weight:bold;text-align:center" />
+					</columns>
+					<rows>
+						<row
+							visible="false">
+							<div align="center">
+								<label
+									value="O seu curso ainda não possui um questionário para o semestre atual." />
+								<hlayout>
+									<button label="Criar"
+										onClick="@command('createQuestionary')" />
+									<button label="Criar a partir de antigo"
+										onClick="@command('createQuestionaryFromOld')" />
+								</hlayout>
+							</div>
+						</row>
+						<row
+							visible="false">
+							<div align="center">
+								<label
+									value="Como o questionário atual ainda não foi utilizado, você pode editá-lo." />
+								<button label="Editar questionário"
+									onClick="@command('editQuestionary')" />
+							</div>
+						</row>
+						<row
+							visible="@load(vm.currentCalendarExists ? 'false' : 'true')">
+							<div align="center">
+								<label
+									value="O seu curso ainda não possui um calendário para o semestre atual." />
+								<hlayout>
+									<button label="Criar calendário"
+										onClick="@command('createCalendar')" />
+								</hlayout>
+							</div>
+						</row>
+						<row
+							visible="@load(vm.currentCalendarExists ? 'true' : 'false')">
+							<div align="center">
+								<label
+									value="O seu curso já possui um calendário para o semestre atual, mas você pode editar os prazos ainda não vencidos." />
+								<hlayout>
+									<button label="Editar prazos"
+										onClick="@command('editCalendar')" />
+								</hlayout>
+							</div>
+						</row>
+					</rows>
+				</grid>
+						
+				<grid 
+					visible="@load(vm.usuario.tipoUsuario.idTipoUsuario gt 2)"
+					model="@load(vm.avisos)"
+					emptyMessage="Nenhum mensagem"
+					style="margin-top:10px;">
+					<auxhead>
+						<auxheader colspan="2">
+							<vlayout>
+								<hlayout>
+									<label value="Mensagem: "
+										style="margin-top:5px" />
+									<textbox
+											value="@bind(vm.aviso.mensagem)" hflex="1"/>
+								</hlayout>
+								<div align="center"
+									width="100%">
+									<button
+										label="Adicionar mensagem" onClick="@command('addAviso')" />
+								</div>
+							</vlayout>
+						</auxheader>
+					</auxhead>
+					<columns>
+						<column label="Mensagem" />
+						<column label="Ação" width="60px" />
+					</columns>
+					<template name="model">
+						<row>
 							<label
-								value="O seu curso ainda não possui um questionário para o semestre atual." />
-							<hlayout>
-								<button label="Criar"
-									onClick="@command('createQuestionary')" />
-								<button label="Criar a partir de antigo"
-									onClick="@command('createQuestionaryFromOld')" />
-							</hlayout>
-						</div>
-					</row>
-					<row
-						visible="@load(vm.currentQuestionaryExists ? (vm.currentQuestionaryUsed ? 'false' : 'true') : 'false')">
-						<div align="center">
-							<label
-								value="Como o questionário atual ainda não foi utilizado, você pode editá-lo." />
-							<button label="Editar questionário"
-								onClick="@command('editQuestionary')" />
-						</div>
-					</row>
-					<row
-						visible="@load(vm.currentCalendarExists ? 'false' : 'true')">
-						<div align="center">
-							<label
-								value="O seu curso ainda não possui um calendário para o semestre atual." />
-							<hlayout>
-								<button label="Criar calendário"
-									onClick="@command('createCalendar')" />
-							</hlayout>
-						</div>
-					</row>
-					<row
-						visible="@load(vm.currentCalendarExists ? 'true' : 'false')">
-						<div align="center">
-							<label
-								value="O seu curso já possui um calendário para o semestre atual, mas você pode editar os prazos ainda não vencidos." />
-							<hlayout>
-								<button label="Editar prazos"
-									onClick="@command('editCalendar')" />
-							</hlayout>
-						</div>
-					</row>
-				</rows>
-			</grid>
-
+								value="@load(each.mensagem)" />
+							<button image="/img/delete.png"
+								onClick="@command('deleteAviso', aviso=each)" />
+						</row>
+					</template>
+				</grid>
+			</div>
 			<grid hflex="3"
 				model="@load(vm.filterTccs) @template('tccs')"
 				width="700px" mold="paging" autopaging="true" vflex="true">

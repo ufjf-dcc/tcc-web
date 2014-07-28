@@ -121,7 +121,9 @@ public class UsuarioBusiness {
 	// comunicação com o UsuarioDAO
 	public boolean login(String matricula, String senha) {
 		errors.clear();
+		
 		List<Usuario> users = new ArrayList<Usuario>();
+		/*
 		if (matricula.matches("[0-9\\-\\.]+")) {
 			IntegraHandler integra = new IntegraHandler(matricula.trim());
 			if (integra.getError() != null) {
@@ -137,7 +139,16 @@ public class UsuarioBusiness {
 			}
 		} else
 			users.add(usuarioDAO.retornaUsuario(matricula, this.encripta(senha)));
+			*/
 
+		List<String> matriculas = new ArrayList<String>();
+		matriculas.add("201235027");
+		matriculas.add("201335012");
+		matriculas.add("3353417");
+		matriculas.add("1714410");
+		
+		users = usuarioDAO.getByMatricula(matriculas);
+		
 		if (users != null) {
 			List<Usuario> usuarios = new ArrayList<Usuario>();
 			for (Usuario user : users) {

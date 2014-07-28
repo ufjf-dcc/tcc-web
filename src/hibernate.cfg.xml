@@ -20,5 +20,6 @@
 		<mapping class="br.ufjf.tcc.model.TipoUsuario" />
 		<mapping class="br.ufjf.tcc.model.Usuario" />
 		<mapping class="br.ufjf.tcc.model.Departamento" />
+		<mapping class="br.ufjf.tcc.model.Aviso" />
 	</session-factory>
 </hibernate-configuration>

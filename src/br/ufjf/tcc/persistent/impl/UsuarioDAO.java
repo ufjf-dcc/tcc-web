@@ -228,7 +228,7 @@ public class UsuarioDAO extends GenericoDAO {
 		return null;
 	}
 
-	public List<Usuario> getByMatricula(JSONArray matriculas) {
+	public List<Usuario> getByMatricula(List<String> matriculas) {
 		try {
 			Query query = getSession()
 					.createQuery(
