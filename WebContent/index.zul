@@ -64,7 +64,7 @@
 				</auxheader>
 			</auxhead>
 			<columns>
-				<column hflex="13" label="NomeTCC" sort="auto(nomeTCC)" />
+				<column hflex="13" label="Trabalho" sort="auto(nomeTCC)" />
 				<column hflex="4" label="Autor"
 					sort="auto(aluno.nomeUsuario)" />
 				<column hflex="1" label="PDF" />

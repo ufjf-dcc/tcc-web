@@ -214,10 +214,10 @@
 
 						<hlayout style="margin:5px;line-height:20px;">
 							<button hflex="1"
-								label="Selecionar arquivo (PDF)..." upload="true"
+								label="Selecionar arquivo (PDF)..." upload="true,maxsize=204800"
 								onUpload="@command('upload', button=self, evt=event)" />
 							<button hflex="1"
-								label="Selecionar arquivo extra..." upload="true"
+								label="Selecionar arquivo extra..." upload="true,maxsize=204800"
 								onUpload="@command('extraUpload', button=self, evt=event)" />
 						</hlayout>
 					</vlayout>

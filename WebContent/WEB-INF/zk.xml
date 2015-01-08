@@ -5,9 +5,8 @@
 -->
 
 <zk>
-	<system-conifg>
-		<crawlable>true</crawlable>
-	</system-conifg>
+	<system-config>
+	</system-config>
 	<device-config>
 		<device-type>ajax</device-type>
 		<crawlable>true</crawlable>

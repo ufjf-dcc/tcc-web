@@ -7,6 +7,12 @@
 		<!-- propriedade que mostra os comandos sql utilizados no Console da IDE -->
 		<property name="show_sql">true</property>
 
+		<property name="hibernate.c3p0.min_size">5</property>
+		<property name="hibernate.c3p0.max_size">20</property>
+		<property name="hibernate.c3p0.timeout">300</property>
+		<property name="hibernate.c3p0.max_statements">50</property>
+		<property name="hibernate.c3p0.idle_test_period">3000</property>
+
 		<!-- Classes que irão mapear as Entidades do Banco -->
 		<mapping class="br.ufjf.tcc.model.CalendarioSemestre" />
 		<mapping class="br.ufjf.tcc.model.Curso" />
