@@ -87,13 +87,6 @@ public class MenuController extends CommonsController {
 	}
 
 	@Command
-	public void settings() {
-		final Window dialog = (Window) Executions.createComponents(
-				"/pages/configuracoes.zul", null, null);
-		dialog.doModal();
-	}
-
-	@Command
 	public void changeProf() {
 		if (canChangeProfile) {
 			final Window dialog = (Window) Executions.createComponents(

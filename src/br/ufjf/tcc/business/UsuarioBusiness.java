@@ -7,9 +7,7 @@ import java.util.Random;
 
 import jonelo.jacksum.JacksumAPI;
 import jonelo.jacksum.algorithm.AbstractChecksum;
-
-import org.zkoss.json.JSONArray;
-
+import br.ufjf.ice.integra3.ws.login.interfaces.WsException_Exception;
 import br.ufjf.tcc.library.IntegraHandler;
 import br.ufjf.tcc.library.SessionManager;
 import br.ufjf.tcc.model.Curso;
@@ -119,40 +117,35 @@ public class UsuarioBusiness {
 	}
 
 	// comunicação com o UsuarioDAO
-	public boolean login(String matricula, String senha) {
+	public boolean login(String login, String password) {
 		errors.clear();
-		
-		List<Usuario> users = new ArrayList<Usuario>();
-		/*
-		if (matricula.matches("[0-9\\-\\.]+")) {
-			IntegraHandler integra = new IntegraHandler(matricula.trim());
-			if (integra.getError() != null) {
-				errors.add(integra.getError());
-				return false;
-			} else {
-				if (integra.getUser() != null
-						&& ((String) integra.getUser().get("passmd5"))
-								.equals(this.encripta(senha, "md5"))) {
-					users = usuarioDAO.getByMatricula((JSONArray) integra
-							.getUser().get("profile"));
-				}
-			}
-		} else
-			users.add(usuarioDAO.retornaUsuario(matricula, this.encripta(senha)));
-			*/
 
-		List<String> matriculas = new ArrayList<String>();
-		matriculas.add("201235027");
-		matriculas.add("201335012");
-		matriculas.add("3353417");
-		matriculas.add("1714410");
-		
-		users = usuarioDAO.getByMatricula(matriculas);
-		
-		if (users != null) {
+		List<Usuario> users = new ArrayList<Usuario>();
+		IntegraHandler integra = new IntegraHandler();
+
+		if (login.matches("[0-9]+")) {
+			try {
+				integra.doLogin(login, this.encripta(password, "md5"));
+				users = usuarioDAO.getByMatricula(integra.getProfiles());
+			} catch (WsException_Exception e) {
+				errors.add(e.getFaultInfo().getErrorUserMessage());
+				return false;
+			}
+		} else {
+			Usuario user = usuarioDAO.retornaUsuario(login, this.encripta(password));
+			if(user != null)
+				users.add(user);
+		}
+
+		if (users != null && users.size() > 0) {
 			List<Usuario> usuarios = new ArrayList<Usuario>();
 			for (Usuario user : users) {
 				if (user.isAtivo()) {
+					if(user.getNomeUsuario() != integra.getInfos().getNome() || user.getEmail() != integra.getInfos().getEmailSiga()) {
+						user.setNomeUsuario(integra.getInfos().getNome());
+						user.setEmail(integra.getInfos().getEmailSiga());
+						this.editar(user);
+					}
 					usuarios.add(user);
 				}
 			}

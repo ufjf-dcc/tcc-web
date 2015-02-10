@@ -9,6 +9,9 @@ HIBERNATE.DB = jdbc:mysql://localhost/tccweb
 HIBERNATE.USER = root
 HIBERNATE.PASS = root
 
+# Integra
+INTEGRA.APPTOKEN = 2cd39
+
 # File Manager
 FILE.PATH = /Users/Matheus/Desenvolvimento/htdocs/tcc/files/
 #FILE.PATH = /TCCFiles/

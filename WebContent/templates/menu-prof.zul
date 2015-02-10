@@ -11,8 +11,6 @@
 			<menuitem label="Trocar de Perfil" style="float:right"
 				visible="@load(hf.canChangeProfile)"
 				onClick="@command('changeProf')" />
-			<menuitem label="Configurações" style="float:right"
-				onClick="@command('settings')" />
 		</menubar>
 	</div>
 </zk>

@@ -3,7 +3,6 @@ package br.ufjf.tcc.persistent.impl;
 import java.util.List;
 
 import org.hibernate.Query;
-import org.zkoss.json.JSONArray;
 
 import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.model.Departamento;

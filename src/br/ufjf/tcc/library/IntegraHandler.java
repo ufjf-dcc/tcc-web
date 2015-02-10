@@ -1,70 +1,45 @@
 package br.ufjf.tcc.library;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.zkoss.json.JSONArray;
-import org.zkoss.json.JSONObject;
-import org.zkoss.json.parser.JSONParser;
+import br.ufjf.ice.integra3.ws.login.interfaces.IWsLogin;
+import br.ufjf.ice.integra3.ws.login.interfaces.Profile;
+import br.ufjf.ice.integra3.ws.login.interfaces.WsException_Exception;
+import br.ufjf.ice.integra3.ws.login.interfaces.WsLoginResponse;
+import br.ufjf.ice.integra3.ws.login.interfaces.WsUserInfoResponse;
+import br.ufjf.ice.integra3.ws.login.service.WSLogin;
 
 public class IntegraHandler {
 
-	private String error;
-	private JSONObject user;
+	private List<String> profiles;
+	private WsUserInfoResponse infos;
+	
+	public IntegraHandler() {
+		profiles = new ArrayList<String>();
+	}
 
-	public IntegraHandler(String cpf) {
-		try {
-			this.error = null;
-			this.user = null;
-			URL obj = new URL(
-					"http://integra.ice.ufjf.br/integra/DadosPessoa?cpf="
-							+ cpf.replace(".", "").replace("-", ""));
+	public void doLogin(String login, String password) throws WsException_Exception {
+			IWsLogin integra = new WSLogin().getWsLoginServicePort();
+			WsLoginResponse user = integra.login(login,
+					password,
+					ConfHandler.getConf("INTEGRA.APPTOKEN"));
 
-			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-			con.setRequestMethod("GET");
+			infos = integra.getUserInformation(user.getToken()); // Pegando informações
 
-			BufferedReader in = new BufferedReader(new InputStreamReader(
-					con.getInputStream()));
-			StringBuffer response = new StringBuffer();
-			String inputLine;
+			List<Profile> profilesList = (infos.getProfileList()).getProfile(); // Pegando a lista de Profiles
 
-			while ((inputLine = in.readLine()) != null) {
-				response.append(inputLine);
+			for (Profile profile : profilesList) { // Varrendo a lista de Profiles e pegando as Matriculas do usuário
+				profiles.add(profile.getMatricula());
 			}
-
-			in.close();
-
-			JSONParser parser = new JSONParser();
-			JSONObject jsonObject = (JSONObject) parser.parse(response
-					.toString());
-			if (jsonObject != null) {
-				if (((String) jsonObject.get("codeResult")).equals("OK")) {
-					this.user = (JSONObject) jsonObject.get("result");
-					JSONArray prof = new JSONArray();
-					prof.add(this.user.get("profile"));
-					prof.add("201335012");
-					prof.add("3353417");
-					prof.add("1714410");
-					this.user.put("profile", prof);
-				} else if (((String) jsonObject.get("codeResult")).equals("E_BANCO_DADOS")) {
-					this.error = "O Integra não conseguiu se conectar o SIGA. Tente mais tarde.";
-				}
-			} else
-				this.error = "Erro ao tentar se conectar ao Integra. Tente mais tarde.";
-
-		} catch (Exception e) {
-			this.error = "Erro ao tentar se conectar ao Integra. Tente mais tarde.";
-		}
 	}
 
-	public String getError() {
-		return error;
+	public List<String> getProfiles() {
+		return profiles;
 	}
 
-	public JSONObject getUser() {
-		return user;
+	public WsUserInfoResponse getInfos() {
+		return infos;
 	}
 
 }

@@ -61,6 +61,11 @@ public class TCCSemestreController extends CommonsController {
 						.show("Matricula de usuário já existe e pertence a um curso diferente.",
 								"Erro", Messagebox.OK, Messagebox.ERROR);
 				return;
+			} else if (userTemp.getTipoUsuario().getIdTipoUsuario() != Usuario.ALUNO) {
+				Messagebox
+						.show("Matricula de usuário já existe e não é de aluno.",
+								"Erro", Messagebox.OK, Messagebox.ERROR);
+				return;
 			} else {
 				for (TCC tcc : tccsSemestre) {
 					if (tcc.getAluno().getMatricula()
@@ -77,6 +82,7 @@ public class TCCSemestreController extends CommonsController {
 		} else {
 			newTcc.getAluno().setMatricula(
 					newTcc.getAluno().getMatricula().trim());
+			newTcc.getAluno().setSenha("123");
 			newTcc.getAluno().setAtivo(true);
 			newTcc.getAluno().setCurso(getUsuario().getCurso());
 			TipoUsuario tipo = new TipoUsuario();
