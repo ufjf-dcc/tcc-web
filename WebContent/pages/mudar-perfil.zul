@@ -1,0 +1,22 @@
+<?page title="Confirmação de Cadastro" contentType="text/html;charset=UTF-8"?>
+<?init class="br.ufjf.tcc.controller.AuthController"?>
+<zk>
+	<window id="settings" title="Trocar Perfil" width="350px"
+		border="normal" position="center,center" closable="true"
+		apply="org.zkoss.bind.BindComposer"
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.MenuController')"
+		onCancel="self.onClose()">
+
+		<grid model="@load(vm.users) @template('profiles')" vflex="true">
+			<columns>
+				<column hflex="1" label="Selecione o perfil:" />
+			</columns>
+			<template name="profiles">
+				<row>
+					<label value="@load(each.matricula)"
+						onClick="@command('changeProfile', user=each)" style="cursor:hand;" />
+				</row>
+			</template>
+		</grid>
+	</window>
+</zk>

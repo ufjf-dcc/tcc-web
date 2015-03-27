@@ -45,7 +45,7 @@ public class Curso implements Serializable {
 	 */
 	@Column(name = "codigoCurso", length = 50, nullable = false)
 	private String codigoCurso;
-	
+
 	/**
 	 * Campo com o nome do curso. Relaciona com a coluna {@code nomeCurso} do
 	 * banco através da anotação
@@ -63,6 +63,16 @@ public class Curso implements Serializable {
 	 */
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "curso")
 	private List<Usuario> usuarios = new ArrayList<Usuario>();
+
+	/**
+	 * Relacionamento 1 para N entre Curso e Aviso. Mapeada em
+	 * {@link Aviso} pela variável {@code curso} e retorno do tipo
+	 * {@code LAZY} que indica que não será carregado automáticamente este dado
+	 * quando retornarmos o {@link Curso}.
+	 * 
+	 */
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "curso")
+	private List<Aviso> avisos = new ArrayList<Aviso>();
 
 	/**
 	 * Relacionamento 1 para N entre Curso e Questionario. Mapeada em
@@ -86,11 +96,11 @@ public class Curso implements Serializable {
 
 	@Transient
 	private boolean editingStatus;
-	
-	public Curso(){
-		
+
+	public Curso() {
+
 	}
-	
+
 	public Curso(String codigoCurso, String nomeCurso) {
 		this.codigoCurso = codigoCurso;
 		this.nomeCurso = nomeCurso;
@@ -103,7 +113,7 @@ public class Curso implements Serializable {
 	public void setIdCurso(int idCurso) {
 		this.idCurso = idCurso;
 	}
-	
+
 	public String getNomeCurso() {
 		return nomeCurso;
 	}
@@ -144,10 +154,18 @@ public class Curso implements Serializable {
 		this.calendarios = calendarios;
 	}
 
+	public List<Aviso> getAvisos() {
+		return avisos;
+	}
+
+	public void setAvisos(List<Aviso> avisos) {
+		this.avisos = avisos;
+	}
+
 	public boolean getEditingStatus() {
 		return editingStatus;
 	}
-	
+
 	public void setEditingStatus(boolean editingStatus) {
 		this.editingStatus = editingStatus;
 	}
@@ -161,5 +179,5 @@ public class Curso implements Serializable {
 		this.calendarios = another.calendarios;
 		this.editingStatus = another.editingStatus;
 	}
-	
+
 }

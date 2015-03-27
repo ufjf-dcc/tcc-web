@@ -17,10 +17,12 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
+import br.ufjf.tcc.business.AvisoBusiness;
 import br.ufjf.tcc.business.DepartamentoBusiness;
 import br.ufjf.tcc.business.PrazoBusiness;
 import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.business.UsuarioBusiness;
+import br.ufjf.tcc.model.Aviso;
 import br.ufjf.tcc.model.CalendarioSemestre;
 import br.ufjf.tcc.model.Departamento;
 import br.ufjf.tcc.model.Prazo;
@@ -36,27 +38,33 @@ public class HomeAlunoController extends CommonsController {
 	private PrazoBusiness prazoBusiness = new PrazoBusiness();
 	private String gridTitle = "Semestre ?";
 
-	public List<Prazo> getPrazos() {
-		return prazos;
-	}
-
-	public void setPrazos(List<Prazo> prazos) {
-		this.prazos = prazos;
-	}
-
-	public int getCurrentPrazo() {
-		return currentPrazo;
-	}
-
-	public String getGridTitle() {
-		return gridTitle;
-	}
-
 	@Init
 	public void init() {
 		CalendarioSemestre currentCalendar = getCurrentCalendar();
 		if (currentCalendar != null) {
+			
 			prazos = getCurrentCalendar().getPrazos();
+			
+			TCC tccUsuario = (new TCCBusiness()).getCurrentTCCByAuthor(getUsuario(), getCurrentCalendar(getUsuario().getCurso()));
+			if(tccUsuario!=null)
+			if(tccUsuario.isProjeto())
+			{
+				for(int i=0;i<prazos.size();i++)
+					if(prazos.get(i).getTipo()!=Prazo.PRAZO_PROJETO)
+					{
+						prazos.remove(i);
+						i--;
+					}
+			}
+			else
+			{
+				for(int i=0;i<prazos.size();i++)
+					if(prazos.get(i).getTipo()==Prazo.PRAZO_PROJETO)
+					{
+						prazos.remove(i);
+						i--;
+					}
+			}
 
 			DateTime currentDay = new DateTime(new Date());
 
@@ -76,6 +84,37 @@ public class HomeAlunoController extends CommonsController {
 					+ ")";
 
 		}
+	}
+
+	public List<Prazo> getPrazos() {
+		return prazos;
+	}
+
+	public List<String> getInfos() {
+		List<String> infos = new ArrayList<String>();
+
+		for (Aviso aviso : (new AvisoBusiness()).getAvisosByCurso(getUsuario()
+				.getCurso()))
+			infos.add(aviso.getMensagem());
+
+		TCCBusiness tccBusiness = new TCCBusiness();
+		if (getUsuario().getTcc() != null && getUsuario().getTcc().size() != 0
+				&& tccBusiness.getMissing(getUsuario().getTcc().get(0), true)) {
+			infos.addAll(tccBusiness.getErrors());
+		}
+		return infos;
+	}
+
+	public void setPrazos(List<Prazo> prazos) {
+		this.prazos = prazos;
+	}
+
+	public int getCurrentPrazo() {
+		return currentPrazo;
+	}
+
+	public String getGridTitle() {
+		return gridTitle;
 	}
 
 	@Command

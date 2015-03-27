@@ -227,6 +227,28 @@ public class UsuarioDAO extends GenericoDAO {
 		return null;
 	}
 
+	public List<Usuario> getByMatricula(List<String> matriculas) {
+		try {
+			Query query = getSession()
+					.createQuery(
+							"SELECT u FROM Usuario AS u LEFT JOIN FETCH u.curso JOIN FETCH u.tipoUsuario WHERE u.matricula in (:matriculas)");
+			query.setParameterList("matriculas", matriculas);
+
+			@SuppressWarnings("unchecked")
+			List<Usuario> resultado = query.list();
+
+			getSession().close();
+
+			if (resultado != null)
+				return resultado;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
 	public Usuario getCoordenadorByCurso(Curso curso) {
 		try {
 			Query query = getSession()

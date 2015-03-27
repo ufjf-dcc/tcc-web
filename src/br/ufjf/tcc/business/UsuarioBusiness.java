@@ -7,6 +7,8 @@ import java.util.Random;
 
 import jonelo.jacksum.JacksumAPI;
 import jonelo.jacksum.algorithm.AbstractChecksum;
+import br.ufjf.ice.integra3.ws.login.interfaces.WsException_Exception;
+import br.ufjf.tcc.library.IntegraHandler;
 import br.ufjf.tcc.library.SessionManager;
 import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.model.Departamento;
@@ -15,6 +17,7 @@ import br.ufjf.tcc.model.Usuario;
 import br.ufjf.tcc.persistent.impl.UsuarioDAO;
 
 public class UsuarioBusiness {
+	
 	private UsuarioDAO usuarioDAO;
 	private List<String> errors = new ArrayList<String>();
 
@@ -115,23 +118,96 @@ public class UsuarioBusiness {
 	}
 
 	// comunicação com o UsuarioDAO
-	public boolean login(String matricula, String senha) {
+	public boolean login(String login, String password) {
 		errors.clear();
-		Usuario usuario = usuarioDAO.retornaUsuario(matricula,
-				this.encripta(senha));
 
-		if (usuario != null) {
-			if (usuario.isAtivo()) {
-				SessionManager.setAttribute("usuario", usuario);
+		List<Usuario> users = new ArrayList<Usuario>();
+		IntegraHandler integra = new IntegraHandler();
+		boolean usuarioIntegra = false;
+		
+		if (login.matches("[0-9]+")) {
+			try {
+				integra.doLogin(login, this.encripta(password, "md5"));
+				users = usuarioDAO.getByMatricula(integra.getProfiles());
+				usuarioIntegra = true;
+				
+			} catch (WsException_Exception e) {
+				errors.add(e.getFaultInfo().getErrorUserMessage());
+				return false;
+			}
+		} else {
+			Usuario user = usuarioDAO.retornaUsuario(login, this.encripta(password));
+			if(user != null)
+			{
+				users.add(user);
+				usuarioIntegra = false;
+
+			}
+		}
+		
+		if (users != null && users.size() > 0) {
+			List<Usuario> usuarios = new ArrayList<Usuario>();
+			for (Usuario user : users) {
+				if (user.isAtivo()) {
+					if(usuarioIntegra)
+						if(user.getNomeUsuario() != integra.getInfos().getNome() || user.getEmail() != integra.getInfos().getEmailSiga()) {
+							user.setNomeUsuario(integra.getInfos().getNome());
+							user.setEmail(integra.getInfos().getEmailSiga());
+							this.editar(user);
+						}
+					usuarios.add(user);
+				}
+			}
+
+			if (usuarios.size() > 0) {
+				SessionManager.setAttribute("usuarios", usuarios);
 				return true;
 			} else {
-				errors.add("Seu casdastro não está ativo. Por favor contate o coordenador de seu curso.");
+				errors.add("Você não possui uma conta ativa. Por favor contate o coordenador de seu curso.");
 				return false;
 			}
 		}
 
-		errors.add("Usuário ou senha inválidos!");
+		errors.add("Identificador ou senha inválidos! Ou não cadastrado!");
 		return false;
+		
+		
+//		errors.clear();
+//
+//		List<Usuario> users = new ArrayList<Usuario>();
+//
+//
+//		List<String> matriculas = new ArrayList<String>();
+//		matriculas.add("3353417");
+//		matriculas.add("1714410");
+//		matriculas.add("201235027");
+//		matriculas.add("201335012");
+//		matriculas.add("admin");
+//		matriculas.add("compnoturno");
+//		matriculas.add("a");
+//
+//
+//		users = usuarioDAO.getByMatricula(matriculas);
+//
+//		if (users != null) {
+//			List<Usuario> usuarios = new ArrayList<Usuario>();
+//			for (Usuario user : users) {
+//				if (user.isAtivo()) {
+//					usuarios.add(user);
+//				}
+//			}
+//
+//			if (usuarios.size() > 0) {
+//				SessionManager.setAttribute("usuarios", usuarios);
+//				return true;
+//			} else {
+//				errors.add("Você não possui uma conta ativa. Por favor contate o coordenador de seu curso.");
+//				return false;
+//			}
+//		}
+//
+//		errors.add("Identificador ou senha inválidos! Ou não cadastrado!");
+//		return false;
 	}
 
 	public boolean checaLogin(Usuario usuario) {
@@ -147,16 +223,20 @@ public class UsuarioBusiness {
 		return false;
 	}
 
-	public String encripta(String senha) {
+	public String encripta(String senha, String crypt) {
 		try {
 			AbstractChecksum checksum = null;
-			checksum = JacksumAPI.getChecksumInstance("whirlpool-1");
+			checksum = JacksumAPI.getChecksumInstance(crypt);
 			checksum.update(senha.getBytes());
 			return checksum.getFormattedValue();
 		} catch (NoSuchAlgorithmException ns) {
 			ns.printStackTrace();
 			return null;
 		}
+	}
+
+	public String encripta(String senha) {
+		return this.encripta(senha, "whirlpool-1");
 	}
 
 	/* Método para gerar a senha provisória (10 caracteres aleatórios). */

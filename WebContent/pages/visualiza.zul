@@ -11,7 +11,7 @@
 				style="padding: 10px;float: left;background-color:#efefef;">
 				<tabbox id="tb" height="100%">
 					<tabs id="tabs" height="100%">
-						<tab id="A" label="Informações do Trablho" />
+						<tab id="A" label="Informações do Trabalho" />
 						<tab id="B" label="Preencher ficha de respostas"
 							visible="@load(vm.canAnswer ? 'true' : 'false')" />
 					</tabs>
@@ -85,6 +85,15 @@
 								height="30px" style="margin-top:10px"
 								visible="@load(vm.canEdit ? 'true' : 'false')"
 								onClick="@command('editTCC')" />
+							
+								
+							<div id="verifica" visible="@load(vm.coordenador and not vm.finalizado)">
+								<button image="/img/confirm.gif" label="Aprovar projeto de TCC" visible="@load(vm.projeto and vm.projetoAguardandoAprovacao)" onClick="@command('finalizaProjeto')"  width="100%"
+								height="30px" style="margin-top:10px"/>
+								<button image="/img/confirm.gif" label="Aprovar trabalho de TCC" visible="@load(not vm.projeto and vm.trabalhoAguardandoAprovacao)" onClick="@command('finalizaTrabalho')"  width="100%"
+								height="30px" style="margin-top:10px" />
+							</div>
+							
 						</tabpanel>
 						<tabpanel
 							visible="@load(vm.canAnswer ? 'true' : 'false')" height="100%"

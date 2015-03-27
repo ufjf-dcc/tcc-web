@@ -86,6 +86,30 @@ public class TCCDAO extends GenericoDAO {
 
 		return resultado;
 	}
+	
+	public List<TCC> getTCCByCursoAndCalendar(Curso curso, CalendarioSemestre currentCalendar) {
+		try {
+			Query query = getSession()
+					.createQuery(
+							"SELECT t FROM TCC AS t JOIN FETCH t.aluno AS a JOIN FETCH a.curso JOIN FETCH t.orientador WHERE a.curso = :curso AND t.calendarioSemestre = :currentCalendar");
+			query.setParameter("curso", curso);
+			query.setParameter("currentCalendar", currentCalendar);
+
+			List<TCC> resultados = query.list();
+
+			getSession().close();
+
+			if (resultados != null)
+				return resultados;
+
+			getSession().close();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
 
 	public TCC getTCCById(int id) {
 		TCC resultado = null;
@@ -180,5 +204,181 @@ public class TCCDAO extends GenericoDAO {
 
 		return null;
 	}
+	
+	public List<TCC> getNewest(int quantidade)//pega os x ultimos trabalhos terminados
+	{
+	try {
+	Query query = getSession()
+	.createQuery(
+	"SELECT t FROM TCC AS t JOIN FETCH t.aluno AS a JOIN FETCH t.orientador LEFT JOIN FETCH t.coOrientador WHERE t.dataEnvioFinal IS NOT NULL AND t.arquivoTCCFinal IS NOT NULL ORDER BY t.dataEnvioFinal DESC");
+	query.setMaxResults(quantidade);
 
+	        List<TCC> resultados = query.list();
+
+	        getSession().close();
+
+	        if (resultados != null)
+	            return resultados;
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+
+	    return null;
+	}
+
+	public List<TCC> getNotFinishedTCCsByCursoAndCalendar(Curso curso, CalendarioSemestre currentCalendar) {
+	    try {
+	        Query query = getSession()
+	                .createQuery(
+	                        "SELECT t FROM TCC AS t JOIN FETCH t.aluno AS a JOIN FETCH t.orientador LEFT JOIN FETCH t.coOrientador WHERE a.curso = :curso AND t.dataEnvioFinal IS NULL AND t.calendarioSemestre = :currentCalendar AND t.projeto = :projeto ORDER BY t.dataEnvioFinal DESC");
+	        query.setParameter("curso", curso);
+	        query.setParameter("currentCalendar", currentCalendar);
+	        query.setParameter("projeto", false);
+
+	        List<TCC> resultados = query.list();
+
+	        getSession().close();
+
+	        if (resultados != null)
+	            return resultados;
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+
+	    return null;
+	}
+
+	public List<TCC> getNotFinishedTCCsAndProjectsByCursoAndCalendar(Curso curso, CalendarioSemestre currentCalendar) {
+	    try {
+	        Query query = getSession()
+	                .createQuery(
+	                        "SELECT t FROM TCC AS t JOIN FETCH t.aluno AS a JOIN FETCH t.orientador LEFT JOIN FETCH t.coOrientador WHERE a.curso = :curso AND t.dataEnvioFinal IS NULL AND t.calendarioSemestre = :currentCalendar ORDER BY t.dataEnvioFinal DESC");
+	        query.setParameter("curso", curso);
+	        query.setParameter("currentCalendar", currentCalendar);
+
+	        List<TCC> resultados = query.list();
+
+	        getSession().close();
+
+	        if (resultados != null)
+	            return resultados;
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+
+	    return null;
+	}
+
+	public List<TCC> getProjetosByCursoAndCalendar(Curso curso, CalendarioSemestre currentCalendar) {
+	    try {
+	        Query query = getSession()
+	                .createQuery(
+	                        "SELECT t FROM TCC AS t JOIN FETCH t.aluno AS a JOIN FETCH t.orientador LEFT JOIN FETCH t.coOrientador WHERE a.curso = :curso AND t.dataEnvioFinal IS NULL AND t.calendarioSemestre = :currentCalendar AND t.projeto = :projeto ORDER BY t.dataEnvioFinal DESC");
+	        query.setParameter("curso", curso);
+	        query.setParameter("currentCalendar", currentCalendar);
+	        query.setParameter("projeto", true);
+
+	        List<TCC> resultados = query.list();
+
+	        getSession().close();
+
+	        if (resultados != null)
+	            return resultados;
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+
+	    return null;
+	}
+	
+	public TCC getCurrentNotFinishedTCCByAuthor(Usuario user,
+			CalendarioSemestre currentCalendar) {
+			TCC resultado = null;
+			try {
+			Query query = getSession()
+			.createQuery(
+			"SELECT t FROM TCC AS t JOIN FETCH t.aluno AS a JOIN FETCH a.curso JOIN FETCH t.orientador LEFT JOIN FETCH t.coOrientador LEFT JOIN FETCH t.participacoes AS p LEFT JOIN FETCH p.professor WHERE t.aluno = :user AND t.calendarioSemestre = :currentCalendar AND t.dataEnvioFinal IS NULL");
+			query.setParameter("user", user);
+			query.setParameter("currentCalendar", currentCalendar);
+
+			        resultado = (TCC) query.uniqueResult();
+
+			        getSession().close();
+
+			    } catch (Exception e) {
+			        e.printStackTrace();
+			    }
+
+			    return resultado;
+			}
+	
+	
+	public List<TCC> getNotFinishedTCCsByCurso(Curso curso) {
+	    try {
+	        Query query = getSession()
+	                .createQuery(
+	                        "SELECT t FROM TCC AS t JOIN FETCH t.aluno AS a JOIN FETCH t.orientador LEFT JOIN FETCH t.coOrientador WHERE a.curso = :curso AND t.dataEnvioFinal IS NULL AND t.projeto = :projeto ORDER BY t.dataEnvioFinal DESC");
+	        query.setParameter("curso", curso);
+	        query.setParameter("projeto", false);
+
+	        List<TCC> resultados = query.list();
+
+	        getSession().close();
+
+	        if (resultados != null)
+	            return resultados;
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+
+	    return null;
+	}
+
+	public List<TCC> getNotFinishedTCCsAndProjectsByCurso(Curso curso) {
+	    try {
+	        Query query = getSession()
+	                .createQuery(
+	                        "SELECT t FROM TCC AS t JOIN FETCH t.aluno AS a JOIN FETCH t.orientador LEFT JOIN FETCH t.coOrientador WHERE a.curso = :curso AND t.dataEnvioFinal IS NULL ORDER BY t.dataEnvioFinal DESC");
+	        query.setParameter("curso", curso);
+
+	        List<TCC> resultados = query.list();
+
+	        getSession().close();
+
+	        if (resultados != null)
+	            return resultados;
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+
+	    return null;
+	}
+
+	public List<TCC> getProjetosByCurso(Curso curso) {
+	    try {
+	        Query query = getSession()
+	                .createQuery(
+	                        "SELECT t FROM TCC AS t JOIN FETCH t.aluno AS a JOIN FETCH t.orientador LEFT JOIN FETCH t.coOrientador WHERE a.curso = :curso AND t.dataEnvioFinal IS NULL AND t.projeto = :projeto ORDER BY t.dataEnvioFinal DESC");
+	        query.setParameter("curso", curso);
+	        query.setParameter("projeto", true);
+
+	        List<TCC> resultados = query.list();
+
+	        getSession().close();
+
+	        if (resultados != null)
+	            return resultados;
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+
+	    return null;
+	}
 }

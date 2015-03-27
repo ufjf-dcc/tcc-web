@@ -8,6 +8,18 @@ import org.hibernate.Session;
 public class GenericoDAO {
 
 	private Session session;
+	
+	public Session getSession() throws Exception {
+		if(session == null){
+			session = HibernateUtil.getInstance();
+		}
+		else{
+			if (!session.isOpen()){
+				session = HibernateUtil.getInstance();
+			}
+		}
+		return session;
+	}
 
 	public boolean salvar(Object objeto) throws HibernateException {
 		boolean retorno = false;
@@ -91,17 +103,4 @@ public class GenericoDAO {
 		}
 		return retorno;
 	}
-
-	public Session getSession() throws Exception {
-		if(session == null){
-			session = HibernateUtil.getInstance();
-		}
-		else{
-			if (!session.isOpen()){
-				session = HibernateUtil.getInstance();
-			}
-		}
-		return session;
-	}
-
 }

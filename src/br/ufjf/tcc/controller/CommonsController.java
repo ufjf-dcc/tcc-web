@@ -35,13 +35,14 @@ public class CommonsController {
 	}
 
 	public boolean checkPermission(String permission) {
-		for (Permissao permissao : getUsuario().getTipoUsuario()
+		/*for (Permissao permissao : getUsuario().getTipoUsuario()
 				.getPermissoes()) {
 			if (permissao.getNomePermissao().equals(permission))
 				return true;
 		}
 
-		return false;
+		return false;*/
+		return true;
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })

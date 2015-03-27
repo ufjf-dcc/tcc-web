@@ -8,6 +8,7 @@ import br.ufjf.tcc.model.Prazo;
 import br.ufjf.tcc.persistent.impl.PrazoDAO;
 
 public class PrazoBusiness {
+	
 	private PrazoDAO prazoDAO;
 	private List<String> errors;
 
@@ -46,7 +47,10 @@ public class PrazoBusiness {
 			return "Data limite para defesa";
 		case Prazo.ENTREGA_FINAL:
 			return "Data limite para entrega da ata de defesa e versão final do trabalho";
+		case Prazo.PRAZO_PROJETO:
+			return "Data limite para entrega da versão do projeto para a coordenação do curso";
 		}
+		
 		return "";
 	}
 

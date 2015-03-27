@@ -8,6 +8,7 @@ import br.ufjf.tcc.model.Usuario;
 import br.ufjf.tcc.persistent.impl.ParticipacaoDAO;
 
 public class ParticipacaoBusiness {
+	
 	private ParticipacaoDAO participacaoDAO;
 
 	public ParticipacaoBusiness() {
@@ -24,5 +25,10 @@ public class ParticipacaoBusiness {
 	
 	public boolean updateList(TCC tcc) {
 		return participacaoDAO.updateList(tcc);
+	}
+	
+	public boolean excluiLista(List<Participacao> participacoes)
+	{
+		return participacaoDAO.excluiLista(participacoes);
 	}
 }

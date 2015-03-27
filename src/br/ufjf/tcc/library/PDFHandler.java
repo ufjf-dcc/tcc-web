@@ -1,117 +1,141 @@
 package br.ufjf.tcc.library;
 
-/*Exemplo obtido de:
- * http://www.e-zest.net/blog/integrating-apache-fop-with-java-project-to-generate-pdf-files/
- * @author Debasmita.Sahoo
- */
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.transform.Result;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerFactoryConfigurationError;
-import javax.xml.transform.sax.SAXResult;
-import javax.xml.transform.stream.StreamSource;
+import br.ufjf.tcc.model.Participacao;
+import br.ufjf.tcc.model.TCC;
 
-import org.apache.fop.apps.FOPException;
-import org.apache.fop.apps.FOUserAgent;
-import org.apache.fop.apps.Fop;
-import org.apache.fop.apps.FopFactory;
-import org.apache.fop.apps.MimeConstants;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.PdfWriter;
 
 public class PDFHandler {
-	public static final String EXTENSION = ".pdf";
-	public String TEMPLATE_PATH = ConfHandler.getConf("FILE.PATH")
-			+ "template.xsl";
+	private static String FILE = "/Users/Matheus/Desktop/FirstPdf.pdf";
+	private static Font titleFont = new Font(Font.FontFamily.TIMES_ROMAN, 15,
+			Font.BOLD);
+	private static Font defaultFont = new Font(Font.FontFamily.TIMES_ROMAN, 12,
+			Font.NORMAL);
+	private static Font infoFont = new Font(Font.FontFamily.TIMES_ROMAN, 12,
+			Font.BOLD);
 
-	public String createPDFFile(ByteArrayOutputStream xmlSource)
-			throws IOException {
-		String fileName = System.currentTimeMillis() + ".pdf";
-		File file = new File(ConfHandler.getConf("FILE.PATH") + fileName);
-		file.createNewFile();
-		// File file = File.createTempFile("" + System.currentTimeMillis(),
-		// EXTENSION);
-		URL url = new File(TEMPLATE_PATH).toURI().toURL();
-		// creation of transform source
-		StreamSource transformSource = new StreamSource(url.openStream());
-		// create an instance of fop factory
-		FopFactory fopFactory = FopFactory.newInstance();
-		// a user agent is needed for transformation
-		FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
-		// to store output
-		ByteArrayOutputStream pdfoutStream = new ByteArrayOutputStream();
-		StreamSource source = new StreamSource(new ByteArrayInputStream(
-				xmlSource.toByteArray()));
-		Transformer xslfoTransformer;
+	public void generateAta(TCC tcc) throws Exception {
 		try {
-			TransformerFactory transfact = TransformerFactory.newInstance();
+			Document document = new Document(PageSize.A4, 80, 80, 20, 20);
+			PdfWriter.getInstance(document, new FileOutputStream(FILE));
 
-			xslfoTransformer = transfact.newTransformer(transformSource);
-			// Construct fop with desired output format
-			Fop fop;
-			try {
-				fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent,
-						pdfoutStream);
-				// Resulting SAX events (the generated FO)
-				// must be piped through to FOP
-				Result res = new SAXResult(fop.getDefaultHandler());
+			document.open();
 
-				// Start XSLT transformation and FOP processing
-				try {
-					// everything will happen here..
-					xslfoTransformer.transform(source, res);
+			Paragraph paragraph;
+			Phrase phrase;
 
-					// if you want to save PDF file use the following code
-					OutputStream out = new java.io.FileOutputStream(file);
-					out = new java.io.BufferedOutputStream(out);
-					FileOutputStream str = new FileOutputStream(file);
-					str.write(pdfoutStream.toByteArray());
-					str.close();
-					out.close();
+			Image image = Image.getInstance("/Users/Matheus/Desktop/ufjf.png");
+			image.scalePercent(7);
+			image.setAlignment(Element.ALIGN_RIGHT);
+			document.add(image);
 
-				} catch (TransformerException e) {
-					e.printStackTrace();
+			paragraph = new Paragraph(
+					"AVALIAÇÃO FINAL DO TRABALHO DE BACHARELADO", titleFont);
+			paragraph.setAlignment(Element.ALIGN_CENTER);
+			paragraph.setSpacingAfter(35);
+			document.add(paragraph);
+
+			phrase = new Phrase("");
+			phrase.add(new Phrase("Acadêmico (a): ", infoFont));
+			phrase.add(new Phrase(tcc.getAluno().getNomeUsuario(), defaultFont));
+			paragraph = new Paragraph(phrase);
+			paragraph.setSpacingAfter(15);
+			document.add(paragraph);
+
+			phrase = new Phrase("");
+			phrase.add(new Phrase("Número de Matrícula: ", infoFont));
+			phrase.add(new Phrase(tcc.getAluno().getMatricula(), defaultFont));
+			paragraph = new Paragraph(phrase);
+			paragraph.setSpacingAfter(15);
+			document.add(paragraph);
+
+			phrase = new Phrase("");
+			phrase.add(new Phrase("Título da Monografia: ", infoFont));
+			phrase.add(new Phrase(tcc.getNomeTCC(), defaultFont));
+			paragraph = new Paragraph(phrase);
+			paragraph.setSpacingAfter(15);
+			document.add(paragraph);
+
+			paragraph = new Paragraph("APRESENTAÇÃO DO TRABALHO:", infoFont);
+			paragraph.setSpacingAfter(15);
+			document.add(paragraph);
+
+			DateFormat date = new SimpleDateFormat("dd/MM/yyyy");
+			DateFormat hour = new SimpleDateFormat("HH:mm");
+
+			phrase = new Phrase("");
+			phrase.add(new Phrase("Data: ", infoFont));
+			phrase.add(new Phrase(date.format(tcc.getDataApresentacao()),
+					defaultFont));
+			phrase.add(new Phrase("  Horário: ", infoFont));
+			phrase.add(new Phrase(hour.format(tcc.getDataApresentacao()),
+					defaultFont));
+			phrase.add(new Phrase("  Local: ", infoFont));
+			phrase.add(new Phrase(tcc.getSalaDefesa(), defaultFont));
+			paragraph = new Paragraph(phrase);
+			paragraph.setSpacingAfter(15);
+			document.add(paragraph);
+
+			paragraph = new Paragraph("Parecer da Banca Examinadora: ",
+					infoFont);
+			paragraph.setSpacingAfter(6);
+			document.add(paragraph);
+
+			paragraph = new Paragraph(
+					"________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________",
+					defaultFont);
+			paragraph.setSpacingAfter(30);
+			document.add(paragraph);
+
+			phrase = new Phrase("");
+			phrase.add(new Phrase("Conceito Final:  ", infoFont));
+			phrase.add(new Phrase(
+					"______ (__________________________________________)",
+					defaultFont));
+			paragraph = new Paragraph(phrase);
+			paragraph.setSpacingAfter(15);
+			document.add(paragraph);
+
+			boolean first = true;
+			for (Participacao banca : tcc.getParticipacoes()) {
+				if (first) {
+					phrase = new Phrase("");
+					phrase.add(new Phrase("Banca Examinadora:  ", infoFont));
+					phrase.add(new Phrase(
+							banca.getProfessor().getNomeUsuario(), defaultFont));
+					paragraph = new Paragraph(phrase);
+					first = false;
+				} else {
+					paragraph = new Paragraph(banca.getProfessor()
+							.getNomeUsuario(), defaultFont);
+					paragraph.setIndentationLeft(115);
 				}
-			} catch (FOPException e) {
-				e.printStackTrace();
+				paragraph.setSpacingAfter(15);
+				document.add(paragraph);
 			}
-		} catch (TransformerConfigurationException e) {
-			e.printStackTrace();
-		} catch (TransformerFactoryConfigurationError e) {
-			e.printStackTrace();
+
+			phrase = new Phrase("");
+			phrase.add(new Phrase("Em: ", infoFont));
+			phrase.add(new Phrase("___/___/_____", defaultFont));
+			paragraph = new Paragraph(phrase);
+			paragraph.setSpacingBefore(20);
+			document.add(paragraph);
+
+			document.close();
+		} catch (Exception e) {
+			throw e;
 		}
-		return fileName;
-	}
-
-	public ByteArrayOutputStream getXMLSource(Formulario data) throws Exception {
-		JAXBContext context;
-
-		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-
-		try {
-			context = JAXBContext.newInstance(Formulario.class,
-					ItemFormulario.class);
-			Marshaller m = context.createMarshaller();
-			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-			m.marshal(data, outStream);
-		} catch (JAXBException e) {
-
-			e.printStackTrace();
-		}
-		return outStream;
-
 	}
 
 }

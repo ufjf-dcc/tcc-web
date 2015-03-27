@@ -9,16 +9,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
+import br.ufjf.tcc.business.AvisoBusiness;
 import br.ufjf.tcc.business.QuestionarioBusiness;
 import br.ufjf.tcc.business.TCCBusiness;
+import br.ufjf.tcc.model.Aviso;
 import br.ufjf.tcc.model.Questionario;
 import br.ufjf.tcc.model.TCC;
 
@@ -30,6 +34,8 @@ public class HomeProfessorController extends CommonsController {
 	private boolean currentQuestionaryExists = true,
 			currentQuestionaryUsed = true, currentCalendarExists = true,
 			showAll = false;
+	private List<Aviso> avisos;
+	private Aviso aviso = new Aviso();
 
 	/*
 	 * Pega todas as TCCs em que o Prof/Coord tem Participação e verifica se o
@@ -74,6 +80,52 @@ public class HomeProfessorController extends CommonsController {
 			}
 		}
 
+	}
+
+	public List<Aviso> getAvisos() {
+		if (avisos == null)
+			avisos = (new AvisoBusiness()).getAvisosByCurso(getUsuario()
+					.getCurso());
+
+		return avisos;
+	}
+
+	public Aviso getAviso() {
+		return aviso;
+	}
+
+	@Command
+	public void addAviso() {
+		AvisoBusiness avisoBussiness = new AvisoBusiness();
+		aviso.setCurso(getUsuario().getCurso());
+		if (avisoBussiness.validate(aviso)) {
+			if (avisoBussiness.save(aviso)) {
+				Messagebox.show("Mensagem salva com sucesso.", "Enviada",
+						Messagebox.OK, Messagebox.INFORMATION);
+				avisos.add(aviso);
+				aviso = new Aviso();
+				BindUtils.postNotifyChange(null, null, this, "aviso");
+				BindUtils.postNotifyChange(null, null, this, "avisos");
+			} else
+				Messagebox.show("Erro ao salvar!", "Erro", Messagebox.OK,
+						Messagebox.ERROR);
+		} else {
+			String errorMessage = "";
+			for (String error : avisoBussiness.getErrors())
+				errorMessage += error;
+			Messagebox.show(errorMessage, "Dados insuficientes / inválidos",
+					Messagebox.OK, Messagebox.ERROR);
+		}
+	}
+
+	@Command
+	public void deleteAviso(@BindingParam("aviso") Aviso aviso) {
+		if ((new AvisoBusiness()).delete(aviso)) {
+			avisos.remove(aviso);
+			BindUtils.postNotifyChange(null, null, this, "avisos");
+		} else
+			Messagebox.show("Erro ao deletar!", "Erro", Messagebox.OK,
+					Messagebox.ERROR);
 	}
 
 	public List<TCC> getFilterTccs() {
@@ -189,8 +241,7 @@ public class HomeProfessorController extends CommonsController {
 
 	@Command
 	public void showTCC(@BindingParam("tcc") TCC tcc) {
-		Executions.sendRedirect("/pages/visualiza.zul?id="
-				+ tcc.getIdTCC());
+		Executions.sendRedirect("/pages/visualiza.zul?id=" + tcc.getIdTCC());
 	}
 
 }

@@ -13,10 +13,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
+
+import br.ufjf.tcc.business.TCCBusiness;
 
 /**
  * DTO da Tabela {@code TCC} contém os atributos e relacionamentos da mesma.
@@ -162,6 +163,14 @@ public class TCC implements Serializable {
 	 */
 	@Column(name = "publicado", nullable = true)
 	private boolean publicado;
+	
+	/**
+
+	Campo com a situação do tcc (projeto ou não). Relaciona com a coluna
+	{@code projeto} do banco através da anotação
+	{@code @Column(name = "projeto", nullable = false)}. */ 
+	@Column(name = "projeto", nullable = false) 
+	private boolean projeto;
 
 	/**
 	 * Relacionamento N para 1 entre TCC e Usuario. Mapeando {@link Usuario} na
@@ -207,13 +216,13 @@ public class TCC implements Serializable {
 	private List<Participacao> participacoes = new ArrayList<Participacao>();
 
 	/**
-	 * Relacionamento 1 para 1 entre TCC e CalendarioSemestre. Mapeando
+	 * Relacionamento N para 1 entre TCC e CalendarioSemestre. Mapeando
 	 * {@link CalendarioSemestre} na variável {@code calendarioSemestre} e
 	 * retorno do tipo {@code LAZY} que indica que não será carregado
 	 * automáticamente este dado quando retornarmos o {@link TCC}.
 	 * 
 	 */
-	@OneToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "idCalendarioSemestre", nullable = true)
 	private CalendarioSemestre calendarioSemestre = null;
 
@@ -404,5 +413,17 @@ public class TCC implements Serializable {
 	public void setCalendarioSemestre(CalendarioSemestre calendarioSemestre) {
 		this.calendarioSemestre = calendarioSemestre;
 	}
+	
+	public boolean isProjeto() {
+		return projeto;
+		}
 
+	public void setProjeto(boolean projeto) {
+		this.projeto = projeto;
+	}
+
+	public String getStatusTCC()
+	{
+		return (new TCCBusiness()).getStatusTCC(this);
+	}
 }

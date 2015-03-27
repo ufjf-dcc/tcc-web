@@ -91,7 +91,7 @@
 				</groupbox>
 
 				<groupbox id="bancaForm" mold="3d" width="100%"
-					visible="@load(not vm.userSecretaria)" open="false">
+					visible="@load(not vm.userSecretaria and not vm.project)" open="false">
 					<caption label="Banca Examinadora" />
 					<vlayout hflex="1" style="margin:15px">
 						<grid model="@load(vm.tcc.participacoes)"
@@ -183,7 +183,7 @@
 						</hlayout>
 
 						<hlayout style="margin:5px;line-height:20px;"
-							visible="@load(not vm.userSecretaria)">
+							visible="@load(not vm.userSecretaria and not vm.project)">
 							<label value="Data de Apresentação: "
 								style="margin-top:5px" />
 							<datebox
@@ -192,7 +192,7 @@
 						</hlayout>
 
 						<hlayout style="margin:5px;line-height:20px;"
-							visible="@load(not vm.userSecretaria)">
+							visible="@load(not vm.userSecretaria and not vm.project)">
 							<label value="Sala de Defesa: "
 								style="margin-top:5px" />
 							<textbox width="80px"
@@ -214,10 +214,10 @@
 
 						<hlayout style="margin:5px;line-height:20px;">
 							<button hflex="1"
-								label="Selecionar arquivo (PDF)..." upload="true"
+								label="Selecionar arquivo (PDF)..." upload="true,maxsize=204800"
 								onUpload="@command('upload', button=self, evt=event)" />
 							<button hflex="1"
-								label="Selecionar arquivo extra..." upload="true"
+								label="Selecionar arquivo extra..." upload="true,maxsize=204800"
 								onUpload="@command('extraUpload', button=self, evt=event)" />
 						</hlayout>
 					</vlayout>

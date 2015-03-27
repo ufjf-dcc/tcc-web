@@ -9,6 +9,7 @@ import br.ufjf.tcc.model.Resposta;
 import br.ufjf.tcc.persistent.impl.QuestionarioDAO;
 
 public class QuestionarioBusiness {
+	
 	private List<String> errors;
 	private QuestionarioDAO questionarioDAO;
 

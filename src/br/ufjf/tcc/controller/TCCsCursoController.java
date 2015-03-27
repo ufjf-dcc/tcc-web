@@ -12,11 +12,14 @@ import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zhtml.Filedownload;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 
 import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.library.FileManager;
+import br.ufjf.tcc.library.SessionManager;
 import br.ufjf.tcc.model.TCC;
 import br.ufjf.tcc.model.Usuario;
 
@@ -27,20 +30,30 @@ public class TCCsCursoController extends CommonsController {
 	private List<TCC> tccs = null, filterTccs = tccs, xmlTccs;
 	private String filterString = "";
 	private String filterYear = "Todos";
-
+	private int semestre = 0;//0=atual, 1 = anteriores
+	private int tipoTrabalho = 0; //0=todos, 1 = projeto, 2 = trabalho
+	
 	@Init
 	public void init() {
 		switch(getUsuario().getTipoUsuario().getIdTipoUsuario()){
 		case Usuario.COORDENADOR:
-			tccs = new TCCBusiness().getTCCsByCurso(getUsuario().getCurso());
+			if(isProjetos())
+				tccs = new TCCBusiness().getNotFinishedTCCsAndProjectsByCursoAndCalendar(getUsuario().getCurso(), getCurrentCalendar(getUsuario().getCurso()));
+			else
+				tccs = new TCCBusiness().getTCCsByCurso(getUsuario().getCurso());
+			
 			break;
 		case Usuario.SECRETARIA:
-			tccs = new TCCBusiness().getFinishedTCCsByCurso(getUsuario().getCurso());
+			if(isProjetos())
+				tccs = new TCCBusiness().getNotFinishedTCCsAndProjectsByCursoAndCalendar(getUsuario().getCurso(), getCurrentCalendar(getUsuario().getCurso()));
+			else
+				tccs = new TCCBusiness().getFinishedTCCsByCurso(getUsuario().getCurso());
 			break;
 		default:
 			redirectHome();
 			return;
 		}
+
 		
 		filterTccs = tccs;
 
@@ -118,6 +131,10 @@ public class TCCsCursoController extends CommonsController {
 		if (tccs != null) {
 			List<TCC> temp = new ArrayList<TCC>();
 			for (TCC tcc : tccs) {
+				if(tcc.getPalavrasChave()==null)
+					tcc.setPalavrasChave("");
+				if(tcc.getResumoTCC()==null)
+					tcc.setResumoTCC("");
 				if ((filterYear == "Todos" || filterYear
 						.contains(getTccYear(tcc)))
 						&& (filter == "" || (tcc.getNomeTCC().toLowerCase()
@@ -167,4 +184,147 @@ public class TCCsCursoController extends CommonsController {
 		}
 	}
 
+	@Command
+	public void novoTrabalho() //cadastrar TCC de forma definitiva
+	{
+		if(getCurrentCalendar(getUsuario().getCurso())!=null)
+		{
+		    SessionManager.setAttribute("projeto",false);
+		    Executions.sendRedirect("/pages/editor.zul");
+		}
+		else
+			Messagebox.show("É necessario cadastrar um calendario antes");
+	}
+
+	@Command
+	public void novoAluno()//liberar para que o aluno de começo a sua projeto
+	{
+		if(getCurrentCalendar(getUsuario().getCurso())!=null)
+		{
+	    SessionManager.setAttribute("projeto",true);
+	    Executions.sendRedirect("/pages/editor.zul");
+		}
+		else
+			Messagebox.show("É necessario cadastrar um calendario antes");
+	}
+
+	@Command
+	public void filtraProjeto(@BindingParam("item") int item)
+	{
+		tipoTrabalho=item;
+		
+		switch(tipoTrabalho){
+		case 0://TODOS
+			if(semestre==0)
+				tccs = new TCCBusiness().getNotFinishedTCCsAndProjectsByCursoAndCalendar(getUsuario().getCurso(), getCurrentCalendar(getUsuario().getCurso()));
+			else
+				tccs = new TCCBusiness().getNotFinishedTCCsAndProjectsByCurso(getUsuario().getCurso());
+			break;
+			
+		case 1://PROJETOS
+			if(semestre==0)
+				tccs = new TCCBusiness().getProjetosByCursoAndCalendar(getUsuario().getCurso(), getCurrentCalendar(getUsuario().getCurso()));
+			else
+				tccs = new TCCBusiness().getProjetosByCurso(getUsuario().getCurso());
+			break;
+		case 2://TRABALHOS
+			if(semestre==0)
+				tccs = new TCCBusiness().getNotFinishedTCCsByCursoAndCalendar(getUsuario().getCurso(), getCurrentCalendar(getUsuario().getCurso()));
+			else
+				tccs = new TCCBusiness().getNotFinishedTCCsByCurso(getUsuario().getCurso());
+			break;
+		
+		case 3://PROJETOS INCOMPLETOS
+			if(semestre==0)
+				tccs = new TCCBusiness().getProjetosByCursoAndCalendar(getUsuario().getCurso(), getCurrentCalendar(getUsuario().getCurso()));
+			else
+				tccs = new TCCBusiness().getProjetosByCurso(getUsuario().getCurso());
+			tccs = new TCCBusiness().filtraProjetosIncompletos(tccs);
+			break;
+		case 4://PROJETOS AGUARDANDO APROVAÇÂO
+			if(semestre==0)
+				tccs = new TCCBusiness().getProjetosByCursoAndCalendar(getUsuario().getCurso(), getCurrentCalendar(getUsuario().getCurso()));
+			else
+				tccs = new TCCBusiness().getProjetosByCurso(getUsuario().getCurso());
+			tccs = new TCCBusiness().filtraProjetosAguardandoAprovacao(tccs);
+			break;
+			
+		case 5://TRABALHOS INCOMPLETOS
+			if(semestre==0)
+				tccs = new TCCBusiness().getNotFinishedTCCsByCursoAndCalendar(getUsuario().getCurso(), getCurrentCalendar(getUsuario().getCurso()));
+			else
+				tccs = new TCCBusiness().getNotFinishedTCCsByCurso(getUsuario().getCurso());
+			tccs = new TCCBusiness().filtraTrabalhosIncompletos(tccs);
+			break;
+		case 6://TRABALHOS AGUARDANDO APROVAÇÂO
+			if(semestre==0)
+				tccs = new TCCBusiness().getNotFinishedTCCsByCursoAndCalendar(getUsuario().getCurso(), getCurrentCalendar(getUsuario().getCurso()));
+			else
+				tccs = new TCCBusiness().getNotFinishedTCCsByCurso(getUsuario().getCurso());
+			tccs = new TCCBusiness().filtraTrabalhosAguardandoAprovacao(tccs);
+			break;
+	
+		
+		default:
+			return;
+		}
+
+		
+		filterYear = "Todos";
+		filterTccs = tccs;
+
+		this.filtra();
+	}
+	
+	public boolean isProjetos()
+	{
+		if(SessionManager.getAttribute("trabalhos_semestre") != null)
+			return (boolean) SessionManager.getAttribute("trabalhos_semestre");
+		return false;
+	}
+	
+	public boolean isSecretaria()
+	{
+		if(getUsuario().getTipoUsuario().getIdTipoUsuario()==Usuario.SECRETARIA)
+			return true;
+		return false;
+	}
+	
+	@Command
+	public void semestreEscolhido(@BindingParam("item") int item)//0=atual, 1 = anteriores
+	{
+		semestre = item;
+		filtraProjeto(tipoTrabalho);
+	}
+	
+	@Command
+	public void excluirTCC(@BindingParam("tcc") final TCC tcc)
+	{
+		final String mensagem;
+		if(tcc.isProjeto())
+			mensagem = "Projeto";
+		else
+			mensagem = "Trabalho";
+		
+		Messagebox.show("Tem certeza que deseja excluir este "+mensagem+"?", "Confirmação", Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new org.zkoss.zk.ui.event.EventListener() {
+		    public void onEvent(Event evt) throws InterruptedException {
+		        if (evt.getName().equals("onYes")) {
+					if((new TCCBusiness()).excluitTCC(tcc))
+						Messagebox.show(mensagem, "Confirmação", Messagebox.OK, Messagebox.EXCLAMATION, new org.zkoss.zk.ui.event.EventListener() {
+						    public void onEvent(Event evt) throws InterruptedException {
+						        if (evt.getName().equals("onOK")) {
+						        	Executions.sendRedirect(null);
+						        } 
+						        else
+						        	Executions.sendRedirect(null);
+						    }
+						});
+					else
+						Messagebox.show("Erro!");
+		        } 
+		       
+		    }
+		});
+	}
+		
 }

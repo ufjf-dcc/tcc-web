@@ -19,42 +19,84 @@
 						<div>
 							<hlayout style="float:left">
 								<label value="Pesquisar: "
-									style="margin-top:6px" />
+									style="margin-top:6px" 
+									visible="@load(not vm.projetos)"/>
 								<textbox id="filtro"
-									value="@bind(vm.filterString)" onOK="@command('filtra')"/>
+									value="@bind(vm.filterString)" onOK="@command('filtra')"
+									visible="@load(not vm.projetos)"/>
 								<separator orient="vertical"
 									spacing="3px" />
 
 								<label value="Ano: "
-									style="margin-top:6px" />
+									style="margin-top:6px" 
+									visible="@load(not vm.projetos)"/>
 								<combobox id="cmbYear" width="150px"
 									readonly="true" model="@load(vm.years)"
 									value="@load(filterYear)"
-									selectedItem="@bind(vm.filterYear)">
+									selectedItem="@bind(vm.filterYear)"
+									visible="@load(not vm.projetos)">
 									<template name="model">
 										<comboitem label="@load(each)" />
 									</template>
 								</combobox>
+								
+								<label value="Tipos: " visible="@load(vm.projetos)" />
+																
+								<div visible="@load(vm.projetos)">
+									<combobox value="Todos" onChange="@command('filtraProjeto',item=self.selectedIndex)">
+									    <comboitem label="Todos"/>
+									    <comboitem label="Projetos"/>
+									    <comboitem label="Trabalhos"/>
+									    <comboitem label="Projetos incompletos"/>
+									    <comboitem label="Projetos aguardando aprovação"/>
+									    <comboitem label="Trabalhos incompletos"/>
+									    <comboitem label="Trabalhos aguardando aprovação"/>
+									    
+									</combobox>
+								</div>
+								
 								<separator orient="vertical"
 									spacing="3px" />
+									
+								<label value="Semestre: " visible="@load(vm.projetos)" />
+								<div visible="@load(vm.projetos)">
+									<radiogroup id="sv2" onCheck="@command('semestreEscolhido',item=self.selectedIndex)" />
+										 <radio id="r1" label="Atual" radiogroup="sv2" selected="true" />
+							             <radio id="r2" label="Todos" radiogroup="sv2" />
+								</div>
+								
+	
 
+								<separator orient="vertical"
+									spacing="3px" />
+								
 								<button label="Filtrar" width="60px"
 									onClick="@command('filtra')" />
 								<image src="/img/help.gif"
 									tooltip="filterHelp" style="cursor: help" />
 							</hlayout>
-							<button style="float:right"
-								label="Cadastrar novo Trabalho" href="/pages/editor.zul" />
+							
+							
+							
+							<button style="float:right" visible="@load(not vm.projetos)"
+								label="Cadastrar novo Trabalho" onClick="@command('novoTrabalho')" />
+							<button style="float:right" visible="@load(not vm.projetos)"
+								label="Cadastrar Aluno" onClick="@command('novoAluno')" />
 						</div>
 					</div>
 				</auxheader>
 			</auxhead>
 			<columns>
-				<column hflex="13" label="Titulo" sort="auto(nomeTCC)" />
+				<column hflex="10" label="Titulo" sort="auto(nomeTCC)" />
 				<column hflex="4" label="Autor"
 					sort="auto(aluno.nomeUsuario)" />
-				<column hflex="1" label="PDF" />
-				<column hflex="1" label="Extras" />
+				<column hflex="4" label="Orientador" />
+				<column hflex="4" label="Data e horário de Envio" />
+				<column hflex="2" label="Status" image="/img/help.gif"
+					tooltip="filterStatus" style="cursor: help" />
+				<column hflex="2" label="PDF" />
+				<column hflex="2" label="Extras" />
+				<column hflex="2" label="Excluir" />
 			</columns>
 			<template name="lista">
 				<row xmlns:w="client"
@@ -86,27 +128,36 @@
 						</popup>
 					</div>
 					<label value="@load(each.aluno.nomeUsuario)" />
+					<label value="@load(each.orientador.nomeUsuario)" />
+					<label value="@load(each.dataEnvioBanca)" />
+					<label value="@load(each.statusTCC)" />
 					<image src="/img/pdf.png" style="cursor: pointer"
 						onClick="@command('downloadPDF', tcc=each)" />
 					<image style="cursor: pointer"
 						src="@load(not empty each.arquivoExtraTCCFinal ? '/img/rar.png' : '/img/norar.png')"
 						onClick="@command('downloadExtra', tcc=each)" />
+					<button image="/img/delete.png" 
+						onClick="@command('excluirTCC', tcc=each)" />
 				</row>
 			</template>
 		</grid>
 	</div>
 	<popup id="filterHelp">
 		<html>
-
-			
-			<![CDATA[ Permite filtrar a lista de Trabalhos com o termo e o
-			ano <br> escolhidos. O termo pode ser, por exemplo:
-			<ul><li>Autor ou orientador;</li> <li>Nome do Trabalho;</li>
-			<li>Palavra-chave;</li> <li>Conteúdo dos resumos.</li>
+			<![CDATA[ Permite filtrar a lista de Trabalhos  com os seguintes filtros:
+			<ul><li>Semestre atual ou todos os semstres;</li> <li>Estados (PI,PAA,TI,TAA);</li>
 			<ul>]]>
-			
-			
-			
+		</html>
+	</popup>
+	
+	<popup id="filterStatus">
+		<html>
+			<![CDATA[ Status:
+			<ul><li>PI - Projeto incompleto</li>
+			<li>TI - Trabalho incompleto</li>
+			<li>PAA - Projeto aguardando aprovação</li>
+			<li>TAA - Trabalho aguardando aprovação</li>
+			<ul>]]>
 		</html>
 	</popup>
 </zk>

@@ -7,6 +7,7 @@ import br.ufjf.tcc.model.Departamento;
 import br.ufjf.tcc.persistent.impl.DepartamentoDAO;
 
 public class DepartamentoBusiness {
+	
 	private List<String> errors;
 	private DepartamentoDAO departamentoDAO;
 
