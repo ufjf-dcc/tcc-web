@@ -7,6 +7,7 @@ import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.persistent.impl.CursoDAO;
 
 public class CursoBusiness {
+	
 	private List<String> errors;
 	private CursoDAO cursoDAO;
 

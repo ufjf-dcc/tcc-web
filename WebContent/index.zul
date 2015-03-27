@@ -26,7 +26,7 @@
 								style="margin-left=10px;margin-top:6px;" />
 							<combobox id="cmbCurso" width="220px"
 								readonly="true" model="@load(vm.cursos)"
-								value="Selecione um Curso" selectedItem="@bind(vm.curso)"
+								value="Todos (trabalhos mais recentes)" selectedItem="@bind(vm.curso)"
 								onChange="@command('changeCurso')">
 								<template name="model">
 									<comboitem

@@ -7,6 +7,7 @@ import br.ufjf.tcc.model.TipoUsuario;
 import br.ufjf.tcc.persistent.impl.PermissaoDAO;
 
 public class PermissaoBusiness {
+	
 	private PermissaoDAO permissaoDAO;
 
 	public PermissaoBusiness() {

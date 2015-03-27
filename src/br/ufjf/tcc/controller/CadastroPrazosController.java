@@ -22,8 +22,10 @@ import org.zkoss.zul.Window;
 
 import br.ufjf.tcc.business.CalendarioSemestreBusiness;
 import br.ufjf.tcc.business.PrazoBusiness;
+import br.ufjf.tcc.business.UsuarioBusiness;
 import br.ufjf.tcc.model.CalendarioSemestre;
 import br.ufjf.tcc.model.Prazo;
+import br.ufjf.tcc.model.Usuario;
 
 public class CadastroPrazosController extends CommonsController {
 	private CalendarioSemestre calendar;
@@ -60,7 +62,7 @@ public class CadastroPrazosController extends CommonsController {
 		} else {
 			DateTime finalDate = new DateTime(this.calendar.getFinalSemestre());
 
-			for (int i = 0; i < 4; i++) {
+			for (int i = 0; i < 5; i++) {
 
 				Prazo aux = new Prazo();
 				aux.setCalendarioSemestre(this.calendar);
@@ -77,6 +79,15 @@ public class CadastroPrazosController extends CommonsController {
 					break;
 				case Prazo.ENTREGA_FINAL:
 					aux.setDataFinal(finalDate.toDate());
+					break;
+				case Prazo.PRAZO_PROJETO:
+					DateTime agora = new DateTime();
+					agora = agora.now();
+					agora = agora.minusDays(-21);
+					if(agora.isBefore(finalDate.minusDays(14)))
+						aux.setDataFinal(agora.toDate());
+					else
+						aux.setDataFinal(finalDate.minusDays(14).toDate());
 					break;
 				}
 				prazos.add(aux);
@@ -152,8 +163,15 @@ public class CadastroPrazosController extends CommonsController {
 					Messagebox.OK, Messagebox.INFORMATION, new EventListener() {
 						public void onEvent(Event evt)
 								throws InterruptedException {
-							Executions
-									.sendRedirect("/pages/home-professor.zul");
+							UsuarioBusiness ub = new UsuarioBusiness();
+							List<Usuario> usuariosCurso = ub.getAllByCurso(getUsuario().getCurso());
+							for(int i=0;i<usuariosCurso.size();i++)
+								if(usuariosCurso.get(i).getTipoUsuario().getIdTipoUsuario() == Usuario.ALUNO)
+								{
+									usuariosCurso.get(i).setAtivo(false);
+									ub.editar(usuariosCurso.get(i));
+								}
+							Executions.sendRedirect("/pages/home-professor.zul");
 						}
 					});
 		} else {

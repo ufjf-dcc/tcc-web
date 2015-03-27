@@ -14,6 +14,7 @@ import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Comboitem;
@@ -28,6 +29,7 @@ import br.ufjf.tcc.business.ParticipacaoBusiness;
 import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.business.UsuarioBusiness;
 import br.ufjf.tcc.library.FileManager;
+import br.ufjf.tcc.library.SessionManager;
 import br.ufjf.tcc.model.Departamento;
 import br.ufjf.tcc.model.Participacao;
 import br.ufjf.tcc.model.TCC;
@@ -55,19 +57,29 @@ public class EditorTccController extends CommonsController {
 
 		switch (getUsuario().getTipoUsuario().getIdTipoUsuario()) {
 		case Usuario.ALUNO:
-			TCC tempTCC = tccBusiness.getCurrentTCCByAuthor(getUsuario(),
+			TCC tempTCC = tccBusiness.getCurrentNotFinishedTCCByAuthor(getUsuario(),
 					getCurrentCalendar());
 			getUsuario().getTcc().clear();
 			if (tempTCC != null) {
 				getUsuario().getTcc().add(tempTCC);
 				tcc = getUsuario().getTcc().get(0);
 			} else
-				redirectHome();
+				if(!getUsuario().isAtivo())
+					redirectHome();
+				else
+				{
+					tcc = new TCC();
+					tcc.setAluno(new Usuario());
+					tcc.setProjeto(true);
+					if (getUsuario().getCurso() != null)
+						tcc.getAluno().setCurso(getUsuario().getCurso());
+					tcc.setAluno(getUsuario());
+				}
 
-			canChangeOrientacao = false;
+			canChangeOrientacao = true;
 			
 			break;
-
+			
 		case Usuario.ADMINISTRADOR:
 		case Usuario.COORDENADOR:
 			canChangeMatricula = true;
@@ -90,8 +102,11 @@ public class EditorTccController extends CommonsController {
 				redirectHome();
 
 		}
-		hasCoOrientador = (tcc.getCoOrientador() != null);
-		hasSubtitulo = (tcc.getSubNomeTCC() != null);
+		if(tcc!=null)
+		{
+			hasCoOrientador = (tcc.getCoOrientador() != null);
+			hasSubtitulo = (tcc.getSubNomeTCC() != null);
+		}
 		departamentos = (new DepartamentoBusiness()).getAll();
 	}
 
@@ -263,12 +278,15 @@ public class EditorTccController extends CommonsController {
 				.getMedia().getStreamData());
 		tccFile = evt.getMedia().getStreamData();
 		tccFileChanged = true;
+		iframe.setContent(pdf);
+		Messagebox.show("Arquivo enviado com sucesso.");
 	}
 
 	@Command
 	public void extraUpload(@BindingParam("evt") UploadEvent evt) {
 		extraFile = evt.getMedia().getStreamData();
 		extraFileChanged = true;
+		Messagebox.show("Arquivo enviado com sucesso.");
 	}
 
 	@Command
@@ -394,7 +412,7 @@ public class EditorTccController extends CommonsController {
 			return;
 		}
 		if (getUsuario().getTipoUsuario().getIdTipoUsuario() != Usuario.ALUNO
-				&& (canChangeMatricula && !alunoVerified)) {
+				&& (tcc.getAluno()==null)) {
 			Messagebox
 					.show("Antes de enviar é necesário validar a matricula do aluno no botão de verificar.",
 							"Erro", Messagebox.OK, Messagebox.ERROR);
@@ -430,9 +448,25 @@ public class EditorTccController extends CommonsController {
 					return;
 				}
 			}
-
+			
+			if(SessionManager.getAttribute("projeto")!=null)
+			{
+		        tcc.setProjeto(((boolean)SessionManager.getAttribute("projeto")));
+		        SessionManager.setAttribute("projeto",false);
+			}
+	        tcc.setCalendarioSemestre(getCurrentCalendar(tcc.getAluno().getCurso()));
+		
+	        TCC tccAux = tccBusiness.getCurrentTCCByAuthor(tcc.getAluno(), getCurrentCalendar(tcc.getAluno().getCurso()));
+	        
+	        if(tccAux!=null)
+	        if(tccAux.getIdTCC()!=tcc.getIdTCC())
+			{
+				Messagebox.show("Este usuário ja possui um trabalho iniciado neste período", "Erro",
+						Messagebox.OK, Messagebox.ERROR);
+					return;
+			}
+	        
 			if (tccFileChanged && tccFile != null) {
-				iframe.setContent(pdf);
 				savePDF();
 				tccFileChanged = false;
 				try {
@@ -461,17 +495,31 @@ public class EditorTccController extends CommonsController {
 			}
 
 			if (tccBusiness.saveOrEdit(tcc)) {
-				Messagebox.show("TCC atualizado com sucesso!");
+				String alerta;
+				if(tcc.isProjeto())
+					alerta = "Projeto salvo!";
+				else
+					alerta = "Trabalho salvo!";
+				Messagebox.show(alerta, "Confirmação", Messagebox.OK , Messagebox.EXCLAMATION, new org.zkoss.zk.ui.event.EventListener() {
+				    public void onEvent(Event evt) throws InterruptedException {
+				        if (evt.getName().equals("onOK")) {
+				        	redirectHome();
+				        } 
+				    }
+				});
 
+				
 				if (!new ParticipacaoBusiness().updateList(tcc)) {
 					Messagebox
 							.show("Não foi possível salvar as alterações da Banca Examinadora.",
 									"Erro", Messagebox.OK, Messagebox.ERROR);
+					
 					return;
 				}
+			
 
 			} else {
-				Messagebox.show("Devido a um erro, o TCC não foi cadastrado.",
+				Messagebox.show("Devido a um erro, o trabalho não foi cadastrado.",
 						"Erro", Messagebox.OK, Messagebox.ERROR);
 			}
 
@@ -482,6 +530,8 @@ public class EditorTccController extends CommonsController {
 			Messagebox.show(errorMessage, "Dados insuficientes / inválidos",
 					Messagebox.OK, Messagebox.ERROR);
 		}
+		
+		
 	}
 
 	@Command
@@ -510,4 +560,16 @@ public class EditorTccController extends CommonsController {
 		}
 	}
 
+	public boolean isProject()
+	{
+		if(SessionManager.getAttribute("projeto") != null)
+			return (boolean) SessionManager.getAttribute("projeto");
+		else
+		if(tcc!=null)
+			return tcc.isProjeto();
+		return false;
+	}
+
+
+	
 }

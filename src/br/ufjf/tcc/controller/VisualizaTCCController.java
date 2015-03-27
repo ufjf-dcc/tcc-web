@@ -1,6 +1,7 @@
 package br.ufjf.tcc.controller;
 
 import java.io.InputStream;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -11,6 +12,7 @@ import org.zkoss.bind.annotation.Init;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zhtml.Filedownload;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Iframe;
 import org.zkoss.zul.Label;
@@ -20,7 +22,9 @@ import br.ufjf.tcc.business.PerguntaBusiness;
 import br.ufjf.tcc.business.QuestionarioBusiness;
 import br.ufjf.tcc.business.RespostaBusiness;
 import br.ufjf.tcc.business.TCCBusiness;
+import br.ufjf.tcc.business.UsuarioBusiness;
 import br.ufjf.tcc.library.FileManager;
+import br.ufjf.tcc.library.SessionManager;
 import br.ufjf.tcc.model.Participacao;
 import br.ufjf.tcc.model.Pergunta;
 import br.ufjf.tcc.model.Resposta;
@@ -80,7 +84,12 @@ public class VisualizaTCCController extends CommonsController {
 
 	private boolean canViewTCC() {
 		if (getUsuario() != null) {
-
+			if(isSecretaria())
+			{
+				canEdit = true;
+				canDonwloadFileBanca = true;
+				return true;
+			}
 			for (Participacao p : tcc.getParticipacoes())
 				if (p.getProfessor().getIdUsuario() == getUsuario()
 						.getIdUsuario()) {
@@ -106,6 +115,7 @@ public class VisualizaTCCController extends CommonsController {
 
 		return (tcc.getDataEnvioFinal() != null && tcc.getArquivoTCCFinal() != null);
 	}
+
 
 	public TCC getTcc() {
 		return tcc;
@@ -262,4 +272,101 @@ public class VisualizaTCCController extends CommonsController {
 	public void editTCC() {
 		Executions.sendRedirect("/pages/editor.zul?id=" + tcc.getIdTCC());
 	}
+	
+	
+	public boolean isCoordenador()
+	{
+		if(getUsuario()!=null)
+		if(getUsuario().getTipoUsuario().getIdTipoUsuario()==Usuario.COORDENADOR)
+			return true;
+		return false;
+	}
+	
+	public boolean isProjeto()
+	{
+		return tcc.isProjeto();
+	}
+	
+	public boolean isFinalizado()
+	{
+		if(tcc.getDataEnvioFinal()!=null)
+			return true;
+		return false;
+	}
+	
+	@Command
+	public void finalizaProjeto()
+	{
+		Messagebox.show("Você tem certeza que deseja validar esse projeto?", "Confirmação", Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new org.zkoss.zk.ui.event.EventListener() {
+		    public void onEvent(Event evt) throws InterruptedException {
+		        if (evt.getName().equals("onYes")) {
+					if(new TCCBusiness().isProjetoAguardandoAprovacao(tcc))
+					{
+			        	tcc.setProjeto(false);
+						new TCCBusiness().edit(tcc);
+						SessionManager.setAttribute("trabalhos_semestre",true);
+						Executions.sendRedirect("/pages/tccs-curso.zul");
+					}
+					else
+						Messagebox.show("O projeto não esta completo");
+		        } 
+		    }
+		});
+
+	}
+	
+	@Command
+	public void finalizaTrabalho()
+	{
+		Messagebox.show("Você tem certeza que deseja finalizar esse Trabalho?", "Confirmação", Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new org.zkoss.zk.ui.event.EventListener() {
+		    public void onEvent(Event evt) throws InterruptedException {
+		        if (evt.getName().equals("onYes")) {
+		        	if(new TCCBusiness().isTrabalhoAguardandoAprovacao(tcc))
+		        	{
+			        	java.util.Date date= new java.util.Date();
+			        	tcc.setDataEnvioFinal(new Timestamp(date.getTime()));
+			        	tcc.setArquivoTCCFinal(tcc.getArquivoTCCBanca());
+			        	tcc.setArquivoExtraTCCFinal(tcc.getArquivoExtraTCCBanca());
+			        	tcc.setArquivoTCCBanca(null);
+			        	tcc.setArquivoExtraTCCBanca(null);
+						new TCCBusiness().edit(tcc);
+						SessionManager.setAttribute("trabalhos_semestre",true);
+						Executions.sendRedirect("/pages/tccs-curso.zul");
+		        	}
+		        	else
+						Messagebox.show("O projeto não esta completo");
+		        } 
+		    }
+		});
+
+	}
+	
+	public boolean isSecretaria()
+	{
+		if(getUsuario()!=null)
+		if(getUsuario().getTipoUsuario().getIdTipoUsuario()==Usuario.SECRETARIA)
+			return true;
+		return false;
+	}
+	
+	public boolean isProjetoAguardandoAprovacao()
+	{
+		if(tcc!=null)
+		{
+			if((new TCCBusiness()).isProjetoAguardandoAprovacao(tcc))
+				return true;
+		}
+		return false;
+	}
+	
+	public boolean isTrabalhoAguardandoAprovacao()
+	{
+		if(tcc!=null)
+		{
+			if((new TCCBusiness()).isTrabalhoAguardandoAprovacao(tcc))
+				return true;
+		}
+		return false;
+	}
+	
 }

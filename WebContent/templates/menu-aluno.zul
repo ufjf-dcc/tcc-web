@@ -6,7 +6,7 @@
 			style="text-align: center;">
 			<menuitem label="Página Inicial"
 				onClick="@command('redirectHome')" />
-			<menuitem label="Meu Trabalho"
+		<menuitem label="@load(hf.meuX)"
 				onClick="@command('myTcc')" />
 			<menuitem label="Gerar Ata"
 				onClick="@command('generate')" />

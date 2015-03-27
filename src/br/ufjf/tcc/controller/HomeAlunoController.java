@@ -42,7 +42,29 @@ public class HomeAlunoController extends CommonsController {
 	public void init() {
 		CalendarioSemestre currentCalendar = getCurrentCalendar();
 		if (currentCalendar != null) {
+			
 			prazos = getCurrentCalendar().getPrazos();
+			
+			TCC tccUsuario = (new TCCBusiness()).getCurrentTCCByAuthor(getUsuario(), getCurrentCalendar(getUsuario().getCurso()));
+			if(tccUsuario!=null)
+			if(tccUsuario.isProjeto())
+			{
+				for(int i=0;i<prazos.size();i++)
+					if(prazos.get(i).getTipo()!=Prazo.PRAZO_PROJETO)
+					{
+						prazos.remove(i);
+						i--;
+					}
+			}
+			else
+			{
+				for(int i=0;i<prazos.size();i++)
+					if(prazos.get(i).getTipo()==Prazo.PRAZO_PROJETO)
+					{
+						prazos.remove(i);
+						i--;
+					}
+			}
 
 			DateTime currentDay = new DateTime(new Date());
 

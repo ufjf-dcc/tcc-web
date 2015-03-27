@@ -42,9 +42,9 @@
 							<radio label="Todos" checked="true"
 								width="90px" />
 							<radio label="Alunos" width="90px" />
-							<radio label="Professores" width="90px" />
+							<radio label="Professores" width="90px" visible="@load(not vm.coordenador)"/>
 							<radio label="Coordenadores" width="90px" />
-							<radio label="Administradores"
+							<radio label="Administradores" visible="@load(not vm.coordenador)"
 								width="200px" />
 						</hlayout>
 					</radiogroup>
@@ -120,7 +120,7 @@
 						width="100%"
 						disabled="@load(each.tipoUsuario.idTipoUsuario eq 1)" />
 
-					<checkbox
+					<checkbox disabled="false"
 						checked="@load(each.ativo) @save(each.ativo, before='confirm')" />
 
 					<div align="center">
@@ -143,10 +143,10 @@
 						value="@load(each.tipoUsuario.nomeTipoUsuario)" />
 					<label value="@load(each.titulacao)" />
 					<checkbox checked="@load(each.ativo)"
-						disabled="true" />
+						disabled="false" onClick="@command('mudarAtivo',check=self,usuario=each)"/>
 					<div align="center">
 						<button image="/img/edit.gif"
-							onClick="@command('changeEditableStatus', usuario=each)" />
+							onClick="@command('editUsuario',window=editUsuario, usuario=each)" />
 						<button image="/img/delete.png"
 							onClick="@command('delete', usuario=each)" />
 					</div>
@@ -166,9 +166,9 @@
 					<row>
 						<label value="Tipo:" />
 						<combobox id="cmbTipoUsuario" width="100%"
-							readonly="true" model="@load(vm.tiposUsuario)"
+							readonly="true" model="@load(vm.tiposUsuarioSelecionado)"
 							selectedItem="@bind(vm.newUsuario.tipoUsuario)"
-							onChange="@command('typeChange', titu=txtTitu, comboc=comboCurso, combod=comboDepartamento)">
+							onChange="@command('typeChange', titu=txtTitu, comboc=comboCurso, combod=comboDepartamento, label=login, senha=senha)">
 							<template name="model">
 								<comboitem
 									label="@load(each.nomeTipoUsuario)" />
@@ -177,8 +177,8 @@
 					</row>
 
 					<row>
-						<label
-							value="@load(vm.newUsuario.tipoUsuario.idTipoUsuario gt 1 ? 'Siape' : 'Matrícula')" />
+						<label id="login"
+							value="Login: " />
 						<textbox
 							value="@bind(vm.newUsuario.matricula)"
 							tabindex="1" width="100%" disabled="@load(vm.newUsuario.tipoUsuario eq null)"/>
@@ -209,7 +209,7 @@
 						<label value="Curso:" />
 						<combobox id="comboCurso" width="100%"
 							readonly="true" model="@load(vm.cursos)"
-							value="@load(vm.newUsuario.curso.nomeCurso ne null ? vm.newUsuario.curso.nomeCurso : 'Nenhum')"
+							value="@load(vm.usuario.curso.nomeCurso)"
 							selectedItem="@bind(vm.newUsuario.curso)"
 							disabled="true">
 							<template name="model">
@@ -232,6 +232,14 @@
 							</template>
 						</combobox>
 					</row>
+			
+					<row>
+						<label  value="Senha:" />
+						<textbox id="senha"
+							value="@bind(vm.newUsuario.senha)"
+							tabindex="1" width="100%"/>
+					</row>
+					
 				</rows>
 			</grid>
 			<div align="center">
@@ -240,6 +248,110 @@
 					style="margin-top:5px" />
 			</div>
 		</window>
+		
+		<window id="editUsuario" title="Editar Usuário"
+			visible="false" width="350px" border="normal"
+			position="center,center" closable="true"
+			onClose="self.setVisible(false); event.stopPropagation();">
+			<grid>
+				<columns>
+					<column width="125px" />
+					<column />
+				</columns>
+				<rows>
+					<row>
+						<label value="Tipo:" />
+						<combobox id="cmbTipoUsuario" width="100%"
+							readonly="true" model="@load(vm.tiposUsuario)"
+							selectedItem="@bind(vm.editUsuario.tipoUsuario)"
+							value="@load(vm.editUsuario.tipoUsuario.nomeTipoUsuario)"
+							disabled="true" 
+							onChange="@command('typeChange', titu=txtTitu, comboc=comboCurso, combod=comboDepartamento)">
+							<template name="model">
+								<comboitem
+									label="@load(each.nomeTipoUsuario)" />
+							</template>
+						</combobox>
+					</row>
+
+					<row>
+						<label
+							value="Identificador" />
+						<textbox
+							value="@bind(vm.editUsuario.matricula)"
+							tabindex="1" width="100%" readonly="true"/>
+					</row>
+
+					<row>
+						<label value="Nome do Usuário:" />
+						<textbox
+							value="@bind(vm.editUsuario.nomeUsuario)"
+							tabindex="1" width="100%"/>
+					</row>
+
+					<row>
+						<label value="Email:" />
+						<textbox
+							value="@bind(vm.editUsuario.email)"
+							tabindex="1" width="100%"/>
+					</row>
+
+					<row>
+						<label value="Titulação:" />
+						<textbox id="txtTitu"
+							readonly="true"
+							disabled="false"
+							value="@bind(vm.editUsuario.titulacao)"
+							tabindex="1" width="100%" />
+					</row>
+
+					<row>
+						<label value="Curso:" />
+						<combobox id="comboCurso" width="100%"
+							readonly="true" model="@load(vm.cursos)"
+							
+							selectedItem="@bind(vm.editUsuario.curso)"
+							disabled="true">
+							<template name="model">
+								<comboitem
+									label="@load(each.nomeCurso)" />
+							</template>
+						</combobox>
+					</row>
+
+					<row>
+						<label value="Departamento:" />
+						<combobox id="comboDepartamento" width="100%"
+							readonly="true" model="@load(vm.departamentos)"
+							
+							selectedItem="@bind(vm.editUsuario.departamento)"
+							disabled="true">
+							<template name="model">
+								<comboitem
+									label="@load(each.nomeDepartamento)" />
+							</template>
+						</combobox>
+					</row>
+					
+					<row visible = "false">
+						<label value="Senha" />
+						<textbox id="senha"
+							readonly="false"
+							disabled="false" type="password"
+							value="@bind(vm.editUsuario.senha)"
+							tabindex="1" width="100%" />
+					</row>
+				</rows>
+			</grid>
+			<div align="center">
+				<button label="Salvar"
+					onClick="@command('editUser', window=editUsuario)" width="75px"
+					style="margin-top:5px" />
+			</div>
+		</window>
+		
+		
+			
 		<window id="importCSV" title="Cadastro via CSV" visible="false"
 			width="80%" height="80%" border="normal" position="center,center"
 			closable="true"

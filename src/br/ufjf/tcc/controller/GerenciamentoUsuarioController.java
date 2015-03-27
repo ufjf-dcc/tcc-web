@@ -14,20 +14,26 @@ import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.util.media.Media;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Row;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
 import br.ufjf.tcc.business.CursoBusiness;
 import br.ufjf.tcc.business.DepartamentoBusiness;
+import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.business.TipoUsuarioBusiness;
 import br.ufjf.tcc.business.UsuarioBusiness;
+import br.ufjf.tcc.library.SessionManager;
 import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.model.Departamento;
 import br.ufjf.tcc.model.TipoUsuario;
@@ -43,8 +49,9 @@ public class GerenciamentoUsuarioController extends CommonsController {
 			.getAll();
 	private List<Curso> cursos = this.getAllCursos();
 	private List<Departamento> departamentos = this.getAllDepartamentos();
-	private String filterString = "";
-	private Usuario newUsuario;
+	private String filterString = "", editUsuarioSenha = null;
+	private Usuario newUsuario,editUsuario;
+	
 	private boolean submitUserListenerExists = false,
 			importCSVListenerExists = false, submitCSVListenerExists = false;
 	private int filterType = 0;
@@ -92,7 +99,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 	public List<TipoUsuario> getTiposUsuario() {
 		return this.tiposUsuario;
 	}
-
+	
 	public List<Curso> getCursos() {
 		return this.cursos;
 	}
@@ -156,41 +163,70 @@ public class GerenciamentoUsuarioController extends CommonsController {
 	@Command
 	public void typeChange(@BindingParam("titu") Textbox titulacao,
 			@BindingParam("comboc") Combobox cmbCurso,
-			@BindingParam("combod") Combobox cmbDep) {
+			@BindingParam("combod") Combobox cmbDep,
+			@BindingParam("label") Label labelLogin,
+			@BindingParam("senha") Textbox textSenha) {
 
 		switch (newUsuario.getTipoUsuario().getIdTipoUsuario()) {
 		case Usuario.ALUNO:
 			newUsuario.setTitulacao(null);
 			titulacao.setReadonly(true);
+			titulacao.getParent().setVisible(false);
+			if(!(getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.COORDENADOR))
 			cmbCurso.setDisabled(false);
+			cmbCurso.getParent().setVisible(true);
 			newUsuario.setDepartamento(null);
 			cmbDep.setDisabled(true);
+			cmbDep.getParent().setVisible(false);
+			labelLogin.setValue("Matricula: ");
+			textSenha.getParent().setVisible(false);
 			break;
 		case Usuario.PROFESSOR:
 			titulacao.setReadonly(false);
+			titulacao.getParent().setVisible(true);
 			newUsuario.setCurso(null);
 			cmbCurso.setDisabled(true);
+			cmbCurso.getParent().setVisible(false);
 			cmbDep.setDisabled(false);
+			cmbDep.getParent().setVisible(true);
+			labelLogin.setValue("SIAPE: ");
+			textSenha.getParent().setVisible(false);
 			break;
 		case Usuario.COORDENADOR:
 			titulacao.setReadonly(false);
+			titulacao.getParent().setVisible(true);
 			cmbCurso.setDisabled(false);
+			cmbCurso.getParent().setVisible(true);
 			cmbDep.setDisabled(false);
+			cmbDep.getParent().setVisible(true);
+			labelLogin.setValue("SIAPE: ");
+			textSenha.getParent().setVisible(false);
 			break;
 		case Usuario.ADMINISTRADOR:
 			newUsuario.setTitulacao(null);
+			titulacao.getParent().setVisible(false);
 			titulacao.setReadonly(true);
 			newUsuario.setCurso(null);
 			cmbCurso.setDisabled(true);
+			cmbCurso.getParent().setVisible(false);
 			newUsuario.setDepartamento(null);
 			cmbDep.setDisabled(true);
+			cmbDep.getParent().setVisible(false);
+			labelLogin.setValue("Login: ");
+			textSenha.getParent().setVisible(false);
 			break;
 		case Usuario.SECRETARIA:
 			newUsuario.setTitulacao(null);
-			titulacao.setReadonly(true);
+			titulacao.getParent().setVisible(false);
+			if(!(getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.COORDENADOR))
 			cmbCurso.setDisabled(false);
+			cmbCurso.getParent().setVisible(true);
 			newUsuario.setDepartamento(null);
 			cmbDep.setDisabled(true);
+			cmbDep.getParent().setVisible(false);
+			labelLogin.setValue("Login: ");
+			textSenha.getParent().setVisible(true);
+
 			break;
 		}
 		BindUtils.postNotifyChange(null, null, this, "newUsuario");
@@ -300,12 +336,27 @@ public class GerenciamentoUsuarioController extends CommonsController {
 					new EventListener<Event>() {
 						@Override
 						public void onEvent(Event event) throws Exception {
+							if(getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.COORDENADOR)
+								if(newUsuario!=null)
+								newUsuario.setCurso(getUsuario().getCurso());
 							if (usuarioBusiness
 									.validate(newUsuario, null, true)) {
-								String newPassword = usuarioBusiness
-										.generatePassword();
-								newUsuario.setSenha(usuarioBusiness
-										.encripta(newPassword));
+								
+								if(newUsuario.getSenha()!=null)
+								{
+									newUsuario.setSenha(usuarioBusiness
+											.encripta(newUsuario.getSenha()));
+								}
+								else
+								{
+									String newPassword = usuarioBusiness
+											.generatePassword();
+									newUsuario.setSenha(usuarioBusiness
+											.encripta(newPassword));
+								}
+								
+								
+								
 								newUsuario.setAtivo(true);
 								if (usuarioBusiness.salvar(newUsuario)) {
 									/*
@@ -504,5 +555,169 @@ public class GerenciamentoUsuarioController extends CommonsController {
 	public void limpa() {
 		newUsuario = new Usuario();
 		BindUtils.postNotifyChange(null, null, this, "newUsuario");
+	}
+	
+	/* Edita propriedades de um usuário */
+	@Command
+	public void editUsuario(@BindingParam("window") Window window, @BindingParam("usuario") Usuario user) {
+		editUsuario = user;
+		editUsuarioSenha = editUsuario.getSenha();
+		((Combobox)window.getChildren().get(0).getChildren().get(1).getChildren().get(0).getChildren().get(1)).setValue(editUsuario.getTipoUsuario().getNomeTipoUsuario());
+		((Textbox)window.getChildren().get(0).getChildren().get(1).getChildren().get(1).getChildren().get(1)).setValue(editUsuario.getMatricula());
+		((Textbox)window.getChildren().get(0).getChildren().get(1).getChildren().get(2).getChildren().get(1)).setValue(editUsuario.getNomeUsuario());
+		((Textbox)window.getChildren().get(0).getChildren().get(1).getChildren().get(3).getChildren().get(1)).setValue(editUsuario.getEmail());
+		((Textbox)window.getChildren().get(0).getChildren().get(1).getChildren().get(4).getChildren().get(1)).setValue(editUsuario.getTitulacao());
+		if(editUsuario.getCurso()!=null)
+			((Combobox)window.getChildren().get(0).getChildren().get(1).getChildren().get(5).getChildren().get(1)).setValue(editUsuario.getCurso().getNomeCurso());
+		else
+			((Combobox)window.getChildren().get(0).getChildren().get(1).getChildren().get(5).getChildren().get(1)).setValue("Nenhum");
+		if(editUsuario.getDepartamento()!=null)
+			((Combobox)window.getChildren().get(0).getChildren().get(1).getChildren().get(6).getChildren().get(1)).setValue(editUsuario.getDepartamento().getNomeDepartamento());
+		else
+			((Combobox)window.getChildren().get(0).getChildren().get(1).getChildren().get(6).getChildren().get(1)).setValue("Nenhum");
+	
+		if(editUsuario.getTipoUsuario().getIdTipoUsuario() == Usuario.ADMINISTRADOR
+				|| editUsuario.getTipoUsuario().getIdTipoUsuario() == Usuario.SECRETARIA)
+		{
+			((Label)window.getChildren().get(0).getChildren().get(1).getChildren().get(1).getChildren().get(0)).setValue("Login: ");
+		}
+		
+		if(editUsuario.getTipoUsuario().getIdTipoUsuario() == Usuario.COORDENADOR
+				|| editUsuario.getTipoUsuario().getIdTipoUsuario() == Usuario.PROFESSOR)
+		{
+			((Label)window.getChildren().get(0).getChildren().get(1).getChildren().get(1).getChildren().get(0)).setValue("SIAPE: ");
+		}
+		
+		if(editUsuario.getTipoUsuario().getIdTipoUsuario() == Usuario.ALUNO)
+		{
+			((Label)window.getChildren().get(0).getChildren().get(1).getChildren().get(1).getChildren().get(0)).setValue("Matricula :");
+		}
+		
+		
+		Usuario usuario = (Usuario) SessionManager.getAttribute("usuario");
+		if(usuario.getTipoUsuario().getIdTipoUsuario() == Usuario.ADMINISTRADOR)
+		{
+//			((Combobox)window.getChildren().get(0).getChildren().get(1).getChildren().get(0).getChildren().get(1)).setDisabled(false);
+			((Textbox)window.getChildren().get(0).getChildren().get(1).getChildren().get(1).getChildren().get(1)).setReadonly(false);
+			((Textbox)window.getChildren().get(0).getChildren().get(1).getChildren().get(4).getChildren().get(1)).setReadonly(false);
+			((Combobox)window.getChildren().get(0).getChildren().get(1).getChildren().get(5).getChildren().get(1)).setDisabled(false);
+			((Combobox)window.getChildren().get(0).getChildren().get(1).getChildren().get(6).getChildren().get(1)).setDisabled(false);
+		}
+		
+		window.doModal();
+		window.setVisible(true);
+		
+		if(editUsuario.getTipoUsuario().getIdTipoUsuario() == Usuario.ADMINISTRADOR
+				|| editUsuario.getTipoUsuario().getIdTipoUsuario() == Usuario.SECRETARIA)
+		{
+			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(4)).setVisible(false);
+			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(5)).setVisible(false);
+			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(6)).setVisible(false);
+			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(7)).setVisible(true);
+
+			
+		}
+		
+		if(editUsuario.getTipoUsuario().getIdTipoUsuario() == Usuario.PROFESSOR)
+		{
+			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(5)).setVisible(false);
+		}
+		
+		if(editUsuario.getTipoUsuario().getIdTipoUsuario() == Usuario.ALUNO)
+		{
+			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(4)).setVisible(false);
+			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(6)).setVisible(false);
+		}
+		
+	}
+	
+	@Command
+	public void editUser(@BindingParam("window") final Window window)
+	{
+		
+		if(usuarioBusiness.validate(editUsuario, editUsuario.getMatricula(), true))
+		{
+			if(editUsuario.getSenha() != editUsuarioSenha)
+				editUsuario.setSenha((new UsuarioBusiness()).encripta(editUsuario.getSenha()));
+			usuarioBusiness.editar(editUsuario);
+			Clients.clearBusy(window);
+			Messagebox.show(
+					"Usuário salvo!",
+					"Sucesso", Messagebox.OK,
+					Messagebox.INFORMATION);
+			window.setVisible(false);
+		}	
+		else
+		{
+			Messagebox.show(
+					"Erro ao salvar as mudanças do usuário",
+					"Erro", Messagebox.OK,
+					Messagebox.INFORMATION);
+		}
+	}
+
+	public Usuario getEditUsuario()
+	{
+		return editUsuario;
+	}
+
+	@Command
+	public void mudarAtivo(@BindingParam("check") final Checkbox check,@BindingParam("usuario") final Usuario usuario)
+	{
+		String mensagem;
+		if(usuario.isAtivo())
+			mensagem = "Tem certeza que deseja destivar o usuário?";
+		else
+			mensagem = "Tem certeza que deseja ativar o usuário?";
+			
+		Messagebox.show(mensagem, "Confirmação", Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new org.zkoss.zk.ui.event.EventListener() {
+			    public void onEvent(Event evt) throws InterruptedException {
+		        if (evt.getName().equals("onYes")) {
+					usuario.setAtivo(check.isChecked());
+					usuarioBusiness.editar(usuario);
+		        } 
+		        else
+		        	check.setChecked(usuario.isAtivo());
+		    }
+		});
+	}
+	
+	public List<TipoUsuario> getTiposUsuarioSelecionado() {
+		List<TipoUsuario> tipos = tiposUsuario;
+
+		if(getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.COORDENADOR)
+		{
+			for(int i=0;i<tipos.size();i++)
+			{
+				if(tipos.get(i).getIdTipoUsuario() == Usuario.ADMINISTRADOR
+						|| tipos.get(i).getIdTipoUsuario() == Usuario.COORDENADOR
+						|| tipos.get(i).getIdTipoUsuario() == Usuario.PROFESSOR)
+				{
+					tipos.remove(i);
+					i--;
+				}
+					
+			}
+		}
+		
+		return tipos;
+	}
+	
+	public String getCursoAtivo()
+	{
+		if(getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.COORDENADOR)
+		{
+			return getUsuario().getCurso().getNomeCurso();
+		}
+		return "Nenhum";
+	}
+
+	
+	public boolean isCoordenador()
+	{
+		if(getUsuario()!=null)
+			if(getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.COORDENADOR)
+				return true;
+		return false;
 	}
 }

@@ -8,6 +8,7 @@ import br.ufjf.tcc.model.Resposta;
 import br.ufjf.tcc.persistent.impl.RespostaDAO;
 
 public class RespostaBusiness {
+	
 	private List<String> errors;
 	private RespostaDAO respostaDAO;
 	

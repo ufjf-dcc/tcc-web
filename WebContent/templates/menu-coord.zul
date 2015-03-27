@@ -7,17 +7,16 @@
 			<menuitem label="Página Inicial"
 				onClick="@command('redirectHome')" />
 			<menuitem label="Lista Pública" href="/" />
-			<menuitem label="Trabalhos do Semestre"
-				href="/pages/tccs-semestre.zul" />
-			<menuitem label="Gerenciar Alunos"
-				href="/pages/gerenciamento-usuario.zul" />
 			<menuitem label="Gerenciar Trabalhos"
-				href="/pages/tccs-curso.zul" />
+				onClick="@command('projetosTrabalhosSemestre')"  />
+			<menuitem label="Gerenciar Usuários do Curso"
+				href="/pages/gerenciamento-usuario.zul" />
 			<menuitem label="Sair" onClick="@command('sair')"
 				style="float:right" />
 			<menuitem label="Trocar de Perfil" style="float:right"
 				visible="@load(hf.canChangeProfile)"
 				onClick="@command('changeProf')" />
+			
 		</menubar>
 	</div>
 </zk>

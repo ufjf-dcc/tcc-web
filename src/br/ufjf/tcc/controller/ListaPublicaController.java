@@ -19,6 +19,7 @@ import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.library.FileManager;
 import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.model.TCC;
+import br.ufjf.tcc.persistent.impl.TCCDAO;
 
 public class ListaPublicaController extends CommonsController {
 
@@ -26,7 +27,8 @@ public class ListaPublicaController extends CommonsController {
 	private List<Curso> cursos = this.getAllCursos();
 	private List<String> years;
 	private String emptyMessage = "Selecione um curso na caixa acima.";
-	private List<TCC> tccsByCurso = null;
+	private TCCBusiness tccB= new TCCBusiness();
+	private List<TCC> tccsByCurso = tccB.getNewest(20);
 	private List<TCC> filterTccs = tccsByCurso;
 	private String filterString = "";
 	private String filterYear = "Todos";
@@ -78,9 +80,21 @@ public class ListaPublicaController extends CommonsController {
 		List<Curso> cursoss = new ArrayList<Curso>();
 		Curso empty = new Curso();
 		empty.setIdCurso(0);
-		empty.setNomeCurso("Selecione um Curso");
+		empty.setNomeCurso("Todos (trabalhos mais recentes)");
 		cursoss.add(empty);
 		List<Curso> cursos = (new CursoBusiness()).getAll();
+		TCCDAO tccDAO = new TCCDAO();
+	    for(int i=1;i<cursos.size();i++)
+	    {
+	        if(cursos.get(i)!=null)
+	        {
+	            if(tccDAO.getTCCsByCurso(cursos.get(i)).size()==0)
+	            {
+	                cursos.remove(i);
+	                i--;
+	            }
+	        }
+	    }
 		if (cursos != null)
 			cursoss.addAll(cursos);
 		return cursoss;
@@ -89,6 +103,11 @@ public class ListaPublicaController extends CommonsController {
 	@NotifyChange({ "emptyMessage", "years", "filterYear" })
 	@Command
 	public void changeCurso() {
+		if (curso.getNomeCurso().equals("Todos (trabalhos mais recentes)"))
+		{
+			tccsByCurso = tccB.getNewest(20);
+		}
+		else
 		if (curso.getIdCurso() > 0) {
 			tccsByCurso = new TCCBusiness().getFinishedTCCsByCurso(curso);
 			if (tccsByCurso == null || tccsByCurso.size() == 0)
@@ -145,6 +164,10 @@ public class ListaPublicaController extends CommonsController {
 		if (tccsByCurso != null) {
 			List<TCC> temp = new ArrayList<TCC>();
 			for (TCC tcc : tccsByCurso) {
+				if(tcc.getPalavrasChave()==null)
+					tcc.setPalavrasChave("");
+				if(tcc.getResumoTCC()==null)
+					tcc.setResumoTCC("");
 				if ((filterYear == "Todos" || filterYear
 						.contains(getTccYear(tcc)))
 						&& (filter == "" || (tcc.getNomeTCC().toLowerCase()

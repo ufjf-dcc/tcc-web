@@ -11,6 +11,7 @@ import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.persistent.impl.CalendarioSemestreDAO;
 
 public class CalendarioSemestreBusiness {
+	
 	private CalendarioSemestreDAO calendarioSemestreDAO;
 	private List<String> errors;
 

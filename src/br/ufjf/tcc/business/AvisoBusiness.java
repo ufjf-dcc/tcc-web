@@ -8,6 +8,7 @@ import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.persistent.impl.AvisoDAO;
 
 public class AvisoBusiness {
+	
 	private AvisoDAO avisoDAO;
 	private List<String> errors = new ArrayList<String>();
 

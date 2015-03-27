@@ -34,11 +34,14 @@ public class MenuController extends CommonsController {
 		if (getUsuario() != null
 				&& getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ALUNO) {
 			if (getCurrentCalendar() != null) {
-				if (getUsuario().getTcc() != null && getUsuario().getTcc().size() != 0)
+				TCC tccUsuario = (new TCCBusiness()).getCurrentTCCByAuthor(getUsuario(), getCurrentCalendar(getUsuario().getCurso()));
+				if(tccUsuario==null)
+					tccUsuario = new TCC();
+				if (getUsuario().isAtivo() && tccUsuario.getArquivoTCCFinal()==null && tccUsuario.getDataEnvioFinal()==null)
 					Executions.sendRedirect("/pages/editor.zul");
 				else
 					Messagebox
-							.show("Você ainda não possui um Trabalho cadastrado no semestre atual.\n Entre em contato com o coordenador do curso.",
+							.show("Você não pode iniciar ou modificar um projeto.\n Entre em contato com o coordenador do curso.",
 									"Erro", Messagebox.OK, Messagebox.ERROR);
 			} else {
 				Messagebox.show(
@@ -47,7 +50,7 @@ public class MenuController extends CommonsController {
 			}
 		}
 	}
-
+	
 	@Command
 	public void generate() {
 		if (getUsuario() != null
@@ -207,6 +210,30 @@ public class MenuController extends CommonsController {
 
 	public List<Usuario> getUsers() {
 		return users;
+	}
+
+	public String getMeuX()//diz para o usuario aluno se eles está mechendo em um trabalho ou projeto atualmente
+	{
+		  TCCBusiness tccBusiness = new TCCBusiness();    
+		  TCC tcc = tccBusiness.getCurrentTCCByAuthor(getUsuario(),getCurrentCalendar(getUsuario().getCurso()));
+		  if(tcc!=null)
+		  if(tcc.isProjeto())
+			  return "Meu Projeto";
+		  return "Meu Trabalho";
+	}
+	
+	@Command
+	public void projetosTrabalhosSemestre() //pagina com as informações para o coordenador
+	{
+	    SessionManager.setAttribute("trabalhos_semestre",true);
+	    Executions.sendRedirect("/pages/tccs-curso.zul");
+	}
+
+	@Command
+	public void trabalhos()//informaçoes dos projetos do curso
+	{
+		SessionManager.setAttribute("trabalhos_semestre",false);
+	    Executions.sendRedirect("/pages/tccs-curso.zul");
 	}
 
 }

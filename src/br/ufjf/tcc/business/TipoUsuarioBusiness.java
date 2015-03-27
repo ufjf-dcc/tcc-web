@@ -6,6 +6,7 @@ import br.ufjf.tcc.model.TipoUsuario;
 import br.ufjf.tcc.persistent.impl.TipoUsuarioDAO;
 
 public class TipoUsuarioBusiness {
+	
 	private TipoUsuarioDAO tipoUsuarioDAO;
 
 	public TipoUsuarioBusiness() {
