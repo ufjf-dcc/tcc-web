@@ -225,8 +225,9 @@ public class HomeProfessorController extends CommonsController {
 	@Command
 	public void createCalendar() {
 		final Window dialog = (Window) Executions.createComponents(
-				"/pages/cadastro-calendario.zul", null, null);
+				"/pages/cadastro-calendario.zul", null, null);		
 		dialog.doModal();
+	
 	}
 
 	@Command
