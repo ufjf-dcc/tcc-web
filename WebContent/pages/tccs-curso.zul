@@ -77,11 +77,6 @@
 							</hlayout>
 							
 							
-							
-							<button style="float:right" visible="@load(not vm.projetos)"
-								label="Cadastrar novo Trabalho" onClick="@command('novoTrabalho')" />
-							<button style="float:right" visible="@load(not vm.projetos)"
-								label="Cadastrar Aluno" onClick="@command('novoAluno')" />
 						</div>
 					</div>
 				</auxheader>
