@@ -154,7 +154,7 @@ public class TCCsCursoController extends CommonsController {
 			filterTccs = tccs;
 		}
 
-		emptyMessage = "Não há TCCs válidas para esses filtros.";
+		emptyMessage = "Não foram encontrados trabalhos cadastrados.";
 		BindUtils.postNotifyChange(null, null, null, "emptyMessage");
 	}
 
