@@ -9,7 +9,7 @@
 		<grid model="@load(vm.prazos)">
 			<columns>
 				<column label="#" width="30px" />
-				<column label="Data" width="110px" />
+				<column label="Data" width="120px" />
 				<column label="Tipo do prazo" />
 			</columns>
 			<template name="model">
