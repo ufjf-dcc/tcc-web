@@ -11,7 +11,7 @@
 		height="100%" class="publicList">
 		<include src="@load(vm.menu)" />
 		<grid model="@load(vm.filterTccs) @template('lista')"
-			emptyMessage="@load(vm.emptyMessage)" mold="paging" autopaging="true"
+			emptyMessage="@load(vm.emptyMessage)" mold="paging" pageSize="10"
 			vflex="true">
 			<auxhead>
 				<auxheader colspan="4">
