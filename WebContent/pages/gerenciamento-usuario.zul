@@ -8,7 +8,7 @@
 		<include src="@load(vm.menu)" />
 		<grid
 			model="@load(vm.filterUsuarios) @template(each.editingStatus ? 'editable' : 'noneditable')"
-			mold="paging" autopaging="true" vflex="true">
+			mold="paging" pageSize="10" vflex="true">
 			<auxhead sclass="text-center">
 				<auxheader label="Usuários cadastrados no sistema"
 					colspan="9" />
