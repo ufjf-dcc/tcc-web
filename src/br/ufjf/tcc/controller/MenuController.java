@@ -1,12 +1,18 @@
 package br.ufjf.tcc.controller;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
+import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Iframe;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
@@ -14,13 +20,18 @@ import org.zkoss.zul.Window;
 import br.ufjf.tcc.business.PermissaoBusiness;
 import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.business.UsuarioBusiness;
-import br.ufjf.tcc.library.PDFHandler;
+import br.ufjf.tcc.library.ConfHandler;
 import br.ufjf.tcc.library.SendMail;
 import br.ufjf.tcc.library.SessionManager;
 import br.ufjf.tcc.model.TCC;
 import br.ufjf.tcc.model.Usuario;
+import br.ufjf.tcc.pdfHandle.Ata;
+import br.ufjf.tcc.pdfHandle.AtaCCoorientador;
+import br.ufjf.tcc.pdfHandle.AtaSCoorientador;
 
 public class MenuController extends CommonsController {
+	private Ata ata;
+	private byte[] pdfByteArray = null;
 	private Usuario usuarioForm = new Usuario();
 	private UsuarioBusiness usuarioBusiness;
 	@SuppressWarnings("unchecked")
@@ -34,10 +45,14 @@ public class MenuController extends CommonsController {
 		if (getUsuario() != null
 				&& getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ALUNO) {
 			if (getCurrentCalendar() != null) {
-				TCC tccUsuario = (new TCCBusiness()).getCurrentTCCByAuthor(getUsuario(), getCurrentCalendar(getUsuario().getCurso()));
-				if(tccUsuario==null)
+				TCC tccUsuario = (new TCCBusiness()).getCurrentTCCByAuthor(
+						getUsuario(), getCurrentCalendar(getUsuario()
+								.getCurso()));
+				if (tccUsuario == null)
 					tccUsuario = new TCC();
-				if (getUsuario().isAtivo() && tccUsuario.getArquivoTCCFinal()==null && tccUsuario.getDataEnvioFinal()==null)
+				if (getUsuario().isAtivo()
+						&& tccUsuario.getArquivoTCCFinal() == null
+						&& tccUsuario.getDataEnvioFinal() == null)
 					Executions.sendRedirect("/pages/editor.zul");
 				else
 					Messagebox
@@ -50,34 +65,112 @@ public class MenuController extends CommonsController {
 			}
 		}
 	}
-	
+
 	@Command
 	public void generate() {
+
 		if (getUsuario() != null
 				&& getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ALUNO) {
-			if (getUsuario().getTcc() != null  && getUsuario().getTcc().size() != 0){
+			if (getUsuario().getTcc() != null
+					&& getUsuario().getTcc().size() != 0) {
 				TCCBusiness tccBusiness = new TCCBusiness();
-				if(!tccBusiness.getMissing(getUsuario().getTcc().get(0), true)){
-					try {
-						(new PDFHandler()).generateAta(getUsuario().getTcc().get(0));
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+				if (!tccBusiness.getMissing(getUsuario().getTcc().get(0), true)) {
+
+					if (getUsuario().getTcc().get(0).getParticipacoes().size() > 1
+							&& getUsuario().getTcc().get(0).getParticipacoes()
+									.size() < 5) {
+						try {
+
+							TCC tcc = getUsuario().getTcc().get(0);
+							if (tcc.getCoOrientador() == null)
+								ata = new AtaSCoorientador();
+							else {
+								ata = new AtaCCoorientador();
+								ata.setCoorientador(tcc.getCoOrientador()
+										.getNomeUsuario());
+
+							}
+
+							Calendar calendar = Calendar.getInstance();
+							calendar.setTimeInMillis(tcc.getDataApresentacao()
+									.getTime());
+							Integer dia = calendar.get(5);
+							Integer mes = calendar.get(2);
+							Integer ano = calendar.get(1);
+							String hora = Integer.toString(calendar.get(11))
+									+ "h";
+
+							ata.setHora(hora);
+							ata.setDia(dia.toString());
+							ata.setMes(mes.toString());
+							ata.setAno(ano.toString());
+
+							ata.setIdAluno(getUsuario().getIdUsuario());
+							ata.setTituloTCC(tcc.getNomeTCC());
+							ata.setAluno(tcc.getAluno().getNomeUsuario());
+							ata.setOrientador(tcc.getOrientador()
+									.getNomeUsuario());
+							ata.setSala(tcc.getSalaDefesa());
+							ata.preencheParticipacoes(tcc.getParticipacoes());
+
+							ata.preenchePrincipal();
+							ata.deleteLasts();
+
+							Executions.getCurrent().sendRedirect(
+									"/pages/visualizaAta.zul", "_blank");
+
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+
+					} else
+						Messagebox
+								.show("Para gerar a Ata a banca deve conter no m�nimo 2 examinadores e no maximo 4.\n",
+										"Erro", Messagebox.OK, Messagebox.ERROR);
+
 				} else
-					Messagebox.show("Para gerar a Ata você deve preencher todas informações do seu Trabalho.\n",
-							"Erro", Messagebox.OK, Messagebox.ERROR);
+					Messagebox
+							.show("Para gerar a Ata você deve preencher todas informações do seu Trabalho.\n",
+									"Erro", Messagebox.OK, Messagebox.ERROR);
 			} else
 				Messagebox
 						.show("Você ainda não possui um Trabalho cadastrado no semestre atual.\n",
 								"Erro", Messagebox.OK, Messagebox.ERROR);
 		}
+
+	}
+
+	public void setPdfArray() throws IOException {
+
+		File x = new File(ConfHandler.getConf("FILE.PATH") + "PDFCompleto"
+				+ getUsuario().getIdUsuario() + ".pdf");
+		this.pdfByteArray = FileUtils.readFileToByteArray(x);
+
+		if (x.delete()) {
+			System.out.println("ULTIMO DELETADO blabla");
+		}
+
+	}
+
+	@Command
+	public void showAta(@BindingParam("iframe") Iframe iframe)
+			throws IOException {
+
+		AMedia pdf;
+		setPdfArray();
+		pdf = new AMedia("PDFCompleto" + getUsuario().getIdUsuario() + ".pdf",
+				"pdf", "application/pdf", this.pdfByteArray);
+
+		iframe.setContent(pdf);
+
 	}
 
 	@Command
 	public void sair() {
 		SessionManager.setAttribute("usuario", null);
 		SessionManager.setAttribute("usuarios", null);
+
 		Executions.sendRedirect("/index.zul");
 	}
 
@@ -212,28 +305,31 @@ public class MenuController extends CommonsController {
 		return users;
 	}
 
-	public String getMeuX()//diz para o usuario aluno se eles está mechendo em um trabalho ou projeto atualmente
+	public String getMeuX()// diz para o usuario aluno se eles está mechendo em
+							// um trabalho ou projeto atualmente
 	{
-		  TCCBusiness tccBusiness = new TCCBusiness();    
-		  TCC tcc = tccBusiness.getCurrentTCCByAuthor(getUsuario(),getCurrentCalendar(getUsuario().getCurso()));
-		  if(tcc!=null)
-		  if(tcc.isProjeto())
-			  return "Meu Projeto";
-		  return "Meu Trabalho";
-	}
-	
-	@Command
-	public void projetosTrabalhosSemestre() //pagina com as informações para o coordenador
-	{
-	    SessionManager.setAttribute("trabalhos_semestre",true);
-	    Executions.sendRedirect("/pages/tccs-curso.zul");
+		TCCBusiness tccBusiness = new TCCBusiness();
+		TCC tcc = tccBusiness.getCurrentTCCByAuthor(getUsuario(),
+				getCurrentCalendar(getUsuario().getCurso()));
+		if (tcc != null)
+			if (tcc.isProjeto())
+				return "Meu Projeto";
+		return "Meu Trabalho";
 	}
 
 	@Command
-	public void trabalhos()//informaçoes dos projetos do curso
+	public void projetosTrabalhosSemestre() // pagina com as informações para
+											// o coordenador
 	{
-		SessionManager.setAttribute("trabalhos_semestre",false);
-	    Executions.sendRedirect("/pages/tccs-curso.zul");
+		SessionManager.setAttribute("trabalhos_semestre", true);
+		Executions.sendRedirect("/pages/tccs-curso.zul");
+	}
+
+	@Command
+	public void trabalhos()// informaçoes dos projetos do curso
+	{
+		SessionManager.setAttribute("trabalhos_semestre", false);
+		Executions.sendRedirect("/pages/tccs-curso.zul");
 	}
 
 }
