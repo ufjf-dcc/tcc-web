@@ -233,7 +233,7 @@ public class TCCBusiness {
 	
 	public boolean isTrabalhoIncompleto(TCC tcc)
 	{
-		if(!tcc.isProjeto() && !isTrabalhoAguardandoAprovacao(tcc))
+		if(tcc.isProjeto() && !isTrabalhoAguardandoAprovacao(tcc))
 			return true;
 		return false;
 	}
