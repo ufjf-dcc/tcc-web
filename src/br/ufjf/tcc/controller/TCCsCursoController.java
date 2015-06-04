@@ -54,7 +54,14 @@ public class TCCsCursoController extends CommonsController {
 			redirectHome();
 			return;
 		}
-
+		
+		List<TCC> tccsAux = new TCCBusiness().getNotFinishedTCCsAndProjectsByCurso(getUsuario().getCurso());
+		
+		tccs = new TCCBusiness().getFinishedTCCsByCurso(getUsuario().getCurso());
+		
+		for(int i=0;i<tccsAux.size();i++){
+			tccs.add(tccsAux.get(i));
+		}
 		
 		filterTccs = tccs;
 
@@ -106,7 +113,9 @@ public class TCCsCursoController extends CommonsController {
 
 	public String getTccYear(@BindingParam("tcc") TCC tcc) {
 		Calendar cal = Calendar.getInstance();
+		if(tcc.getDataEnvioFinal()!=null)
 		cal.setTimeInMillis(tcc.getDataEnvioFinal().getTime());
+		
 		return "" + cal.get(Calendar.YEAR);
 	}
 
@@ -215,10 +224,18 @@ public class TCCsCursoController extends CommonsController {
 		
 		switch(tipoTrabalho){
 		case 0://TODOS
-			if(semestre==0)
+			if(semestre==0){
 				tccs = new TCCBusiness().getNotFinishedTCCsAndProjectsByCursoAndCalendar(getUsuario().getCurso(), getCurrentCalendar(getUsuario().getCurso()));
-			else
-				tccs = new TCCBusiness().getNotFinishedTCCsAndProjectsByCurso(getUsuario().getCurso());
+				
+			}else{
+				List<TCC> tccsAux = new TCCBusiness().getNotFinishedTCCsAndProjectsByCurso(getUsuario().getCurso());
+				tccs = new TCCBusiness().getFinishedTCCsByCurso(getUsuario().getCurso());
+				
+				for(int i=0;i<tccsAux.size();i++){
+					tccs.add(tccsAux.get(i));
+				}
+			
+			}
 			break;
 			
 		case 1://PROJETOS
@@ -263,7 +280,7 @@ public class TCCsCursoController extends CommonsController {
 				tccs = new TCCBusiness().getNotFinishedTCCsByCurso(getUsuario().getCurso());
 			tccs = new TCCBusiness().filtraTrabalhosAguardandoAprovacao(tccs);
 			break;
-	
+		
 		
 		default:
 			return;
