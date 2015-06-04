@@ -55,7 +55,7 @@ public class TCCsCursoController extends CommonsController {
 			return;
 		}
 
-
+		
 		filterTccs = tccs;
 
 		years = new ArrayList<String>();
@@ -136,8 +136,7 @@ public class TCCsCursoController extends CommonsController {
 					tcc.setPalavrasChave("");
 				if(tcc.getResumoTCC()==null)
 					tcc.setResumoTCC("");
-				if ((filterYear == "Todos" || filterYear
-						.contains(getTccYear(tcc)))
+				if ((filterYear == "Todos" || filterYear.contains(getTccYear(tcc)))
 						&& (filter == "" || (tcc.getNomeTCC().toLowerCase()
 								.contains(filter)
 								|| tcc.getAluno().getNomeUsuario()
