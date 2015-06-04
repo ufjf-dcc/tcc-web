@@ -34,7 +34,8 @@ public class TCCsCursoController extends CommonsController {
 	private int tipoTrabalho = 0; //0=todos, 1 = projeto, 2 = trabalho
 	
 	@Init
-	public void init() {
+	public void init() {		
+				
 		switch(getUsuario().getTipoUsuario().getIdTipoUsuario()){
 		case Usuario.COORDENADOR:
 			if(isProjetos())
@@ -54,7 +55,7 @@ public class TCCsCursoController extends CommonsController {
 			return;
 		}
 
-		
+
 		filterTccs = tccs;
 
 		years = new ArrayList<String>();

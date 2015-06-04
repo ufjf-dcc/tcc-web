@@ -99,15 +99,17 @@ public class VisualizaTCCController extends CommonsController {
 				}
 
 			if (getUsuario().getIdUsuario() == tcc.getAluno().getIdUsuario()
-					|| getUsuario().getIdUsuario() == tcc.getOrientador()
-							.getIdUsuario()
+					|| getUsuario().getIdUsuario() == tcc.getOrientador().getIdUsuario()
 					|| getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ADMINISTRADOR
-					|| ((getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.COORDENADOR || (getUsuario()
-							.getTipoUsuario().getIdTipoUsuario() == Usuario.SECRETARIA && tcc
-							.getDataEnvioFinal() != null)) && getUsuario()
-							.getCurso().getIdCurso() == tcc.getAluno()
-							.getCurso().getIdCurso())) {
+					|| ((getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.COORDENADOR 
+					|| (getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.SECRETARIA 
+					&& tcc.getDataEnvioFinal() != null)) 
+					&& getUsuario().getCurso().getIdCurso() == tcc.getAluno().getCurso().getIdCurso())) {
+				if(getUsuario().getTipoUsuario().getIdTipoUsuario() != Usuario.PROFESSOR)
 				canEdit = true;
+				else
+				canEdit=false;
+				
 				canDonwloadFileBanca = true;
 				return true;
 			}
