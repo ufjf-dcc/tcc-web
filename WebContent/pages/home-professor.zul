@@ -6,7 +6,7 @@
 		viewModel="@id('vm') @init('br.ufjf.tcc.controller.HomeProfessorController')" height="100%">
 		<include src="@load(vm.menu)" />
 		<hlayout spacing="10px" height="100%" style="margin-top:10px">
-			<div hflex="1" width="10px">
+			<div hflex="1">
 				<grid
 					visible="@load(vm.usuario.tipoUsuario.idTipoUsuario eq 3 and (not vm.currentCalendarExists or not vm.currentQuestionaryExists or not vm.currentQuestionaryUsed ? 'true' : 'false'))">
 					<columns>
@@ -97,9 +97,9 @@
 					</template>
 				</grid>
 			</div>
-			<grid hflex="9"
+			<grid hflex="3"
 				model="@load(vm.filterTccs) @template('tccs')"
-				width="1000px" mold="paging" autopaging="true" vflex="true">
+				width="700px" mold="paging" autopaging="true" vflex="true">
 				<auxhead sclass="text-center">
 					<auxheader colspan="4"
 						label="Trabalhos com sua participação" />
