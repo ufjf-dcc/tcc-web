@@ -8,8 +8,8 @@
 			<menuitem label="Lista Pública" href="/" />
 			<menuitem label="Gerenciar Usuários"
 				href="/pages/gerenciamento-usuario.zul" />
-			<menuitem label="Gerenciar Trabalhos"
-				href="/pages/tccs-curso.zul" />
+			
+
 			<menuitem label="Gerenciar Cursos"
 				href="/pages/gerenciamento-curso.zul" />
 			<menuitem label="Gerenciar Departamentos"
