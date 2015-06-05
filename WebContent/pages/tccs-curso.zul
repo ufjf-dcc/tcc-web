@@ -64,8 +64,6 @@
 										 <radio id="r1" label="Atual" radiogroup="sv2"  />
 							             <radio id="r2" label="Todos" radiogroup="sv2" selected="true" />
 								</div>
-								
-	
 
 								<separator orient="vertical"
 									spacing="3px" />

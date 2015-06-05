@@ -7,8 +7,7 @@
 				onClick="@command('redirectHome')" />
 			<menuitem label="Lista Pública" href="/" />
 			<menuitem label="Gerenciar Usuários"
-				href="/pages/gerenciamento-usuario.zul" />
-			
+				href="/pages/gerenciamento-usuario.zul" />			
 
 			<menuitem label="Gerenciar Cursos"
 				href="/pages/gerenciamento-curso.zul" />

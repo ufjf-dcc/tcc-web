@@ -55,8 +55,7 @@ public class TCCsCursoController extends CommonsController {
 			return;
 		}
 		
-		List<TCC> tccsAux = new TCCBusiness().getNotFinishedTCCsAndProjectsByCurso(getUsuario().getCurso());
-		
+		List<TCC> tccsAux = new TCCBusiness().getNotFinishedTCCsAndProjectsByCurso(getUsuario().getCurso());		
 		tccs = new TCCBusiness().getFinishedTCCsByCurso(getUsuario().getCurso());
 		
 		for(int i=0;i<tccsAux.size();i++){
