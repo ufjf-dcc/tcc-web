@@ -203,6 +203,22 @@ public class TCCBusiness {
 	public List<TCC> getProjetosByCurso(Curso curso) {
 			return tccDao.getProjetosByCurso(curso);
 	}
+	
+	public List<TCC> getAllProjetosByCurso(Curso curso) {
+		return tccDao.getAllProjetosByCurso(curso);
+	}
+	
+	public List<TCC> getAllTrabalhosByCurso(Curso curso) {
+		return tccDao.getAllTrabalhosByCurso(curso);
+	}
+	
+	public List<TCC> getAllTrabalhosAndProjetosByCurso(Curso curso){
+		return tccDao.getAllTrabalhosAndProjetosByCurso(curso);
+	}
+	
+	public List<TCC> getTrabalhosAndProjetosByCursoAndCalendar(Curso curso, CalendarioSemestre currentCalendar){
+		return tccDao.getTrabalhosAndProjetosByCursoAndCalendar(curso, currentCalendar);
+	}
 
 	public boolean isProjetoAguardandoAprovacao(TCC tcc)
 	{
@@ -279,6 +295,17 @@ public class TCCBusiness {
 		return trabalhos;
 	}
 	
+	public List<TCC> filtraTrabalhosFinalizados(List<TCC> trabalhos)
+	{
+		for(int i=0;i<trabalhos.size();i++)
+			if(getStatusTCC(trabalhos.get(i))!="Aprovado" )
+			{
+				trabalhos.remove(i);
+				i--;
+			}
+		return trabalhos;
+	}
+	
 	public String getStatusTCC(TCC tcc)
 	{
 		if(isProjetoAguardandoAprovacao(tcc))
@@ -330,5 +357,6 @@ public class TCCBusiness {
 		if((new TCCDAO()).exclui(tcc))
 			return true;
 		return false;
+		
 	}
 }

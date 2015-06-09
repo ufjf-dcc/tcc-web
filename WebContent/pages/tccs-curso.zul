@@ -50,21 +50,15 @@
 									    <comboitem label="Projetos incompletos"/>
 									    <comboitem label="Projetos aguardando aprovação"/>
 									    <comboitem label="Trabalhos incompletos"/>
-									    <comboitem label="Trabalhos aguardando aprovação"/>									   
+									    <comboitem label="Trabalhos aguardando aprovação"/>
+									    <comboitem label="Trabalhos Finalizados"/>									   
 									    
 									</combobox>
 								</div>
 								
 								<separator orient="vertical"
 									spacing="3px" />
-									
-								<label value="Semestre: " visible="@load(true)" />
-								<div visible="@load(true)">
-									<radiogroup id="sv2" onCheck="@command('semestreEscolhido',item=self.selectedIndex)" />
-										 <radio id="r1" label="Atual" radiogroup="sv2"  />
-							             <radio id="r2" label="Todos" radiogroup="sv2" selected="true" />
-								</div>
-
+								
 								<separator orient="vertical"
 									spacing="3px" />
 								

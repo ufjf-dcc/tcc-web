@@ -6,6 +6,7 @@ import org.hibernate.Query;
 
 import br.ufjf.tcc.model.CalendarioSemestre;
 import br.ufjf.tcc.model.Curso;
+import br.ufjf.tcc.model.TCC;
 import br.ufjf.tcc.persistent.GenericoDAO;
 
 
@@ -41,6 +42,27 @@ public class CalendarioSemestreDAO extends GenericoDAO {
 			query.setParameter("id", id);
 			
 			currentCalendar = (CalendarioSemestre) query.uniqueResult();
+			
+			getSession().close();
+			return currentCalendar;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return currentCalendar;
+	}
+	
+	public CalendarioSemestre getCalendarByTCC(TCC tcc) {
+		CalendarioSemestre currentCalendar = null;
+		try {
+			Query query = getSession()
+					.createQuery(
+							"SELECT c FROM CalendarioSemestre AS c WHERE c = :calend");
+			query.setParameter("calend", tcc.getCalendarioSemestre());
+			
+			currentCalendar = (CalendarioSemestre) query.uniqueResult();
+			
 			
 			getSession().close();
 			return currentCalendar;

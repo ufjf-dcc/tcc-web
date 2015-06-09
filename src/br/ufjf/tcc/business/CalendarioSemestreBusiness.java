@@ -8,6 +8,7 @@ import org.joda.time.DateTime;
 
 import br.ufjf.tcc.model.CalendarioSemestre;
 import br.ufjf.tcc.model.Curso;
+import br.ufjf.tcc.model.TCC;
 import br.ufjf.tcc.persistent.impl.CalendarioSemestreDAO;
 
 public class CalendarioSemestreBusiness {
@@ -59,5 +60,8 @@ public class CalendarioSemestreBusiness {
 	public CalendarioSemestre getCalendarById(int id) {
 		return calendarioSemestreDAO.getCalendarById(id);
 	}
-
+	
+	public CalendarioSemestre getCalendarByTCC(TCC tcc) {
+		return calendarioSemestreDAO.getCalendarByTCC(tcc);
+	}
 }
