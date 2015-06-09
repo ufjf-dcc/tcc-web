@@ -44,7 +44,7 @@
 																
 								<div visible="true">
 									<combobox value="Todos" onChange="@command('filtraProjeto',item=self.selectedIndex)">
-									    <comboitem label="Todos"/>
+									    <comboitem label="Todos" />
 									    <comboitem label="Projetos"/>
 									    <comboitem label="Trabalhos"/>
 									    <comboitem label="Projetos incompletos"/>

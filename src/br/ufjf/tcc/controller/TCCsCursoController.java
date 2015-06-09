@@ -92,11 +92,12 @@ public class TCCsCursoController extends CommonsController {
 	public List<String> getYears() {
 		return years;
 	}
-
+	@NotifyChange("filterTccs")
 	public String getFilterYear() {
 		return filterYear;
 	}
 
+	@NotifyChange("filterTccs")
 	public void setFilterYear(String filterYear) {
 		this.filterYear = filterYear;
 	}
@@ -136,7 +137,7 @@ public class TCCsCursoController extends CommonsController {
 		return xmlTccs;
 	}
 
-	@NotifyChange("filterTccs")
+	@NotifyChange({"filterTccs","filterYear"})
 	@Command
 	public void filtra() {
 		
@@ -144,39 +145,77 @@ public class TCCsCursoController extends CommonsController {
 		String filter = filterString.toLowerCase().trim();
 		if (tccs != null) {
 			List<TCC> temp = new ArrayList<TCC>();
-			if (filterYear == "SemestreAtual"){
+			
+			switch(tipoTrabalho){
+			case 0://TODOS
+				if(filterYear=="SemestreAtual")
+					tccs = new TCCBusiness().getTrabalhosAndProjetosByCursoAndCalendar(getUsuario().getCurso(), getCurrentCalendar(getUsuario().getCurso()));
+				else
+					tccs = new TCCBusiness().getAllTrabalhosAndProjetosByCurso(getUsuario().getCurso());			
+				break;
 				
-				//tccs = new TCCBusiness().getTrabalhosAndProjetosByCursoAndCalendar(getUsuario().getCurso(), getCurrentCalendar(getUsuario().getCurso()));
+			case 1://PROJETOS
+				if(filterYear=="SemestreAtual")
+					tccs = new TCCBusiness().getProjetosByCursoAndCalendar(getUsuario().getCurso(), getCurrentCalendar(getUsuario().getCurso()));
+				else
+					tccs = new TCCBusiness().getAllProjetosByCurso(getUsuario().getCurso());
+				break;
+			case 2://TRABALHOS
+				if(filterYear=="SemestreAtual")
+					tccs = new TCCBusiness().getTrabalhosByCursoAndCalendar(getUsuario().getCurso(), getCurrentCalendar(getUsuario().getCurso()));
+				else
+					tccs = new TCCBusiness().getAllTrabalhosByCurso(getUsuario().getCurso());
+				break;
+			
+			case 3://PROJETOS INCOMPLETOS
+				if(filterYear=="SemestreAtual")
+					tccs = new TCCBusiness().getProjetosByCursoAndCalendar(getUsuario().getCurso(), getCurrentCalendar(getUsuario().getCurso()));
+				else
+					tccs = new TCCBusiness().getAllProjetosByCurso(getUsuario().getCurso());
+				tccs = new TCCBusiness().filtraProjetosIncompletos(tccs);
+				break;
+			case 4://PROJETOS AGUARDANDO APROVAÇÂO
+				if(filterYear=="SemestreAtual")
+					tccs = new TCCBusiness().getProjetosByCursoAndCalendar(getUsuario().getCurso(), getCurrentCalendar(getUsuario().getCurso()));
+				else
+					tccs = new TCCBusiness().getAllProjetosByCurso(getUsuario().getCurso());
+				tccs = new TCCBusiness().filtraProjetosAguardandoAprovacao(tccs);
+				break;
+				
+			case 5://TRABALHOS INCOMPLETOS	
+				if(filterYear=="SemestreAtual")
+					tccs = new TCCBusiness().getTrabalhosByCursoAndCalendar(getUsuario().getCurso(), getCurrentCalendar(getUsuario().getCurso()));
+				else
+					tccs = new TCCBusiness().getAllTrabalhosByCurso(getUsuario().getCurso());
+				tccs = new TCCBusiness().filtraTrabalhosIncompletos(tccs);
+				break;
+			case 6://TRABALHOS AGUARDANDO APROVAÇÂO
+				if(filterYear=="SemestreAtual")
+					tccs = new TCCBusiness().getTrabalhosByCursoAndCalendar(getUsuario().getCurso(), getCurrentCalendar(getUsuario().getCurso()));
+				else
+					tccs = new TCCBusiness().getAllTrabalhosByCurso(getUsuario().getCurso());
+				tccs = new TCCBusiness().filtraTrabalhosAguardandoAprovacao(tccs);
+				break;
+			case 7://TRABALHOS APROVADOS
+				if(filterYear=="SemestreAtual")
+					tccs = new TCCBusiness().getTrabalhosByCursoAndCalendar(getUsuario().getCurso(), getCurrentCalendar(getUsuario().getCurso()));
+				else
+					tccs = new TCCBusiness().getAllTrabalhosByCurso(getUsuario().getCurso());
+				tccs = new TCCBusiness().filtraTrabalhosFinalizados(tccs);
+			break;
+			
+			
+			default:
+				return;
+			}
+			
 				for (TCC tcc : tccs) {
 					
 					if(tcc.getPalavrasChave()==null)
 						tcc.setPalavrasChave("");
 					if(tcc.getResumoTCC()==null)
 						tcc.setResumoTCC("");
-					if ((filter == "" || (tcc.getNomeTCC().toLowerCase()
-									.contains(filter)
-									|| tcc.getAluno().getNomeUsuario()
-											.toLowerCase().contains(filter)
-									|| tcc.getOrientador().getNomeUsuario()
-											.toLowerCase().contains(filter)
-									|| tcc.getPalavrasChave().toLowerCase()
-											.contains(filter) || tcc.getResumoTCC()
-									.toLowerCase().contains(filter))))					
-						temp.add(tcc);
-						
-					
-				}
-				
-			}else{
-			
-			
-				for (TCC tcc : tccs) {
-					
-					if(tcc.getPalavrasChave()==null)
-						tcc.setPalavrasChave("");
-					if(tcc.getResumoTCC()==null)
-						tcc.setResumoTCC("");
-					if ((filterYear == "Todos" || filterYear.contains(getTccYear(tcc)) )    
+					if ((filterYear == "Todos" || filterYear.contains(getTccYear(tcc)) || filterYear=="SemestreAtual" )    
 							&& (filter == "" || (tcc.getNomeTCC().toLowerCase()
 									.contains(filter)
 									|| tcc.getAluno().getNomeUsuario()
@@ -191,7 +230,9 @@ public class TCCsCursoController extends CommonsController {
 					
 				}
 				
-			}
+			//}
+				//if(filterYear=="SemestreAtual")
+					//temp=tccs;
 			
 			
 			filterTccs = temp;
@@ -253,11 +294,13 @@ public class TCCsCursoController extends CommonsController {
 			Messagebox.show("É necessario cadastrar um calendario antes");
 	}
 
+	@NotifyChange("filterTccs")
 	@Command
 	public void filtraProjeto(@BindingParam("item") int item)
 	{
 		tipoTrabalho=item;
-		
+
+		System.out.println(filterYear+"\n\n\n");
 		switch(tipoTrabalho){
 		case 0://TODOS
 			if(filterYear=="SemestreAtual")
@@ -268,27 +311,27 @@ public class TCCsCursoController extends CommonsController {
 			
 		case 1://PROJETOS
 			if(filterYear=="SemestreAtual")
-				tccs = new TCCBusiness().getTrabalhosAndProjetosByCursoAndCalendar(getUsuario().getCurso(), getCurrentCalendar(getUsuario().getCurso()));
+				tccs = new TCCBusiness().getProjetosByCursoAndCalendar(getUsuario().getCurso(), getCurrentCalendar(getUsuario().getCurso()));
 			else
 				tccs = new TCCBusiness().getAllProjetosByCurso(getUsuario().getCurso());
 			break;
 		case 2://TRABALHOS
 			if(filterYear=="SemestreAtual")
-				tccs = new TCCBusiness().getTrabalhosAndProjetosByCursoAndCalendar(getUsuario().getCurso(), getCurrentCalendar(getUsuario().getCurso()));
+				tccs = new TCCBusiness().getTrabalhosByCursoAndCalendar(getUsuario().getCurso(), getCurrentCalendar(getUsuario().getCurso()));
 			else
 				tccs = new TCCBusiness().getAllTrabalhosByCurso(getUsuario().getCurso());
 			break;
 		
 		case 3://PROJETOS INCOMPLETOS
 			if(filterYear=="SemestreAtual")
-				tccs = new TCCBusiness().getTrabalhosAndProjetosByCursoAndCalendar(getUsuario().getCurso(), getCurrentCalendar(getUsuario().getCurso()));
+				tccs = new TCCBusiness().getProjetosByCursoAndCalendar(getUsuario().getCurso(), getCurrentCalendar(getUsuario().getCurso()));
 			else
 				tccs = new TCCBusiness().getAllProjetosByCurso(getUsuario().getCurso());
 			tccs = new TCCBusiness().filtraProjetosIncompletos(tccs);
 			break;
 		case 4://PROJETOS AGUARDANDO APROVAÇÂO
 			if(filterYear=="SemestreAtual")
-				tccs = new TCCBusiness().getTrabalhosAndProjetosByCursoAndCalendar(getUsuario().getCurso(), getCurrentCalendar(getUsuario().getCurso()));
+				tccs = new TCCBusiness().getProjetosByCursoAndCalendar(getUsuario().getCurso(), getCurrentCalendar(getUsuario().getCurso()));
 			else
 				tccs = new TCCBusiness().getAllProjetosByCurso(getUsuario().getCurso());
 			tccs = new TCCBusiness().filtraProjetosAguardandoAprovacao(tccs);
@@ -296,21 +339,21 @@ public class TCCsCursoController extends CommonsController {
 			
 		case 5://TRABALHOS INCOMPLETOS	
 			if(filterYear=="SemestreAtual")
-				tccs = new TCCBusiness().getTrabalhosAndProjetosByCursoAndCalendar(getUsuario().getCurso(), getCurrentCalendar(getUsuario().getCurso()));
+				tccs = new TCCBusiness().getTrabalhosByCursoAndCalendar(getUsuario().getCurso(), getCurrentCalendar(getUsuario().getCurso()));
 			else
 				tccs = new TCCBusiness().getAllTrabalhosByCurso(getUsuario().getCurso());
 			tccs = new TCCBusiness().filtraTrabalhosIncompletos(tccs);
 			break;
 		case 6://TRABALHOS AGUARDANDO APROVAÇÂO
 			if(filterYear=="SemestreAtual")
-				tccs = new TCCBusiness().getTrabalhosAndProjetosByCursoAndCalendar(getUsuario().getCurso(), getCurrentCalendar(getUsuario().getCurso()));
+				tccs = new TCCBusiness().getTrabalhosByCursoAndCalendar(getUsuario().getCurso(), getCurrentCalendar(getUsuario().getCurso()));
 			else
 				tccs = new TCCBusiness().getAllTrabalhosByCurso(getUsuario().getCurso());
 			tccs = new TCCBusiness().filtraTrabalhosAguardandoAprovacao(tccs);
 			break;
 		case 7://TRABALHOS APROVADOS
 			if(filterYear=="SemestreAtual")
-				tccs = new TCCBusiness().getTrabalhosAndProjetosByCursoAndCalendar(getUsuario().getCurso(), getCurrentCalendar(getUsuario().getCurso()));
+				tccs = new TCCBusiness().getTrabalhosByCursoAndCalendar(getUsuario().getCurso(), getCurrentCalendar(getUsuario().getCurso()));
 			else
 				tccs = new TCCBusiness().getAllTrabalhosByCurso(getUsuario().getCurso());
 			tccs = new TCCBusiness().filtraTrabalhosFinalizados(tccs);

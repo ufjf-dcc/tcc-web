@@ -295,6 +295,30 @@ public class TCCDAO extends GenericoDAO {
 	    return null;
 	}
 	
+	public List<TCC> getTrabalhosByCursoAndCalendar(Curso curso,CalendarioSemestre currentCalendar){
+		 try {
+		        Query query = getSession()
+		                .createQuery(
+		                        "SELECT t FROM TCC AS t JOIN FETCH t.aluno AS a JOIN FETCH t.orientador LEFT JOIN FETCH t.coOrientador WHERE a.curso = :curso AND t.calendarioSemestre = :currentCalendar AND t.projeto = :projeto ORDER BY t.dataEnvioFinal DESC");
+		        query.setParameter("curso", curso);
+		        query.setParameter("currentCalendar", currentCalendar);
+		        query.setParameter("projeto", false);
+
+		        List<TCC> resultados = query.list();
+
+		        getSession().close();
+
+		        if (resultados != null)
+		            return resultados;
+
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		    }
+
+		    return null;
+		
+	}
+	
 	public TCC getCurrentNotFinishedTCCByAuthor(Usuario user,
 			CalendarioSemestre currentCalendar) {
 			TCC resultado = null;
