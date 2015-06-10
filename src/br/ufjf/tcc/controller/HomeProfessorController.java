@@ -191,8 +191,12 @@ public class HomeProfessorController extends CommonsController {
 			lbl.setValue(dateFormat.format(tcc.getDataApresentacao()));
 			if (tcc.getSalaDefesa() != null)
 				lbl.setValue(lbl.getValue() + " - Sala " + tcc.getSalaDefesa());
-		} else
-			lbl.setValue("Não agendada");
+		} else{
+			if(tcc.getArquivoTCCFinal()!=null)
+				lbl.setValue("Não Informada");
+			else
+				lbl.setValue("Não agendada");
+		}
 	}
 
 	@Command
