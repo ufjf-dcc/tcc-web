@@ -184,6 +184,7 @@ public class UsuarioBusiness {
 		matriculas.add("201335012");
 		matriculas.add("admin");
 		matriculas.add("compnoturno");
+		matriculas.add("secFanu");
 		matriculas.add("a");
 
 

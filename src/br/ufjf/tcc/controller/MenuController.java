@@ -28,8 +28,12 @@ import br.ufjf.tcc.model.Usuario;
 import br.ufjf.tcc.pdfHandle.Ata;
 import br.ufjf.tcc.pdfHandle.AtaCCoorientador;
 import br.ufjf.tcc.pdfHandle.AtaSCoorientador;
+import br.ufjf.tcc.persistent.impl.UsuarioDAO;
 
 public class MenuController extends CommonsController {
+	private String senhaAntiga;
+	private String senhaNova1;
+	private String senhaNova2;
 	private Ata ata;
 	private byte[] pdfByteArray = null;
 	private Usuario usuarioForm = new Usuario();
@@ -126,7 +130,7 @@ public class MenuController extends CommonsController {
 
 					} else
 						Messagebox
-								.show("Para gerar a Ata a banca deve conter no m�nimo 2 examinadores e no maximo 4.\n",
+								.show("Para gerar a Ata a banca deve conter no m�nimo 2 examinadores e no maximo 4.\n",
 										"Erro", Messagebox.OK, Messagebox.ERROR);
 
 				} else
@@ -189,6 +193,15 @@ public class MenuController extends CommonsController {
 					"/pages/mudar-perfil.zul", null, null);
 			dialog.doModal();
 		}
+	}
+	
+	@Command
+	public void alterarSenha() {
+		
+			final Window dialog = (Window) Executions.createComponents(
+					"/pages/alterar_senha.zul", null, null);
+			dialog.doModal();
+		
 	}
 
 	@Command
@@ -330,6 +343,74 @@ public class MenuController extends CommonsController {
 	{
 		SessionManager.setAttribute("trabalhos_semestre", false);
 		Executions.sendRedirect("/pages/tccs-curso.zul");
+	}
+	
+	public String getSenhaAntiga() {
+		return senhaAntiga;
+	}
+
+	public void setSenhaAntiga(String senhaAntiga) {
+		this.senhaAntiga = senhaAntiga;
+	}
+
+	public String getSenhaNova1() {
+		return senhaNova1;
+	}
+
+	public void setSenhaNova1(String senhaNova1) {
+		this.senhaNova1 = senhaNova1;
+	}
+
+	public String getSenhaNova2() {
+		return senhaNova2;
+	}
+
+	public void setSenhaNova2(String senhaNova2) {
+		this.senhaNova2 = senhaNova2;
+	}
+	
+	@Command
+	public void alterarSenhaSecretaria(@BindingParam("window") Window window,
+			@BindingParam("label") Label errorLbl){
+		if(senhaAntiga!=null){
+			if(senhaNova1!=null){
+				if(senhaNova1.length()>5){
+					if(senhaNova2!=null){
+						if(senhaNova1.equals(senhaNova2)){
+							if(getUsuario().getSenha().equals(senhaAntiga)){
+								getUsuario().setSenha(senhaNova1);
+								UsuarioDAO dao = new UsuarioDAO();
+								dao.editar(getUsuario());
+								Messagebox.show("Senha alterada com sucesso!");
+								window.onClose();
+								
+							}else{
+								errorLbl.setValue("Senha Atual inválida");
+								errorLbl.setVisible(true);
+							}
+						}else{
+							errorLbl.setValue("Novas senhas não são iguals!");
+							errorLbl.setVisible(true);
+						}
+						
+					}else{
+						errorLbl.setValue("Digite a sua nova senha repetida!");
+						errorLbl.setVisible(true);
+					}
+				}else{
+					errorLbl.setValue("Senha deve ter no minimo 6 caracteres");
+					errorLbl.setVisible(true);
+				}
+			}else{
+				errorLbl.setValue("Digite a sua nova senha!");
+				errorLbl.setVisible(true);				
+			}
+		}else{
+			errorLbl.setValue("Digite a senha Atual!");
+			errorLbl.setVisible(true);
+		}
+		
+		
 	}
 
 }
