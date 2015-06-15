@@ -372,15 +372,22 @@ public class MenuController extends CommonsController {
 	@Command
 	public void alterarSenhaSecretaria(@BindingParam("window") Window window,
 			@BindingParam("label") Label errorLbl){
+		UsuarioBusiness ub = new UsuarioBusiness();
 		if(senhaAntiga!=null){
 			if(senhaNova1!=null){
 				if(senhaNova1.length()>5){
 					if(senhaNova2!=null){
+						
 						if(senhaNova1.equals(senhaNova2)){
-							if(getUsuario().getSenha().equals(senhaAntiga)){
-								getUsuario().setSenha(senhaNova1);
-								UsuarioDAO dao = new UsuarioDAO();
-								dao.editar(getUsuario());
+							String senhaAntigaEncript = ub.encripta(senhaAntiga);
+							if(getUsuario().getSenha().equals(senhaAntigaEncript)){
+								
+								String novaSenha1 = ub.encripta(senhaNova1);
+								getUsuario().setSenha(novaSenha1);
+								
+								
+								
+								ub.editar(getUsuario());
 								Messagebox.show("Senha alterada com sucesso!");
 								window.onClose();
 								

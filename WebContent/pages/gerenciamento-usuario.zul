@@ -46,6 +46,7 @@
 							<radio label="Coordenadores" width="90px" />
 							<radio label="Administradores" visible="@load(not vm.coordenador)"
 								width="200px" />
+							<radio label="Secretarios" width="90px" />
 						</hlayout>
 					</radiogroup>
 				</auxheader>
