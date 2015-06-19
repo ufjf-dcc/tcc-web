@@ -170,9 +170,9 @@ public class UsuarioBusiness {
 //
 //		errors.add("Identificador ou senha inválidos! Ou não cadastrado!");
 //		return false;
-		
-		
-		errors.clear();
+//		
+//		
+//		errors.clear();
 
 		List<Usuario> users = new ArrayList<Usuario>();
 
