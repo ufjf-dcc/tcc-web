@@ -14,7 +14,7 @@ import br.ufjf.tcc.persistent.impl.CursoDAO;
 
 
 @WebServlet("/index5.jsp")
-public class index2MVC extends HttpServlet {
+public class ListaPublicaFilter extends HttpServlet {
 	
 	
 	private static final long serialVersionUID = 1L;
@@ -30,21 +30,13 @@ public class index2MVC extends HttpServlet {
 		String year = req.getParameter("year");
 		
 		if(idCursoAux!=null && idCursoAux.length()>1){
-			
-			if(lpc.getCurso().getCodigoCurso()==idCursoAux)
-				lpc.setFilterYear(year);
-			else
-				lpc.setFilterYear("Todos");
 		
 		Curso c = cdao.getCursoByCode(idCursoAux);
 		
 		lpc.setCurso(c);
-		
-		
-			
 		}else{
 			
-				lpc.setFilterYear("");
+				
 			Curso c = new Curso();
 			c.setNomeCurso("Todos (trabalhos mais recentes)");
 			lpc.setCurso(c);
@@ -58,8 +50,13 @@ public class index2MVC extends HttpServlet {
 			lpc.setFilterString("");
 		
 		
+		
+		lpc.setFilterYear(year);
+		
+		
 		lpc.changeCurso2();
-		lpc.filtra();
+		
+		
 		
 		List<TCC> tccs = lpc.getFilterTccs();
 		List<Curso> cursos = lpc.getCursos();
@@ -69,7 +66,7 @@ public class index2MVC extends HttpServlet {
 		req.setAttribute("cursoSelected", idCursoAux);
 		req.setAttribute("years", years);
 		req.setAttribute("yearSelected", year);
-	
+		System.out.println("\n\n\n\n\n"+year);
 		try{
 		req.getRequestDispatcher("index2.jsp").forward(req, res);
 		}catch(Exception e){

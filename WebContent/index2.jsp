@@ -6,6 +6,32 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
+<style type="text/css">
+
+
+</style>
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+	function changeCurso(){
+		location.href="./index5.jsp";
+	}
+	
+	
+	function visualzarTCC(id) {
+		
+	window.open('pages/visualiza.zul?id='+id,'_blank'); }
+	
+	
+
+</script>
 
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Lista Pública de Trabalhos Acadêmicos - UFJF</title>
@@ -44,18 +70,20 @@
 			
 	</z:page>
 	
-	<div align="center" style="margin: auto; background-color: #CCFFFF; border: 3px;border-color: black;" > <h2>Lista Pública de Trabalhos Acadêmicos</h2> </div>
-	<div>
+	<div class="container" align="center" style="margin: auto; background-color: #CCFFFF;width: 100%" > Lista Pública de Trabalhos Acadêmico </div>
 	<form action="index5.jsp" method="post">
+	<div style="width: 30%; float: left;">
+	
 		Curso:
-		<select id="curso" name="curso">
+		<select id="curso" name="curso" onchange="this.form.submit()">
 			
 			<c:forEach var="curso" items="${cursos}">
 				<option value="${curso.codigoCurso}" ${cursoSelected == curso.codigoCurso? 'selected="selected"' : '' } >${curso.nomeCurso}</option>
 			</c:forEach>
 			
 		</select>
-		<div style="float: right;padding: 10px">
+	</div>
+	<div style="float: right;padding: 5px;width: 50%;">
 			Pesquisar:
 			<input id="pesquisa" name="pesquisa" type="text" value="${PalavaPesquisa}">  </input>
 			
@@ -75,22 +103,22 @@
 	 </div>
 	 
 	 <div style="width: 100%;font-size: small;">
-	 <table style="width: 100%;border: 2px solid black;">
+	 <table class="table table-hover table-bordered" style="width: 100%;">
 	 		<tr style="background-color: windowframe;">
-	 			<th style="width: 70%">Trabalho</th>
+	 			<th style="width: 60%">Trabalho</th>
 	 			<th>Autor</th>
 	 			<th>PDF</th>
 	 			<th>Extras</th>
 	 		</tr>
 		  <c:forEach var="tcc" items="${tccs}">
 		  
-		  	  <tr>
-		      <td>${tcc.nomeTCC}</td>
-		      <td>${tcc.aluno.nomeUsuario}</td>
-		      <td><img src="img/pdf.png" style="cursor: pointer"
-						onClick="@command('downloadPDF', tcc=each)" /></td>
-				<td><img src="img/rar.png" style="cursor: pointer"
-						onClick="@command('downloadPDF', tcc=each)" /></td>
+		  	  <tr style="cursor: pointer;"  >
+			      <td onclick="window.open('pages/visualiza.zul?id='+${tcc.idTCC},'_blank')">${tcc.nomeTCC}</td>
+			      <td onclick="window.open('pages/visualiza.zul?id='+${tcc.idTCC},'_blank')">${tcc.aluno.nomeUsuario}</td>
+			      <td><img src="img/pdf.png" style="cursor: pointer"
+							onClick="./d.jsp" /></td>
+					<td><img src="img/rar.png" style="cursor: pointer"
+							onClick="./d.jsp" /></td>
 		      
 		    </tr>
 		  
@@ -101,9 +129,6 @@
 	 </div>
 	
 
-
-		
-	</div>
-		
+</div>
 </body>
 </html>

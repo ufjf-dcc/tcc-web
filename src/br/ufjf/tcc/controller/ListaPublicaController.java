@@ -168,7 +168,7 @@ public class ListaPublicaController extends CommonsController {
 			emptyMessage = "Selecione um curso na caixa acima.";
 			tccsByCurso = null;
 		}
-		updateYears();
+		updateYears2();
 		if (!years.contains(filterYear))
 			filterYear = "Todos";
 
@@ -213,7 +213,7 @@ public class ListaPublicaController extends CommonsController {
 					tcc.setPalavrasChave("");
 				if(tcc.getResumoTCC()==null)
 					tcc.setResumoTCC("");
-				if ((filterYear == "Todos" || filterYear
+				if ((filterYear.contains("Todos") || filterYear
 						.contains(getTccYear(tcc)))
 						&& (filter == "" || (tcc.getNomeTCC().toLowerCase()
 								.contains(filter)
@@ -226,7 +226,7 @@ public class ListaPublicaController extends CommonsController {
 								.toLowerCase().contains(filter))))
 					temp.add(tcc);
 			}
-
+			System.out.println("\n\n\n\nENtrei aqui");
 			filterTccs = temp;
 		} else {
 			filterTccs = tccsByCurso;
