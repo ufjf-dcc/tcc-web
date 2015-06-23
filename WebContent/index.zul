@@ -1,6 +1,7 @@
 <?page title="Lista Pública de Trabalhos Acadêmicos - UFJF"?>
 
 <zk>
+
 	<script type="text/javascript">
 		function visualzarTCC(id) {
 		window.open('pages/visualiza.zul?id='+id,'_blank'); }

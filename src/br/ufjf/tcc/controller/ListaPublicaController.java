@@ -21,6 +21,7 @@ import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.model.TCC;
 import br.ufjf.tcc.persistent.impl.TCCDAO;
 
+
 public class ListaPublicaController extends CommonsController {
 
 	private Curso curso = null;
@@ -54,6 +55,21 @@ public class ListaPublicaController extends CommonsController {
 	}
 
 	public void updateYears() {
+		years = new ArrayList<String>();
+		if (tccsByCurso != null && tccsByCurso.size() > 0) {
+			for (TCC tcc : tccsByCurso) {
+				Calendar cal = Calendar.getInstance();
+				cal.setTimeInMillis(tcc.getDataEnvioFinal().getTime());
+				int year = cal.get(Calendar.YEAR);
+				if (!years.contains("" + year))
+					years.add("" + year);
+			}
+			Collections.sort(years, Collections.reverseOrder());
+		}
+		years.add(0, "Todos");
+	}
+	
+	public void updateYears2() {
 		years = new ArrayList<String>();
 		if (tccsByCurso != null && tccsByCurso.size() > 0) {
 			for (TCC tcc : tccsByCurso) {
@@ -129,6 +145,35 @@ public class ListaPublicaController extends CommonsController {
 
 		this.filtra();
 		BindUtils.postNotifyChange(null, null, this, "filterTccs");
+	}
+	
+	public void changeCurso2() {
+		if (curso.getNomeCurso().equals("Todos (trabalhos mais recentes)"))
+		{
+			tccsByCurso = tccB.getNewest(20);
+		}
+		else
+		if (curso.getIdCurso() > 0) {
+			tccsByCurso = new TCCBusiness().getFinishedTCCsByCurso(curso);
+			if (tccsByCurso == null || tccsByCurso.size() == 0)
+				emptyMessage = "Nenhuma monografia encontrada para o curso de "
+						+ curso.getNomeCurso();
+			else {
+				emptyMessage = "Sem resultados para seu filtro no curso de "
+						+ curso.getNomeCurso();
+				filterTccs = tccsByCurso;
+
+			}
+		} else {
+			emptyMessage = "Selecione um curso na caixa acima.";
+			tccsByCurso = null;
+		}
+		updateYears();
+		if (!years.contains(filterYear))
+			filterYear = "Todos";
+
+		this.filtra();
+		
 	}
 
 	public List<TCC> getFilterTccs() {
