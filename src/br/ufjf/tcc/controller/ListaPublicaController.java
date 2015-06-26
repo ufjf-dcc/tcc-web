@@ -239,10 +239,12 @@ public class ListaPublicaController extends CommonsController {
 				.getFileInputSream(tcc.getArquivoTCCFinal());
 		if (is != null)
 			Filedownload.save(is, "application/pdf", tcc.getNomeTCC() + ".pdf");
+		
 		else
 			Messagebox.show("O PDF não foi encontrado!", "Erro", Messagebox.OK,
 					Messagebox.ERROR);
 	}
+	
 
 	@Command
 	public void downloadExtra(@BindingParam("tcc") TCC tcc) {

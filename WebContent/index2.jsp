@@ -7,6 +7,12 @@
 <html>
 <head>
 <style type="text/css">
+tr:HOVER {
+	background-color: lime;
+}
+
+
+
 </style>
 
 <!-- Latest compiled and minified CSS -->
@@ -28,7 +34,7 @@
 	
 	function visualzarTCC(id) {
 		
-	window.open('pages/visualiza.zul?id='+id,'_blank'); }
+	window.open('pages/visualiza.zul?id='id,'_blank'); }
 	
 	
 
@@ -71,34 +77,42 @@
 
 		</z:page>
 
-		<div class="container" align="center"
-			style="margin: auto; background-color: #CCFFFF; width: 100%">
-			Lista Pública de Trabalhos Acadêmico</div>
-		<form action="index5.jsp" method="post">
-			<div style="float: left;">
+		<div class="navbar navbar-default" align="center"
+			style="margin: auto; background-color: #CCFFFF; width: 100%;">
+			<div  class="navbar-header">
+			
+			<a  class="navbar-brand" style="position: relative;left: 490px;" >Lista Pública de Trabalhos Acadêmico</a>
+			</div>
+			
+		</div>
+		
+		<form class="form-inline" action="index5.jsp" method="post">
+			<div class="form-group" style="float: left;position: relative;top: 5px">
 
-				Curso: <select id="curso" name="curso" onchange="this.form.submit()">
+				<label>Curso:</label> 
+				<select class="form-control" style="width: 200px;" id="curso" name="curso" onchange="this.form.submit()">
 
 					<c:forEach var="curso" items="${cursos}">
-						<option value="${curso.codigoCurso}"
+						<option  value="${curso.codigoCurso}"
 							${cursoSelected == curso.codigoCurso? 'selected="selected"' : '' }>${curso.nomeCurso}</option>
 					</c:forEach>
 
 				</select>
 			</div>
-			<div style="float: right; padding: 5px; width: 50%;">
-				Pesquisar: <input id="pesquisa" name="pesquisa" type="text"
+			<div style="float: right; padding: 5px; width: 520px;">
+				<label>Pesquisar:</label> 
+				<input class="form-control" id="pesquisa" name="pesquisa" type="text"
 					value="${PalavaPesquisa}" /> 
 					
-					Ano: 
-					<select id="year" name="year">
+					<label>Ano:</label> 
+					<select class="form-control"  id="year" name="year">
 					<c:forEach var="year" items="${years}">
 						<option ${yearSelected == year? 'selected="selected"' : '' }>${year}</option>
 					</c:forEach>
 
 				</select>
 
-				<button type="submit">Filtrar</button>
+				<button class="btn btn-primary" type="submit">Filtrar</button>
 
 				<img src="./img/help.gif"
 					onmouseover="document.getElementById('filterHelp')"
@@ -107,8 +121,8 @@
 			
 	</div>
 	</div>
-
-	<div style="position:absolute;top:100px;left:1px; width: 100%; font-size: small;">
+	
+	<div style="position:absolute;top:140px;left:1px; width: 100%; font-size: small;">
 		<table class="table table-hover table-bordered" style="width: 100%;">
 			<tr style="background-color: windowframe;">
 				<th style="width: 60%">Trabalho</th>
@@ -123,10 +137,10 @@
 						onclick="window.open('pages/visualiza.zul?id='+${tcc.idTCC},'_blank')">${tcc.nomeTCC}</td>
 					<td
 						onclick="window.open('pages/visualiza.zul?id='+${tcc.idTCC},'_blank')">${tcc.aluno.nomeUsuario}</td>
-					<td><img src="img/pdf.png" style="cursor: pointer"
-						onClick="./d.jsp" /></td>
-					<td><img src="img/rar.png" style="cursor: pointer"
-						onClick="./d.jsp" /></td>
+					<td onClick="location.href='download.zul?id=${tcc.idTCC}&tipoDownload=1'"><img src="img/pdf.png" style="cursor: pointer"
+					 /></td>
+					<td><img ${tcc.arquivoExtraTCCFinal != null ? 'src="img/rar.png"' : 'src="img/norar.png"'} style="cursor: pointer"
+						onClick="location.href='download.zul?id=${tcc.idTCC}&tipoDownload=2'" /></td>
 
 				</tr>
 			</c:forEach>

@@ -26,12 +26,17 @@ public class ListaPublicaFilter extends HttpServlet {
 		CursoDAO cdao = new CursoDAO();
 		
 		String pesquisa = req.getParameter("pesquisa");
-		String idCursoAux = req.getParameter("curso");
-		String year = req.getParameter("year");
+		String codCursoAux = req.getParameter("curso");
+		String year;
 		
-		if(idCursoAux!=null && idCursoAux.length()>1){
 		
-		Curso c = cdao.getCursoByCode(idCursoAux);
+			year = req.getParameter("year");
+		
+			
+		
+		if(codCursoAux!=null && codCursoAux.length()>1){
+		
+		Curso c = cdao.getCursoByCode(codCursoAux);
 		
 		lpc.setCurso(c);
 		}else{
@@ -63,12 +68,12 @@ public class ListaPublicaFilter extends HttpServlet {
 		List<String> years = lpc.getYears();
 		req.setAttribute("tccs", tccs);
 		req.setAttribute("cursos", cursos);
-		req.setAttribute("cursoSelected", idCursoAux);
+		req.setAttribute("cursoSelected", codCursoAux);
 		req.setAttribute("years", years);
 		req.setAttribute("yearSelected", year);
-		System.out.println("\n\n\n\n\n"+year);
+	
 		try{
-		req.getRequestDispatcher("index2.jsp").forward(req, res);
+			req.getRequestDispatcher("index2.jsp").forward(req, res);
 		}catch(Exception e){
 			e.printStackTrace();
 		}
