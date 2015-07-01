@@ -28,7 +28,23 @@ public class ListaPublicaFilter extends HttpServlet {
 		String pesquisa = req.getParameter("pesquisa");
 		String codCursoAux = req.getParameter("curso");
 		String year;
+		String errorMsg = req.getParameter("errorMsg");
 		
+		String teste = (String) req.getParameter("lpc");
+		
+		String pagina = req.getParameter("page");
+		
+		if(teste==null)
+			System.out.println("\n\nAINDA NAO");
+		else
+			System.out.println("\n\n\n agora sim");
+		
+		
+		if(errorMsg!=null && errorMsg.equals("1")){
+			
+			req.setAttribute("errorMsg", errorMsg);
+		}
+			
 		
 			year = req.getParameter("year");
 		
@@ -71,13 +87,15 @@ public class ListaPublicaFilter extends HttpServlet {
 		req.setAttribute("cursoSelected", codCursoAux);
 		req.setAttribute("years", years);
 		req.setAttribute("yearSelected", year);
-	
+		req.setAttribute("lpc", codCursoAux);
+		req.setAttribute("page", pagina);
+		
 		try{
 			req.getRequestDispatcher("index2.jsp").forward(req, res);
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-	
+		req.setAttribute("errorMsg", "0");
 	}
 	
 

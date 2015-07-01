@@ -33,6 +33,7 @@ public class ListaPublicaController extends CommonsController {
 	private List<TCC> filterTccs = tccsByCurso;
 	private String filterString = "";
 	private String filterYear = "Todos";
+	private List<String> years2 = updateYears2();
 
 	public String getEmptyMessage() {
 		return emptyMessage;
@@ -69,10 +70,10 @@ public class ListaPublicaController extends CommonsController {
 		years.add(0, "Todos");
 	}
 	
-	public void updateYears2() {
+	public List<String> updateYears2() {
 		years = new ArrayList<String>();
 		if (tccsByCurso != null && tccsByCurso.size() > 0) {
-			for (TCC tcc : tccsByCurso) {
+			for (TCC tcc : tccB.getAllFinishedTCCs()) {
 				Calendar cal = Calendar.getInstance();
 				cal.setTimeInMillis(tcc.getDataEnvioFinal().getTime());
 				int year = cal.get(Calendar.YEAR);
@@ -82,6 +83,7 @@ public class ListaPublicaController extends CommonsController {
 			Collections.sort(years, Collections.reverseOrder());
 		}
 		years.add(0, "Todos");
+		return years;
 	}
 
 	public String getFilterYear() {
@@ -168,7 +170,7 @@ public class ListaPublicaController extends CommonsController {
 			emptyMessage = "Selecione um curso na caixa acima.";
 			tccsByCurso = null;
 		}
-		updateYears2();
+		//updateYears2();
 		if (!years.contains(filterYear))
 			filterYear = "Todos";
 

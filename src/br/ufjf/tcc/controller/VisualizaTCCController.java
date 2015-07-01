@@ -49,7 +49,9 @@ public class VisualizaTCCController extends CommonsController {
 
 	@Init
 	public void init() {
+		
 		String tccId = Executions.getCurrent().getParameter("id");
+
 		if (tccId != null) {
 			TCCBusiness tccBusiness = new TCCBusiness();
 			tcc = tccBusiness.getTCCById(Integer.parseInt(tccId));
@@ -176,11 +178,35 @@ public class VisualizaTCCController extends CommonsController {
 
 	@Command
 	public void showTCC(@BindingParam("iframe") Iframe report) {
+		
 		InputStream is;
 		if (tcc.getArquivoTCCFinal() != null)
 			is = FileManager.getFileInputSream(tcc.getArquivoTCCFinal());
 		else if (tcc.getArquivoTCCBanca() != null)
 			is = FileManager.getFileInputSream(tcc.getArquivoTCCBanca());
+		else
+			is = FileManager.getFileInputSream("modelo.pdf");
+
+		final AMedia amedia = new AMedia(tcc.getNomeTCC() + ".pdf", "pdf",
+				"application/pdf", is);
+		report.setContent(amedia);
+	}
+	
+	@Command
+	public void showTCC2(@BindingParam("iframe") Iframe report) {
+		String tccId = Executions.getCurrent().getParameter("id");
+		System.out.println("\n\n\n entrei");
+		TCC tcc2 = null;
+		if (tccId != null) {
+			TCCBusiness tccBusiness = new TCCBusiness();
+			tcc2 = tccBusiness.getTCCById(Integer.parseInt(tccId));
+		}
+		
+		InputStream is;
+		if (tcc2.getArquivoTCCFinal() != null)
+			is = FileManager.getFileInputSream(tcc2.getArquivoTCCFinal());
+		else if (tcc.getArquivoTCCBanca() != null)
+			is = FileManager.getFileInputSream(tcc2.getArquivoTCCBanca());
 		else
 			is = FileManager.getFileInputSream("modelo.pdf");
 

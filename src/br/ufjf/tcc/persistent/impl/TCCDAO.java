@@ -205,6 +205,27 @@ public class TCCDAO extends GenericoDAO {
 		return null;
 	}
 	
+	public List<TCC> getAllFinishedTCCs() {
+		try {
+			Query query = getSession()
+					.createQuery(
+							"SELECT t FROM TCC AS t JOIN FETCH t.aluno AS a JOIN FETCH t.orientador LEFT JOIN FETCH t.coOrientador WHERE t.dataEnvioFinal IS NOT NULL AND t.arquivoTCCFinal IS NOT NULL ORDER BY t.dataEnvioFinal DESC");
+			
+
+			List<TCC> resultados = query.list();
+
+			getSession().close();
+
+			if (resultados != null)
+				return resultados;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+	
 	public List<TCC> getNewest(int quantidade)//pega os x ultimos trabalhos terminados
 	{
 	try {

@@ -158,6 +158,10 @@ public class TCCBusiness {
 	public List<TCC> getFinishedTCCsByCurso(Curso curso) {
 		return tccDao.getFinishedTCCsByCurso(curso);
 	}
+	
+	public List<TCC> getAllFinishedTCCs() {
+		return tccDao.getAllFinishedTCCs();
+	}
 
 	public List<TCC> getNewest(int quantidade) {
 	    return tccDao.getNewest(quantidade);
