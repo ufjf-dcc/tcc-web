@@ -38,9 +38,14 @@ public class DownloadPDFServlet extends HttpServlet {
 		
 		File file = FileManager.getFile(tcc.getArquivoTCCFinal());
 		
-		if(file==null)
-			System.out.println("Arquivo n encontrado");
-
+		if(file==null){
+			try{
+				req.getRequestDispatcher("index5.jsp?").forward(req, res);
+			}catch(Exception e2){
+				e2.printStackTrace();
+			}
+			return;		
+		}
 		byte[] bytes = null;
 		try {
 			bytes = fileToByte(file);
@@ -48,13 +53,6 @@ public class DownloadPDFServlet extends HttpServlet {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			
-			
-			try{
-				req.getRequestDispatcher("index5.jsp?errorMsg=1").forward(req, res);
-			}catch(Exception e2){
-				e2.printStackTrace();
-			}
-			return;
 		}
 		
 		res.setContentType("application/pdf"); // Colocar dinamico, pelo arquivo

@@ -20,7 +20,14 @@
 
 </script>
 <style type="text/css">
+tr {
+	height: 40px;
+}
 
+.headerPub{
+	 border:1px solid #cfcfcf;
+	 background: linear-gradient(#D8D8D8, white); 
+}
 
 
 
@@ -105,11 +112,11 @@
 
 		</z:page>
 
-		<div class="navbar navbar-default" align="center"
-			style="margin: auto; background-color: #CCFFFF; width: 100%;">
-			<div  class="navbar-header">
+		<div class="headerPub" align="center"
+			style="margin: auto; width: 100%;height:30px;font-size: 12px;font-weight: bold;color: #636363">
+			<div  style="padding-top: 7px" >
 			
-			<a  class="navbar-brand" style="position: relative;left: 490px;" >Lista Pública de Trabalhos Acadêmico</a>
+			Lista Pública de Trabalhos Acadêmico
 			</div>
 			
 		</div>
@@ -120,7 +127,7 @@
 			<div class="form-group" style="float: left;position: relative;top: 5px">
 
 				<label>Curso:</label> 
-				<select class="form-control" style="width: 200px;" id="curso" name="curso" onchange="this.form.submit()">
+				<select class="form-control input-sm" style="width: 250px;" id="curso" name="curso" onchange="this.form.submit()">
 
 					<c:forEach var="curso" items="${cursos}">
 						<option  value="${curso.codigoCurso}"
@@ -131,18 +138,18 @@
 			</div>
 			<div style="float: right; padding: 5px; width: 520px;" >
 				<label>Pesquisar:</label> 
-				<input class="form-control" id="pesquisa" name="pesquisa" type="text"
+				<input class="form-control input-sm" id="pesquisa" name="pesquisa" type="text"
 					value="${strBusca}" /> 
 					
 					<label>Ano:</label> 
-					<select class="form-control"  id="year" name="year">
+					<select class="form-control input-sm"  id="year" name="year">
 					<c:forEach var="year" items="${years}">
 						<option ${yearSelecionado == year? 'selected="selected"' : '' }>${year}</option>
 					</c:forEach>
 
 				</select>
 
-				<button class="btn btn-primary" type="submit">Filtrar</button>
+				<button class="btn btn-primary btn-sm" type="submit">Filtrar</button>
 
 				<img src="./img/help.gif"
 					onmouseover="document.getElementById('filterHelp')"
@@ -154,8 +161,8 @@
 	
 	
 	
-	<div style="position:absolute;top:140px;left:1px; width: 100%; font-size: small;">
-	<pg:pager id="p" maxPageItems="7" maxIndexPages="50" 
+	<div style="position:absolute;top:104px;left:1px; width: 100%; font-size: 12px;">
+	<pg:pager id="p" maxPageItems="9" maxIndexPages="50" 
 	export="offset,currentPageNumber=pageNumber" scope="request">
 		<table class="table table-hover table-bordered" style="width: 100%;">
 			<tr style="background-color: windowframe;">
@@ -166,7 +173,7 @@
 			</tr>
 			<c:forEach var="tcc" items="${lista}">
 				<pg:item>
-				<tr style="cursor: pointer;">
+				<tr style="cursor: pointer;height: 15px">
 					<td
 						onclick="window.open('./showPdf?id=${tcc.idTCC}','_blank')">${tcc.nomeTCC}</td>
 					<td
@@ -181,11 +188,13 @@
 				
 				</pg:item>
 			</c:forEach>
+			
+			
 		</table>
 		
-		<div align="center">
-		<ul class="pagination pagination-sm">
-			<pg:index>
+		<div align="center" style="position: absolute;top:450px;left:510px;height: 20px;">
+		<ul style="background-color: black;" class="pagination pagination-sm" >
+		<pg:index>
 	    <pg:prev>
 	     <li> <a href="<%= pageUrl.replace("index2.jsp", "index5.jsp")+"&curso="+request.getAttribute("cursoSel")+"&pesquisa="+request.getAttribute("strBusca")+"&year="+request.getAttribute("yearSelecionado")+"&page="+pageNumber %>">&lt;&lt; Anterior</a> </li>
 	    </pg:prev>
@@ -198,6 +207,7 @@
 	  </pg:index>
 		</ul>
 		</pg:pager>
+		
 	</div>
 	</div>
 	<script type="text/javascript">
