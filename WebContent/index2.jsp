@@ -13,7 +13,13 @@
 		location.href="./index5.jsp";
 	}
 	
+	function showPopup(){
+		document.getElementById("popup").style.display="block" ;
+	}
 	
+	function hidePopup(){
+		document.getElementById("popup").style.display="none" ;
+	}
 	
 	
 	
@@ -27,6 +33,12 @@ tr {
 .headerPub{
 	 border:1px solid #cfcfcf;
 	 background: linear-gradient(#D8D8D8, white); 
+}
+
+#popup {
+	box-shadow: 10px 10px 5px #888888;
+	left: 50px;
+	box-shadow: 0px 1px 10px 3px rgba(0,0,0,0.75);
 }
 
 
@@ -152,9 +164,28 @@ tr {
 				<button class="btn btn-primary btn-sm" type="submit">Filtrar</button>
 
 				<img src="./img/help.gif"
-					onmouseover="document.getElementById('filterHelp')"
-					style="cursor: help" />
-		
+					
+					style="cursor: help"
+					onmouseover="showPopup()"
+					onmouseout="hidePopup()"
+					 />
+					
+					<div id="popup"  align="left"
+				style="position:relative;z-index:5 ;margin: auto; width: 380px;height:150px;font-size: 12px;font-weight: bold;color: #636363;display: none;background-color: white;"
+				
+				>
+				<div  style="padding-top: 7px;padding-left: 10px;background-color: white;" >
+				
+				 
+				Permite filtrar a lista de TCCs com o curso, o
+			termo e o ano <br> escolhidos. O termo pode ser, por
+			exemplo:<br> <ul><li>Autor ou orientador;</li> <li>Nome do
+			TCC;</li> <li>Palavra-chave;</li> <li>Conteúdo dos
+			resumos.</li> <ul>
+				</div>
+				
+			</div>
+	
 			
 	</div>
 	</div>

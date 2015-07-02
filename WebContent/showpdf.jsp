@@ -1,8 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+	<%@ taglib uri="http://www.zkoss.org/jsp/zul" prefix="z"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
+
+<meta name="citation_title" content="${tcc.nomeTCC }">
+<meta name="citation_author" content="${tcc.aluno.nomeUsuario}">
+<meta name="citation_publication_date" content="${tccYear}">
+<meta name="citation_pdf_url" content="http://http://www.monografias.ice.ufjf.br/tcc-web/exibePdf?id=${tcc.idTCC}">
 <style type="text/css">
 label {
 	cursor: text;
@@ -27,6 +33,28 @@ h3 {
 <title>Insert title here</title>
 </head>
 <body style="height: 100%;">
+<div>
+<z:page zscriptLanguage="java">
+
+			<z:script type="text/javascript">
+			function visualzarTCC(id) {
+			window.open('pages/visualiza.zul?id='+id,'_blank'); }
+			
+			
+		</z:script>
+			<z:style src="/style.css" />
+
+			<z:div apply="org.zkoss.bind.BindComposer"
+				viewModel="@id('vm') @init('br.ufjf.tcc.controller.ListaPublicaController')"
+				height="100%" class="publicList">
+				<z:include src="@load(vm.menu)" />
+
+
+			</z:div>
+
+		</z:page>
+		
+		</div>
 	<div style="height: auto">
 
 
@@ -44,11 +72,11 @@ h3 {
 				<label
 				style="font-family: sans-serif; font-weight: normal; font-size: 12px;">
 				${tcc.nomeTCC} </label> 
-				<label class="head"
-				style="font-family: sans-serif; font-weight: bold; font-size: 14px;">
+				<label id="subTitulo" class="head"
+				style="font-family: sans-serif; font-weight: bold; font-size: 14px;${tcc.subNomeTCC==nul? 'display: none;' : 'display: block;' }">
 				Subtítulo </label> 
 				<label
-				style="font-family: sans-serif; font-weight: normal; font-size: 12px;">
+				style="font-family: sans-serif; font-weight: normal; font-size: 12px;${tcc.subNomeTCC==nul? 'display: none;' : 'display: block;' }">
 				${tcc.subNomeTCC} </label> 
 				<label class="head"
 				style="font-family: sans-serif; font-weight: bold; font-size: 14px">
@@ -101,6 +129,15 @@ h3 {
 					<img
 					onClick="location.href='downloadExtra?id=${tcc.idTCC}'"
 					src="./img/rar.png" style="cursor: pointer; display: block;" />
+
+			</div>
+			<div class="head" >
+				<label class="head"
+					style="font-family: sans-serif; font-weight: bold; font-size: 14px; float: left;">
+					<a href="./bibtex" >Obter arquivos extras </a>
+					
+					 </label> 
+					
 
 			</div>
 			<br>

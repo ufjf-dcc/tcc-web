@@ -95,7 +95,7 @@ public class ListaPublicaFilter extends HttpServlet {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		req.setAttribute("errorMsg", "0");
+		
 	}
 	
 
