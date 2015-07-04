@@ -26,13 +26,32 @@
 
 </script>
 <style type="text/css">
-tr {
-	height: 40px;
+th {
+	height: 10px;
+	background: linear-gradient(to bottom, #fefefe 0%, #eeeeee 100%);
+}
+
+.table td {
+	vertical-align: middle;
+}
+
+.table tr:HOVER{
+background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
+	background:	-webkit-linear-gradient(top, #fdfdfd 0%, #f1f1f1 100%); /* Chrome10+,Safari5.1+ */
+	background:	linear-gradient(to bottom, #fdfdfd 0%, #f1f1f1 100%);
+	background: linear-gradient(to bottom, #e5f4fb 0%, #d3edfa 100%);
+}
+
+.divPesquisa{
+	border-left:1px solid #cfcfcf;
+	border-right:1px solid #cfcfcf;
+	background: linear-gradient(to bottom, #fefefe 0%, #eeeeee 100%);
 }
 
 .headerPub{
 	 border:1px solid #cfcfcf;
-	 background: linear-gradient(#D8D8D8, white); 
+	 background: linear-gradient(to bottom, #fefefe 0%, #eeeeee 100%);
+	 
 }
 
 #popup {
@@ -40,6 +59,7 @@ tr {
 	left: 50px;
 	box-shadow: 0px 1px 10px 3px rgba(0,0,0,0.75);
 }
+
 
 
 
@@ -125,20 +145,21 @@ tr {
 		</z:page>
 
 		<div class="headerPub" align="center"
-			style="margin: auto; width: 100%;height:30px;font-size: 12px;font-weight: bold;color: #636363">
-			<div  style="padding-top: 7px" >
+			style="margin: auto; width: 100%;height:33px;font-size: 12px;font-weight: bold;color: #636363">
+			<div  style="padding: 8px 5px 3px;vertical-align: middle;" >
 			
-			Lista Pública de Trabalhos Acadêmico
+				Lista Pública de Trabalhos Acadêmico
 			</div>
 			
 		</div>
 		
 		
-		
+		<div class="divPesquisa" style="width: 100%;height: 44px;display: block;">
 		<form class="form-inline" action="index5.jsp" method="post">
-			<div class="form-group" style="float: left;position: relative;top: 5px">
+		
+			<div style="float: left;position: relative;top: 5px;left: 20px">
 
-				<label>Curso:</label> 
+				<label><h6>Curso:</h6></label> 
 				<select class="form-control input-sm" style="width: 250px;" id="curso" name="curso" onchange="this.form.submit()">
 
 					<c:forEach var="curso" items="${cursos}">
@@ -148,24 +169,24 @@ tr {
 
 				</select>
 			</div>
-			<div style="float: right; padding: 5px; width: 520px;" >
-				<label>Pesquisar:</label> 
+			<div style="float: right; padding-top: 5px; width: 520px;" >
+				<label><h6>Pesquisar:</h6></label> 
 				<input class="form-control input-sm" id="pesquisa" name="pesquisa" type="text"
 					value="${strBusca}" /> 
 					
-					<label>Ano:</label> 
-					<select class="form-control input-sm"  id="year" name="year">
+					<label style="padding-left: 20px" ><h6>Ano:</h6></label> 
+					<select style="" class="form-control input-sm"  id="year" name="year">
 					<c:forEach var="year" items="${years}">
 						<option ${yearSelecionado == year? 'selected="selected"' : '' }>${year}</option>
 					</c:forEach>
 
 				</select>
-
-				<button class="btn btn-primary btn-sm" type="submit">Filtrar</button>
-
-				<img src="./img/help.gif"
+				
+				<button  class="btn btn-primary btn-sm" style="margin-left: 20px;"  type="submit">Filtrar</button>
+				
+				<img  src="./img/help.gif"
 					
-					style="cursor: help"
+					style="cursor: help;padding-left: 20px"
 					onmouseover="showPopup()"
 					onmouseout="hidePopup()"
 					 />
@@ -174,45 +195,49 @@ tr {
 				style="position:relative;z-index:5 ;margin: auto; width: 380px;height:150px;font-size: 12px;font-weight: bold;color: #636363;display: none;background-color: white;"
 				
 				>
-				<div  style="padding-top: 7px;padding-left: 10px;background-color: white;" >
-				
-				 
-				Permite filtrar a lista de TCCs com o curso, o
-			termo e o ano <br> escolhidos. O termo pode ser, por
-			exemplo:<br> <ul><li>Autor ou orientador;</li> <li>Nome do
-			TCC;</li> <li>Palavra-chave;</li> <li>Conteúdo dos
-			resumos.</li> <ul>
-				</div>
-				
-			</div>
+						<div  style="padding-top: 7px;padding-left: 10px;background-color: white;" >
+						
+						 
+						Permite filtrar a lista de TCCs com o curso, o
+					termo e o ano <br> escolhidos. O termo pode ser, por
+					exemplo:<br> <ul><li>Autor ou orientador;</li> <li>Nome do
+					TCC;</li> <li>Palavra-chave;</li> <li>Conteúdo dos
+					resumos.</li> <ul>
+						</div>
+						
+					</div>
 	
 			
+		</div>
+	
 	</div>
 	</div>
 	
 	
 	
-	<div style="position:absolute;top:104px;left:1px; width: 100%; font-size: 12px;">
-	<pg:pager id="p" maxPageItems="9" maxIndexPages="50" 
+	<div style="position:relative; width: 100%; font-size: 12px;">
+	<pg:pager id="p" maxPageItems="10" maxIndexPages="50"
 	export="offset,currentPageNumber=pageNumber" scope="request">
-		<table class="table table-hover table-bordered" style="width: 100%;">
-			<tr style="background-color: windowframe;">
-				<th style="width: 60%">Trabalho</th>
-				<th>Autor</th>
-				<th>PDF</th>
-				<th>Extras</th>
+		<table class="table table-bordered"  >
+			<tr style="color: #636363;height: 30px; " >
+				<th width= "68%" style="padding: 5px 5px;vertical-align: middle;">Trabalho</th>
+				<th width="20%" style="padding: 5px 5px;vertical-align: middle;">Autor</th>
+				<th width="5%" style="padding: 5px 5px;vertical-align: middle;">PDF</th>
+				<th width="5%" style="padding: 5px 5px;vertical-align: middle;">Extras</th>
 			</tr>
 			<c:forEach var="tcc" items="${lista}">
 				<pg:item>
-				<tr style="cursor: pointer;height: 15px">
-					<td
-						onclick="window.open('./showPdf?id=${tcc.idTCC}','_blank')">${tcc.nomeTCC}</td>
-					<td
-						onclick="window.open('./showPdf?id=${tcc.idTCC}','_blank')">${tcc.aluno.nomeUsuario}</td>
-					<td onClick="location.href='downloadPdf?id=${tcc.idTCC}'"><img src="img/pdf.png" style="cursor: pointer"
+				<tr style="cursor: pointer;height: 15px;color:#636363;vertical-align: middle;height: 44px;">
+					
+					<td style="vertical-align: middle;padding: 5px 5px;"
+						onclick="location.href='./tcc?id=${tcc.idTCC}'">${tcc.nomeTCC}</td>
+					<td style="vertical-align: middle;padding: 5px 5px;"
+						onclick="window.open('./tcc?id=${tcc.idTCC}','_blank')">${tcc.aluno.nomeUsuario}</td>
+					
+					<td style="vertical-align: middle ;padding: 5px 5px;" onClick="location.href='downloadPdf?id=${tcc.idTCC}'"><img src="img/pdf.png" style="cursor: pointer;float:right;padding-right: 10px;"
 					
 					 /></td>
-					<td><img ${tcc.arquivoExtraTCCFinal != null ? 'src="img/rar.png"' : 'src="img/norar.png"'} style="cursor: pointer"
+					<td style="vertical-align: middle;padding: 5px 5px;" ><img ${tcc.arquivoExtraTCCFinal != null ? 'src="img/rar.png"' : 'src="img/norar.png"'} style="cursor: pointer;float:right;padding-right: 10px;"
 						onClick="location.href='downloadExtra?id=${tcc.idTCC}'" /></td>
 
 				</tr>
@@ -223,8 +248,8 @@ tr {
 			
 		</table>
 		
-		<div align="center" style="position: absolute;top:450px;left:510px;height: 20px;">
-		<ul style="background-color: black;" class="pagination pagination-sm" >
+		
+		<ul  class="pagination pagination-sm" style="background-color: black;margin: auto " >
 		<pg:index>
 	    <pg:prev>
 	     <li> <a href="<%= pageUrl.replace("index2.jsp", "index5.jsp")+"&curso="+request.getAttribute("cursoSel")+"&pesquisa="+request.getAttribute("strBusca")+"&year="+request.getAttribute("yearSelecionado")+"&page="+pageNumber %>">&lt;&lt; Anterior</a> </li>

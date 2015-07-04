@@ -18,7 +18,7 @@ import org.zkoss.zul.Label;
 import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.model.TCC;
 
-@WebServlet("/showPdf")
+@WebServlet("/tcc")
 public class ShowPdfServlet extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;

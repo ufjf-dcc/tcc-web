@@ -33,6 +33,8 @@ public class ListaPublicaFilter extends HttpServlet {
 		String teste = (String) req.getParameter("lpc");
 		
 		String pagina = req.getParameter("page");
+		if(pagina==null)
+			pagina="1";
 		
 		if(teste==null)
 			System.out.println("\n\nAINDA NAO");
