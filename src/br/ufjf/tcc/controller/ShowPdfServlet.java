@@ -41,8 +41,12 @@ public class ShowPdfServlet extends HttpServlet {
 		
 		req.setAttribute("tcc", tcc);
 		req.setAttribute("tccYear", getTccYear(tcc));
+		req.setAttribute("tccDate", getTccDate(tcc));
+		req.setAttribute("instituto", "Universidade Federal de Juiz de Fora");
+		
+		System.out.println("\n\n\n"+getTccDate(tcc));
 		try{
-			req.getRequestDispatcher("showpdf.jsp").forward(req, res);
+			req.getRequestDispatcher("showtcc.jsp").forward(req, res);
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -55,6 +59,17 @@ public class ShowPdfServlet extends HttpServlet {
 			Calendar cal = Calendar.getInstance();
 			cal.setTimeInMillis(tcc.getDataEnvioFinal().getTime());
 			return "" + cal.get(Calendar.YEAR);
+		} else
+			return "Não finalizada";
+	}
+	
+	public String getTccDate(TCC tcc) {
+		if (tcc.getDataEnvioFinal() != null) {
+			Calendar cal = Calendar.getInstance();
+			cal.setTimeInMillis(tcc.getDataEnvioFinal().getTime());
+			int month =  cal.get(Calendar.MONTH);
+			month = month + 1;
+			return "" +cal.get(Calendar.YEAR)+"/"+ month +"/"+cal.get(Calendar.DAY_OF_MONTH) ;
 		} else
 			return "Não finalizada";
 	}

@@ -37,7 +37,7 @@ public class DownloadExtraServlet extends HttpServlet {
 
 		}
 
-		File file = FileManager.getFile(tcc.getArquivoTCCFinal());
+		File file = FileManager.getFile(tcc.getArquivoExtraTCCFinal());
 
 		byte[] bytes = null;
 		try {
@@ -55,7 +55,7 @@ public class DownloadExtraServlet extends HttpServlet {
 		res.setContentType("application/x-rar-compressed"); // Colocar dinamico, pelo arquivo
 		res.setContentLength(bytes.length);
 		res.setHeader("Content-Disposition",
-				"attachment; filename="+tcc.getNomeTCC()+".rar"); // Colocar dinamico
+				"attachment; filename=\""+tcc.getNomeTCC()+".rar"+"\";"); // Colocar dinamico
 		res.getOutputStream().write(bytes);
 
 	}
