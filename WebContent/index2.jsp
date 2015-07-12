@@ -130,6 +130,7 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 	public static String getEachTccYear(TCC tcc){
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(tcc.getDataEnvioFinal().getTime());
+		
 		return "" + cal.get(Calendar.YEAR);
 	}
 %>
@@ -287,7 +288,7 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 								<div>
 									<label 
 										style="font-weight:bold;" >Ano</label>
-									<label style="font-size: 12px;font-family: Arial,sans-serif;font-weight: normal;" > ${tcc.dataEnvioFinal }    </label>
+									<label style="font-size: 12px;font-family: Arial,sans-serif;font-weight: normal;" > ${tcc.dataEnvioFinal.toString().substring(0,4) }    </label>
 								</div>
 								<label 
 									style="font-size: 14px; font-weight: bold; text-align: justify; display: block;" >Orientador </label>

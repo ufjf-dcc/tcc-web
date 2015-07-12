@@ -47,5 +47,13 @@ public class AvisoBusiness {
 	public List<Aviso> getAvisosByCurso(Curso curso) {
 		return avisoDAO.getAvisosByCurso(curso);
 	}
+	
+	public List<Aviso> getAllAvisos() {
+		return avisoDAO.getAllAvisos();
+	}
+	
+	public boolean deleteAll(Aviso aviso) {
+		return avisoDAO.excluiAll(aviso);
+	}
 
 }
