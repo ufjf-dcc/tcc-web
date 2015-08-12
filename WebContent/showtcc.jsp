@@ -82,7 +82,7 @@ li {
 		</z:page>
 		
 		</div>
-	<div style="display:block ;height: 92%;background-color: #efefef;width: 28%;float: left;padding: 10px;"> 
+	<div style="display:block ;height: 93%;background-color: #efefef;width: 30%;float: left;"> 
 
 
 		<div
@@ -175,7 +175,7 @@ li {
 
 	</div>
 	
-	<div style="display: block; float: right; width: 70%; height: 95%">
+	<div style=" float: right; width: 70%; height: 95%">
 			<iframe style=" height:100% ;width: 100%"
 				src="./exibePdf?id=${tcc.idTCC}"></iframe>
 		</div>

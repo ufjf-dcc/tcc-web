@@ -29,6 +29,7 @@ public class ShowPdfServlet extends HttpServlet {
 
 		String tccId = req.getParameter("id");
 		
+		
 		if(tccId!=null){
 		
 		

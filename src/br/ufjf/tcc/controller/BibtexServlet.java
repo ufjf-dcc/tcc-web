@@ -42,15 +42,21 @@ public class BibtexServlet extends HttpServlet {
 		res.setContentType("text/example");
 		
 		String[] nomes = tcc.getAluno().getNomeUsuario().split(" ");
-		
+		String tituloTccLatex = tcc.getNomeTCC();
+		String authorTccLatex = tcc.getAluno().getNomeUsuario();
 		citation_key += nomes[0].toLowerCase() ;
 		citation_key+=  getTccYear(tcc);
 		citation_key+=  titulos[0].toLowerCase();
 		
+		citation_key = formatCitationKey(citation_key);
+		tituloTccLatex = formatTitulo(tituloTccLatex);
+		authorTccLatex = formatAuthor(authorTccLatex);
+		
+		
 		PrintWriter out = res.getWriter(); 
 		out.println("@phdthesis{"+ citation_key  +" ,");
-		out.println(" title= {"+tcc.getNomeTCC() +"},");
-		out.println(" author= {"+tcc.getAluno().getNomeUsuario() +"},");
+		out.println(" title= {"+ tituloTccLatex +"},");
+		out.println(" author= {"+authorTccLatex +"},");
 		out.println(" year= {"+getTccYear(tcc)+"},");
 		out.println(" note = {Available at http://200.131.219.47/tcc-web/tcc?id="+tcc.getIdTCC()+"},");
 		out.println(" school= {Federal University of Juiz de Fora},");
@@ -77,6 +83,60 @@ public class BibtexServlet extends HttpServlet {
 			return "" +cal.get(Calendar.YEAR)+"/"+ month +"/"+cal.get(Calendar.DAY_OF_MONTH) ;
 		} else
 			return "Não finalizada";
+	}
+	
+	public String formatCitationKey(String x){
+		
+		x = x.replace("ç", "c");
+		x = x.replace("á", "a");
+		x = x.replace("à", "a");
+		x = x.replace("ã", "a");
+		x = x.replace("é", "e");
+		x = x.replace("ẽ", "e");
+		x = x.replace("í", "i");
+		x = x.replace("ĩ", "i");
+		x = x.replace("ó", "o");
+		x = x.replace("õ", "o");		
+		x = x.replace("ú", "u");
+		x = x.replace("ũ", "u");
+		
+		return x;
+	}
+	
+	public String formatTitulo(String x){
+		x = x.replace("Ç", "{\\CC}");
+		x = x.replace("Á", "{\\'A}");
+		x = x.replace("À", "{\\`A}");
+		x = x.replace("Ã", "{\\~A}");
+		x = x.replace("É", "{\\'E}");
+		x = x.replace("Ẽ", "{\\'E}");
+		x = x.replace("Í", "{\\'I}");
+		x = x.replace("Ó", "{\\'O}");
+		x = x.replace("Õ", "{\\~O}");
+		x = x.replace("Ú", "{\\'U}");
+		x = x.replace("Ù", "{\\`U}");
+		
+		return x;
+		
+	}
+	
+	public String formatAuthor(String x){
+		
+		x = x.replace("ç", "{\\cc}");
+		x = x.replace("á", "{\\'a}");
+		x = x.replace("à", "{\\`a}");
+		x = x.replace("ã", "{\\~a}");
+		x = x.replace("é", "{\\'e}");
+		x = x.replace("ẽ", "{\\~e}");
+		x = x.replace("í", "{\\'i}");
+		x = x.replace("ĩ", "{\\~i}");
+		x = x.replace("ó", "{\\'o}");
+		x = x.replace("õ", "{\\~o}");
+		x = x.replace("ú", "{\\'u}");
+		x = x.replace("ù", "{\\`u}");
+		
+		return x;
+		
 	}
 
 }

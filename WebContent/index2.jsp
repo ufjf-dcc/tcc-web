@@ -74,6 +74,10 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 	box-shadow: 0px 1px 10px 3px rgba(0,0,0,0.75);
 }
 
+.escondePag{
+	display: none;
+}
+
 
 
 </style>
@@ -233,10 +237,10 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 	
 	
 	
-	<div style="position:absolute;z-index: 3 ; font-size: 12px;width: 99.25%">
-	<pg:pager id="p" maxPageItems="10" maxIndexPages="50"
+	<div style="position:absolute;z-index: 3 ; font-size: 12px;width: 99.25%;"  >
+	<pg:pager id="p" maxPageItems="10" maxIndexPages="20"
 	export="offset,currentPageNumber=pageNumber" scope="request">
-		<table class="table table-bordered" style="z-index: 2;font-family: Arial,sans-serif;font-size: 12px;margin-bottom: 2px;padding-right: 10px;border: 1px solid #cfcfcf"  >
+		<table class="table table-bordered" style="z-index: 2;font-family: Arial,sans-serif;font-size: 12px;margin-bottom: 2px;border: 1px solid #cfcfcf"  >
 			<tr style="color: #636363;height: 30px; " >
 				<th  width= "68%" style="padding: 5px 5px;vertical-align: middle;">Trabalho</th>
 				<th width="20%" style="padding: 5px 5px;vertical-align: middle;">Autor</th>
@@ -275,10 +279,12 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 					<td style="vertical-align: middle ;padding: 5px 5px;" onClick="location.href='downloadPdf?id=${tcc.idTCC}'"><img src="img/pdf.png" style="cursor: pointer;float:right;padding-right: 10px;"
 					
 					 /></td>
-					<td style="vertical-align: middle;padding: 5px 5px;" ><img ${tcc.arquivoExtraTCCFinal != null ? 'src="img/rar.png"' : 'src="img/norar.png"'} style="cursor: pointer;float:right;padding-right: 10px;"
+					<td style="vertical-align: middle;padding: 5px 5px;" ><img ${tcc.arquivoExtraTCCFinal == null || tcc.arquivoExtraTCCFinal == "" ?'src="img/norar.png" onClick="showError()" '  : 'src="img/rar.png"' } style="cursor: pointer;float:right;padding-right: 10px;"
 						onClick="location.href='downloadExtra?id=${tcc.idTCC}'" /></td>
 					
 				</tr>
+				
+				
 				<div style="display:none;">
 				    <div id="${tcc.idTCC}">
 				       <div style="width:550px;">
@@ -317,10 +323,16 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 		<div style="display: block;position: relative;" >
 		<ul  class="pagination pagination-sm" style="background-color: black;margin: auto " >
 		<pg:index>
-	    <pg:prev>
+		
+		  <li ${page != 1 ? 'style="display: none;"' : ''}  > <a>&lt;&lt; Anterior</a> </li>
+		
+	    <pg:prev> 
+	    
 	     <li> <a href="<%= pageUrl.replace("index2.jsp", "index5.jsp")+"&curso="+request.getAttribute("cursoSel")+"&pesquisa="+request.getAttribute("strBusca")+"&year="+request.getAttribute("yearSelecionado")+"&page="+pageNumber %>">&lt;&lt; Anterior</a> </li>
 	    </pg:prev>
+	    
 	    <pg:pages>
+	    
 	     <li ${pageNumber == page ? 'class="active"' : ''} >   <a href="<%= pageUrl.replace("index2.jsp", "index5.jsp")+"&curso="+request.getAttribute("cursoSel")+"&pesquisa="+request.getAttribute("strBusca")+"&year="+request.getAttribute("yearSelecionado")+"&page="+pageNumber %>"><%= pageNumber %></a> </li> 
 	    </pg:pages>
 	    <pg:next>
@@ -336,7 +348,7 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 	</div>
 	<script type="text/javascript">
 	function showError(){
-		window.alert("Arquivo não encontrado");
+		window.alert("Arquivo não encontrado!");
 	}
 	</script>
 

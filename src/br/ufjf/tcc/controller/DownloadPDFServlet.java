@@ -55,8 +55,6 @@ public class DownloadPDFServlet extends HttpServlet {
 			
 		}
 		
-		
-		
 		res.setContentLength(bytes.length);
 		res.setHeader("Content-Disposition",
 				"attachment; filename=\""+tcc.getNomeTCC()+".pdf"+"\";"); // Colocar dinamico

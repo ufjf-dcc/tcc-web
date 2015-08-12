@@ -49,13 +49,11 @@ public class FileManager {
 	public static File getFile(String fileName) {
 		
 			File is = new File(
-					ConfHandler.getConf("FILE.PATH") + fileName);
+					ConfHandler.getConf("FILE.PATH") +"/"+ fileName);
 			if(is.exists())
 				return is;
 			else
 				return null;
-		
-		
 		
 	}
 

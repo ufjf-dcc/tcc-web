@@ -47,11 +47,18 @@ public class GerenciamentoUsuarioController extends CommonsController {
 	private Map<Integer, Usuario> editTemp = new HashMap<Integer, Usuario>();
 	private List<TipoUsuario> tiposUsuario = (new TipoUsuarioBusiness())
 			.getAll();
+	private List<TipoUsuario> tiposUsuarioTrocar = getTiposTroca();
+	
+
 	private List<Curso> cursos = this.getAllCursos();
 	private List<Departamento> departamentos = this.getAllDepartamentos();
 	private String filterString = "", editUsuarioSenha = null;
 	private Usuario newUsuario,editUsuario;
+	private String novoTipo= "";
 	
+	
+
+
 	private boolean submitUserListenerExists = false,
 			importCSVListenerExists = false, submitCSVListenerExists = false;
 	private int filterType = 0;
@@ -137,6 +144,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 	 */
 	@Command
 	public void confirm(@BindingParam("usuario") Usuario usuario) {
+		
 		if (usuarioBusiness.validate(usuario,
 				editTemp.get(usuario.getIdUsuario()).getMatricula(), true)) {
 			if (!usuarioBusiness.editar(usuario))
@@ -190,7 +198,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 			cmbDep.setDisabled(false);
 			cmbDep.getParent().setVisible(true);
 			labelLogin.setValue("SIAPE: ");
-			textSenha.getParent().setVisible(false);
+			textSenha.getParent().setVisible(false);			
 			break;
 		case Usuario.COORDENADOR:
 			titulacao.setReadonly(false);
@@ -200,7 +208,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 			cmbDep.setDisabled(false);
 			cmbDep.getParent().setVisible(true);
 			labelLogin.setValue("SIAPE: ");
-			textSenha.getParent().setVisible(false);
+			textSenha.getParent().setVisible(false);			
 			break;
 		case Usuario.ADMINISTRADOR:
 			newUsuario.setTitulacao(null);
@@ -597,11 +605,14 @@ public class GerenciamentoUsuarioController extends CommonsController {
 		Usuario usuario = (Usuario) SessionManager.getAttribute("usuario");
 		if(usuario.getTipoUsuario().getIdTipoUsuario() == Usuario.ADMINISTRADOR)
 		{
-//			((Combobox)window.getChildren().get(0).getChildren().get(1).getChildren().get(0).getChildren().get(1)).setDisabled(false);
+			
+		//	((Combobox)window.getChildren().get(0).getChildren().get(1).getChildren().get(0).getChildren().get(1)).setDisabled(false);
 			((Textbox)window.getChildren().get(0).getChildren().get(1).getChildren().get(1).getChildren().get(1)).setReadonly(false);
 			((Textbox)window.getChildren().get(0).getChildren().get(1).getChildren().get(4).getChildren().get(1)).setReadonly(false);
 			((Combobox)window.getChildren().get(0).getChildren().get(1).getChildren().get(5).getChildren().get(1)).setDisabled(false);
 			((Combobox)window.getChildren().get(0).getChildren().get(1).getChildren().get(6).getChildren().get(1)).setDisabled(false);
+			((Combobox)window.getChildren().get(0).getChildren().get(1).getChildren().get(6).getChildren().get(1)).setDisabled(false);
+
 		}
 		
 		window.doModal();
@@ -614,6 +625,8 @@ public class GerenciamentoUsuarioController extends CommonsController {
 			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(5)).setVisible(false);
 			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(6)).setVisible(false);
 			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(7)).setVisible(true);
+		
+			
 
 			
 		}
@@ -635,7 +648,8 @@ public class GerenciamentoUsuarioController extends CommonsController {
 	public void editUser(@BindingParam("window") final Window window)
 	{
 		
-		if(usuarioBusiness.validate(editUsuario, editUsuario.getMatricula(), true))
+		
+		if(usuarioBusiness.validate(editUsuario, editUsuario.getMatricula(), false))
 		{
 			if(editUsuario.getSenha() != editUsuarioSenha)
 				editUsuario.setSenha((new UsuarioBusiness()).encripta(editUsuario.getSenha()));
@@ -645,6 +659,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 					"Usuário salvo!",
 					"Sucesso", Messagebox.OK,
 					Messagebox.INFORMATION);
+			
 			window.setVisible(false);
 		}	
 		else
@@ -719,5 +734,48 @@ public class GerenciamentoUsuarioController extends CommonsController {
 			if(getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.COORDENADOR)
 				return true;
 		return false;
+	}
+	
+	public String getNovoTipo() {
+		return novoTipo;
+	}
+
+	public void setNovoTipo(String novoTipo) {
+		this.novoTipo = novoTipo;
+	}
+	
+	public List<TipoUsuario> getTiposUsuarioTrocar() {
+		return tiposUsuarioTrocar;
+	}
+
+	public void setTiposUsuarioTrocar(List<TipoUsuario> tiposUsuarioTrocar) {
+		this.tiposUsuarioTrocar = tiposUsuarioTrocar;
+	}
+	
+	@Command
+	public void trocarTipo(@BindingParam("tpuser") Combobox tipoUsuario){
+		System.out.println("\n\n"+tipoUsuario.getValue());
+		if(tipoUsuario.getValue().equals("Coordenador")){
+			editUsuario.setTipoUsuario(new TipoUsuarioBusiness().getTipoUsuario(3));
+			Messagebox.show(
+					"Usuário alterado para Coordenador com sucesso!",
+					"Sucesso", Messagebox.OK,
+					Messagebox.INFORMATION);
+		}else if(tipoUsuario.getValue().equals("Professor")){
+			editUsuario.setTipoUsuario(new TipoUsuarioBusiness().getTipoUsuario(2));
+			Messagebox.show(
+					"Usuário alterado para Professor com sucesso!",
+					"Sucesso", Messagebox.OK,
+					Messagebox.INFORMATION);
+		}
+		
+		
+	}
+	
+	private List<TipoUsuario> getTiposTroca(){
+		List<TipoUsuario> x = new ArrayList<TipoUsuario>();
+		x.add(new TipoUsuarioBusiness().getTipoUsuario(2));
+		x.add(new TipoUsuarioBusiness().getTipoUsuario(3));
+		return x;
 	}
 }

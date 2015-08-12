@@ -274,6 +274,8 @@
 							</template>
 						</combobox>
 					</row>
+					
+					
 
 					<row>
 						<label
@@ -341,6 +343,21 @@
 							disabled="false" type="password"
 							value="@bind(vm.editUsuario.senha)"
 							tabindex="1" width="100%" />
+					</row>
+					
+					<row visible="false">
+						<label value="Alterar Tipo:" />
+						<combobox id="changeTypeUser" width="100%"
+							selectedItem="@bind(vm.editUsuario.tipoUsuario)"
+							
+							onChange="@command('trocarTipo',tpuser=changeTypeUser)">
+							
+							
+								
+								<comboitem label="Professor" />
+								<comboitem label="Coordenador" />
+							
+						</combobox>
 					</row>
 				</rows>
 			</grid>

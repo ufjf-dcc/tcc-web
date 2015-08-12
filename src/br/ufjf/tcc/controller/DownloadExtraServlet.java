@@ -36,26 +36,25 @@ public class DownloadExtraServlet extends HttpServlet {
 			tcc = tccBusiness.getTCCById(Integer.parseInt(tccId));
 
 		}
-
+		System.out.println("\n\n"+tcc.getArquivoExtraTCCFinal());
 		File file = FileManager.getFile(tcc.getArquivoExtraTCCFinal());
-
+		System.out.println("\n\n"+tcc.getArquivoExtraTCCFinal());
 		byte[] bytes = null;
 		try {
 			bytes = fileToByte(file);
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			try{
+			
 				req.getRequestDispatcher("index5.jsp").forward(req, res);
-			}catch(Exception e2){
-				e2.printStackTrace();
-			}
+			
 			return;
 		} // Commons IO
 		res.setContentType("application/x-rar-compressed"); // Colocar dinamico, pelo arquivo
 		res.setContentLength(bytes.length);
 		res.setHeader("Content-Disposition",
-				"attachment; filename=\""+tcc.getNomeTCC()+".rar"+"\";"); // Colocar dinamico
+				"attachment; filename=\""+tcc.getNomeTCC()+".rar"); // Colocar dinamico
 		res.getOutputStream().write(bytes);
 
 	}
@@ -69,6 +68,8 @@ public class DownloadExtraServlet extends HttpServlet {
 		while ((bytesRead = fis.read(buffer, 0, 8192)) != -1) {
 			baos.write(buffer, 0, bytesRead);
 		}
+		
+		fis.close();
 		return baos.toByteArray();
 	}
 
