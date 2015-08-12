@@ -130,11 +130,11 @@
 				</auxhead>
 				<columns>
 					<column label="Aluno" hflex="1"
-						sort="auto(tcc.aluno.nomeUsuario)" />
+						sort="auto(aluno.nomeUsuario)" />
 					<column label="Nome" hflex="2"
-						sort="auto(tcc.nomeTCC)" />
+						sort="auto(nomeTCC)" />
 					<column label="Apresentação" hflex="1"
-						sort="auto(tcc.dataApresentacao)" />
+						sort="auto(dataApresentacao)" />
 					<column width="100px" />
 				</columns>
 				<template name="tccs">
