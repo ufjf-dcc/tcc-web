@@ -1,0 +1,12 @@
+<?page title="Ata" contentType="text/html;charset=UTF-8"?>
+<zk>
+
+
+	<iframe apply="org.zkoss.bind.BindComposer"
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.MenuController')"
+		height="100%" width="100%"
+		onCreate=" @command('showAta',iframe=self) ">
+	</iframe>
+
+
+</zk>

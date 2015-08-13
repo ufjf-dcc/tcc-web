@@ -158,6 +158,10 @@ public class TCCBusiness {
 	public List<TCC> getFinishedTCCsByCurso(Curso curso) {
 		return tccDao.getFinishedTCCsByCurso(curso);
 	}
+	
+	public List<TCC> getAllFinishedTCCs() {
+		return tccDao.getAllFinishedTCCs();
+	}
 
 	public List<TCC> getNewest(int quantidade) {
 	    return tccDao.getNewest(quantidade);
@@ -203,6 +207,30 @@ public class TCCBusiness {
 	public List<TCC> getProjetosByCurso(Curso curso) {
 			return tccDao.getProjetosByCurso(curso);
 	}
+	
+	public List<TCC> getAllProjetosByCurso(Curso curso) {
+		return tccDao.getAllProjetosByCurso(curso);
+	}
+	
+	public List<TCC> getAllProjetosByCursoAndCalendar(Curso curso,CalendarioSemestre currentCalendar){
+		return tccDao.getProjetosByCursoAndCalendar(curso, currentCalendar);
+	}
+	
+	public List<TCC> getAllTrabalhosByCurso(Curso curso) {
+		return tccDao.getAllTrabalhosByCurso(curso);
+	}
+	
+	public List<TCC> getTrabalhosByCursoAndCalendar(Curso curso,CalendarioSemestre currentCalendar) {
+		return tccDao.getTrabalhosByCursoAndCalendar(curso,currentCalendar);
+	}
+	
+	public List<TCC> getAllTrabalhosAndProjetosByCurso(Curso curso){
+		return tccDao.getAllTrabalhosAndProjetosByCurso(curso);
+	}
+	
+	public List<TCC> getTrabalhosAndProjetosByCursoAndCalendar(Curso curso, CalendarioSemestre currentCalendar){
+		return tccDao.getTrabalhosAndProjetosByCursoAndCalendar(curso, currentCalendar);
+	}
 
 	public boolean isProjetoAguardandoAprovacao(TCC tcc)
 	{
@@ -233,7 +261,7 @@ public class TCCBusiness {
 	
 	public boolean isTrabalhoIncompleto(TCC tcc)
 	{
-		if(!tcc.isProjeto() && !isTrabalhoAguardandoAprovacao(tcc))
+		if(!tcc.isProjeto() && !isTrabalhoAguardandoAprovacao(tcc) && tcc.getArquivoTCCFinal()==null)
 			return true;
 		return false;
 	}
@@ -272,6 +300,17 @@ public class TCCBusiness {
 	{
 		for(int i=0;i<trabalhos.size();i++)
 			if(!isTrabalhoAguardandoAprovacao(trabalhos.get(i)))
+			{
+				trabalhos.remove(i);
+				i--;
+			}
+		return trabalhos;
+	}
+	
+	public List<TCC> filtraTrabalhosFinalizados(List<TCC> trabalhos)
+	{
+		for(int i=0;i<trabalhos.size();i++)
+			if(getStatusTCC(trabalhos.get(i))!="Aprovado" )
 			{
 				trabalhos.remove(i);
 				i--;
@@ -330,5 +369,6 @@ public class TCCBusiness {
 		if((new TCCDAO()).exclui(tcc))
 			return true;
 		return false;
+		
 	}
 }

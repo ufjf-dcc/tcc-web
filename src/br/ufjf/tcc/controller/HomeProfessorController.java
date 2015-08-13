@@ -20,11 +20,14 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
 import br.ufjf.tcc.business.AvisoBusiness;
+import br.ufjf.tcc.business.CursoBusiness;
 import br.ufjf.tcc.business.QuestionarioBusiness;
 import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.model.Aviso;
+import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.model.Questionario;
 import br.ufjf.tcc.model.TCC;
+import br.ufjf.tcc.model.Usuario;
 
 public class HomeProfessorController extends CommonsController {
 	private List<TCC> allTccs = new ArrayList<TCC>(); // inclui TCCs finalizados
@@ -83,10 +86,15 @@ public class HomeProfessorController extends CommonsController {
 	}
 
 	public List<Aviso> getAvisos() {
-		if (avisos == null)
+		if (avisos == null){
+			if(getUsuario().getTipoUsuario().getIdTipoUsuario()==Usuario.ADMINISTRADOR){
+				avisos = (new AvisoBusiness().getAllAvisos());
+			}else{
 			avisos = (new AvisoBusiness()).getAvisosByCurso(getUsuario()
 					.getCurso());
+			}
 
+		}
 		return avisos;
 	}
 
@@ -97,35 +105,69 @@ public class HomeProfessorController extends CommonsController {
 	@Command
 	public void addAviso() {
 		AvisoBusiness avisoBussiness = new AvisoBusiness();
-		aviso.setCurso(getUsuario().getCurso());
-		if (avisoBussiness.validate(aviso)) {
-			if (avisoBussiness.save(aviso)) {
-				Messagebox.show("Mensagem salva com sucesso.", "Enviada",
-						Messagebox.OK, Messagebox.INFORMATION);
+		List<Curso> cursos = new CursoBusiness().getAll();
+		if(getUsuario().getTipoUsuario().getIdTipoUsuario()== Usuario.ADMINISTRADOR ){
+			int k=0;
+			for(int i=0;i<cursos.size();i++){
+				aviso.setCurso(cursos.get(i));
+				if(avisoBussiness.save(aviso)){
+					
+					k++;
+					
+				}else
+					Messagebox.show("Erro ao salvar!", "Erro", Messagebox.OK,
+							Messagebox.ERROR);
+			}
+			
+			
+			if(k==(cursos.size())){
 				avisos.add(aviso);
-				aviso = new Aviso();
 				BindUtils.postNotifyChange(null, null, this, "aviso");
 				BindUtils.postNotifyChange(null, null, this, "avisos");
-			} else
-				Messagebox.show("Erro ao salvar!", "Erro", Messagebox.OK,
-						Messagebox.ERROR);
-		} else {
-			String errorMessage = "";
-			for (String error : avisoBussiness.getErrors())
-				errorMessage += error;
-			Messagebox.show(errorMessage, "Dados insuficientes / inválidos",
-					Messagebox.OK, Messagebox.ERROR);
+				Messagebox.show("Mensagem salva com sucesso.", "Enviada",
+						Messagebox.OK, Messagebox.INFORMATION);
+				
+			}
+		}else{
+			aviso.setCurso(getUsuario().getCurso());
+			if (avisoBussiness.validate(aviso)) {
+				if (avisoBussiness.save(aviso)) {
+					Messagebox.show("Mensagem salva com sucesso.", "Enviada",
+							Messagebox.OK, Messagebox.INFORMATION);
+					avisos.add(aviso);
+					aviso = new Aviso();
+					BindUtils.postNotifyChange(null, null, this, "aviso");
+					BindUtils.postNotifyChange(null, null, this, "avisos");
+				} else
+					Messagebox.show("Erro ao salvar!", "Erro", Messagebox.OK,
+							Messagebox.ERROR);
+			} else {
+				String errorMessage = "";
+				for (String error : avisoBussiness.getErrors())
+					errorMessage += error;
+				Messagebox.show(errorMessage, "Dados insuficientes / inválidos",
+						Messagebox.OK, Messagebox.ERROR);
+			}
 		}
 	}
 
 	@Command
 	public void deleteAviso(@BindingParam("aviso") Aviso aviso) {
-		if ((new AvisoBusiness()).delete(aviso)) {
-			avisos.remove(aviso);
-			BindUtils.postNotifyChange(null, null, this, "avisos");
-		} else
-			Messagebox.show("Erro ao deletar!", "Erro", Messagebox.OK,
-					Messagebox.ERROR);
+		if(getUsuario().getTipoUsuario().getIdTipoUsuario()==Usuario.ADMINISTRADOR){
+			if ((new AvisoBusiness()).deleteAll(aviso)) {
+				avisos.remove(aviso);
+				BindUtils.postNotifyChange(null, null, this, "avisos");
+			} else
+				Messagebox.show("Erro ao deletar!", "Erro", Messagebox.OK,
+						Messagebox.ERROR);
+		}else{
+			if ((new AvisoBusiness()).delete(aviso)) {
+				avisos.remove(aviso);
+				BindUtils.postNotifyChange(null, null, this, "avisos");
+			} else
+				Messagebox.show("Erro ao deletar!", "Erro", Messagebox.OK,
+						Messagebox.ERROR);
+		}
 	}
 
 	public List<TCC> getFilterTccs() {
@@ -191,8 +233,12 @@ public class HomeProfessorController extends CommonsController {
 			lbl.setValue(dateFormat.format(tcc.getDataApresentacao()));
 			if (tcc.getSalaDefesa() != null)
 				lbl.setValue(lbl.getValue() + " - Sala " + tcc.getSalaDefesa());
-		} else
-			lbl.setValue("Não agendada");
+		} else{
+			if(tcc.getArquivoTCCFinal()!=null)
+				lbl.setValue("Não Informada");
+			else
+				lbl.setValue("Não agendada");
+		}
 	}
 
 	@Command
@@ -225,8 +271,9 @@ public class HomeProfessorController extends CommonsController {
 	@Command
 	public void createCalendar() {
 		final Window dialog = (Window) Executions.createComponents(
-				"/pages/cadastro-calendario.zul", null, null);
+				"/pages/cadastro-calendario.zul", null, null);		
 		dialog.doModal();
+	
 	}
 
 	@Command
