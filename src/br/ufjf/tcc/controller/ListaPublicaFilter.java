@@ -13,7 +13,7 @@ import br.ufjf.tcc.persistent.impl.CursoDAO;
 
 
 
-@WebServlet("/index5.jsp")
+@WebServlet("/index.jsp")
 public class ListaPublicaFilter extends HttpServlet {
 	
 	
