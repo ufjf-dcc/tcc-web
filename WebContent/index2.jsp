@@ -24,7 +24,7 @@
 
 
 	function changeCurso(){
-		location.href="./index5.jsp";
+		location.href="./index.jsp";
 	}
 	
 	function showPopup(){
@@ -177,7 +177,7 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 		
 		
 		<div class="divPesquisa" style="width: 100%;height: 40px;display: block;">
-		<form class="form-inline" action="index5.jsp" method="post">
+		<form class="form-inline" action="index.jsp" method="post">
 		
 			<div style="float: left;position: relative;top: 5px;left: 20px">
 
@@ -328,15 +328,15 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 		
 	    <pg:prev> 
 	    
-	     <li> <a href="<%= pageUrl.replace("index2.jsp", "index5.jsp")+"&curso="+request.getAttribute("cursoSel")+"&pesquisa="+request.getAttribute("strBusca")+"&year="+request.getAttribute("yearSelecionado")+"&page="+pageNumber %>">&lt;&lt; Anterior</a> </li>
+	     <li> <a href="<%= pageUrl.replace("index2.jsp", "index.jsp")+"&curso="+request.getAttribute("cursoSel")+"&pesquisa="+request.getAttribute("strBusca")+"&year="+request.getAttribute("yearSelecionado")+"&page="+pageNumber %>">&lt;&lt; Anterior</a> </li>
 	    </pg:prev>
 	    
 	    <pg:pages>
 	    
-	     <li ${pageNumber == page ? 'class="active"' : ''} >   <a href="<%= pageUrl.replace("index2.jsp", "index5.jsp")+"&curso="+request.getAttribute("cursoSel")+"&pesquisa="+request.getAttribute("strBusca")+"&year="+request.getAttribute("yearSelecionado")+"&page="+pageNumber %>"><%= pageNumber %></a> </li> 
+	     <li ${pageNumber == page ? 'class="active"' : ''} >   <a href="<%= pageUrl.replace("index2.jsp", "index.jsp")+"&curso="+request.getAttribute("cursoSel")+"&pesquisa="+request.getAttribute("strBusca")+"&year="+request.getAttribute("yearSelecionado")+"&page="+pageNumber %>"><%= pageNumber %></a> </li> 
 	    </pg:pages>
 	    <pg:next>
-	    <li>  <a href="<%= pageUrl.replace("index2.jsp", "index5.jsp")+"&curso="+request.getAttribute("cursoSel")+"&pesquisa="+request.getAttribute("strBusca")+"&year="+request.getAttribute("yearSelecionado")+"&page="+pageNumber %>">Próximo &gt;&gt;</a> </li>
+	    <li>  <a href="<%= pageUrl.replace("index2.jsp", "index.jsp")+"&curso="+request.getAttribute("cursoSel")+"&pesquisa="+request.getAttribute("strBusca")+"&year="+request.getAttribute("yearSelecionado")+"&page="+pageNumber %>">Próximo &gt;&gt;</a> </li>
 	    </pg:next>
 	  </pg:index>
 		</ul>
