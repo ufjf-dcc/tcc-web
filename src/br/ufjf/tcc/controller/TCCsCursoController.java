@@ -397,9 +397,9 @@ public class TCCsCursoController extends CommonsController {
 	{
 		final String mensagem;
 		if(tcc.isProjeto())
-			mensagem = "Projeto";
+			mensagem = "Projeto excluído com sucesso!";
 		else
-			mensagem = "Trabalho";
+			mensagem = "Trabalho excluído com sucesso!";
 		
 		Messagebox.show("Tem certeza que deseja excluir este "+mensagem+"?", "Confirmação", Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new org.zkoss.zk.ui.event.EventListener() {
 		    public void onEvent(Event evt) throws InterruptedException {
