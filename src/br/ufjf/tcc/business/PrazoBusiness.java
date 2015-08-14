@@ -39,16 +39,21 @@ public class PrazoBusiness {
 
 	public String getDescription(int type) {
 		switch (type) {
+		case Prazo.PRAZO_PROJETO:
+			return "Data limite para entrega da versão do projeto para a coordenação do curso";
 		case Prazo.ENTREGA_TCC_BANCA:
 			return "Data limite para entrega da versão do trabalho para a banca";
 		case Prazo.ENTREGA_FORM_BANCA:
 			return "Data limite para entrega do formulário da banca";
 		case Prazo.DEFESA:
 			return "Data limite para defesa";
+		case Prazo.ENTREGA_ATA_DEF:
+			return "Data limite para entrega da ata de defesa";
 		case Prazo.ENTREGA_FINAL:
-			return "Data limite para entrega da ata de defesa e versão final do trabalho";
-		case Prazo.PRAZO_PROJETO:
-			return "Data limite para entrega da versão do projeto para a coordenação do curso";
+			return "Data limite para entrega da versão final do trabalho";
+		case Prazo.FIM_SEMESTRE:
+			return "Fim do Semestre";
+		
 		}
 		
 		return "";
