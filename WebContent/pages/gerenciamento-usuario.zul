@@ -345,7 +345,7 @@
 							tabindex="1" width="100%" />
 					</row>
 					
-					<row visible="false">
+					<row visible="true">
 						<label value="Alterar Tipo:" />
 						<combobox id="changeTypeUser" width="100%"
 							selectedItem="@bind(vm.editUsuario.tipoUsuario)"

@@ -519,12 +519,20 @@ public class GerenciamentoUsuarioController extends CommonsController {
 
 		if (!submitCSVListenerExists) {
 			submitCSVListenerExists = true;
+			
 			window.addEventListener(Events.ON_NOTIFY,
 					new EventListener<Event>() {
 						@Override
 						public void onEvent(Event event) throws Exception {
 							if (usuariosCSV.size() > 0) {
 								UsuarioDAO usuarioDAO = new UsuarioDAO();
+								for(int i=0;i<usuariosCSV.size();i++){
+									if(usuarioDAO.jaExiste(usuariosCSV.get(i).getMatricula(), null)){
+										usuariosCSV.remove(i);
+										i--;
+									}
+								}
+							
 								if (usuarioDAO.salvarLista(usuariosCSV)) {
 									allUsuarios.addAll(usuariosCSV);
 									filterUsuarios = allUsuarios;
@@ -544,6 +552,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 											.show("Os usuários não puderam ser cadastrados",
 													"Erro", Messagebox.OK,
 													Messagebox.ERROR);
+									window.setVisible(false);
 								}
 							} else {
 								Clients.clearBusy(window);
@@ -631,15 +640,27 @@ public class GerenciamentoUsuarioController extends CommonsController {
 			
 		}
 		
-		if(editUsuario.getTipoUsuario().getIdTipoUsuario() == Usuario.PROFESSOR)
+		if(editUsuario.getTipoUsuario().getIdTipoUsuario() == Usuario.PROFESSOR )
 		{
+			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(4)).setVisible(true);
 			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(5)).setVisible(false);
+			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(8)).setVisible(true);
+		}
+		
+		if(editUsuario.getTipoUsuario().getIdTipoUsuario() == Usuario.COORDENADOR )
+		{
+			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(4)).setVisible(true);
+			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(5)).setVisible(true);
+			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(6)).setVisible(true);
+			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(8)).setVisible(true);
+			
 		}
 		
 		if(editUsuario.getTipoUsuario().getIdTipoUsuario() == Usuario.ALUNO)
 		{
 			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(4)).setVisible(false);
 			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(6)).setVisible(false);
+			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(8)).setVisible(false);
 		}
 		
 	}
