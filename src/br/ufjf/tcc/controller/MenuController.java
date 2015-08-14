@@ -139,7 +139,7 @@ public class MenuController extends CommonsController {
 									"Erro", Messagebox.OK, Messagebox.ERROR);
 			} else
 				Messagebox
-						.show("Você ainda não possui um Trabalho cadastrado no semestre atual.\n",
+						.show("Você ainda não possui um trabalho cadastrado no semestre atual.\n",
 								"Erro", Messagebox.OK, Messagebox.ERROR);
 		}
 
