@@ -231,6 +231,15 @@ public class TCCBusiness {
 	public List<TCC> getTrabalhosAndProjetosByCursoAndCalendar(Curso curso, CalendarioSemestre currentCalendar){
 		return tccDao.getTrabalhosAndProjetosByCursoAndCalendar(curso, currentCalendar);
 	}
+	
+	public boolean possuiSuplente(List<Participacao> participacoes){
+		for(Participacao p:participacoes ){
+			if(p.getSuplente()==1)
+				return true;
+		}
+		
+		return false;
+	}
 
 	public boolean isProjetoAguardandoAprovacao(TCC tcc)
 	{
@@ -254,7 +263,8 @@ public class TCCBusiness {
 		if(!tcc.isProjeto() && !(tcc.getPalavrasChave()== null || tcc.getPalavrasChave().trim().length() == 0) && tcc.getArquivoTCCBanca()!=null
 				&& !(tcc.getResumoTCC()==null || tcc.getResumoTCC().trim().length() == 0) && tcc.getOrientador()!=null && tcc.getNomeTCC()!=null
 				&& !(tcc.getSalaDefesa()== null || tcc.getSalaDefesa().trim().length() == 0) && tcc.getDataApresentacao()!=null 
-				&& pb.getParticipacoesByTCC(tcc).size()>0)
+				&& pb.getParticipacoesByTCC(tcc).size()>0
+				&& possuiSuplente(pb.getParticipacoesByTCC(tcc)))
 			return true;
 		return false;
 	}

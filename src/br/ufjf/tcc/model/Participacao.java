@@ -79,6 +79,9 @@ public class Participacao implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "idTCC", nullable = false)
 	private TCC tcc;
+	
+	@Column(name = "suplente", length = 4)
+	private int suplente;
 
 	public int getIdParticipacao() {
 		return idParticipacao;
@@ -118,6 +121,14 @@ public class Participacao implements Serializable {
 
 	public void setTcc(TCC tcc) {
 		this.tcc = tcc;
+	}
+
+	public int getSuplente() {
+		return suplente;
+	}
+
+	public void setSuplente(int suplente) {
+		this.suplente = suplente;
 	}
 
 }
