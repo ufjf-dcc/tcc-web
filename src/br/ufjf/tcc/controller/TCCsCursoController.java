@@ -396,16 +396,22 @@ public class TCCsCursoController extends CommonsController {
 	public void excluirTCC(@BindingParam("tcc") final TCC tcc)
 	{
 		final String mensagem;
+		final String mensagem2;
 		if(tcc.isProjeto())
 			mensagem = "Projeto excluído com sucesso!";
 		else
 			mensagem = "Trabalho excluído com sucesso!";
 		
-		Messagebox.show("Tem certeza que deseja excluir este "+mensagem+"?", "Confirmação", Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new org.zkoss.zk.ui.event.EventListener() {
+		if(tcc.isProjeto())
+			mensagem2 = "projeto";
+		else
+			mensagem2 = "trabalho";
+		
+		Messagebox.show("Tem certeza que deseja excluir este "+mensagem2+"?", "Confirmação", Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new org.zkoss.zk.ui.event.EventListener() {
 		    public void onEvent(Event evt) throws InterruptedException {
 		        if (evt.getName().equals("onYes")) {
 					if((new TCCBusiness()).excluitTCC(tcc))
-						Messagebox.show(mensagem, "Confirmação", Messagebox.OK, Messagebox.EXCLAMATION, new org.zkoss.zk.ui.event.EventListener() {
+						Messagebox.show(mensagem, "Sucesso", Messagebox.OK, Messagebox.INFORMATION, new org.zkoss.zk.ui.event.EventListener() {
 						    public void onEvent(Event evt) throws InterruptedException {
 						        if (evt.getName().equals("onOK")) {
 						        	Executions.sendRedirect(null);
