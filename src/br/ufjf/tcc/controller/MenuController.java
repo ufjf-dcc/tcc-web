@@ -351,7 +351,10 @@ public class MenuController extends CommonsController {
 		if (tcc != null)
 			if (tcc.isProjeto())
 				return "Meu Projeto";
-		return "Meu Trabalho";
+			else
+				return "Meu Trabalho";
+		
+		return "Meu Projeto";
 	}
 
 	@Command

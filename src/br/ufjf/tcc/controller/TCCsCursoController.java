@@ -224,7 +224,7 @@ public class TCCsCursoController extends CommonsController {
 											.contains(filter) || tcc.getResumoTCC()
 									.toLowerCase().contains(filter)))){					
 						temp.add(tcc);
-						System.out.println(getTccYear(tcc));
+						
 					}
 					
 				}
@@ -235,6 +235,7 @@ public class TCCsCursoController extends CommonsController {
 			
 			
 			filterTccs = temp;
+			Collections.sort(filterTccs,Collections.reverseOrder());
 		} else {
 			filterTccs = tccs;
 		}
@@ -365,7 +366,7 @@ public class TCCsCursoController extends CommonsController {
 
 		
 		//filterYear = "Todos";
-		filterTccs = tccs;
+		//filterTccs = tccs;
 
 		this.filtra();
 	}

@@ -25,7 +25,7 @@ import br.ufjf.tcc.business.TCCBusiness;
  */
 @Entity
 @Table(name = "TCC")
-public class TCC implements Serializable {
+public class TCC implements Serializable,Comparable<TCC> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -425,5 +425,20 @@ public class TCC implements Serializable {
 	public String getStatusTCC()
 	{
 		return (new TCCBusiness()).getStatusTCC(this);
+	}
+	
+	public int compareTo(TCC outroTcc){
+		if(this.getDataEnvioFinal()!=null && outroTcc.getDataEnvioFinal()!=null){
+			if(this.getDataEnvioFinal().before(outroTcc.getDataEnvioFinal()))
+				return -1;
+			if(this.getDataEnvioFinal().after(outroTcc.getDataEnvioFinal()))
+				return 1;
+			return 0;
+			
+		}
+		if(this.getDataEnvioFinal()==null && outroTcc.getDataEnvioFinal()!=null){
+			return 1;
+		}
+		return -1;
 	}
 }

@@ -116,7 +116,7 @@
 					</div>
 					<label value="@load(each.aluno.nomeUsuario)" />
 					<label value="@load(each.orientador.nomeUsuario)" />
-					<label value="@load(each.dataEnvioBanca)" />
+					<label value="@load(each.dataEnvioFinal eq null? each.dataEnvioBanca : each.dataEnvioFinal)" />
 					<label value="@load(each.statusTCC)" />
 					<image src="/img/pdf.png" style="cursor: pointer"
 						onClick="@command('downloadPDF', tcc=each)" />

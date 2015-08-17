@@ -524,25 +524,48 @@ public class GerenciamentoUsuarioController extends CommonsController {
 					new EventListener<Event>() {
 						@Override
 						public void onEvent(Event event) throws Exception {
-							if (usuariosCSV.size() > 0) {
+								int usuariosNaoCadastrados =0;
 								UsuarioDAO usuarioDAO = new UsuarioDAO();
+								
+								if(usuariosCSV.size()>0){
 								for(int i=0;i<usuariosCSV.size();i++){
+									for(int j=i;j<usuariosCSV.size();j++){
+										if(j!=i && usuariosCSV.get(i).getMatricula().equals(usuariosCSV.get(j).getMatricula())){
+											usuariosCSV.remove(j);
+											j--;
+											usuariosNaoCadastrados++;
+										}
+									}
+									
 									if(usuarioDAO.jaExiste(usuariosCSV.get(i).getMatricula(), null)){
 										usuariosCSV.remove(i);
 										i--;
+										usuariosNaoCadastrados++;
 									}
+									
+									
 								}
-							
+							if (usuariosCSV.size() > 0) {
 								if (usuarioDAO.salvarLista(usuariosCSV)) {
-									allUsuarios.addAll(usuariosCSV);
+									for(Usuario user:usuariosCSV){
+										if(user.getCurso().getIdCurso()==getUsuario().getCurso().getIdCurso())
+											allUsuarios.add(user);
+									}
+									//allUsuarios.addAll(usuariosCSV);
 									filterUsuarios = allUsuarios;
 									notifyFilterUsuarios();
 									Clients.clearBusy(window);
 									window.setVisible(false);
 									// new SendMail().onSubmitCSV(usuariosCSV);
+									String msgNaoCadastrados="";
+									if(usuariosNaoCadastrados==1){
+										msgNaoCadastrados = "1 usuário não foi cadastrado.";
+									}else{
+										msgNaoCadastrados = usuariosNaoCadastrados+" usuário não foram cadastrados.";
+									}
 									Messagebox.show(
 											usuariosCSV.size()
-													+ " usuários foram cadastrados com sucesso",
+													+ " usuários foram cadastrados com sucesso.\n"+msgNaoCadastrados,
 											"Concluído", Messagebox.OK,
 											Messagebox.INFORMATION);
 
@@ -557,12 +580,20 @@ public class GerenciamentoUsuarioController extends CommonsController {
 							} else {
 								Clients.clearBusy(window);
 								Messagebox
-										.show("A lista está vazia. Nenhum usuário foi cadastrado.",
-												"Lista vazia", Messagebox.OK,
-												Messagebox.INFORMATION);
+										.show("Matrículas já cadastradas.",
+												"Erro", Messagebox.OK,
+												Messagebox.ERROR);
 							}
+						}else{
+							Clients.clearBusy(window);
+							Messagebox
+									.show("A lista está vazia. Nenhum usuário foi cadastrado.",
+											"Lista vazia", Messagebox.OK,
+											Messagebox.INFORMATION);
 						}
+					}		
 					});
+			
 		}
 
 		Events.echoEvent(Events.ON_NOTIFY, window, null);
