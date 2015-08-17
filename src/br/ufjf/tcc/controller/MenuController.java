@@ -154,8 +154,8 @@ public class MenuController extends CommonsController {
 
 					} else
 						Messagebox
-								.show("Para gerar a Ata a banca deve conter no m�nimo 2 examinadores e no maximo 4.\n",
-										"Erro", Messagebox.OK, Messagebox.ERROR);
+								.show("Para gerar a Ata a banca deve conter no mínimo 3 examinadores e no máximo 5, sendo 1 o suplente.\n",
+										"Aviso", Messagebox.OK, Messagebox.EXCLAMATION);
 
 				} else
 					Messagebox
@@ -164,7 +164,7 @@ public class MenuController extends CommonsController {
 			} else
 				Messagebox
 						.show("Você ainda não possui um trabalho cadastrado no semestre atual.\n",
-								"Erro", Messagebox.OK, Messagebox.ERROR);
+								"Aviso", Messagebox.OK, Messagebox.EXCLAMATION);
 		}
 
 	}
