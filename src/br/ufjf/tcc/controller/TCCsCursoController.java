@@ -293,7 +293,7 @@ public class TCCsCursoController extends CommonsController {
 			Messagebox.show("É necessario cadastrar um calendario antes");
 	}
 
-	@NotifyChange({"filterTccs","filterYear"})
+	@NotifyChange("filterTccs")
 	@Command
 	public void filtraProjeto(@BindingParam("item") int item)
 	{
