@@ -36,6 +36,7 @@ public class TCCBusiness {
 		validateData(tcc.getDataApresentacao(),tcc);
 		validateSala(tcc.getSalaDefesa(),tcc);
 		validateBanca(tcc.getParticipacoes(),tcc);
+		validateSuplente(tcc.getParticipacoes(),tcc);
 		validatePalavraChave(tcc.getPalavrasChave());
 		if(checkFile)
 			validateArquivoBanca(tcc.getArquivoTCCBanca());
@@ -89,6 +90,12 @@ public class TCCBusiness {
 		if(tcc!=null)
 		if ((list  == null || list.size() == 0) && !tcc.isProjeto())
 			errors.add("É necessário informar a banca\n");		
+	}
+	
+	public void validateSuplente(List<Participacao> list, TCC tcc) {
+		if(tcc!=null)
+		if ((list  == null || list.size() == 0 || !possuiSuplente(list)) && !tcc.isProjeto())
+			errors.add("É necessário informar o suplente da banca.\n");		
 	}
 	
 	public void validateArquivoBanca(String arquivo) {

@@ -407,7 +407,7 @@ public class TCCsCursoController extends CommonsController {
 		else
 			mensagem2 = "trabalho";
 		
-		Messagebox.show("Tem certeza que deseja excluir este "+mensagem2+"?", "Confirmação", Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new org.zkoss.zk.ui.event.EventListener() {
+		Messagebox.show("Tem certeza que deseja excluir este "+mensagem2+"?", "Sucesso", Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new org.zkoss.zk.ui.event.EventListener() {
 		    public void onEvent(Event evt) throws InterruptedException {
 		        if (evt.getName().equals("onYes")) {
 					if((new TCCBusiness()).excluitTCC(tcc))
