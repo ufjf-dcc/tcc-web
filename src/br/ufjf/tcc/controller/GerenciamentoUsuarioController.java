@@ -483,7 +483,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 														.parseInt(campos[4])),
 												cursoBusiness
 														.getCursoByCode(campos[5]));
-										//usuarioTemp.setAtivo(true);
+										usuarioTemp.setAtivo(true);
 										usuarioTemp.setSenha("123");
 										usuariosCSV.add(usuarioTemp);
 									}
@@ -705,6 +705,11 @@ public class GerenciamentoUsuarioController extends CommonsController {
 		{
 			if(editUsuario.getSenha() != editUsuarioSenha)
 				editUsuario.setSenha((new UsuarioBusiness()).encripta(editUsuario.getSenha()));
+			
+			editUsuario.setNomeUsuario(editUsuario.getNomeUsuario().trim());
+			editUsuario.setMatricula(editUsuario.getMatricula().trim());
+			editUsuario.setEmail(editUsuario.getEmail().trim());
+			editUsuario.setTitulacao(editUsuario.getTitulacao().trim());
 			usuarioBusiness.editar(editUsuario);
 			Clients.clearBusy(window);
 			Messagebox.show(

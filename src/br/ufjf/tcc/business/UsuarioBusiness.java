@@ -59,7 +59,7 @@ public class UsuarioBusiness {
 	public void validateEmail(String email, String retype) {
 		if (email == null || email.trim().length() == 0)
 			errors.add("É necessário informar o e-mail;\n");
-		else if (email == null || !email.matches(".+@.+\\.[a-zA-Z]+"))
+		else if (email == null || !email.trim().matches(".+@.+\\.[a-zA-Z]+"))
 			errors.add("Informe um e-mail válido;\n");
 		if (retype != null)
 			if (!email.equals(retype))

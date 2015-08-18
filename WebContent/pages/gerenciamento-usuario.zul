@@ -1,4 +1,4 @@
-<?page title="Gerenciamento de Usuários"?>
+<?page title="Gerenciamento de Usuários" ?>
 <?init class="br.ufjf.tcc.controller.AuthController"?>
 <zk>
 	<style src="/style.css" />
@@ -394,8 +394,9 @@
 				</columns>
 				<template name="csv">
 					<row>
+						
 						<label value="@load(each.matricula)" />
-						<label value="@load(each.nomeUsuario)" />
+						<textbox maxlength="100" width="100%" value="@bind(each.nomeUsuario)" />
 						<label value="@load(each.email)" />
 						<label
 							value="@load(each.curso.nomeCurso ne null ? each.curso.nomeCurso : 'Nenhum')" />
