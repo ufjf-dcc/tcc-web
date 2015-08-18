@@ -483,7 +483,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 														.parseInt(campos[4])),
 												cursoBusiness
 														.getCursoByCode(campos[5]));
-										usuarioTemp.setAtivo(true);
+										//usuarioTemp.setAtivo(true);
 										usuarioTemp.setSenha("123");
 										usuariosCSV.add(usuarioTemp);
 									}
@@ -560,7 +560,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 									String msgNaoCadastrados="";
 									if(usuariosNaoCadastrados==1){
 										msgNaoCadastrados = "1 usuário não foi cadastrado.";
-									}else{
+									}else if(usuariosNaoCadastrados>1){
 										msgNaoCadastrados = usuariosNaoCadastrados+" usuário não foram cadastrados.";
 									}
 									Messagebox.show(
@@ -829,5 +829,13 @@ public class GerenciamentoUsuarioController extends CommonsController {
 		x.add(new TipoUsuarioBusiness().getTipoUsuario(2));
 		x.add(new TipoUsuarioBusiness().getTipoUsuario(3));
 		return x;
+	}
+	
+	@Command
+	public void ativaUser(@BindingParam("usuario") Usuario user){
+		if(user.isAtivo())
+			user.setAtivo(false);
+		else
+			user.setAtivo(true);
 	}
 }

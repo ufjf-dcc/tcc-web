@@ -390,6 +390,7 @@
 					<column hflex="1" label="Titulação"
 						sort="auto(titulacao)" />
 					<column width="60px" />
+					<column label="Ativo" width="60px" />
 				</columns>
 				<template name="csv">
 					<row>
@@ -403,6 +404,7 @@
 						<label value="@load(each.titulacao)" />
 						<button image="/img/delete.png" width="100%"
 							onClick="@command('removeFromCSV', usuario=each)" />
+						<checkbox checked="@load(each.ativo)" onCheck="@command('ativaUser',usuario=each)" />
 					</row>
 				</template>
 			</grid>
