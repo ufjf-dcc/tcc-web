@@ -1,5 +1,6 @@
 package br.ufjf.tcc.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import javax.servlet.annotation.WebServlet;
@@ -21,8 +22,8 @@ public class ListaPublicaFilter extends HttpServlet {
 	private ListaPublicaController lpc = new ListaPublicaController();
 	
 	
-	public void service(HttpServletRequest req,HttpServletResponse res){
-		
+	public void service(HttpServletRequest req,HttpServletResponse res) throws UnsupportedEncodingException{
+		req.setCharacterEncoding("UTF-8");
 		CursoDAO cdao = new CursoDAO();
 		
 		String pesquisa = req.getParameter("pesquisa");

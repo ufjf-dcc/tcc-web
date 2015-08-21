@@ -519,22 +519,53 @@ public class GerenciamentoUsuarioController extends CommonsController {
 
 		if (!submitCSVListenerExists) {
 			submitCSVListenerExists = true;
+			
 			window.addEventListener(Events.ON_NOTIFY,
 					new EventListener<Event>() {
 						@Override
 						public void onEvent(Event event) throws Exception {
-							if (usuariosCSV.size() > 0) {
+								int usuariosNaoCadastrados =0;
 								UsuarioDAO usuarioDAO = new UsuarioDAO();
+								
+								if(usuariosCSV.size()>0){
+								for(int i=0;i<usuariosCSV.size();i++){
+									for(int j=i;j<usuariosCSV.size();j++){
+										if(j!=i && usuariosCSV.get(i).getMatricula().equals(usuariosCSV.get(j).getMatricula())){
+											usuariosCSV.remove(j);
+											j--;
+											usuariosNaoCadastrados++;
+										}
+									}
+									
+									if(usuarioDAO.jaExiste(usuariosCSV.get(i).getMatricula(), null)){
+										usuariosCSV.remove(i);
+										i--;
+										usuariosNaoCadastrados++;
+									}
+									
+									
+								}
+							if (usuariosCSV.size() > 0) {
 								if (usuarioDAO.salvarLista(usuariosCSV)) {
-									allUsuarios.addAll(usuariosCSV);
+									for(Usuario user:usuariosCSV){
+										if(user.getCurso().getIdCurso()==getUsuario().getCurso().getIdCurso())
+											allUsuarios.add(user);
+									}
+									//allUsuarios.addAll(usuariosCSV);
 									filterUsuarios = allUsuarios;
 									notifyFilterUsuarios();
 									Clients.clearBusy(window);
 									window.setVisible(false);
 									// new SendMail().onSubmitCSV(usuariosCSV);
+									String msgNaoCadastrados="";
+									if(usuariosNaoCadastrados==1){
+										msgNaoCadastrados = "1 usuário não foi cadastrado.";
+									}else if(usuariosNaoCadastrados>1){
+										msgNaoCadastrados = usuariosNaoCadastrados+" usuário não foram cadastrados.";
+									}
 									Messagebox.show(
 											usuariosCSV.size()
-													+ " usuários foram cadastrados com sucesso",
+													+ " usuários foram cadastrados com sucesso.\n"+msgNaoCadastrados,
 											"Concluído", Messagebox.OK,
 											Messagebox.INFORMATION);
 
@@ -544,16 +575,25 @@ public class GerenciamentoUsuarioController extends CommonsController {
 											.show("Os usuários não puderam ser cadastrados",
 													"Erro", Messagebox.OK,
 													Messagebox.ERROR);
+									window.setVisible(false);
 								}
 							} else {
 								Clients.clearBusy(window);
 								Messagebox
-										.show("A lista está vazia. Nenhum usuário foi cadastrado.",
-												"Lista vazia", Messagebox.OK,
-												Messagebox.INFORMATION);
+										.show("Matrículas já cadastradas.",
+												"Erro", Messagebox.OK,
+												Messagebox.ERROR);
 							}
+						}else{
+							Clients.clearBusy(window);
+							Messagebox
+									.show("A lista está vazia. Nenhum usuário foi cadastrado.",
+											"Lista vazia", Messagebox.OK,
+											Messagebox.INFORMATION);
 						}
+					}		
 					});
+			
 		}
 
 		Events.echoEvent(Events.ON_NOTIFY, window, null);
@@ -631,15 +671,27 @@ public class GerenciamentoUsuarioController extends CommonsController {
 			
 		}
 		
-		if(editUsuario.getTipoUsuario().getIdTipoUsuario() == Usuario.PROFESSOR)
+		if(editUsuario.getTipoUsuario().getIdTipoUsuario() == Usuario.PROFESSOR )
 		{
+			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(4)).setVisible(true);
 			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(5)).setVisible(false);
+			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(8)).setVisible(true);
+		}
+		
+		if(editUsuario.getTipoUsuario().getIdTipoUsuario() == Usuario.COORDENADOR )
+		{
+			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(4)).setVisible(true);
+			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(5)).setVisible(true);
+			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(6)).setVisible(true);
+			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(8)).setVisible(true);
+			
 		}
 		
 		if(editUsuario.getTipoUsuario().getIdTipoUsuario() == Usuario.ALUNO)
 		{
 			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(4)).setVisible(false);
 			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(6)).setVisible(false);
+			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(8)).setVisible(false);
 		}
 		
 	}
@@ -653,6 +705,11 @@ public class GerenciamentoUsuarioController extends CommonsController {
 		{
 			if(editUsuario.getSenha() != editUsuarioSenha)
 				editUsuario.setSenha((new UsuarioBusiness()).encripta(editUsuario.getSenha()));
+			
+			editUsuario.setNomeUsuario(editUsuario.getNomeUsuario().trim());
+			editUsuario.setMatricula(editUsuario.getMatricula().trim());
+			editUsuario.setEmail(editUsuario.getEmail().trim());
+			editUsuario.setTitulacao(editUsuario.getTitulacao().trim());
 			usuarioBusiness.editar(editUsuario);
 			Clients.clearBusy(window);
 			Messagebox.show(
@@ -777,5 +834,13 @@ public class GerenciamentoUsuarioController extends CommonsController {
 		x.add(new TipoUsuarioBusiness().getTipoUsuario(2));
 		x.add(new TipoUsuarioBusiness().getTipoUsuario(3));
 		return x;
+	}
+	
+	@Command
+	public void ativaUser(@BindingParam("usuario") Usuario user){
+		if(user.isAtivo())
+			user.setAtivo(false);
+		else
+			user.setAtivo(true);
 	}
 }

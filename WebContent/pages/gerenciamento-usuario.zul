@@ -1,4 +1,4 @@
-<?page title="Gerenciamento de Usuários"?>
+<?page title="Gerenciamento de Usuários" ?>
 <?init class="br.ufjf.tcc.controller.AuthController"?>
 <zk>
 	<style src="/style.css" />
@@ -345,7 +345,7 @@
 							tabindex="1" width="100%" />
 					</row>
 					
-					<row visible="false">
+					<row visible="true">
 						<label value="Alterar Tipo:" />
 						<combobox id="changeTypeUser" width="100%"
 							selectedItem="@bind(vm.editUsuario.tipoUsuario)"
@@ -390,11 +390,13 @@
 					<column hflex="1" label="Titulação"
 						sort="auto(titulacao)" />
 					<column width="60px" />
+					<column label="Ativo" width="60px" />
 				</columns>
 				<template name="csv">
 					<row>
+						
 						<label value="@load(each.matricula)" />
-						<label value="@load(each.nomeUsuario)" />
+						<textbox maxlength="100" width="100%" value="@bind(each.nomeUsuario)" />
 						<label value="@load(each.email)" />
 						<label
 							value="@load(each.curso.nomeCurso ne null ? each.curso.nomeCurso : 'Nenhum')" />
@@ -403,6 +405,7 @@
 						<label value="@load(each.titulacao)" />
 						<button image="/img/delete.png" width="100%"
 							onClick="@command('removeFromCSV', usuario=each)" />
+						<checkbox checked="@load(each.ativo)" onCheck="@command('ativaUser',usuario=each)" />
 					</row>
 				</template>
 			</grid>

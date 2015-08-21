@@ -29,7 +29,7 @@ public class ListaPublicaController extends CommonsController {
 	private List<String> years;
 	private String emptyMessage = "Selecione um curso na caixa acima.";
 	private TCCBusiness tccB= new TCCBusiness();
-	private List<TCC> tccsByCurso = tccB.getNewest(20);
+	private List<TCC> tccsByCurso = tccB.getAllFinishedTCCs();
 	private List<TCC> filterTccs = tccsByCurso;
 	private String filterString = "";
 	private String filterYear = "Todos";
@@ -123,7 +123,7 @@ public class ListaPublicaController extends CommonsController {
 	public void changeCurso() {
 		if (curso.getNomeCurso().equals("Todos (trabalhos mais recentes)"))
 		{
-			tccsByCurso = tccB.getNewest(20);
+			tccsByCurso = tccB.getAllFinishedTCCs() ;
 		}
 		else
 		if (curso.getIdCurso() > 0) {
@@ -152,7 +152,7 @@ public class ListaPublicaController extends CommonsController {
 	public void changeCurso2() {
 		if (curso.getNomeCurso().equals("Todos (trabalhos mais recentes)"))
 		{
-			tccsByCurso = tccB.getNewest(20);
+			tccsByCurso = tccB.getAllFinishedTCCs();
 		}
 		else
 		if (curso.getIdCurso() > 0) {

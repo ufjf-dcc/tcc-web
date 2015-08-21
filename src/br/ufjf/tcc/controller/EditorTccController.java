@@ -50,6 +50,7 @@ public class EditorTccController extends CommonsController {
 			canEditUser = false, alunoVerified = false, tccFileChanged = false,
 			extraFileChanged = false, hasSubtitulo = false,
 			hasCoOrientador = false, orientadorWindow = true;
+	
 
 	@Init
 	public void init() {
@@ -568,6 +569,15 @@ public class EditorTccController extends CommonsController {
 		if(tcc!=null)
 			return tcc.isProjeto();
 		return false;
+	}
+	
+	@Command
+	public void onCheckBanca(@BindingParam("suplente") Participacao p){
+		
+		for(int i=0;i<tcc.getParticipacoes().size();i++){
+			tcc.getParticipacoes().get(i).setSuplente(0);
+		}
+		p.setSuplente(1);
 	}
 
 

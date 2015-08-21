@@ -104,6 +104,7 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 </head>
 
 <%
+    request.setCharacterEncoding("UTF-8");
 	ArrayList teste = (ArrayList) request.getAttribute("tccs");
 	String pesquisaFeita = (String) request.getAttribute("PalavaPesquisa");
 	String cursoS = (String) request.getAttribute("cursoSelected");
@@ -193,8 +194,8 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 			</div>
 			<div style="float: right; padding-top: 5px; width: 520px;" >
 				<label style="font-size: 12px;font-family: Arial,sans-serif;font-weight: normal;" >Pesquisar:</label> 
-				<input class="form-control input-sm" id="pesquisa" name="pesquisa" type="text"
-					value="${strBusca}" /> 
+				<input maxlength="100" class="form-control input-sm" id="pesquisa" name="pesquisa" type="text"
+					value="${PalavaPesquisa}" /> 
 					
 					<label style="padding-left: 20px;font-size: 12px;font-family: Arial,sans-serif;font-weight: normal;" >Ano:</label> 
 					<select style="" class="form-control input-sm"  id="year" name="year">
@@ -321,14 +322,14 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 		</table>
 					
 		<div style="display: block;position: relative;" >
-		<ul  class="pagination pagination-sm" style="background-color: black;margin: auto " >
+		<ul  class="pagination pagination-sm" style="margin: auto " >
 		<pg:index>
 		
 		  <li ${page != 1 ? 'style="display: none;"' : ''}  > <a>&lt;&lt; Anterior</a> </li>
 		
 	    <pg:prev> 
 	    
-	     <li> <a href="<%= pageUrl.replace("index2.jsp", "index.jsp")+"&curso="+request.getAttribute("cursoSel")+"&pesquisa="+request.getAttribute("strBusca")+"&year="+request.getAttribute("yearSelecionado")+"&page="+pageNumber %>">&lt;&lt; Anterior</a> </li>
+	     <li class="btn-success" > <a href="<%= pageUrl.replace("index2.jsp", "index.jsp")+"&curso="+request.getAttribute("cursoSel")+"&pesquisa="+request.getAttribute("strBusca")+"&year="+request.getAttribute("yearSelecionado")+"&page="+pageNumber %>">&lt;&lt; Anterior</a> </li>
 	    </pg:prev>
 	    
 	    <pg:pages>

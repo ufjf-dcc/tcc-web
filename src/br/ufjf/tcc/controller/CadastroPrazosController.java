@@ -62,7 +62,7 @@ public class CadastroPrazosController extends CommonsController {
 		} else {
 			DateTime finalDate = new DateTime(this.calendar.getFinalSemestre());
 
-			for (int i = 0; i < 5; i++) {
+			for (int i = 0; i < 7; i++) {
 
 				Prazo aux = new Prazo();
 				aux.setCalendarioSemestre(this.calendar);
@@ -78,6 +78,12 @@ public class CadastroPrazosController extends CommonsController {
 					aux.setDataFinal(finalDate.minusDays(7).toDate());
 					break;
 				case Prazo.ENTREGA_FINAL:
+					aux.setDataFinal(finalDate.toDate());
+					break;
+				case Prazo.ENTREGA_ATA_DEF:
+					aux.setDataFinal(finalDate.toDate());
+					break;
+				case Prazo.FIM_SEMESTRE:
 					aux.setDataFinal(finalDate.toDate());
 					break;
 				case Prazo.PRAZO_PROJETO:
@@ -144,8 +150,26 @@ public class CadastroPrazosController extends CommonsController {
 							"Erro", Messagebox.OK, Messagebox.ERROR);
 					return;
 				}
+				if(!new CalendarioSemestreBusiness().updateFimSemCalendarById(prazos.get(prazos.size()-1).getDataFinal(), calendar.getIdCalendarioSemestre())){
+					Messagebox.show("Não foi possível salvar o calendário",
+							"Erro", Messagebox.OK, Messagebox.ERROR);
+					return;
+				}else{
+					Messagebox.show("Calendário atualizado com sucesso.", "Concluído",
+							Messagebox.OK, Messagebox.INFORMATION, new EventListener() {
+								public void onEvent(Event evt)
+										throws InterruptedException {
+									
+									Executions.sendRedirect("/pages/home-professor.zul");
+								}
+							});
+					
+					return;
+				}
+				
 			} else {
 				calendar.setPrazos(prazos);
+				calendar.setFinalSemestre(prazos.get(prazos.size()-1).getDataFinal());
 				if (new CalendarioSemestreBusiness().save(calendar)) {
 					if (!new PrazoBusiness().saveList(prazos)) {
 						Messagebox.show("Não foi possível salvar o calendário",

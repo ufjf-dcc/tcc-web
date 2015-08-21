@@ -23,12 +23,12 @@ import br.ufjf.tcc.business.UsuarioBusiness;
 import br.ufjf.tcc.library.ConfHandler;
 import br.ufjf.tcc.library.SendMail;
 import br.ufjf.tcc.library.SessionManager;
+import br.ufjf.tcc.model.Participacao;
 import br.ufjf.tcc.model.TCC;
 import br.ufjf.tcc.model.Usuario;
 import br.ufjf.tcc.pdfHandle.Ata;
 import br.ufjf.tcc.pdfHandle.AtaCCoorientador;
 import br.ufjf.tcc.pdfHandle.AtaSCoorientador;
-import br.ufjf.tcc.persistent.impl.UsuarioDAO;
 
 public class MenuController extends CommonsController {
 	private String senhaAntiga;
@@ -69,10 +69,19 @@ public class MenuController extends CommonsController {
 			}
 		}
 	}
+	
+	public boolean possuiSuplente(List<Participacao> participacoes){
+		for(Participacao p:participacoes ){
+			if(p.getSuplente()==1)
+				return true;
+		}
+		
+		return false;
+	}
 
 	@Command
 	public void generate() {
-
+	//	System.out.println("\n\n"+this.suplente.getProfessor().getNomeUsuario());
 		if (getUsuario() != null
 				&& getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ALUNO) {
 			if (getUsuario().getTcc() != null
@@ -80,58 +89,73 @@ public class MenuController extends CommonsController {
 				TCCBusiness tccBusiness = new TCCBusiness();
 				if (!tccBusiness.getMissing(getUsuario().getTcc().get(0), true)) {
 
-					if (getUsuario().getTcc().get(0).getParticipacoes().size() > 1
+					if (getUsuario().getTcc().get(0).getParticipacoes().size() > 2
 							&& getUsuario().getTcc().get(0).getParticipacoes()
-									.size() < 5) {
-						try {
+									.size() < 6) {
+						TCC tcc = getUsuario().getTcc().get(0);
+						
+						if(possuiSuplente(tcc.getParticipacoes())){
+							try {
+								
+								if (tcc.getCoOrientador() == null)
+									ata = new AtaSCoorientador();
+								else {
+									ata = new AtaCCoorientador();
+									ata.setCoorientador(tcc.getCoOrientador()
+											.getNomeUsuario());
 
-							TCC tcc = getUsuario().getTcc().get(0);
-							if (tcc.getCoOrientador() == null)
-								ata = new AtaSCoorientador();
-							else {
-								ata = new AtaCCoorientador();
-								ata.setCoorientador(tcc.getCoOrientador()
+								}
+								List<Participacao> part = new ArrayList<Participacao>() ;
+								for(Participacao p:tcc.getParticipacoes()){
+									if(p.getSuplente()!=1){
+										part.add(p);
+									}
+								}
+
+								Calendar calendar = Calendar.getInstance();
+								calendar.setTimeInMillis(tcc.getDataApresentacao()
+										.getTime());
+								Integer dia = calendar.get(5);
+								Integer mes = calendar.get(2);
+								Integer ano = calendar.get(1);
+								String hora = Integer.toString(calendar.get(11))
+										+ "h";
+
+								ata.setHora(hora);
+								ata.setDia(dia.toString());
+								ata.setMes(mes.toString());
+								ata.setAno(ano.toString());
+
+								ata.setIdAluno(getUsuario().getIdUsuario());
+								ata.setTituloTCC(tcc.getNomeTCC());
+								ata.setAluno(tcc.getAluno().getNomeUsuario());
+								ata.setOrientador(tcc.getOrientador()
 										.getNomeUsuario());
+								ata.setSala(tcc.getSalaDefesa());
+								ata.preencheParticipacoes(part);
 
+								ata.preenchePrincipal();
+								ata.deleteLasts();
+
+								Executions.getCurrent().sendRedirect(
+										"/pages/visualizaAta.zul", "_blank");
+
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
 							}
-
-							Calendar calendar = Calendar.getInstance();
-							calendar.setTimeInMillis(tcc.getDataApresentacao()
-									.getTime());
-							Integer dia = calendar.get(5);
-							Integer mes = calendar.get(2);
-							Integer ano = calendar.get(1);
-							String hora = Integer.toString(calendar.get(11))
-									+ "h";
-
-							ata.setHora(hora);
-							ata.setDia(dia.toString());
-							ata.setMes(mes.toString());
-							ata.setAno(ano.toString());
-
-							ata.setIdAluno(getUsuario().getIdUsuario());
-							ata.setTituloTCC(tcc.getNomeTCC());
-							ata.setAluno(tcc.getAluno().getNomeUsuario());
-							ata.setOrientador(tcc.getOrientador()
-									.getNomeUsuario());
-							ata.setSala(tcc.getSalaDefesa());
-							ata.preencheParticipacoes(tcc.getParticipacoes());
-
-							ata.preenchePrincipal();
-							ata.deleteLasts();
-
-							Executions.getCurrent().sendRedirect(
-									"/pages/visualizaAta.zul", "_blank");
-
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
+							
+						}else{
+							Messagebox
+							.show("Para gerar a Ata a banca deve conter um suplente.\n",
+									"Erro", Messagebox.OK, Messagebox.ERROR);							
+						}		
+						
 
 					} else
 						Messagebox
-								.show("Para gerar a Ata a banca deve conter no m�nimo 2 examinadores e no maximo 4.\n",
-										"Erro", Messagebox.OK, Messagebox.ERROR);
+								.show("Para gerar a Ata a banca deve conter no mínimo 3 examinadores e no máximo 5, sendo 1 o suplente.\n",
+										"Aviso", Messagebox.OK, Messagebox.EXCLAMATION);
 
 				} else
 					Messagebox
@@ -139,8 +163,8 @@ public class MenuController extends CommonsController {
 									"Erro", Messagebox.OK, Messagebox.ERROR);
 			} else
 				Messagebox
-						.show("Você ainda não possui um Trabalho cadastrado no semestre atual.\n",
-								"Erro", Messagebox.OK, Messagebox.ERROR);
+						.show("Você ainda não possui um trabalho cadastrado no semestre atual.\n",
+								"Aviso", Messagebox.OK, Messagebox.EXCLAMATION);
 		}
 
 	}
@@ -327,7 +351,10 @@ public class MenuController extends CommonsController {
 		if (tcc != null)
 			if (tcc.isProjeto())
 				return "Meu Projeto";
-		return "Meu Trabalho";
+			else
+				return "Meu Trabalho";
+		
+		return "Meu Projeto";
 	}
 
 	@Command
