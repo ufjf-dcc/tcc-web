@@ -9,7 +9,7 @@
 		<menuitem label="@load(hf.meuX)"
 				onClick="@command('myTcc')" />
 			<menuitem label="Gerar Ata"
-				onClick="@command('generate')" />
+				onClick="@command('gerarAta')" />
 			<menuitem label="Lista Pública" href="/" />
 			<menuitem label="Sair" onClick="@command('sair')"
 				style="float:right" />

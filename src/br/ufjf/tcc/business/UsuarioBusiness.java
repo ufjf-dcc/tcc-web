@@ -168,12 +168,10 @@ public class UsuarioBusiness {
 //			}
 //		}
 //
-//		errors.add("Identificador ou senha inválidos! Ou não cadastrado!");
-//		return false;
-//		
-//		
-//		errors.clear();
-
+//		errors.add("Identificador ou senha inválidos!");
+//		return false;		
+		
+		errors.clear();
 		List<Usuario> users = new ArrayList<Usuario>();
 
 
@@ -207,7 +205,7 @@ public class UsuarioBusiness {
 			}
 		}
 
-		errors.add("Identificador ou senha inválidos! Ou não cadastrado!");
+		errors.add("Identificador ou senha inválidos!");
 		return false;
 	}
 

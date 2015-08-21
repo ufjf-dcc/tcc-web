@@ -63,7 +63,7 @@
 					sort="auto(tipoUsuario.nomeTipoUsuario)" />
 				<column hflex="1" label="Titulação"
 					sort="auto(titulacao)" />
-				<column width="50px" label="Ativo" />
+				<column width="50px" label="Ativo" sort="auto(ativo)" />
 				<column width="120px" label="Editar" />
 			</columns>
 			<template name="editable">
@@ -390,7 +390,7 @@
 					<column hflex="1" label="Titulação"
 						sort="auto(titulacao)" />
 					<column width="60px" />
-					<column label="Ativo" width="60px" />
+					<column label="Ativo" width="60px" sort="auto(ativo)" />
 				</columns>
 				<template name="csv">
 					<row>

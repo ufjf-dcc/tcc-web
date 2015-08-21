@@ -166,7 +166,7 @@ public abstract class Ata {
 		String meses[] = new String[12];
 		meses[0] = "janeiro";
 		meses[1] = "fevereiro";
-		meses[2] = "março";
+		meses[2] = "marï¿½o";
 		meses[3] = "abril";
 		meses[4] = "maio";
 		meses[5] = "junho";

@@ -11,6 +11,7 @@ import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Iframe;
 import org.zkoss.zul.Label;
@@ -78,10 +79,9 @@ public class MenuController extends CommonsController {
 		
 		return false;
 	}
-
+	
 	@Command
-	public void generate() {
-	//	System.out.println("\n\n"+this.suplente.getProfessor().getNomeUsuario());
+	public void gerarAta(){
 		if (getUsuario() != null
 				&& getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ALUNO) {
 			if (getUsuario().getTcc() != null
@@ -92,20 +92,73 @@ public class MenuController extends CommonsController {
 					if (getUsuario().getTcc().get(0).getParticipacoes().size() > 2
 							&& getUsuario().getTcc().get(0).getParticipacoes()
 									.size() < 6) {
+						
 						TCC tcc = getUsuario().getTcc().get(0);
 						
 						if(possuiSuplente(tcc.getParticipacoes())){
+								String mensagem = "A ata será gerada em uma nova janela. Verifique se o seu navegador permite a abertura de novas janelas";
+								Messagebox.show(mensagem, "Confirmação", Messagebox.OK, Messagebox.INFORMATION , new org.zkoss.zk.ui.event.EventListener() {
+								    public void onEvent(Event evt) throws InterruptedException {
+							        if (evt.getName().equals("onOK")) {
+										generate();
+										
+							        } 
+							        
+							        	
+							    }
+							});
+						}else{
+							Messagebox
+							.show("Para gerar a Ata a banca deve conter um suplente.\n",
+									"Aviso", Messagebox.OK, Messagebox.EXCLAMATION);							
+						}		
+						
+
+					} else
+						Messagebox
+								.show("Para gerar a Ata a banca deve conter no mínimo 3 examinadores e no máximo 5, sendo 1 o suplente.\n",
+										"Aviso", Messagebox.OK, Messagebox.EXCLAMATION);
+
+				} else
+					Messagebox
+							.show("Para gerar a Ata você deve preencher todas informações do seu Trabalho.\n",
+									"Aviso", Messagebox.OK, Messagebox.EXCLAMATION);
+			} else
+				Messagebox
+						.show("Você ainda não possui um trabalho cadastrado no semestre atual.\n",
+								"Aviso", Messagebox.OK, Messagebox.EXCLAMATION);
+		}
+	}
+
+	@Command
+	public void generate() {
+	//	System.out.println("\n\n"+this.suplente.getProfessor().getNomeUsuario());
+		
+				TCCBusiness tccBusiness = new TCCBusiness();	
+						
+						TCC tcc = getUsuario().getTcc().get(0);
+						
+						
 							try {
-								
-								if (tcc.getCoOrientador() == null)
+								List<Participacao> part = new ArrayList<Participacao>() ;
+								Participacao orientador = new Participacao();
+								Participacao coorientador = new Participacao();
+								orientador.setProfessor(tcc.getOrientador());
+								orientador.setTcc(tcc);
+								part.add(orientador);
+								if (tcc.getCoOrientador() == null){
 									ata = new AtaSCoorientador();
-								else {
+									
+								}else {
 									ata = new AtaCCoorientador();
 									ata.setCoorientador(tcc.getCoOrientador()
 											.getNomeUsuario());
+									coorientador.setProfessor(tcc.getCoOrientador());
+									part.add(coorientador);
 
 								}
-								List<Participacao> part = new ArrayList<Participacao>() ;
+								
+								
 								for(Participacao p:tcc.getParticipacoes()){
 									if(p.getSuplente()!=1){
 										part.add(p);
@@ -145,27 +198,7 @@ public class MenuController extends CommonsController {
 								e.printStackTrace();
 							}
 							
-						}else{
-							Messagebox
-							.show("Para gerar a Ata a banca deve conter um suplente.\n",
-									"Erro", Messagebox.OK, Messagebox.ERROR);							
-						}		
-						
-
-					} else
-						Messagebox
-								.show("Para gerar a Ata a banca deve conter no mínimo 3 examinadores e no máximo 5, sendo 1 o suplente.\n",
-										"Aviso", Messagebox.OK, Messagebox.EXCLAMATION);
-
-				} else
-					Messagebox
-							.show("Para gerar a Ata você deve preencher todas informações do seu Trabalho.\n",
-									"Erro", Messagebox.OK, Messagebox.ERROR);
-			} else
-				Messagebox
-						.show("Você ainda não possui um trabalho cadastrado no semestre atual.\n",
-								"Aviso", Messagebox.OK, Messagebox.EXCLAMATION);
-		}
+					
 
 	}
 

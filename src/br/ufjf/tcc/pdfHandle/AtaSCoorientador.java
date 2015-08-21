@@ -40,7 +40,7 @@ public class AtaSCoorientador extends Ata {
 
 		// PREENCHE TABELA
 		Image tabela = null;
-		if (qtAvaliador == 3) {
+		if (qtAvaliador == 4) {
 			tabela = Image.getInstance(ConfHandler.getConf("FILE.PATH")+"tablec3.png");
 			tabela.setAbsolutePosition(98, 459);
 			over.addImage(tabela);
@@ -49,7 +49,7 @@ public class AtaSCoorientador extends Ata {
 
 		}
 
-		if (qtAvaliador == 4) {
+		if (qtAvaliador == 5) {
 			tabela = Image.getInstance(ConfHandler.getConf("FILE.PATH")+"tablec4.png");
 			tabela.setAbsolutePosition(98, 439);
 			over.addImage(tabela);
@@ -75,14 +75,15 @@ public class AtaSCoorientador extends Ata {
 		over.showText(orientador);
 
 		over.setTextMatrix(150, 646);
-		over.showText(avaliadores[0]);
-		over.setTextMatrix(150, 626);
 		over.showText(avaliadores[1]);
-		if (qtAvaliador >= 3) {
+		over.setTextMatrix(150, 626);
+		over.showText(avaliadores[2]);
+		if (qtAvaliador >= 4) {
 			over.setTextMatrix(85, 605);
 			over.showText("Avaliador 3:___________________________________________");
 			over.setTextMatrix(150, 606);
-			over.showText(avaliadores[2]);
+			over.showText(avaliadores[3]);
+			
 
 			// ASSINATURA
 			over.setTextMatrix(113, 145);
@@ -91,11 +92,11 @@ public class AtaSCoorientador extends Ata {
 			over.showText("(Avaliador 03)");
 
 		}
-		if (qtAvaliador >= 4) {
+		if (qtAvaliador >= 5) {
 			over.setTextMatrix(85, 584);
 			over.showText("Avaliador 4:___________________________________________");
 			over.setTextMatrix(150, 585);
-			over.showText(avaliadores[3]);
+			over.showText(avaliadores[4]);
 
 			// ASSINATURA
 			over.setTextMatrix(353, 145);
@@ -148,13 +149,13 @@ public class AtaSCoorientador extends Ata {
 		over.showText("1. " + orientador);
 
 		over.setTextMatrix(90, 580);
-		over.showText("2. " + avaliadores[0]);
+		over.showText("2. " + avaliadores[1]);
 		over.setTextMatrix(90, 560);
-		over.showText("3. " + avaliadores[1]);
+		over.showText("3. " + avaliadores[2]);
 
-		if (qtAvaliador >= 3) {
+		if (qtAvaliador >= 4) {
 			over.setTextMatrix(90, 540);
-			over.showText("4. " + avaliadores[2]);
+			over.showText("4. " + avaliadores[3]);
 
 			// ASSINATURA
 			over.setTextMatrix(115, 125);
@@ -162,9 +163,9 @@ public class AtaSCoorientador extends Ata {
 			over.setTextMatrix(155, 112);
 			over.showText("(Avaliador 03)");
 
-			if (qtAvaliador >= 4) {
+			if (qtAvaliador >= 5) {
 				over.setTextMatrix(90, 520);
-				over.showText("5. " + avaliadores[3]);
+				over.showText("5. " + avaliadores[4]);
 
 				// ASSINATURA
 				over.setTextMatrix(358, 125);
@@ -184,7 +185,8 @@ public class AtaSCoorientador extends Ata {
 		System.out.println("gerou o pdf");
 
 		try {
-
+			
+					
 			for (int i = 0; i < avaliadores.length; i++) {
 				PreenchimentoPDF.lastPag(aluno, avaliadores[i], dia, mes, ano,
 						i, idAluno);

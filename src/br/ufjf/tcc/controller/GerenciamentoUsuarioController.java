@@ -738,7 +738,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 	{
 		String mensagem;
 		if(usuario.isAtivo())
-			mensagem = "Tem certeza que deseja destivar o usuário?";
+			mensagem = "Tem certeza que deseja desativar o usuário?";
 		else
 			mensagem = "Tem certeza que deseja ativar o usuário?";
 			
