@@ -45,6 +45,17 @@ public class FileManager {
 			return null;
 		}
 	}
+	
+	public static File getFile(String fileName) {
+		
+			File is = new File(
+					ConfHandler.getConf("FILE.PATH") +"/"+ fileName);
+			if(is.exists())
+				return is;
+			else
+				return null;
+		
+	}
 
 	public static Boolean deleteFile(String fileName) {
 		try {

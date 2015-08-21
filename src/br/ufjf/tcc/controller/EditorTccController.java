@@ -251,18 +251,18 @@ public class EditorTccController extends CommonsController {
 	@Command
 	public void showTCC(@BindingParam("iframe") Iframe iframe) {
 		this.iframe = iframe;
+		
+		InputStream is;
+		if (tcc.getArquivoTCCFinal() != null)
+			is = FileManager.getFileInputSream(tcc.getArquivoTCCFinal());
+		else if (tcc.getArquivoTCCBanca() != null)
+			is = FileManager.getFileInputSream(tcc.getArquivoTCCBanca());
+		else
+			is = FileManager.getFileInputSream("modelo.pdf");
 
-		AMedia pdf;
-		if (tcc.getArquivoTCCBanca() == null || tcc.getArquivoTCCBanca().trim().length() == 0) {
-			InputStream is = FileManager.getFileInputSream("modelo.pdf");
-			pdf = new AMedia("modelo.pdf", "pdf", "application/pdf", is);
-		} else {
-			tccFile = FileManager.getFileInputSream(tcc.getArquivoTCCBanca());
-			pdf = new AMedia(tcc.getNomeTCC() + ".pdf", "pdf",
-					"application/pdf", tccFile);
-		}
-
-		iframe.setContent(pdf);
+		AMedia amedia = new AMedia(tcc.getNomeTCC() + ".pdf", "pdf",
+				"application/pdf", is);
+		iframe.setContent(amedia);
 	}
 
 	@Command

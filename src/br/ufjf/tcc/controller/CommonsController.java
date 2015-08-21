@@ -10,7 +10,7 @@ import br.ufjf.tcc.business.UsuarioBusiness;
 import br.ufjf.tcc.library.SessionManager;
 import br.ufjf.tcc.model.CalendarioSemestre;
 import br.ufjf.tcc.model.Curso;
-import br.ufjf.tcc.model.Permissao;
+import br.ufjf.tcc.model.TCC;
 import br.ufjf.tcc.model.Usuario;
 
 public class CommonsController {
@@ -26,6 +26,15 @@ public class CommonsController {
 			CalendarioSemestreBusiness calendarioBusiness = new CalendarioSemestreBusiness();
 			calendarioSemestre = calendarioBusiness
 					.getCurrentCalendarByCurso(curso);
+		}
+		return calendarioSemestre;
+	}
+	
+	public CalendarioSemestre getCalendarByTCC(TCC tcc) {
+		if (calendarioSemestre == null) {
+			CalendarioSemestreBusiness calendarioBusiness = new CalendarioSemestreBusiness();
+			calendarioSemestre = calendarioBusiness
+					.getCalendarByTCC(tcc);
 		}
 		return calendarioSemestre;
 	}

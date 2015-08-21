@@ -3,6 +3,7 @@ package br.ufjf.tcc.persistent.impl;
 import java.util.List;
 
 import org.hibernate.Query;
+import org.hibernate.Transaction;
 
 import br.ufjf.tcc.model.Participacao;
 import br.ufjf.tcc.model.TCC;
@@ -48,13 +49,19 @@ public class ParticipacaoDAO extends GenericoDAO {
 	
 	public boolean updateList(TCC tcc) {
 		try {
+			
+			Transaction trs = getSession().beginTransaction();
+			
 			Query query = getSession().createQuery(
 					"DELETE FROM Participacao AS p WHERE p.tcc = :tcc");
 			query.setParameter("tcc", tcc);
-			query.executeUpdate();
+			int result = query.executeUpdate();
+			
+					
+			
+			trs.commit();
 			
 			getSession().close();
-			
 			if(tcc.getParticipacoes() != null)
 				this.salvarLista(tcc.getParticipacoes());
 			

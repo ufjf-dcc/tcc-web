@@ -1,0 +1,35 @@
+<%@page import="br.ufjf.tcc.controller.ListaPublicaController"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://www.zkoss.org/jsp/zul" prefix="z"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<div>
+	<z:page zscriptLanguage="java">
+		
+			<z:style src="/style.css" />
+		<z:div apply="org.zkoss.bind.BindComposer"
+			viewModel="@id('vm') @init('br.ufjf.tcc.controller.VisualizaTCCController')"
+			style="background-color:#efefef;" height="94.3%">
+			<z:include src="@load(vm.menu)" />
+				<z:div  style="float: left;width: 70%; height: 100%;">
+					<z:iframe autohide="true" height="100%" width="100%"
+						onCreate="@command('showTCC2', iframe=self)" />
+						
+				</z:div>
+	
+		</z:div>
+	
+		</z:page>
+	
+	</div>
+</body>
+</html>

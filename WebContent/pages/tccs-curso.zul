@@ -11,7 +11,7 @@
 		height="100%" class="publicList">
 		<include src="@load(vm.menu)" />
 		<grid model="@load(vm.filterTccs) @template('lista')"
-			emptyMessage="@load(vm.emptyMessage)" mold="paging" autopaging="true"
+			emptyMessage="@load(vm.emptyMessage)" mold="paging" pageSize="10"
 			vflex="true">
 			<auxhead>
 				<auxheader colspan="4">
@@ -20,53 +20,45 @@
 							<hlayout style="float:left">
 								<label value="Pesquisar: "
 									style="margin-top:6px" 
-									visible="@load(not vm.projetos)"/>
+									visible="true"/>
 								<textbox id="filtro"
 									value="@bind(vm.filterString)" onOK="@command('filtra')"
-									visible="@load(not vm.projetos)"/>
+									visible="true"/>
 								<separator orient="vertical"
 									spacing="3px" />
 
 								<label value="Ano: "
 									style="margin-top:6px" 
-									visible="@load(not vm.projetos)"/>
+									visible="true"/>
 								<combobox id="cmbYear" width="150px"
 									readonly="true" model="@load(vm.years)"
 									value="@load(filterYear)"
 									selectedItem="@bind(vm.filterYear)"
-									visible="@load(not vm.projetos)">
+									visible="true">
 									<template name="model">
 										<comboitem label="@load(each)" />
 									</template>
 								</combobox>
 								
-								<label value="Tipos: " visible="@load(vm.projetos)" />
+								<label value="Tipos: " visible="true" />
 																
-								<div visible="@load(vm.projetos)">
+								<div visible="true">
 									<combobox value="Todos" onChange="@command('filtraProjeto',item=self.selectedIndex)">
-									    <comboitem label="Todos"/>
+									    <comboitem label="Todos" />
 									    <comboitem label="Projetos"/>
 									    <comboitem label="Trabalhos"/>
 									    <comboitem label="Projetos incompletos"/>
 									    <comboitem label="Projetos aguardando aprovação"/>
 									    <comboitem label="Trabalhos incompletos"/>
 									    <comboitem label="Trabalhos aguardando aprovação"/>
+									    <comboitem label="Trabalhos Finalizados"/>									   
 									    
 									</combobox>
 								</div>
 								
 								<separator orient="vertical"
 									spacing="3px" />
-									
-								<label value="Semestre: " visible="@load(vm.projetos)" />
-								<div visible="@load(vm.projetos)">
-									<radiogroup id="sv2" onCheck="@command('semestreEscolhido',item=self.selectedIndex)" />
-										 <radio id="r1" label="Atual" radiogroup="sv2" selected="true" />
-							             <radio id="r2" label="Todos" radiogroup="sv2" />
-								</div>
 								
-	
-
 								<separator orient="vertical"
 									spacing="3px" />
 								
@@ -77,11 +69,6 @@
 							</hlayout>
 							
 							
-							
-							<button style="float:right" visible="@load(not vm.projetos)"
-								label="Cadastrar novo Trabalho" onClick="@command('novoTrabalho')" />
-							<button style="float:right" visible="@load(not vm.projetos)"
-								label="Cadastrar Aluno" onClick="@command('novoAluno')" />
 						</div>
 					</div>
 				</auxheader>

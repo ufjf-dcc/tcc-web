@@ -1,21 +1,21 @@
 ﻿# Arquivo de Configuração
-#GENERAL.URL = http://monografias.nrc.ice.ufjf.br/tcc-web
-GENERAL.URL = localhost:8080/tcc-web
+#GENERAL.URL = http://monografias.nrc.ice.ufjf.br/tccwebteste
+GENERAL.URL = localhost:8080/tccwebteste
 
 # Hibernate
 HIBERNATE.DRIVE = com.mysql.jdbc.Driver
 HIBERNATE.DIALECT = org.hibernate.dialect.MySQLDialect
 
-HIBERNATE.DB = jdbc:mysql://localhost/tccweb
+HIBERNATE.DB = jdbc:mysql://localhost/tcc_teste
 HIBERNATE.USER = root
-HIBERNATE.PASS = root
+HIBERNATE.PASS = fanuelson
 
 # Integra
 INTEGRA.APPTOKEN = c
 
 # File Manager
-#FILE.PATH = C:/tcc/
-FILE.PATH = /TCCFiles/
+FILE.PATH = /tcc/
+#FILE.PATH = /tccfilesteste/
 
 # Mail
 MAIL.USERNAME = ttest4318@gmail.com

@@ -119,80 +119,42 @@ public class UsuarioBusiness {
 
 	// comunicação com o UsuarioDAO
 	public boolean login(String login, String password) {
-		errors.clear();
-
-		List<Usuario> users = new ArrayList<Usuario>();
-		IntegraHandler integra = new IntegraHandler();
-		boolean usuarioIntegra = false;
-		
-		if (login.matches("[0-9]+")) {
-			try {
-				integra.doLogin(login, this.encripta(password, "md5"));
-				users = usuarioDAO.getByMatricula(integra.getProfiles());
-				usuarioIntegra = true;
-				
-			} catch (WsException_Exception e) {
-				errors.add(e.getFaultInfo().getErrorUserMessage());
-				return false;
-			}
-		} else {
-			Usuario user = usuarioDAO.retornaUsuario(login, this.encripta(password));
-			if(user != null)
-			{
-				users.add(user);
-				usuarioIntegra = false;
-
-			}
-		}
-		
-		if (users != null && users.size() > 0) {
-			List<Usuario> usuarios = new ArrayList<Usuario>();
-			for (Usuario user : users) {
-				if (user.isAtivo()) {
-					if(usuarioIntegra)
-						if(user.getNomeUsuario() != integra.getInfos().getNome() || user.getEmail() != integra.getInfos().getEmailSiga()) {
-							user.setNomeUsuario(integra.getInfos().getNome());
-							user.setEmail(integra.getInfos().getEmailSiga());
-							this.editar(user);
-						}
-					usuarios.add(user);
-				}
-			}
-
-			if (usuarios.size() > 0) {
-				SessionManager.setAttribute("usuarios", usuarios);
-				return true;
-			} else {
-				errors.add("Você não possui uma conta ativa. Por favor contate o coordenador de seu curso.");
-				return false;
-			}
-		}
-
-		errors.add("Identificador ou senha inválidos! Ou não cadastrado!");
-		return false;
-		
-		
 //		errors.clear();
 //
 //		List<Usuario> users = new ArrayList<Usuario>();
+//		IntegraHandler integra = new IntegraHandler();
+//		boolean usuarioIntegra = false;
+//		
+//		if (login.matches("[0-9]+")) {
+//			try {
+//				integra.doLogin(login, this.encripta(password, "md5"));
+//				users = usuarioDAO.getByMatricula(integra.getProfiles());
+//				usuarioIntegra = true;
+//				
+//			} catch (WsException_Exception e) {
+//				errors.add(e.getFaultInfo().getErrorUserMessage());
+//				return false;
+//			}
+//		} else {
+//			Usuario user = usuarioDAO.retornaUsuario(login, this.encripta(password));
+//			if(user != null)
+//			{
+//				users.add(user);
+//				usuarioIntegra = false;
 //
-//
-//		List<String> matriculas = new ArrayList<String>();
-//		matriculas.add("3353417");
-//		matriculas.add("1714410");
-//		matriculas.add("201235027");
-//		matriculas.add("201335012");
-//		matriculas.add("admin");
-//		matriculas.add("compnoturno");
-//		matriculas.add("a");
-//
-//
-//		users = usuarioDAO.getByMatricula(matriculas);
-//
-//		if (users != null) {
+//			}
+//		}
+//		
+//		if (users != null && users.size() > 0) {
 //			List<Usuario> usuarios = new ArrayList<Usuario>();
 //			for (Usuario user : users) {
 //				if (user.isAtivo()) {
+//					if(usuarioIntegra)
+//						if(user.getNomeUsuario() != integra.getInfos().getNome() || user.getEmail() != integra.getInfos().getEmailSiga()) {
+//							user.setNomeUsuario(integra.getInfos().getNome());
+//							user.setEmail(integra.getInfos().getEmailSiga());
+//							this.editar(user);
+//						}
 //					usuarios.add(user);
 //				}
 //			}
@@ -208,6 +170,45 @@ public class UsuarioBusiness {
 //
 //		errors.add("Identificador ou senha inválidos! Ou não cadastrado!");
 //		return false;
+//		
+//		
+//		errors.clear();
+
+		List<Usuario> users = new ArrayList<Usuario>();
+
+
+		List<String> matriculas = new ArrayList<String>();
+		matriculas.add("3353417");
+		matriculas.add("1714410");
+		matriculas.add("201235027");
+		matriculas.add("201335012");
+		matriculas.add("admin");
+		matriculas.add("compnoturno");
+		matriculas.add("secFanu");
+		matriculas.add("a");
+
+
+		users = usuarioDAO.getByMatricula(matriculas);
+
+		if (users != null) {
+			List<Usuario> usuarios = new ArrayList<Usuario>();
+			for (Usuario user : users) {
+				if (user.isAtivo()) {
+					usuarios.add(user);
+				}
+			}
+
+			if (usuarios.size() > 0) {
+				SessionManager.setAttribute("usuarios", usuarios);
+				return true;
+			} else {
+				errors.add("Você não possui uma conta ativa. Por favor contate o coordenador de seu curso.");
+				return false;
+			}
+		}
+
+		errors.add("Identificador ou senha inválidos! Ou não cadastrado!");
+		return false;
 	}
 
 	public boolean checaLogin(Usuario usuario) {
