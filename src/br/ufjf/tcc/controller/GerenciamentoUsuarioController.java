@@ -20,6 +20,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Label;
@@ -606,6 +607,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 	}
 	
 	/* Edita propriedades de um usuário */
+	@NotifyChange("editUsuario")
 	@Command
 	public void editUsuario(@BindingParam("window") Window window, @BindingParam("usuario") Usuario user) {
 		editUsuario = user;
@@ -615,6 +617,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 		((Textbox)window.getChildren().get(0).getChildren().get(1).getChildren().get(2).getChildren().get(1)).setValue(editUsuario.getNomeUsuario());
 		((Textbox)window.getChildren().get(0).getChildren().get(1).getChildren().get(3).getChildren().get(1)).setValue(editUsuario.getEmail());
 		((Textbox)window.getChildren().get(0).getChildren().get(1).getChildren().get(4).getChildren().get(1)).setValue(editUsuario.getTitulacao());
+		
 		if(editUsuario.getCurso()!=null)
 			((Combobox)window.getChildren().get(0).getChildren().get(1).getChildren().get(5).getChildren().get(1)).setValue(editUsuario.getCurso().getNomeCurso());
 		else
@@ -640,7 +643,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 		{
 			((Label)window.getChildren().get(0).getChildren().get(1).getChildren().get(1).getChildren().get(0)).setValue("Matricula :");
 		}
-		
+		((Button)window.getChildren().get(0).getChildren().get(1).getChildren().get(8).getChildren().get(1)).setDisabled(true);
 		
 		Usuario usuario = (Usuario) SessionManager.getAttribute("usuario");
 		if(usuario.getTipoUsuario().getIdTipoUsuario() == Usuario.ADMINISTRADOR)
@@ -652,7 +655,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 			((Combobox)window.getChildren().get(0).getChildren().get(1).getChildren().get(5).getChildren().get(1)).setDisabled(false);
 			((Combobox)window.getChildren().get(0).getChildren().get(1).getChildren().get(6).getChildren().get(1)).setDisabled(false);
 			((Combobox)window.getChildren().get(0).getChildren().get(1).getChildren().get(6).getChildren().get(1)).setDisabled(false);
-
+			((Button)window.getChildren().get(0).getChildren().get(1).getChildren().get(8).getChildren().get(1)).setDisabled(false);;
 		}
 		
 		window.doModal();
@@ -665,7 +668,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(5)).setVisible(false);
 			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(6)).setVisible(false);
 			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(7)).setVisible(true);
-		
+			
 			
 
 			
@@ -676,6 +679,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(4)).setVisible(true);
 			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(5)).setVisible(false);
 			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(8)).setVisible(true);
+			((Button)window.getChildren().get(0).getChildren().get(1).getChildren().get(8).getChildren().get(1)).setLabel("Coordenador");
 		}
 		
 		if(editUsuario.getTipoUsuario().getIdTipoUsuario() == Usuario.COORDENADOR )
@@ -684,6 +688,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(5)).setVisible(true);
 			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(6)).setVisible(true);
 			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(8)).setVisible(true);
+			((Button)window.getChildren().get(0).getChildren().get(1).getChildren().get(8).getChildren().get(1)).setLabel("Professor");
 			
 		}
 		
@@ -810,22 +815,21 @@ public class GerenciamentoUsuarioController extends CommonsController {
 	}
 	
 	@Command
-	public void trocarTipo(@BindingParam("tpuser") Combobox tipoUsuario){
-		System.out.println("\n\n"+tipoUsuario.getValue());
-		if(tipoUsuario.getValue().equals("Coordenador")){
+	public void trocarTipo(@BindingParam("window") final Window window){
+		Clients.clearBusy(window);
+		System.out.println("\n\n\n"+editUsuario.getTipoUsuario().getIdTipoUsuario());
+		if(editUsuario.getTipoUsuario().getIdTipoUsuario()==Usuario.PROFESSOR){
 			editUsuario.setTipoUsuario(new TipoUsuarioBusiness().getTipoUsuario(3));
-			Messagebox.show(
-					"Usuário alterado para Coordenador com sucesso!",
-					"Sucesso", Messagebox.OK,
-					Messagebox.INFORMATION);
-		}else if(tipoUsuario.getValue().equals("Professor")){
+			
+			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(5)).setVisible(true);
+			((Button)window.getChildren().get(0).getChildren().get(1).getChildren().get(8).getChildren().get(1)).setLabel("Professor");
+		}else if(editUsuario.getTipoUsuario().getIdTipoUsuario()==Usuario.COORDENADOR){
 			editUsuario.setTipoUsuario(new TipoUsuarioBusiness().getTipoUsuario(2));
-			Messagebox.show(
-					"Usuário alterado para Professor com sucesso!",
-					"Sucesso", Messagebox.OK,
-					Messagebox.INFORMATION);
+			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(5)).setVisible(false);
+			((Button)window.getChildren().get(0).getChildren().get(1).getChildren().get(8).getChildren().get(1)).setLabel("Coordenador");
 		}
 		
+		BindUtils.postNotifyChange(null, null, this, "editUsuario");
 		
 	}
 	

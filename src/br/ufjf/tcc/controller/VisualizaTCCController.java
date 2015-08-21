@@ -359,6 +359,8 @@ public class VisualizaTCCController extends CommonsController {
 			        	tcc.setArquivoTCCBanca(null);
 			        	tcc.setArquivoExtraTCCBanca(null);
 						new TCCBusiness().edit(tcc);
+						tcc.getAluno().setAtivo(false);
+						new UsuarioBusiness().editar(tcc.getAluno());
 						SessionManager.setAttribute("trabalhos_semestre",true);
 						Executions.sendRedirect("/pages/tccs-curso.zul");
 		        	}
