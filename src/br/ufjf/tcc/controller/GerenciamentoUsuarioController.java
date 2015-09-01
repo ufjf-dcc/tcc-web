@@ -435,7 +435,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 										Messagebox.EXCLAMATION);
 								return;
 							}
-
+							
 							Usuario usuarioTemp;
 							CursoBusiness cursoBusiness = new CursoBusiness();
 							TipoUsuarioBusiness tipoUsuarioBusiness = new TipoUsuarioBusiness();

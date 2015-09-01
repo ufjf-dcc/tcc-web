@@ -90,8 +90,14 @@
 							<div id="verifica" visible="@load(vm.coordenador and not vm.finalizado)">
 								<button image="/img/confirm.gif" label="Aprovar projeto de TCC" visible="@load(vm.projeto and vm.projetoAguardandoAprovacao)" onClick="@command('finalizaProjeto')"  width="100%"
 								height="30px" style="margin-top:10px"/>
-								<button image="/img/confirm.gif" label="Aprovar trabalho de TCC" visible="@load(not vm.projeto and vm.trabalhoAguardandoAprovacao)" onClick="@command('finalizaTrabalho')"  width="100%"
+								<button disabled="@load(!(vm.tcc.entregouDoc and vm.tcc.trabFinal))" image="/img/confirm.gif" label="Aprovar trabalho de TCC" visible="@load(not vm.projeto and vm.trabalhoAguardandoAprovacao)" onClick="@command('finalizaTrabalho')"  width="100%"
 								height="30px" style="margin-top:10px" />
+							</div>
+							<div visible="@load(!vm.tcc.entregouDoc and !vm.tcc.projeto and vm.tcc.statusTCC eq 'TAA')">
+								<label style="padding:5px;color:red" value="Documentos ainda não foram entregues" />
+							</div>
+							<div visible="@load(!vm.tcc.trabFinal and !vm.tcc.projeto and vm.tcc.statusTCC eq 'TAA')" >
+								<label style="padding:5px;color:red" value="Trabalho final ainda não enviado" />
 							</div>
 							
 						</tabpanel>

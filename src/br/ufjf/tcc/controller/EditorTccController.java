@@ -24,6 +24,7 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
+import br.ufjf.tcc.business.CalendarioSemestreBusiness;
 import br.ufjf.tcc.business.DepartamentoBusiness;
 import br.ufjf.tcc.business.ParticipacaoBusiness;
 import br.ufjf.tcc.business.TCCBusiness;
@@ -49,7 +50,7 @@ public class EditorTccController extends CommonsController {
 	private boolean canChangeOrientacao = true, alunoEditBlock = true, canChangeMatricula = false,
 			canEditUser = false, alunoVerified = false, tccFileChanged = false,
 			extraFileChanged = false, hasSubtitulo = false,
-			hasCoOrientador = false, orientadorWindow = true;
+			hasCoOrientador = false, orientadorWindow = true,trabFinal = false;
 	
 
 	@Init
@@ -268,6 +269,29 @@ public class EditorTccController extends CommonsController {
 
 	@Command
 	public void upload(@BindingParam("evt") UploadEvent evt) {
+		String alerta1 = "Você está enviando a versão final do seu trabalho?";
+		String alerta2 = "Atenção, após submeter a versão final do seu trabalho, ele não poderar mais ser alterado. Deseja continuar?";
+		if(new CalendarioSemestreBusiness().getCurrentCalendarByCurso(getUsuario().getCurso()).getPrazos().get(3).getDataFinal().before(new Date())){
+			Messagebox.show(alerta1, "Aviso Importante", Messagebox.YES|Messagebox.NO, Messagebox.EXCLAMATION, new org.zkoss.zk.ui.event.EventListener() {
+			    public void onEvent(Event evt) throws InterruptedException {
+			        if (evt.getName().equals("onYes")) {
+			        	Messagebox.show(alerta2, "Aviso Importante", Messagebox.YES|Messagebox.NO, Messagebox.EXCLAMATION, new org.zkoss.zk.ui.event.EventListener() {
+						    
+
+							public void onEvent(Event evt) throws InterruptedException {
+						        if (evt.getName().equals("onYes")) {
+						        	trabFinal=true;
+						        }else{
+						        	return;
+						        }
+						    }
+						});
+			        }else
+			        	return ;
+			    }
+			});
+		}
+	   
 		if (!evt.getMedia().getName().contains(".pdf")) {
 			Messagebox.show(
 					"Este não é um arquivo válido! Apenas PDF são aceitos.",
@@ -406,6 +430,12 @@ public class EditorTccController extends CommonsController {
 	// Submit do TCC
 	@Command("submit")
 	public void submit() {
+		System.out.println("\n\n"+new Date().toString());
+		if(trabFinal){
+			tcc.setTrabFinal(true);
+		}else{
+			System.out.println("\n\n\nNao passou da dta de defesa");
+		}
 		if (getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.SECRETARIA
 				&& (tcc.getArquivoTCCFinal() == null && !tccFileChanged)) {
 			Messagebox.show("É necesário enviar o documento PDF.", "Erro",

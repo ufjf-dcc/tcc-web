@@ -81,8 +81,8 @@
 				<column hflex="4" label="Data e horário de Envio" />
 				<column hflex="2" label="Status" image="/img/help.gif"
 					tooltip="filterStatus" style="cursor: help" />
-				<column hflex="2" label="PDF" />
-				<column hflex="2" label="Extras" />
+				<column hflex="4" label="Entregou documentos" />
+				<column hflex="4" label="Enviou trabalho final" />
 				<column hflex="2" label="Excluir" />
 			</columns>
 			<template name="lista">
@@ -118,11 +118,12 @@
 					<label value="@load(each.orientador.nomeUsuario)" />
 					<label value="@load(each.dataEnvioFinal eq null? each.dataEnvioBanca : each.dataEnvioFinal)" />
 					<label value="@load(each.statusTCC)" />
-					<image src="/img/pdf.png" style="cursor: pointer"
-						onClick="@command('downloadPDF', tcc=each)" />
-					<image style="cursor: pointer"
-						src="@load(not empty each.arquivoExtraTCCFinal ? '/img/rar.png' : '/img/norar.png')"
-						onClick="@command('downloadExtra', tcc=each)" />
+					<div align="center" >
+					<checkbox disabled="@load(each.statusTCC eq 'Aprovado'? 'true' : 'false')" style="center" checked="@load(each.entregouDoc)" onCheck="@command('checkEnviouDoc',tcc=each)" />
+					</div>
+					<div align="center" >
+					<checkbox disabled="true" style="center" checked="@load(each.trabFinal)" />
+					</div>
 					<button image="/img/delete.png" 
 						onClick="@command('excluirTCC', tcc=each)" />
 				</row>

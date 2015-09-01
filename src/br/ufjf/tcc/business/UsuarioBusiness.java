@@ -142,6 +142,8 @@ public class UsuarioBusiness {
 //				users.add(user);
 //				usuarioIntegra = false;
 //
+//			} else {
+//				//usario ou seha inhavlido
 //			}
 //		}
 //		
@@ -166,11 +168,12 @@ public class UsuarioBusiness {
 //				errors.add("Você não possui uma conta ativa. Por favor contate o coordenador de seu curso.");
 //				return false;
 //			}
+//		}else{
+//			// Usuario mo integra mas nao no sistema
+//			errors.add("");
+//			return false;		
 //		}
-//
-//		errors.add("Identificador ou senha inválidos!");
-//		return false;		
-		
+
 		errors.clear();
 		List<Usuario> users = new ArrayList<Usuario>();
 

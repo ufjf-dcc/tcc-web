@@ -427,5 +427,16 @@ public class TCCsCursoController extends CommonsController {
 		    }
 		});
 	}
+	
+	@Command
+	public void checkEnviouDoc(@BindingParam("tcc") TCC tcc){
+		if(tcc.isEntregouDoc()){
+			tcc.setEntregouDoc(false);
+		}else{
+			tcc.setEntregouDoc(true);
+		}
+		new TCCBusiness().edit(tcc);
+		
+	}
 		
 }

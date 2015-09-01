@@ -171,6 +171,18 @@ public class TCC implements Serializable,Comparable<TCC> {
 	{@code @Column(name = "projeto", nullable = false)}. */ 
 	@Column(name = "projeto", nullable = false) 
 	private boolean projeto;
+	
+	@Column(name = "entregouDoc", nullable = false) 
+	private boolean entregouDoc;
+	
+	@Column(name = "trabFinal", nullable = false) 
+	private boolean trabFinal;
+	
+	@Column(name = "arqProjFinal", length = 255, nullable = true)
+	private String arqProjFinal;
+	
+	@Column(name = "arqExtraProjFinal", length = 255, nullable = true)
+	private String arqExtraProjFinal;
 
 	/**
 	 * Relacionamento N para 1 entre TCC e Usuario. Mapeando {@link Usuario} na
@@ -441,4 +453,40 @@ public class TCC implements Serializable,Comparable<TCC> {
 		}
 		return -1;
 	}
+
+	public boolean isEntregouDoc() {
+		return entregouDoc;
+	}
+
+	public void setEntregouDoc(boolean entregouDoc) {
+		this.entregouDoc = entregouDoc;
+	}
+
+	public String getArqProjFinal() {
+		return arqProjFinal;
+	}
+
+	public void setArqProjFinal(String arqProjFinal) {
+		this.arqProjFinal = arqProjFinal;
+	}
+
+	public String getArqExtraProjFinal() {
+		return arqExtraProjFinal;
+	}
+
+	public void setArqExtraProjFinal(String arqExtraProjFinal) {
+		this.arqExtraProjFinal = arqExtraProjFinal;
+	}
+
+	public boolean isTrabFinal() {
+		return trabFinal;
+	}
+
+	public void setTrabFinal(boolean trabFinal) {
+		this.trabFinal = trabFinal;
+	}
+	
+	
+	
+	
 }

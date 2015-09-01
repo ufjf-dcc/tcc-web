@@ -382,6 +382,18 @@ public class TCCBusiness {
 			if(f!=null)
 				f.delete();
 		}
+		if(tcc.getArqExtraProjFinal()!=null)
+		{
+			f = new File(ConfHandler.getConf("FILE.PATH")+tcc.getArqExtraProjFinal());
+			if(f!=null)
+				f.delete();
+		}
+		if(tcc.getArqProjFinal()!=null)
+		{
+			f = new File(ConfHandler.getConf("FILE.PATH")+tcc.getArqProjFinal());
+			if(f!=null)
+				f.delete();
+		}
 	
 		if((new TCCDAO()).exclui(tcc))
 			return true;

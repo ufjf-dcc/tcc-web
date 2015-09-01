@@ -332,6 +332,10 @@ public class VisualizaTCCController extends CommonsController {
 					if(new TCCBusiness().isProjetoAguardandoAprovacao(tcc))
 					{
 			        	tcc.setProjeto(false);
+			        	tcc.setArqExtraProjFinal(tcc.getArquivoExtraTCCBanca());
+			        	tcc.setArqProjFinal(tcc.getArquivoTCCBanca());
+			        	tcc.setArquivoExtraTCCBanca(null);
+			        	tcc.setArquivoTCCBanca(null);
 						new TCCBusiness().edit(tcc);
 						SessionManager.setAttribute("trabalhos_semestre",true);
 						Executions.sendRedirect("/pages/tccs-curso.zul");
@@ -399,5 +403,7 @@ public class VisualizaTCCController extends CommonsController {
 		}
 		return false;
 	}
+	
+	
 	
 }
