@@ -14,7 +14,7 @@
 			emptyMessage="@load(vm.emptyMessage)" mold="paging" pageSize="10"
 			vflex="true">
 			<auxhead>
-				<auxheader colspan="4">
+				<auxheader colspan="8">
 					<div>
 						<div>
 							<hlayout style="float:left">

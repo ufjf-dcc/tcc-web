@@ -81,6 +81,14 @@
 										style="font-size: 14px; font-weight: bold;float: left;margin:5px;" />
 								</div>
 							</div>
+							<button label="Visualizar projeto" width="100%"
+								height="30px" style="margin-top:10px"
+								visible="@load(vm.canEdit ? 'true' : 'false')"
+								onClick="@command('showProjeto',iframe=pdfFrame)" />
+								<button label="Visulizar trabalho" width="100%"
+								height="30px" style="margin-top:10px"
+								onClick="@command('showTCC', iframe=pdfFrame)"
+								/>
 							<button label="Editar Trabalho" width="100%"
 								height="30px" style="margin-top:10px"
 								visible="@load(vm.canEdit ? 'true' : 'false')"
@@ -144,8 +152,8 @@
 				</tabbox>
 
 			</div>
-			<div style="float: left;width: 70%; height: 100%;">
-				<iframe autohide="true" height="100%" width="100%"
+			<div  style="float: left;width: 70%; height: 100%;">
+				<iframe id="pdfFrame" autohide="true" height="100%" width="100%"
 					onCreate="@command('showTCC', iframe=self)" />
 			</div>
 		</div>

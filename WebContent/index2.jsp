@@ -105,13 +105,13 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 
 <%
     request.setCharacterEncoding("UTF-8");
-	ArrayList teste = (ArrayList) request.getAttribute("tccs");
+	
 	String pesquisaFeita = (String) request.getAttribute("PalavaPesquisa");
 	String cursoS = (String) request.getAttribute("cursoSelected");
 	String yearSelected = (String) request.getAttribute("yearSelected");
 	
 	
-	request.setAttribute("lista", teste);
+	
 	
 	if(cursoS==null)
 		request.setAttribute("cursoSel", "");
@@ -248,7 +248,7 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 				<th width="5%" style="padding: 5px 5px;vertical-align: middle;">PDF</th>
 				<th width="5%" style="padding: 5px 5px;vertical-align: middle;">Extras</th>
 			</tr>
-			<c:forEach var="tcc" items="${lista}">
+			<c:forEach var="tcc" items="${tccs}">
 				<pg:item>
 				<tr style="cursor: pointer;color:#636363;vertical-align: middle;height: 42px;margin: auto;">
 					

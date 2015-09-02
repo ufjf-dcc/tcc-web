@@ -83,13 +83,13 @@ li {
 		
 		</div>
 	<div style="display:block ;height: 93%;background-color: #efefef;width: 30%;float: left;"> 
-
+		<div style="padding: 10px" >
 
 		<div
 			style="position:relative; display: block; overflow: hidden;border: 0px;padding: 0px;margin: 0px ">
 
 			<ul style="width: 100%; padding-left: 0px;padding-top: 0px;margin: 0px">
-				<li style="border: 1px solid #cfcfcf ;line-height: 30px;">
+				<li style="border: 1px solid #cfcfcf ;border-width:1px 1px 0px 1px;line-height: 30px;">
 				<span style="color: #555;font-weight: bold;font-style: normal;font-size: 12px;font-family: sans-serif;padding: 4px 12px 12px" >Informações do Trabalho</span>
 				</li>
 			</ul>			
@@ -128,10 +128,10 @@ li {
 				
 			<div class="">
 				<label class="head"
-					style="font-family: sans-serif; font-weight: bold; font-size: 14px; float: left;">
+					style="font-family: sans-serif; font-weight: bold; font-size: 12px; float: left;">
 					Ano: </label>
 					<label
-					style="font-family: sans-serif; font-weight: normal; font-size: 12px; display: block; padding-top: 7px; padding-left: 35px;">
+					style="font-family: sans-serif; font-weight: normal; font-size: 12px; display: block; padding-top: 5px; padding-left: 30px;">
 					${tccYear} </label>
 			</div>
 			<label class="head"
@@ -147,7 +147,7 @@ li {
 					Obter PDF </label> 
 					<img
 					onClick="location.href='downloadPdf?id=${tcc.idTCC}'"
-					src="./img/pdf.png" style="cursor: pointer; display: block;" />
+					src="./img/pdf.png" style="cursor: pointer; display: block;padding-left: 10px" />
 
 			</div>
 			<div class="head"
@@ -172,7 +172,7 @@ li {
 			
 		</div>
 		
-
+		</div>
 	</div>
 	
 	<div style=" float: right; width: 70%; height: 95%">

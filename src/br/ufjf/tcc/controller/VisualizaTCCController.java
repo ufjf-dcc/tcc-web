@@ -193,6 +193,22 @@ public class VisualizaTCCController extends CommonsController {
 	}
 	
 	@Command
+	public void showProjeto(@BindingParam("iframe") Iframe report) {
+		
+		InputStream is;
+		if (tcc.getArqProjFinal() != null)
+			is = FileManager.getFileInputSream(tcc.getArqProjFinal());
+		else if (tcc.getArquivoTCCBanca() != null)
+			is = FileManager.getFileInputSream(tcc.getArquivoTCCBanca());
+		else
+			is = FileManager.getFileInputSream("modelo.pdf");
+
+		final AMedia amedia = new AMedia(tcc.getNomeTCC() + ".pdf", "pdf",
+				"application/pdf", is);
+		report.setContent(amedia);
+	}
+	
+	@Command
 	public void showTCC2(@BindingParam("iframe") Iframe report) {
 		String tccId = Executions.getCurrent().getParameter("id");
 		System.out.println("\n\n\n entrei");
