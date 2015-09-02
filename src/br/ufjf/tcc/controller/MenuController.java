@@ -47,6 +47,7 @@ public class MenuController extends CommonsController {
 
 	@Command
 	public void myTcc() {
+		
 		if (getUsuario() != null
 				&& getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ALUNO) {
 			if (getCurrentCalendar() != null) {
@@ -57,9 +58,14 @@ public class MenuController extends CommonsController {
 					tccUsuario = new TCC();
 				if (getUsuario().isAtivo()
 						&& tccUsuario.getArquivoTCCFinal() == null
-						&& tccUsuario.getDataEnvioFinal() == null)
-					Executions.sendRedirect("/pages/editor.zul");
-				else
+						&& tccUsuario.getDataEnvioFinal() == null){
+					if(tccUsuario.isTrabFinal())
+						Messagebox.show("Você já enviou a versão final de seu trabalho, portanto não pode modifica-lo.",
+								"Erro", Messagebox.OK, Messagebox.ERROR);
+					else
+						Executions.sendRedirect("/pages/editor.zul");
+				
+				}else
 					Messagebox
 							.show("Você não pode iniciar ou modificar um projeto.\n Entre em contato com o coordenador do curso.",
 									"Erro", Messagebox.OK, Messagebox.ERROR);
