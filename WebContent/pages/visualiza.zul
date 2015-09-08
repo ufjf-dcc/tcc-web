@@ -1,6 +1,7 @@
 <?page title="Visualizar Trabalho" contentType="text/html;charset=UTF-8"?>
 <?script content="zk.useStack='auto'" ?>
 <zk>
+	
 	<style src="/style.css" />
 	<div apply="org.zkoss.bind.BindComposer"
 		viewModel="@id('vm') @init('br.ufjf.tcc.controller.VisualizaTCCController')"
@@ -61,7 +62,7 @@
 									visible="@load(vm.canDonwloadFileBanca and not empty vm.tcc.arquivoTCCBanca ? 'true' : 'false')"
 									onClick="@command('downloadPDFBanca', tcc=each)">
 									<image src="/img/pdf.png" />
-									<label value="Obter PDF (Banca)"
+									<label value="Baixar PDF (Banca)"
 										style="font-size: 14px; font-weight: bold; float:left;margin:5px;" />
 								</div>
 								<div
@@ -69,44 +70,56 @@
 									visible="@load(not empty vm.tcc.arquivoTCCFinal ? 'true' : 'false')"
 									onClick="@command('downloadPDF', tcc=each)">
 									<image src="/img/pdf.png" />
-									<label value="Obter PDF"
+									<label value="Baixar PDF"
 										style="font-size: 14px; font-weight: bold;float: left;margin:5px;" />
 								</div>
 								<div
 									style="cursor: pointer; margin-top:10px"
-									visible="@load(not empty vm.tcc.arquivoExtraTCCFinal ? 'true' : 'false')"
+									visible="@load( !(vm.tcc.arquivoExtraTCCFinal eq null ) or !(vm.tcc.arquivoExtraTCCBanca eq null))"
 									onClick="@command('downloadExtra', tcc=each)">
 									<image src="/img/rar.png" />
-									<label value="Obter arquivos extras"
+									<label value="Baixar arquivos extras"
 										style="font-size: 14px; font-weight: bold;float: left;margin:5px;" />
 								</div>
 							</div>
-							<button label="Visualizar projeto" width="100%"
-								height="30px" style="margin-top:10px"
-								visible="@load(vm.canEdit ? 'true' : 'false')"
+							
+							<div style="padding-top:10px" >
+							<label style="display:inline;font-size:16px;font-weight:bold" >Exibir:</label>
+							
+							
+							<button id="proj" label="Projeto" width="80px"								 
+								height="20px" 
+								visible="@load( !(vm.tcc.arqProjFinal eq null) and !(vm.tcc.arquivoTCCBanca eq null) )"
 								onClick="@command('showProjeto',iframe=pdfFrame)" />
-								<button label="Visulizar trabalho" width="100%"
-								height="30px" style="margin-top:10px"
+							
+								
+							<button id="trab" label="Trabalho" width="80px"
+								height="20px" 
+								visible="@load(!(vm.tcc.arquivoTCCBanca eq null) or !(vm.tcc.arquivoTCCFinal))"
 								onClick="@command('showTCC', iframe=pdfFrame)"
 								/>
-							<button label="Editar Trabalho" width="100%"
+							</div>
+							
+							<button label="Editar Dados" width="100%"
 								height="30px" style="margin-top:10px"
 								visible="@load(vm.canEdit ? 'true' : 'false')"
 								onClick="@command('editTCC')" />
 							
 								
 							<div id="verifica" visible="@load(vm.coordenador and not vm.finalizado)">
-								<button image="/img/confirm.gif" label="Aprovar projeto de TCC" visible="@load(vm.projeto and vm.projetoAguardandoAprovacao)" onClick="@command('finalizaProjeto')"  width="100%"
+								<button image="/img/confirm.gif" label="Aprovar projeto" visible="@load(vm.projeto and vm.projetoAguardandoAprovacao)" onClick="@command('finalizaProjeto')"  width="100%"
 								height="30px" style="margin-top:10px"/>
-								<button disabled="@load(!(vm.tcc.entregouDoc and vm.tcc.trabFinal))" image="/img/confirm.gif" label="Aprovar trabalho de TCC" visible="@load(not vm.projeto and vm.trabalhoAguardandoAprovacao)" onClick="@command('finalizaTrabalho')"  width="100%"
-								height="30px" style="margin-top:10px" />
+								
+								<div  align="center" style="position:relative;top:20px;text-align:center" >
+									<label  style="padding:1px;color:red" value="Documentos ainda não foram entregues" visible="@load(!vm.tcc.entregouDoc and !vm.tcc.projeto and vm.tcc.statusTCC eq 'TAA')" />
+									<label style="padding:1px;color:red" value="Trabalho final ainda não enviado" visible="@load(!vm.tcc.trabFinal and !vm.tcc.projeto and vm.tcc.statusTCC eq 'TAA')" />
+									<button disabled="@load(!(vm.tcc.entregouDoc and vm.tcc.trabFinal))" image="/img/confirm.gif" label="Aprovar trabalho" visible="@load(not vm.projeto and vm.trabalhoAguardandoAprovacao)" onClick="@command('finalizaTrabalho')"  width="100%"
+								height="30px"  />
+								</div>
+						
+								
 							</div>
-							<div visible="@load(!vm.tcc.entregouDoc and !vm.tcc.projeto and vm.tcc.statusTCC eq 'TAA')">
-								<label style="padding:5px;color:red" value="Documentos ainda não foram entregues" />
-							</div>
-							<div visible="@load(!vm.tcc.trabFinal and !vm.tcc.projeto and vm.tcc.statusTCC eq 'TAA')" >
-								<label style="padding:5px;color:red" value="Trabalho final ainda não enviado" />
-							</div>
+							
 							
 						</tabpanel>
 						<tabpanel

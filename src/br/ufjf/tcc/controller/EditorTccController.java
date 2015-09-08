@@ -270,7 +270,7 @@ public class EditorTccController extends CommonsController {
 	@Command
 	public void upload(@BindingParam("evt") UploadEvent evt) {
 		String alerta1 = "Você está enviando a versão final do seu trabalho?";
-		String alerta2 = "Atenção, após submeter a versão final do seu trabalho e clicar em atualizar, ele não poderá mais ser alterado. Deseja continuar?";
+		final String alerta2 = "Atenção, após submeter a versão final do seu trabalho e clicar em atualizar, ele não poderá mais ser alterado. Deseja continuar?";
 		if(new CalendarioSemestreBusiness().getCurrentCalendarByCurso(getUsuario().getCurso()).getPrazos().get(3).getDataFinal().before(new Date())){
 			Messagebox.show(alerta1, "Aviso Importante", Messagebox.YES|Messagebox.NO, Messagebox.EXCLAMATION, new org.zkoss.zk.ui.event.EventListener() {
 			    public void onEvent(Event evt) throws InterruptedException {

@@ -73,16 +73,24 @@
 					</div>
 				</auxheader>
 			</auxhead>
-			<columns>
-				<column hflex="10" label="Titulo" sort="auto(nomeTCC)" />
+			<columns > 
+				<column hflex="15" label="Titulo" sort="auto(nomeTCC)" />
 				<column hflex="4" label="Autor"
 					sort="auto(aluno.nomeUsuario)" />
 				<column hflex="4" label="Orientador" />
 				<column hflex="4" label="Data e horário de Envio" />
 				<column hflex="2" label="Status" image="/img/help.gif"
 					tooltip="filterStatus" style="cursor: help" />
-				<column hflex="4" label="Entregou documentos" />
-				<column hflex="4" label="Enviou trabalho final" />
+				<column hflex="3" align="left" > 
+					<label  style="font-family:Arial,sans-serif;color:#636363;font-weight:bold" value="Entregou" /> 
+					<label  style="font-family:Arial,sans-serif;color:#636363;font-weight:bold"  value="Documentos?" /> 
+				 </column>
+				<column hflex="2">
+					<label  style="font-family:Arial,sans-serif;color:#636363;font-weight:bold" value="Enviou" /> 
+					<label  style="font-family:Arial,sans-serif;color:#636363;font-weight:bold"  value="trabalho" />
+					<label  style="font-family:Arial,sans-serif;color:#636363;font-weight:bold" value="final?" /> 
+					  
+				</column>
 				<column hflex="2" label="Excluir" />
 			</columns>
 			<template name="lista">
