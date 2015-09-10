@@ -41,6 +41,25 @@
 									style="font-size: 14px; font-weight: bold; margin-top:5px;" />
 								<label
 									value="@load(vm.tcc.coOrientador.nomeUsuario)" />
+								<div visible="@load(vm.possuiBanca)" >
+									<label value="Banca Examinadora:"									
+									style="font-size: 14px; font-weight: bold; margin-top:5px;" />
+									<div style="padding-top:5px;padding-bottom:5px">
+									<grid  model="@load(vm.tcc.participacoes) @template('participacoes')" >
+									 	<columns>
+									 		<column hflex="2" />									 		
+									 		<column hflex="1" />									 		
+									 	</columns>
+										<template name="participacoes">
+											<row>
+												<label  style="color:black" value="@load(each.professor.nomeUsuario)" />
+												<label  style="color:black;" visible="@load(each.suplente eq 1 ? 'true' : false)" value="(Suplente)" />
+											</row>
+										</template>
+									</grid>
+									</div>
+								</div>
+									
 								<label value="Resumo"
 									visible="@load(not empty vm.tcc.resumoTCC)"
 									style="font-size: 14px; font-weight: bold; margin-top:5px;" />
@@ -59,10 +78,26 @@
 									value="@load(vm.tcc.palavrasChave)" />
 								<div
 									style="cursor: pointer; margin-top:10px"
-									visible="@load(vm.canDonwloadFileBanca and not empty vm.tcc.arquivoTCCBanca ? 'true' : 'false')"
+									visible="@load(vm.exibirBaixarProjeto)"
+									onClick="@command('downloadPDFProjeto', tcc=each)">
+									<image src="/img/pdf.png" />
+									<label value="Baixar projeto"
+										style="font-size: 14px; font-weight: bold; float:left;margin:5px;" />
+								</div>
+								<div
+									style="cursor: pointer; margin-top:10px"
+									visible="@load(vm.exibeBaixarProjExtra)"
+									onClick="@command('downloadExtraProjeto', tcc=each)">
+									<image src="/img/rar.png" />
+									<label value="Baixar arquivos complementares do projeto"
+										style="font-size: 14px; font-weight: bold;float: left;margin:5px;" />
+								</div>
+								<div
+									style="cursor: pointer; margin-top:10px"
+									visible="@load(vm.exibirBaixarTrabalhoBanca)"
 									onClick="@command('downloadPDFBanca', tcc=each)">
 									<image src="/img/pdf.png" />
-									<label value="Baixar PDF (Banca)"
+									<label value="Baixar trabalho"
 										style="font-size: 14px; font-weight: bold; float:left;margin:5px;" />
 								</div>
 								<div
@@ -75,7 +110,7 @@
 								</div>
 								<div
 									style="cursor: pointer; margin-top:10px"
-									visible="@load( !(vm.tcc.arquivoExtraTCCFinal eq null ) or !(vm.tcc.arquivoExtraTCCBanca eq null))"
+									visible="@load(vm.exibeBaixarTrabExtra)"
 									onClick="@command('downloadExtra', tcc=each)">
 									<image src="/img/rar.png" />
 									<label value="Baixar arquivos extras"
@@ -83,19 +118,19 @@
 								</div>
 							</div>
 							
-							<div style="padding-top:10px" >
+							<div visible="@load(vm.exibirBaixarProjeto or vm.exibirTrabalhoBanca or vm.exibirBaixarTrabalhoBanca)" style="padding-top:10px" >
 							<label style="display:inline;font-size:16px;font-weight:bold" >Exibir:</label>
 							
 							
 							<button id="proj" label="Projeto" width="80px"								 
 								height="20px" 
-								visible="@load( !(vm.tcc.arqProjFinal eq null) and !(vm.tcc.arquivoTCCBanca eq null) )"
+								visible="@load( vm.exibirBaixarProjeto )"
 								onClick="@command('showProjeto',iframe=pdfFrame)" />
 							
 								
 							<button id="trab" label="Trabalho" width="80px"
 								height="20px" 
-								visible="@load(!(vm.tcc.arquivoTCCBanca eq null) or !(vm.tcc.arquivoTCCFinal))"
+								visible="@load(vm.exibirTrabalhoBanca)"
 								onClick="@command('showTCC', iframe=pdfFrame)"
 								/>
 							</div>

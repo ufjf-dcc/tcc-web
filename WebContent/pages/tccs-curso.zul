@@ -74,7 +74,8 @@
 				</auxheader>
 			</auxhead>
 			<columns > 
-				<column hflex="15" label="Titulo" sort="auto(nomeTCC)" />
+				<column hflex="5" label="Data de defesa" />
+				<column hflex="5" label="Local de defesa" />
 				<column hflex="4" label="Autor"
 					sort="auto(aluno.nomeUsuario)" />
 				<column hflex="4" label="Orientador" />
@@ -98,7 +99,7 @@
 					w:onClick="visualzarTCC(${each.idTCC});"
 					tooltip="${forEachStatus.index}, position=at_pointer">
 					<div>
-						<label value="@load(each.nomeTCC)" />
+						<label value="@load(each.dataApresentacao)" />
 						<popup id="${forEachStatus.index}">
 							<vlayout width="550px">
 								<label value="Resumo"
@@ -122,6 +123,7 @@
 							</vlayout>
 						</popup>
 					</div>
+					<label value="@load(each.salaDefesa)" />
 					<label value="@load(each.aluno.nomeUsuario)" />
 					<label value="@load(each.orientador.nomeUsuario)" />
 					<label value="@load(each.dataEnvioFinal eq null? each.dataEnvioBanca : each.dataEnvioFinal)" />

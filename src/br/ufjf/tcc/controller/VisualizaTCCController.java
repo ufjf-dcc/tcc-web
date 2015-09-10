@@ -38,6 +38,12 @@ public class VisualizaTCCController extends CommonsController {
 			canEdit = false;
 	private List<Resposta> answers = new ArrayList<Resposta>();
 	private Div informacoes, ficha;
+	private boolean exibirBaixarProjeto ;
+	private boolean exibirTrabalhoBanca ;
+	private boolean exibirBaixarTrabalhoBanca;
+	private boolean exibeBaixarProjExtra;
+	private boolean exibeBaixarTrabExtra;
+	private boolean possuiBanca ;
 
 	public String getPageTitle() {
 		return pageTitle;
@@ -50,12 +56,23 @@ public class VisualizaTCCController extends CommonsController {
 	@Init
 	public void init() {
 		
+		
+		
 		String tccId = Executions.getCurrent().getParameter("id");
 
 		if (tccId != null) {
 			TCCBusiness tccBusiness = new TCCBusiness();
 			tcc = tccBusiness.getTCCById(Integer.parseInt(tccId));
 		}
+		if(tcc.getParticipacoes().isEmpty())
+			possuiBanca = false;
+		else
+			possuiBanca=true;
+		this.exibirBaixarProjeto = exibirBaixarProjeto();
+		this.exibirTrabalhoBanca = exibirTrabalho();
+		this.exibirBaixarTrabalhoBanca = exibirBaixarTrabalhoBanca();
+		this.exibeBaixarProjExtra = exibirBaixarProjetoExtra();
+		this.exibeBaixarTrabExtra = exibirBaixarTrabalhoExtra();
 		if (tcc != null && canViewTCC()) {
 			if (getUsuario() != null && checkLogin()) {
 				if (canAnswer) {
@@ -240,6 +257,42 @@ public class VisualizaTCCController extends CommonsController {
 		} else
 			lbl.setValue("Não finalizada");
 	}
+	
+	@Command
+	public void downloadExtraProjeto() {
+		InputStream is = null;
+		
+		if (tcc.getArqExtraProjFinal() != null) 
+			is = FileManager.getFileInputSream(tcc.getArqExtraProjFinal());
+		else if(tcc.getArquivoExtraTCCBanca()!=null)
+			is = FileManager.getFileInputSream(tcc.getArquivoExtraTCCBanca());
+			
+			if (is != null)
+				Filedownload.save(is, "application/x-rar-compressed",
+						tcc.getNomeTCC() + ".rar");
+			else
+				Messagebox.show("O RAR não foi encontrado!", "Erro",
+						Messagebox.OK, Messagebox.ERROR);
+		
+	}
+	
+	@Command
+	public void downloadPDFProjeto() {
+		InputStream is = null;
+		
+		if (tcc.getArqProjFinal() != null) 
+			is = FileManager.getFileInputSream(tcc.getArqProjFinal());
+		else if(tcc.getArquivoTCCBanca()!=null)
+			is = FileManager.getFileInputSream(tcc.getArquivoTCCBanca());
+			
+			if (is != null)
+				Filedownload.save(is, "application/pdf",
+						tcc.getNomeTCC() + ".pdf");
+			else
+				Messagebox.show("O RAR não foi encontrado!", "Erro",
+						Messagebox.OK, Messagebox.ERROR);
+		
+	}
 
 	@Command
 	public void downloadPDFBanca() {
@@ -268,17 +321,20 @@ public class VisualizaTCCController extends CommonsController {
 
 	@Command
 	public void downloadExtra() {
-		if (tcc.getArquivoExtraTCCFinal() != null
-				&& tcc.getArquivoExtraTCCFinal() != "") {
-			InputStream is = FileManager.getFileInputSream(tcc
-					.getArquivoExtraTCCFinal());
+		InputStream is = null;
+		
+		if (tcc.getArquivoExtraTCCFinal() != null) 
+			is = FileManager.getFileInputSream(tcc.getArquivoExtraTCCFinal());
+		else if(tcc.getArquivoExtraTCCBanca()!=null)
+			is = FileManager.getFileInputSream(tcc.getArquivoExtraTCCBanca());
+			
 			if (is != null)
 				Filedownload.save(is, "application/x-rar-compressed",
 						tcc.getNomeTCC() + ".rar");
 			else
 				Messagebox.show("O RAR não foi encontrado!", "Erro",
 						Messagebox.OK, Messagebox.ERROR);
-		}
+		
 	}
 
 	@Command
@@ -367,7 +423,7 @@ public class VisualizaTCCController extends CommonsController {
 	@Command
 	public void finalizaTrabalho()
 	{
-		Messagebox.show("Você tem certeza que deseja finalizar esse Trabalho?", "Confirmação", Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new org.zkoss.zk.ui.event.EventListener() {
+		Messagebox.show("Você tem certeza que deseja finalizar esse Trabalho?\nApós a aprovação, o trabalho será publicado para acesso ao público", "Confirmação", Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new org.zkoss.zk.ui.event.EventListener() {
 		    public void onEvent(Event evt) throws InterruptedException {
 		        if (evt.getName().equals("onYes")) {
 		        	if(new TCCBusiness().isTrabalhoAguardandoAprovacao(tcc))
@@ -419,6 +475,136 @@ public class VisualizaTCCController extends CommonsController {
 		}
 		return false;
 	}
+		
+	public boolean exibirBaixarProjeto(){		
+			
+				if(tcc.getArqProjFinal()==null){
+					if(tcc.getArquivoTCCBanca()==null)
+						return false;
+					else if(tcc.getArquivoTCCFinal()==null)
+						return true;
+					
+						return false;
+				}else
+					return true;				
+		
+	}
+	public boolean exibirBaixarProjetoExtra(){		
+		
+		if(tcc.getArqExtraProjFinal()==null){
+			if(tcc.getArquivoExtraTCCBanca()==null)
+				return false;
+			else if(tcc.getArquivoExtraTCCFinal()==null)
+				return true;
+			
+				return false;
+		}else
+			return true;				
+
+	}
+	
+	public boolean exibirBaixarTrabalhoBanca(){
+		if(tcc.getArqProjFinal()!=null){
+			if(tcc.getArquivoTCCBanca()!=null)
+				return true;
+			else if(tcc.getArquivoTCCFinal()!=null)
+				return false;
+			
+				return false;			
+				
+		}else if(tcc.getArquivoTCCFinal()!=null)
+			return false;
+		else if(tcc.getArquivoTCCBanca()!=null)
+			return false;
+		else
+			return true;
+							
+		
+	}
+	public boolean exibirBaixarTrabalhoExtra(){
+		
+		if(tcc.getArquivoExtraTCCFinal()==null){
+			if(tcc.getArquivoExtraTCCBanca()==null)
+				return false;
+			else if(!tcc.isProjeto())			
+				return true;
+			else return false;
+				
+		}else
+			return true;
+		
+		
+							
+		
+	}
+	
+	public boolean exibirTrabalho(){		
+		
+		if(tcc.getArqProjFinal()!=null){
+			if(tcc.getArquivoTCCBanca()!=null)
+				return true;
+			else if(tcc.getArquivoTCCFinal()!=null)
+				return true;
+			else
+				return false;			
+				
+		}else if(tcc.getArquivoTCCFinal()!=null)
+			return true;
+		else
+			return false;
+							
+
+	}
+
+	public boolean isExibirBaixarProjeto() {
+		return exibirBaixarProjeto;
+	}
+
+	public void setExibirBaixarProjeto(boolean exibirBaixarProjeto) {
+		this.exibirBaixarProjeto = exibirBaixarProjeto;
+	}
+
+	public boolean isExibirBaixarTrabalhoBanca() {
+		return exibirBaixarTrabalhoBanca;
+	}
+
+	public void setExibirBaixarTrabalhoBanca(boolean exibirBaixarTrabalhoBanca) {
+		this.exibirBaixarTrabalhoBanca = exibirBaixarTrabalhoBanca;
+	}
+
+	public boolean isExibirTrabalhoBanca() {
+		return exibirTrabalhoBanca;
+	}
+
+	public void setExibirTrabalhoBanca(boolean exibirTrabalhoBanca) {
+		this.exibirTrabalhoBanca = exibirTrabalhoBanca;
+	}
+
+	public boolean isExibeBaixarProjExtra() {
+		return exibeBaixarProjExtra;
+	}
+
+	public void setExibeBaixarProjExtra(boolean exibeBaixarProjExtra) {
+		this.exibeBaixarProjExtra = exibeBaixarProjExtra;
+	}
+
+	public boolean isExibeBaixarTrabExtra() {
+		return exibeBaixarTrabExtra;
+	}
+
+	public void setExibeBaixarTrabExtra(boolean exibeBaixarTrabExtra) {
+		this.exibeBaixarTrabExtra = exibeBaixarTrabExtra;
+	}
+
+	public boolean isPossuiBanca() {
+		return possuiBanca;
+	}
+
+	public void setPossuiBanca(boolean possuiBanca) {
+		this.possuiBanca = possuiBanca;
+	}
+
+	
 	
 	
 	
