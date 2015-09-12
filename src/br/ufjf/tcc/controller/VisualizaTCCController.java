@@ -45,6 +45,7 @@ public class VisualizaTCCController extends CommonsController {
 	private boolean exibeBaixarProjExtra;
 	private boolean exibeBaixarTrabExtra;
 	private boolean possuiBanca ;
+	private boolean exibirChave ;
 
 	public String getPageTitle() {
 		return pageTitle;
@@ -74,6 +75,7 @@ public class VisualizaTCCController extends CommonsController {
 		this.exibirBaixarTrabalhoBanca = exibirBaixarTrabalhoBanca();
 		this.exibeBaixarProjExtra = exibirBaixarProjetoExtra();
 		this.exibeBaixarTrabExtra = exibirBaixarTrabalhoExtra();
+		this.exibirChave = exibirChave();
 		if (tcc != null && canViewTCC()) {
 			if (getUsuario() != null && checkLogin()) {
 				if (canAnswer) {
@@ -511,6 +513,15 @@ public class VisualizaTCCController extends CommonsController {
 
 	}
 	
+	public boolean exibirChave(){
+		if(tcc.getArqProjFinal()!=null){
+			if(tcc.getArquivoTCCBanca()!=null || tcc.getArquivoTCCFinal()!=null)
+				return true;
+		}
+		
+		return false;
+	}
+	
 	public boolean exibirBaixarTrabalhoBanca(){
 		if(tcc.getArqProjFinal()!=null){
 			if(tcc.getArquivoTCCBanca()!=null)
@@ -610,6 +621,14 @@ public class VisualizaTCCController extends CommonsController {
 
 	public void setPossuiBanca(boolean possuiBanca) {
 		this.possuiBanca = possuiBanca;
+	}
+
+	public boolean isExibirChave() {
+		return exibirChave;
+	}
+
+	public void setExibirChave(boolean exibirChave) {
+		this.exibirChave = exibirChave;
 	}
 
 	

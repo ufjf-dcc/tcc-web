@@ -281,9 +281,11 @@ public class EditorTccController extends CommonsController {
 							public void onEvent(Event evt) throws InterruptedException {
 						        if (evt.getName().equals("onYes")) {
 						        	trabFinal=true;
+						        	
 						        }else{
 						        	return;
 						        }
+						        
 						    }
 						});
 			        }else
@@ -304,7 +306,14 @@ public class EditorTccController extends CommonsController {
 		tccFile = evt.getMedia().getStreamData();
 		tccFileChanged = true;
 		iframe.setContent(pdf);
-		Messagebox.show("Arquivo enviado com sucesso.");
+		Messagebox.show("Arquivo enviado com sucesso.", "Confirmação", Messagebox.OK , Messagebox.INFORMATION, new org.zkoss.zk.ui.event.EventListener() {
+		    public void onEvent(Event evt) throws InterruptedException {
+		        if (evt.getName().equals("onOK")) {
+		        	if(trabFinal)
+		        		submit();
+		        } 
+		    }
+		});
 	}
 
 	@Command

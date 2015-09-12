@@ -128,20 +128,20 @@
 								</div>
 							</div>
 							
-							<div visible="@load(vm.exibirBaixarProjeto or vm.exibirTrabalhoBanca or vm.exibirBaixarTrabalhoBanca)" style="padding-top:10px" >
+							<div visible="@load(vm.exibirChave)" style="padding-top:10px" >
 							<label style="display:inline;font-size:14px;font-weight:bold" >Exibir:</label>
 							
 							
 							<button class="z-button" id="proj" label="Projeto" width="80px"								 
 								height="20px" 
-								visible="@load( vm.exibirBaixarProjeto )"
+								visible="@load( vm.exibirChave )"
 								onClick="@command('showProjeto',iframe=pdfFrame,button=proj,button2=trab)" />
 								
 							
 								
 							<button id="trab" label="Trabalho" width="80px"
 								height="20px" 
-								visible="@load(vm.exibirTrabalhoBanca)"
+								visible="@load(vm.exibirChave)"
 								onClick="@command('showTCC', iframe=pdfFrame,button=trab,button2=proj)"
 								/>
 							</div>
