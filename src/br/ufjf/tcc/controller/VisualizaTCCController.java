@@ -13,6 +13,7 @@ import org.zkoss.util.media.AMedia;
 import org.zkoss.zhtml.Filedownload;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Iframe;
 import org.zkoss.zul.Label;
@@ -194,7 +195,11 @@ public class VisualizaTCCController extends CommonsController {
 	}
 
 	@Command
-	public void showTCC(@BindingParam("iframe") Iframe report) {
+	public void showTCC(@BindingParam("iframe") Iframe report,@BindingParam("button") Button thisBtn,@BindingParam("button2") Button otherBtn) {
+		if(otherBtn!=null)
+		otherBtn.setStyle("background:white;color:black");
+		if(thisBtn!=null)
+		thisBtn.setStyle("background: -webkit-linear-gradient(#08c, #2E2EFE);background: -o-linear-gradient(#08c, #2E2EFE);background: -moz-linear-gradient(#08c, #2E2EFE);background: linear-gradient(#08c, #2E2EFE);color:white");
 		
 		InputStream is;
 		if (tcc.getArquivoTCCFinal() != null)
@@ -210,7 +215,10 @@ public class VisualizaTCCController extends CommonsController {
 	}
 	
 	@Command
-	public void showProjeto(@BindingParam("iframe") Iframe report) {
+	public void showProjeto(@BindingParam("iframe") Iframe report,@BindingParam("button") Button thisBtn,@BindingParam("button2") Button otherBtn) {
+		
+		otherBtn.setStyle("background:white;color:black");
+		thisBtn.setStyle("background: -webkit-linear-gradient(#08c, #2E2EFE);background: -o-linear-gradient(#08c, #2E2EFE);background: -moz-linear-gradient(#08c, #2E2EFE);background: linear-gradient(#08c, #2E2EFE);color:white");
 		
 		InputStream is;
 		if (tcc.getArqProjFinal() != null)
@@ -514,10 +522,10 @@ public class VisualizaTCCController extends CommonsController {
 				
 		}else if(tcc.getArquivoTCCFinal()!=null)
 			return false;
-		else if(tcc.getArquivoTCCBanca()!=null)
-			return false;
 		else
-			return true;
+			return false;
+	
+	
 							
 		
 	}

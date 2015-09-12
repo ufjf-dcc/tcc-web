@@ -14,7 +14,7 @@
 			emptyMessage="@load(vm.emptyMessage)" mold="paging" pageSize="10"
 			vflex="true">
 			<auxhead>
-				<auxheader colspan="8">
+				<auxheader colspan="10">
 					<div>
 						<div>
 							<hlayout style="float:left">
@@ -74,17 +74,27 @@
 				</auxheader>
 			</auxhead>
 			<columns > 
-				<column hflex="5" label="Data de defesa" />
-				<column hflex="5" label="Local de defesa" />
-				<column hflex="4" label="Autor"
+				<column hflex="2"  >
+					<label  style="font-family:Arial,sans-serif;color:#636363;font-weight:bold" value="Data de" /> 
+					<label  style="font-family:Arial,sans-serif;color:#636363;font-weight:bold"  value="defesa" />
+				</column>
+				<column hflex="2" >
+					<label  style="font-family:Arial,sans-serif;color:#636363;font-weight:bold" value="Local de" /> 
+					<label  style="font-family:Arial,sans-serif;color:#636363;font-weight:bold"  value="defesa" />
+				</column>
+				<column hflex="8" label="Autor"
 					sort="auto(aluno.nomeUsuario)" />
-				<column hflex="4" label="Orientador" />
-				<column hflex="4" label="Data e horário de Envio" />
+				<column hflex="7" label="Orientador" sort="auto(orientador.nomeUsuario)" />
+				<column hflex="2" >
+					<label  style="font-family:Arial,sans-serif;color:#636363;font-weight:bold" value="Data e" /> 
+					<label  style="font-family:Arial,sans-serif;color:#636363;font-weight:bold"  value="horário" /> 
+					<label  style="font-family:Arial,sans-serif;color:#636363;font-weight:bold"  value="de envio" />
+				</column>
 				<column hflex="2" label="Status" image="/img/help.gif"
 					tooltip="filterStatus" style="cursor: help" />
-				<column hflex="3" align="left" > 
+				<column hflex="2" align="left" > 
 					<label  style="font-family:Arial,sans-serif;color:#636363;font-weight:bold" value="Entregou" /> 
-					<label  style="font-family:Arial,sans-serif;color:#636363;font-weight:bold"  value="Documentos?" /> 
+					<label  style="font-family:Arial,sans-serif;color:#636363;font-weight:bold"  value="documentos?" /> 
 				 </column>
 				<column hflex="2">
 					<label  style="font-family:Arial,sans-serif;color:#636363;font-weight:bold" value="Enviou" /> 
@@ -92,14 +102,14 @@
 					<label  style="font-family:Arial,sans-serif;color:#636363;font-weight:bold" value="final?" /> 
 					  
 				</column>
-				<column hflex="2" label="Excluir" />
+				<column hflex="2"  label="Excluir" />
 			</columns>
 			<template name="lista">
 				<row xmlns:w="client"
 					w:onClick="visualzarTCC(${each.idTCC});"
 					tooltip="${forEachStatus.index}, position=at_pointer">
 					<div>
-						<label value="@load(each.dataApresentacao)" />
+						<label value="@load(each.dataApresentacao eq null ? '' : vm.sdf.format(each.dataApresentacao).toString().substring(0,16))" />
 						<popup id="${forEachStatus.index}">
 							<vlayout width="550px">
 								<label value="Resumo"
@@ -126,7 +136,7 @@
 					<label value="@load(each.salaDefesa)" />
 					<label value="@load(each.aluno.nomeUsuario)" />
 					<label value="@load(each.orientador.nomeUsuario)" />
-					<label value="@load(each.dataEnvioFinal eq null? each.dataEnvioBanca : each.dataEnvioFinal)" />
+					<label value="@load(each.dataEnvioFinal eq null? vm.sdf.format(each.dataEnvioBanca).toString().substring(0,16) : vm.sdf.format(each.dataEnvioFinal).toString().substring(0,16) )" />
 					<label value="@load(each.statusTCC)" />
 					<div align="center" >
 					<checkbox disabled="@load(each.statusTCC eq 'Aprovado'? 'true' : 'false')" style="center" checked="@load(each.entregouDoc)" onCheck="@command('checkEnviouDoc',tcc=each)" />
