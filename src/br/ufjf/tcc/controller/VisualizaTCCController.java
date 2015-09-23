@@ -279,7 +279,7 @@ public class VisualizaTCCController extends CommonsController {
 			
 			if (is != null)
 				Filedownload.save(is, "application/x-rar-compressed",
-						tcc.getNomeTCC() + ".rar");
+						tcc.getNomeTCC() + "_complemento_projeto.rar");
 			else
 				Messagebox.show("O RAR não foi encontrado!", "Erro",
 						Messagebox.OK, Messagebox.ERROR);
@@ -297,7 +297,7 @@ public class VisualizaTCCController extends CommonsController {
 			
 			if (is != null)
 				Filedownload.save(is, "application/pdf",
-						tcc.getNomeTCC() + ".pdf");
+						tcc.getNomeTCC() + "_projeto.pdf");
 			else
 				Messagebox.show("O RAR não foi encontrado!", "Erro",
 						Messagebox.OK, Messagebox.ERROR);
@@ -310,8 +310,7 @@ public class VisualizaTCCController extends CommonsController {
 			InputStream is = FileManager.getFileInputSream(tcc
 					.getArquivoTCCBanca());
 			if (is != null)
-				Filedownload.save(is, "application/pdf", tcc.getNomeTCC()
-						+ ".pdf");
+				Filedownload.save(is, "application/pdf", tcc.getNomeTCC()+ ".pdf");
 			else
 				Messagebox.show("O PDF não foi encontrado!", "Erro",
 						Messagebox.OK, Messagebox.ERROR);
@@ -340,7 +339,7 @@ public class VisualizaTCCController extends CommonsController {
 			
 			if (is != null)
 				Filedownload.save(is, "application/x-rar-compressed",
-						tcc.getNomeTCC() + ".rar");
+						tcc.getNomeTCC() + "_complemento.rar");
 			else
 				Messagebox.show("O RAR não foi encontrado!", "Erro",
 						Messagebox.OK, Messagebox.ERROR);

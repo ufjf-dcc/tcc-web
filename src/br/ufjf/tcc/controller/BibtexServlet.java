@@ -58,7 +58,7 @@ public class BibtexServlet extends HttpServlet {
 		out.println(" title= {"+ tituloTccLatex +"},");
 		out.println(" author= {"+authorTccLatex +"},");
 		out.println(" year= {"+getTccYear(tcc)+"},");
-		out.println(" note = {Available at http://200.131.219.47/tcc-web/tcc?id="+tcc.getIdTCC()+"},");
+		out.println(" note = {Available at  http://monografias.ice.ufjf.br/tcc-web/tcc?id="+tcc.getIdTCC()+"},");
 		out.println(" school= {Federal University of Juiz de Fora},");
 		out.println(" key = {"+ nomes[nomes.length-1] +","+ getTccYear(tcc)+"}");
 		out.println("}");

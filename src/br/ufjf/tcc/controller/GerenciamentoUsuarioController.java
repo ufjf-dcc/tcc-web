@@ -669,9 +669,6 @@ public class GerenciamentoUsuarioController extends CommonsController {
 			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(6)).setVisible(false);
 			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(7)).setVisible(true);
 			
-			
-
-			
 		}
 		
 		if(editUsuario.getTipoUsuario().getIdTipoUsuario() == Usuario.PROFESSOR )
@@ -714,6 +711,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 			editUsuario.setNomeUsuario(editUsuario.getNomeUsuario().trim());
 			editUsuario.setMatricula(editUsuario.getMatricula().trim());
 			editUsuario.setEmail(editUsuario.getEmail().trim());
+			if(editUsuario.getTitulacao()!=null)
 			editUsuario.setTitulacao(editUsuario.getTitulacao().trim());
 			usuarioBusiness.editar(editUsuario);
 			Clients.clearBusy(window);

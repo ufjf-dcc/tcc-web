@@ -237,6 +237,13 @@ public class TCC implements Serializable,Comparable<TCC> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "idCalendarioSemestre", nullable = true)
 	private CalendarioSemestre calendarioSemestre = null;
+	
+	@Column(name = "qtVisualizacoes", nullable = false) 
+	private int qtVisualizacoes;
+	
+	@Column(name = "qtDownloads", nullable = false) 
+	private int qtDownloads;
+	
 
 	public TCC() {
 
@@ -484,6 +491,22 @@ public class TCC implements Serializable,Comparable<TCC> {
 
 	public void setTrabFinal(boolean trabFinal) {
 		this.trabFinal = trabFinal;
+	}
+
+	public int getQtVisualizacoes() {
+		return qtVisualizacoes;
+	}
+
+	public void setQtVisualizacoes(int qtVisualizacoes) {
+		this.qtVisualizacoes = qtVisualizacoes;
+	}
+
+	public int getQtDownloads() {
+		return qtDownloads;
+	}
+
+	public void setQtDownloads(int qtDownloads) {
+		this.qtDownloads = qtDownloads;
 	}
 	
 	

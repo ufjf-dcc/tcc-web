@@ -33,6 +33,8 @@ public class DownloadPDFServlet extends HttpServlet {
 			TCCBusiness tccBusiness = new TCCBusiness();
 			tcc = tccBusiness.getTCCById(Integer.parseInt(tccId));
 
+			tcc.setQtDownloads(tcc.getQtDownloads()+1);
+			tccBusiness.edit(tcc);
 		}
 
 		
