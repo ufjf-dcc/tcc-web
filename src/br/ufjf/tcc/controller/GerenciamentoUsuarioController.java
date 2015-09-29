@@ -668,6 +668,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(5)).setVisible(false);
 			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(6)).setVisible(false);
 			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(7)).setVisible(true);
+			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(8)).setVisible(false);
 			
 		}
 		
