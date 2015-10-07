@@ -34,6 +34,7 @@ public class PreenchimentoPDF {
 		over.setFontAndSize(bfTextoSimples, 12);
 
 		over.setTextMatrix(100, 208);
+		
 		over.showText(nomeAluno);
 		over.setTextMatrix(100, 155);
 		over.showText(nomeAvaliador);

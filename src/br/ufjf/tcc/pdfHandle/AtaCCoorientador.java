@@ -1,12 +1,16 @@
 package br.ufjf.tcc.pdfHandle;
 
 import java.io.FileOutputStream;
-import br.ufjf.tcc.library.ConfHandler;
+
+import com.lowagie.text.FontFactory;
 import com.lowagie.text.Image;
+import com.lowagie.text.pdf.AcroFields;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
+
+import br.ufjf.tcc.library.ConfHandler;
 
 public class AtaCCoorientador extends Ata {
 
@@ -35,6 +39,7 @@ public class AtaCCoorientador extends Ata {
 		// PREENCHIMENTO DAS PRIMEIRAS INFORMACOES
 
 		over = stamper.getOverContent(2);
+		//AcroFields form = stamper.getAcroFields(); 
 		over.beginText();
 		over.setFontAndSize(bfTextoSimples, 12);
 
@@ -65,9 +70,13 @@ public class AtaCCoorientador extends Ata {
 		bfTextoSimples = BaseFont.createFont(BaseFont.TIMES_ROMAN,
 				BaseFont.WINANSI, BaseFont.NOT_EMBEDDED);
 
-		over.setFontAndSize(bfTextoSimples, 12);
+		//over.setFontAndSize(bfTextoSimples, 12);
+		//form.setField("nomeAluno", aluno,"none");
+		
+		
 		over.setTextMatrix(122, 729);
 		over.showText(aluno);
+		//stamper.setFormFlattening(true);
 		over.setTextMatrix(122, 708);
 		over.showText(Divide.titulo(tituloTCC)[0]);
 		over.setTextMatrix(90, 687);

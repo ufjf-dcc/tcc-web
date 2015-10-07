@@ -178,7 +178,7 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 		
 		
 		<div class="divPesquisa" style="width: 100%;height: 40px;display: block;">
-		<form class="form-inline" action="index.jsp" method="post">
+		<form class="form-inline" action="index.jsp" method="get">
 		
 			<div style="float: left;position: relative;top: 5px;left: 20px">
 

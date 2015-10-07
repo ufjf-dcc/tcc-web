@@ -271,29 +271,32 @@ public class EditorTccController extends CommonsController {
 	public void upload(@BindingParam("evt") UploadEvent evt) {
 		String alerta1 = "Você está enviando a versão final do seu trabalho?";
 		final String alerta2 = "Atenção, após submeter a versão final do seu trabalho e clicar em atualizar, ele não poderá mais ser alterado. Deseja continuar?";
-		if(!tcc.isProjeto()  && tcc.getDataApresentacao().before(new Date())){
-			Messagebox.show(alerta1, "Aviso Importante", Messagebox.YES|Messagebox.NO, Messagebox.EXCLAMATION, new org.zkoss.zk.ui.event.EventListener() {
-			    public void onEvent(Event evt) throws InterruptedException {
-			        if (evt.getName().equals("onYes")) {
-			        	Messagebox.show(alerta2, "Aviso Importante", Messagebox.YES|Messagebox.NO, Messagebox.EXCLAMATION, new org.zkoss.zk.ui.event.EventListener() {
-						    
-
-							public void onEvent(Event evt) throws InterruptedException {
-						        if (evt.getName().equals("onYes")) {
-						        	trabFinal=true;
-						        	
-						        }else{
-						        	return;
-						        }
-						        
-						    }
-						});
-			        }else
-			        	return ;
-			    }
-			});
+		if(getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ALUNO){
+			if(tcc!=null && tcc.getDataApresentacao()!=null){
+				if(!tcc.isProjeto()  && tcc.getDataApresentacao().before(new Date())){
+					Messagebox.show(alerta1, "Aviso Importante", Messagebox.YES|Messagebox.NO, Messagebox.EXCLAMATION, new org.zkoss.zk.ui.event.EventListener() {
+					    public void onEvent(Event evt) throws InterruptedException {
+					        if (evt.getName().equals("onYes")) {
+					        	Messagebox.show(alerta2, "Aviso Importante", Messagebox.YES|Messagebox.NO, Messagebox.EXCLAMATION, new org.zkoss.zk.ui.event.EventListener() {
+								    
+		
+									public void onEvent(Event evt) throws InterruptedException {
+								        if (evt.getName().equals("onYes")) {
+								        	trabFinal=true;
+								        	
+								        }else{
+								        	return;
+								        }
+								        
+								    }
+								});
+					        }else
+					        	return ;
+					    }
+					});
+				}
+			}
 		}
-	   
 		if (!evt.getMedia().getName().contains(".pdf")) {
 			Messagebox.show(
 					"Este não é um arquivo válido! Apenas PDF são aceitos.",
@@ -436,6 +439,16 @@ public class EditorTccController extends CommonsController {
 		window.setVisible(false);
 	}
 
+	public boolean validaAutor(TCC tcc){
+		if(tcc.getAluno().getMatricula()==null || tcc.getAluno().getMatricula().isEmpty())
+			return false;
+		if(tcc.getAluno().getNomeUsuario()==null || tcc.getAluno().getNomeUsuario().isEmpty())
+			return false;
+		if(tcc.getAluno().getEmail()==null || tcc.getAluno().getEmail().isEmpty())
+			return false;
+		
+		return true;
+	}
 	// Submit do TCC
 	@Command("submit")
 	public void submit() {
@@ -451,6 +464,13 @@ public class EditorTccController extends CommonsController {
 					Messagebox.OK, Messagebox.ERROR);
 			return;
 		}
+		if (getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.SECRETARIA
+				&& (!validaAutor(tcc))) {
+			Messagebox.show("É necesário informar os dados do Autor.", "Erro",
+					Messagebox.OK, Messagebox.ERROR);
+			return;
+		}
+		
 		if (getUsuario().getTipoUsuario().getIdTipoUsuario() != Usuario.ALUNO
 				&& (tcc.getAluno()==null)) {
 			Messagebox
