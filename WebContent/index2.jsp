@@ -13,6 +13,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" >
+<meta name="description" content="Repositório de trabalhos acadêmicos da Universidade Federal de Juiz de Fora" />
+<meta name="keywords" content="sistemas de informação;monografias; tcc; dissertação;computação aplicada; informática aplicada" />
 
 		<link href="tooltip.css" rel="stylesheet" type="text/css" />
    		 <script src="tooltip.js" type="text/javascript"></script>
@@ -229,11 +232,15 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 						</div>
 						
 					</div>
-	
-			
+					
 		</div>
+		
+		
 	
 	</div>
+	<div style="display:none" >
+			<a href="./by-year" >by-year</a>
+		</div>
 	</div>
 	
 	

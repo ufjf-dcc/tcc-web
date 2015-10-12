@@ -2,6 +2,7 @@ package br.ufjf.tcc.pdfHandle;
 
 import java.io.FileOutputStream;
 
+
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.Image;
 import com.lowagie.text.pdf.AcroFields;
@@ -9,6 +10,9 @@ import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
+
+import java.awt.Color;
+import java.awt.color.*;
 
 import br.ufjf.tcc.library.ConfHandler;
 
@@ -20,7 +24,7 @@ public class AtaCCoorientador extends Ata {
 
 		String Arquivo_Saida = ConfHandler.getConf("FILE.PATH") + "saida"
 				+ idAluno + ".pdf";
-		String template = "/br/ufjf/tcc/pdfHandle/TemplateCoorientador.pdf";
+		String template = "/br/ufjf/tcc/pdfHandle/TemplateCoorientador2.pdf";
 
 		FileOutputStream saida = new FileOutputStream(Arquivo_Saida);
 
@@ -39,7 +43,7 @@ public class AtaCCoorientador extends Ata {
 		// PREENCHIMENTO DAS PRIMEIRAS INFORMACOES
 
 		over = stamper.getOverContent(2);
-		//AcroFields form = stamper.getAcroFields(); 
+		AcroFields form = stamper.getAcroFields(); 
 		over.beginText();
 		over.setFontAndSize(bfTextoSimples, 12);
 
@@ -48,9 +52,9 @@ public class AtaCCoorientador extends Ata {
 		if (qtAvaliador == 5) {
 			tabela = Image.getInstance(ConfHandler.getConf("FILE.PATH")
 					+ "/tablec3.png");
-			tabela.setAbsolutePosition(98, 418);
+			tabela.setAbsolutePosition(98, 417);
 			over.addImage(tabela);
-			over.setTextMatrix(102, 426);
+			over.setTextMatrix(102, 424);
 			over.showText("Avaliador(a) 3");
 
 		}
@@ -58,11 +62,11 @@ public class AtaCCoorientador extends Ata {
 		if (qtAvaliador == 6) {
 			tabela = Image.getInstance(ConfHandler.getConf("FILE.PATH")
 					+ "/tablec4.png");
-			tabela.setAbsolutePosition(98, 398);
+			tabela.setAbsolutePosition(98, 397);
 			over.addImage(tabela);
-			over.setTextMatrix(102, 426);
+			over.setTextMatrix(102, 424);
 			over.showText("Avaliador(a) 3");
-			over.setTextMatrix(102, 406);
+			over.setTextMatrix(102, 404);
 			over.showText("Avaliador(a) 4");
 
 		}
@@ -70,32 +74,51 @@ public class AtaCCoorientador extends Ata {
 		bfTextoSimples = BaseFont.createFont(BaseFont.TIMES_ROMAN,
 				BaseFont.WINANSI, BaseFont.NOT_EMBEDDED);
 
-		//over.setFontAndSize(bfTextoSimples, 12);
-		//form.setField("nomeAluno", aluno,"none");
+		over.setFontAndSize(bfTextoSimples, 12);
+		form.setField("nomeAluno", aluno);
+		//over.setTextMatrix(122, 729);
+		//over.showText(aluno);
+		
+		over.setFontAndSize(bfTextoSimples, 12);
+		form.setField("titulo1", Divide.titulo(tituloTCC)[0]);
+//		over.setTextMatrix(122, 708);
+//		over.showText(Divide.titulo(tituloTCC)[0]);
+		
+		over.setFontAndSize(bfTextoSimples, 12);
+		form.setField("titulo2", Divide.titulo(tituloTCC)[1]);
+//		over.setTextMatrix(90, 687);
+//		over.showText(Divide.titulo(tituloTCC)[1]);
 		
 		
-		over.setTextMatrix(122, 729);
-		over.showText(aluno);
-		//stamper.setFormFlattening(true);
-		over.setTextMatrix(122, 708);
-		over.showText(Divide.titulo(tituloTCC)[0]);
-		over.setTextMatrix(90, 687);
-		over.showText(Divide.titulo(tituloTCC)[1]);
-		over.setTextMatrix(158, 666);
-		over.showText(orientador);
+		form.setField("orientador1", orientador);
+//		over.setTextMatrix(158, 666);
+//		over.showText(orientador);
+		
+		over.setFontAndSize(bfTextoSimples, 12);
+		form.setField("coorientador1", coorientador);
+//		over.setTextMatrix(170, 645);
+//		over.showText(coorientador);
 
-		over.setTextMatrix(170, 645);
-		over.showText(coorientador);
-
-		over.setTextMatrix(150, 624);
-		over.showText(avaliadores[2]);
-		over.setTextMatrix(150, 604);
-		over.showText(avaliadores[3]);
+		over.setFontAndSize(bfTextoSimples, 12);
+		form.setField("avaliador1", avaliadores[2]);
+//		over.setTextMatrix(150, 624);
+//		over.showText(avaliadores[2]);
+		
+		over.setFontAndSize(bfTextoSimples, 12);
+		form.setField("avaliador2", avaliadores[3]);
+//		over.setTextMatrix(150, 604);
+//		over.showText(avaliadores[3]);
+		
+		
 		if (qtAvaliador >= 5) {
-			over.setTextMatrix(85, 583);
-			over.showText("Avaliador 3:___________________________________________");
-			over.setTextMatrix(150, 583);
-			over.showText(avaliadores[4]);
+			form.setFieldProperty("campoAvaliador3", "textcolor", Color.BLACK ,null);
+			form.setField("campoAvaliador3", "Avaliador 3:");
+//			over.setTextMatrix(85, 583);
+//			over.showText("Avaliador 3:___________________________________________");
+			over.setFontAndSize(bfTextoSimples, 12);
+			form.setField("avaliador3", avaliadores[4]);
+//			over.setTextMatrix(150, 583);
+//			over.showText(avaliadores[4]);
 
 			// ASSINATURA
 			over.setTextMatrix(113, 125);
@@ -105,10 +128,14 @@ public class AtaCCoorientador extends Ata {
 
 		}
 		if (qtAvaliador >= 6) {
-			over.setTextMatrix(85, 563);
-			over.showText("Avaliador 4:___________________________________________");
-			over.setTextMatrix(150, 563);
-			over.showText(avaliadores[5]);
+			form.setFieldProperty("campoAvaliador4", "textcolor", Color.BLACK ,null);
+			form.setField("campoAvaliador4", "Avaliador 4:");
+//			over.setTextMatrix(85, 563);
+//			over.showText("Avaliador 4:___________________________________________");
+			over.setFontAndSize(bfTextoSimples, 12);
+			form.setField("avaliador4", avaliadores[5]);
+//			over.setTextMatrix(150, 563);
+//			over.showText(avaliadores[5]);
 
 			// ASSINATURA
 			over.setTextMatrix(357, 125);
@@ -119,56 +146,100 @@ public class AtaCCoorientador extends Ata {
 		}
 
 		// DATA SEGUNDA PAGINA
-		over.setTextMatrix(157, 61);
-		over.showText(dia);
-		over.setTextMatrix(210, 61);
-		over.showText(getMesPeloNumero(mes));
-		over.setTextMatrix(293, 61);
-		over.showText(ano);
-		over.endText();
+		form.setFieldProperty("dia1", "textcolor", Color.BLACK ,null);
+		form.setField("dia1", dia);
+		form.setFieldProperty("mes1", "textcolor", Color.BLACK ,null);
+		form.setField("mes1", getMesPeloNumero(mes));
+		form.setFieldProperty("ano1", "textcolor", Color.BLACK ,null);
+		form.setField("ano1", ano);
+//		over.setTextMatrix(157, 61);
+//		over.showText(dia);
+//		over.setTextMatrix(210, 61);
+//		over.showText(getMesPeloNumero(mes));
+//		over.setTextMatrix(293, 61);
+//		over.showText(ano);
+//		over.endText();
 
 		// TERCEIRA PAGINA
 		// ----------------------------------------------------------------------------------------------
 		over = stamper.getOverContent(3);
+		
+		//form = stamper.getAcroFields();
 		over.beginText();
 		over.setFontAndSize(bfTextoSimples, 12);
 
 		// PRIMEIRAS INFORMACOES
-		over.setTextMatrix(150, 704);
-		over.showText(dia);
-		over.setTextMatrix(275, 704);
-		over.showText(getMesPeloNumero(mes));
-		over.setTextMatrix(440, 704);
-		over.showText(ano);
-		over.setTextMatrix(130, 683);
-		over.showText(hora);
-		over.setTextMatrix(355, 683);
-		over.showText(sala);
-		over.setTextMatrix(100, 643);
-		over.showText(orientador);
+		form.setFieldProperty("dia2", "textcolor", Color.BLACK ,null);
+		form.setField("dia2", dia);
+//		over.setTextMatrix(150, 704);
+//		over.showText(dia);
+		
+		form.setFieldProperty("mes2", "textcolor", Color.BLACK ,null);
+		form.setField("mes2", getMesPeloNumero(mes));
+//		over.setTextMatrix(275, 704);
+//		over.showText(getMesPeloNumero(mes));
+		
+		form.setFieldProperty("ano2", "textcolor", Color.BLACK ,null);
+		form.setField("ano2", ano);
+//		over.setTextMatrix(440, 704);
+//		over.showText(ano);
+		
+		form.setFieldProperty("hora1", "textcolor", Color.BLACK ,null);
+		form.setField("hora1", hora);		
+//		over.setTextMatrix(130, 683);
+//		over.showText(hora);
+		
+		form.setFieldProperty("sala1", "textcolor", Color.BLACK ,null);
+		form.setField("sala1",sala);
+//		over.setTextMatrix(355, 683);
+//		over.showText(sala);
+		
+		form.setFieldProperty("orientador2", "textcolor", Color.BLACK ,null);
+		form.setField("orientador2", orientador);
+//		over.setTextMatrix(100, 643);
+//		over.showText(orientador);
 
 		// ALUNO
-		over.setTextMatrix(155, 477);
-		over.showText(aluno);
+		form.setFieldProperty("nomeAluno2", "textcolor", Color.BLACK ,null);
+		form.setField("nomeAluno2", aluno);
+//		over.setTextMatrix(155, 477);
+//		over.showText(aluno);
 		// TCC ENTITULADO
-		over.setTextMatrix(88, 435);
-		over.showText(Divide.titulo(tituloTCC)[0]);
-		over.setTextMatrix(88, 415);
-		over.showText(Divide.titulo(tituloTCC)[1]);
+		form.setFieldProperty("titulo1_2", "textcolor", Color.BLACK ,null);
+		form.setField("titulo1_2", Divide.titulo(tituloTCC)[0]);
+//		over.setTextMatrix(88, 435);
+//		over.showText(Divide.titulo(tituloTCC)[0]);
+		form.setFieldProperty("titulo2_2", "textcolor", Color.BLACK ,null);
+		form.setField("titulo2_2", Divide.titulo(tituloTCC)[1]);
+//		over.setTextMatrix(88, 415);
+//		over.showText(Divide.titulo(tituloTCC)[1]);
 
 		// EXAMINADORES
-		over.setTextMatrix(90, 600);
-		over.showText("1. " + orientador);
+		
+		form.setFieldProperty("orientador3", "textcolor", Color.BLACK ,null);
+		form.setField("orientador3", "1. "+orientador);
+//		over.setTextMatrix(90, 600);
+//		over.showText("1. " + orientador);
 
-		over.setTextMatrix(90, 580);
-		over.showText("2. " + coorientador);
-		over.setTextMatrix(90, 560);
-		over.showText("3. " + avaliadores[2]);
-		over.setTextMatrix(90, 540);
-		over.showText("4. " + avaliadores[3]);
+		form.setFieldProperty("coorientador2", "textcolor", Color.BLACK ,null);
+		form.setField("coorientador2", "2. "+coorientador);
+//		over.setTextMatrix(90, 580);
+//		over.showText("2. " + coorientador);
+		
+		form.setFieldProperty("avaliador1_2", "textcolor", Color.BLACK ,null);
+		form.setField("avaliador1_2", "3. "+avaliadores[2]);
+//		over.setTextMatrix(90, 560);
+//		over.showText("3. " + avaliadores[2]);
+		
+		form.setFieldProperty("avaliador2_2", "textcolor", Color.BLACK ,null);
+		form.setField("avaliador2_2", "4. "+avaliadores[3]);
+//		over.setTextMatrix(90, 540);
+//		over.showText("4. " + avaliadores[3]);
 		if (qtAvaliador >= 5) {
-			over.setTextMatrix(90, 520);
-			over.showText("5. " + avaliadores[4]);
+			form.setFieldProperty("avaliador3_2", "textcolor", Color.BLACK ,null);
+			form.setField("avaliador3_2", "5. "+avaliadores[4]);
+//			over.setTextMatrix(90, 520);
+//			over.showText("5. " + avaliadores[4]);
 
 			// ASSINATURA
 			over.setTextMatrix(118, 128);
@@ -177,8 +248,10 @@ public class AtaCCoorientador extends Ata {
 			over.showText("(Avaliador 04)");
 
 			if (qtAvaliador >= 6) {
-				over.setTextMatrix(90, 500);
-				over.showText("6. " + avaliadores[5]);
+				form.setFieldProperty("avaliador4_2", "textcolor", Color.BLACK ,null);
+				form.setField("avaliador4_2", "6. "+avaliadores[5]);
+//				over.setTextMatrix(90, 500);
+//				over.showText("6. " + avaliadores[5]);
 				// ASSINATURA
 				over.setTextMatrix(358, 128);
 				over.showText("__________________________");
@@ -189,7 +262,7 @@ public class AtaCCoorientador extends Ata {
 
 		// QUARTA PAGINA
 		// ----------------------------------------------------------------------------------------------
-
+		stamper.setFormFlattening(true);
 		over.endText();
 		stamper.close();
 		saida.close();

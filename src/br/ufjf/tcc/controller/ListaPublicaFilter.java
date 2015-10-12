@@ -82,6 +82,7 @@ public class ListaPublicaFilter extends HttpServlet {
 		
 		
 		
+		
 		List<TCC> tccs = lpc.getFilterTccs();
 		List<Curso> cursos = lpc.getCursos();
 		List<String> years = lpc.getYears();

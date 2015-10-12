@@ -170,7 +170,7 @@ public class ListaPublicaController extends CommonsController {
 			emptyMessage = "Selecione um curso na caixa acima.";
 			tccsByCurso = null;
 		}
-		//updateYears2();
+		updateYears2();
 		if (!years.contains(filterYear))
 			filterYear = "Todos";
 
