@@ -152,6 +152,9 @@ public class MenuController extends CommonsController {
 								orientador.setProfessor(tcc.getOrientador());
 								orientador.setTcc(tcc);
 								part.add(orientador);
+								
+								
+								
 								if (tcc.getCoOrientador() == null){
 									ata = new AtaSCoorientador();
 									
@@ -163,6 +166,18 @@ public class MenuController extends CommonsController {
 									part.add(coorientador);
 
 								}
+								String codigoCursoAluno = getUsuario().getCurso().getCodigoCurso();
+								
+								switch (codigoCursoAluno) {
+								case "35A":
+									ata.setPathTemplateAta("/br/ufjf/tcc/pdfHandle/AtaCienciaDaComputacao/");
+									break;
+								default:
+									
+									break;
+								}
+								
+								
 								
 								
 								for(Participacao p:tcc.getParticipacoes()){
@@ -193,7 +208,14 @@ public class MenuController extends CommonsController {
 								ata.setSala(tcc.getSalaDefesa());
 								ata.preencheParticipacoes(part);
 
-								ata.preenchePrincipal();
+								if(ata.getPathTemplateAta()!=null)
+									ata.preenchePrincipal();
+								else{
+									Messagebox
+									.show("Seu curso não possui Ata cadastrada.\n",
+											"Aviso", Messagebox.OK, Messagebox.ERROR);
+									
+								}
 								ata.deleteLasts();
 
 								Executions.getCurrent().sendRedirect(

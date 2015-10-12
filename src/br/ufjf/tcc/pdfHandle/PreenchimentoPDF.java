@@ -14,9 +14,9 @@ import com.lowagie.text.pdf.PdfStamper;
 public class PreenchimentoPDF {
 
 	public static void lastPag(String nomeAluno, String nomeAvaliador,
-			String dia, String mes, String ano, int n, int idAluno)
+			String dia, String mes, String ano, int n, int idAluno,String pathAta)
 			throws Exception {
-		String template = "/br/ufjf/tcc/pdfHandle/LastPagNew.pdf";
+		String template =   pathAta+"LastPagNew.pdf";
 		String Arquivo_Saida = ConfHandler.getConf("FILE.PATH") + "last"
 				+ idAluno + "-" + n + ".pdf";
 

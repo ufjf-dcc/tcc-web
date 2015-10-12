@@ -24,7 +24,7 @@ public class AtaSCoorientador extends Ata {
 
 		String Arquivo_Saida = ConfHandler.getConf("FILE.PATH") + "saida"
 				+ idAluno + ".pdf";
-		String template = "/br/ufjf/tcc/pdfHandle/TemplateSCoorientador2.pdf";
+		String template = pathTemplateAta+"TemplateSCoorientador2.pdf";
 
 		FileOutputStream saida = new FileOutputStream(Arquivo_Saida);
 
@@ -267,7 +267,7 @@ public class AtaSCoorientador extends Ata {
 
 			for (int i = 0; i < avaliadores.length; i++) {
 				PreenchimentoPDF.lastPag(aluno, avaliadores[i], dia, mes, ano,
-						i, idAluno);
+						i, idAluno,pathTemplateAta);
 
 			}
 

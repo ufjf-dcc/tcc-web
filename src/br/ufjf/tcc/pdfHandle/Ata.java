@@ -17,7 +17,7 @@ public abstract class Ata {
 	protected String coorientador = null;
 	protected String[] avaliadores;
 	protected byte[] pdfByteArray = null;
-
+	protected String pathTemplateAta = null ;
 	protected String dia;
 	protected String mes;
 	protected String ano;
@@ -188,5 +188,15 @@ public abstract class Ata {
 	public void setPdfByteArray(byte[] pdfByteArray) {
 		this.pdfByteArray = pdfByteArray;
 	}
+
+	public String getPathTemplateAta() {
+		return pathTemplateAta;
+	}
+
+	public void setPathTemplateAta(String pathTemplateAta) {
+		this.pathTemplateAta = pathTemplateAta;
+	}
+	
+	
 
 }
