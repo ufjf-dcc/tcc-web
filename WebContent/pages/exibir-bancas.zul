@@ -1,0 +1,175 @@
+<?page title="Gerenciamento de Trabalhos"?>
+<?init class="br.ufjf.tcc.controller.AuthController"?>
+<zk>
+	<script type="text/javascript">
+		function visualzarTCC(id) {
+		window.open('visualiza.zul?id='+id,'_blank'); }
+	</script>
+	<style src="/style.css" />
+	<div apply="org.zkoss.bind.BindComposer"
+		viewModel="@id('vm') @init('br.ufjf.tcc.controller.ExibirBancasController')"
+		height="100%" class="publicList">
+		<include src="@load(vm.menu)" />
+		<grid model="@load(vm.filterTccs) @template('lista')"
+			emptyMessage="@load(vm.emptyMessage)" mold="paging" pageSize="10"
+			vflex="true">
+			<auxhead>
+				<auxheader colspan="10">
+					<div>
+						<div>
+							<hlayout style="float:left">
+								<label value="Pesquisar: "
+									style="margin-top:6px" 
+									visible="true"/>
+								<textbox id="filtro"
+									value="@bind(vm.filterString)" onOK="@command('filtra')"
+									visible="true"/>
+								<separator orient="vertical"
+									spacing="3px" />
+
+								<label value="Ano: "
+									style="margin-top:6px" 
+									visible="true"/>
+								<combobox id="cmbYear" width="150px"
+									readonly="true" model="@load(vm.years)"
+									value="@load(filterYear)"
+									selectedItem="@bind(vm.filterYear)"
+									visible="true">
+									<template name="model">
+										<comboitem label="@load(each)" />
+									</template>
+								</combobox>
+								
+								<label value="Tipos: " visible="true" />
+																
+								<div visible="true">
+									<combobox value="Todos" onChange="@command('filtraProjeto',item=self.selectedIndex)">
+									    <comboitem label="Todos" />
+									    <comboitem label="Projetos"/>
+									    <comboitem label="Trabalhos"/>
+									    <comboitem label="Projetos incompletos"/>
+									    <comboitem label="Projetos aguardando aprovação"/>
+									    <comboitem label="Trabalhos incompletos"/>
+									    <comboitem label="Trabalhos aguardando aprovação"/>
+									    <comboitem label="Trabalhos Finalizados"/>									   
+									    
+									</combobox>
+								</div>
+								
+								<separator orient="vertical"
+									spacing="3px" />
+								
+								<separator orient="vertical"
+									spacing="3px" />
+								
+								<button label="Filtrar" width="60px"
+									onClick="@command('filtra')" />
+								<image src="/img/help.gif"
+									tooltip="filterHelp" style="cursor: help" />
+									
+								<button style="margin-left:250px" label="Gerar PDF das bancas marcadas" onClick="@command('gerarPDFBancas')" />
+							</hlayout>
+							
+							
+						</div>
+					</div>
+				</auxheader>
+			</auxhead>
+			<columns > 
+				<column hflex="2"  >
+					<label  style="font-family:Arial,sans-serif;color:#636363;font-weight:bold" value="Data de" /> 
+					<label  style="font-family:Arial,sans-serif;color:#636363;font-weight:bold"  value="defesa" />
+				</column>
+				<column hflex="2" >
+					<label  style="font-family:Arial,sans-serif;color:#636363;font-weight:bold" value="Local de" /> 
+					<label  style="font-family:Arial,sans-serif;color:#636363;font-weight:bold"  value="defesa" />
+				</column>
+				<column hflex="8" label="Autor"
+					sort="auto(aluno.nomeUsuario)" />
+				<column hflex="7" label="Orientador" sort="auto(orientador.nomeUsuario)" />
+				<column hflex="2" >
+					<label  style="font-family:Arial,sans-serif;color:#636363;font-weight:bold" value="Data e" /> 
+					<label  style="font-family:Arial,sans-serif;color:#636363;font-weight:bold"  value="horário" /> 
+					<label  style="font-family:Arial,sans-serif;color:#636363;font-weight:bold"  value="de envio" />
+				</column>
+				<column hflex="2" label="Status" image="/img/help.gif"
+					tooltip="filterStatus" style="cursor: help" />
+				<column hflex="2" align="left" > 
+					<label  style="font-family:Arial,sans-serif;color:#636363;font-weight:bold" value="Entregou" /> 
+					<label  style="font-family:Arial,sans-serif;color:#636363;font-weight:bold"  value="documentos?" /> 
+				 </column>
+				<column hflex="2">
+					<label  style="font-family:Arial,sans-serif;color:#636363;font-weight:bold" value="Enviou" /> 
+					<label  style="font-family:Arial,sans-serif;color:#636363;font-weight:bold"  value="trabalho" />
+					<label  style="font-family:Arial,sans-serif;color:#636363;font-weight:bold" value="final?" /> 
+					  
+				</column>
+				<column hflex="2"  label="Marcar" />
+			</columns>
+			<template name="lista">
+				<row xmlns:w="client"
+					w:onClick="visualzarTCC(${each.idTCC});"
+					tooltip="${forEachStatus.index}, position=at_pointer">
+					<div>
+						<label value="@load(each.dataApresentacao eq null ? '' : vm.sdf.format(each.dataApresentacao).toString().substring(0,16))" />
+						<popup id="${forEachStatus.index}">
+							<vlayout width="550px">
+								<label value="Resumo"
+									style="font-size: 14px; font-weight: bold; text-align: justify; display: block;" />
+								<label value="@load(each.resumoTCC)" />
+								<hlayout>
+									<label value="Ano: "
+										style="font-weight:bold;" />
+									<label
+										onCreate="@command('getEachTccYear', tcc=each, lbl=self)" />
+								</hlayout>
+								<label value="Orientador"
+									style="font-size: 14px; font-weight: bold; text-align: justify; display: block;" />
+								<label
+									value="@load(each.orientador.nomeUsuario)" />
+								<label value="Palavras-chave"
+									visible="@load(not empty each.palavrasChave)"
+									style="font-size: 14px; font-weight: bold; text-align: justify; display: block;" />
+								<label
+									value="@load(each.palavrasChave)" />
+							</vlayout>
+						</popup>
+					</div>
+					<label value="@load(each.salaDefesa)" />
+					<label value="@load(each.aluno.nomeUsuario)" />
+					<label value="@load(each.orientador.nomeUsuario)" />
+					<label value="@load(each.dataEnvioFinal eq null? vm.sdf.format(each.dataEnvioBanca).toString().substring(0,16) : vm.sdf.format(each.dataEnvioFinal).toString().substring(0,16) )" />
+					<label value="@load(each.statusTCC)" />
+					<div align="center" >
+					<checkbox disabled="true" style="center" checked="@load(each.entregouDoc)"  />
+					</div>
+					<div align="center" >
+					<checkbox disabled="true" style="center" checked="@load(each.trabFinal)" />
+					</div>
+					<div align="center" >
+						<checkbox disabled="false" style="center" checked="false" onCheck="@command('marcarTrabalho',tcc=each)" />
+					</div>
+					
+				</row>
+			</template>
+		</grid>
+	</div>
+	<popup id="filterHelp">
+		<html>
+			<![CDATA[ Permite filtrar a lista de Trabalhos  com os seguintes filtros:
+			<ul><li>Semestre atual ou todos os semstres;</li> <li>Estados (PI,PAA,TI,TAA);</li>
+			<ul>]]>
+		</html>
+	</popup>
+	
+	<popup id="filterStatus">
+		<html>
+			<![CDATA[ Status:
+			<ul><li>PI - Projeto incompleto</li>
+			<li>TI - Trabalho incompleto</li>
+			<li>PAA - Projeto aguardando aprovação</li>
+			<li>TAA - Trabalho aguardando aprovação</li>
+			<ul>]]>
+		</html>
+	</popup>
+</zk>

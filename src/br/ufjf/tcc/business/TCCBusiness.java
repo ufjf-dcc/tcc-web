@@ -235,6 +235,10 @@ public class TCCBusiness {
 		return tccDao.getAllTrabalhosAndProjetosByCurso(curso);
 	}
 	
+	public List<TCC> getAllTrabalhosBancaMarcada(Curso curso,CalendarioSemestre currentCalendar){
+		return tccDao.getAllTrabalhosBancaMarcada(curso,currentCalendar);
+	}
+	
 	public List<TCC> getTrabalhosAndProjetosByCursoAndCalendar(Curso curso, CalendarioSemestre currentCalendar){
 		return tccDao.getTrabalhosAndProjetosByCursoAndCalendar(curso, currentCalendar);
 	}

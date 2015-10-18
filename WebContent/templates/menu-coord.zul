@@ -11,6 +11,8 @@
 				onClick="@command('projetosTrabalhosSemestre')"  />
 			<menuitem label="Gerenciar Usuários do Curso"
 				href="/pages/gerenciamento-usuario.zul" />
+			<menuitem label="Exibir Bancas"
+				href="/pages/exibir-bancas.zul" />
 			<menuitem label="Sair" onClick="@command('sair')"
 				style="float:right" />
 			<menuitem label="Trocar de Perfil" style="float:right"

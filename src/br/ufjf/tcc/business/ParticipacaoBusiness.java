@@ -23,6 +23,10 @@ public class ParticipacaoBusiness {
 		return participacaoDAO.getParticipacoesByTCC(tcc);
 	}
 	
+	public List<Participacao> getParticipacoesUsuarioByTCC(TCC tcc) {
+		return participacaoDAO.getParticipacoesUsuarioByTCC(tcc);
+	}
+	
 	public boolean updateList(TCC tcc) {
 		return participacaoDAO.updateList(tcc);
 	}

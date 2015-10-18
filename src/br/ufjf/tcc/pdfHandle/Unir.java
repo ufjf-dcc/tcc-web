@@ -62,8 +62,28 @@ public class Unir {
 		}
 
 	}
+	
+	public static void tudoBanca(int qt,int idAluno) {
 
-	// JUNTA VÁRIOS ARQUIVOS .PDF EM UM ÚNICO
+		try {
+			List<InputStream> pdfs = new ArrayList<InputStream>();
+			for (int i = 0; i < qt; i++) {
+				pdfs.add(new FileInputStream(ConfHandler.getConf("FILE.PATH")
+						+ "last" + idAluno + "-" + i + ".pdf"));
+
+			}
+
+			OutputStream output = new FileOutputStream(
+					ConfHandler.getConf("FILE.PATH") + "PDFCompletoBanca" + idAluno
+							+ ".pdf");
+			Unir.concatPDFs(pdfs, output, true);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	// JUNTA Vï¿½RIOS ARQUIVOS .PDF EM UM ï¿½NICO
 	private static void concatPDFs(List<InputStream> streamOfPDFFiles,
 			OutputStream outputStream, boolean paginate) {
 

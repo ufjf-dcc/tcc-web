@@ -5,6 +5,7 @@ import java.util.List;
 
 import br.ufjf.tcc.library.ConfHandler;
 import br.ufjf.tcc.model.Participacao;
+import br.ufjf.tcc.model.TCC;
 
 public abstract class Ata {
 
@@ -23,6 +24,7 @@ public abstract class Ata {
 	protected String ano;
 	protected String hora;
 	protected String sala;
+	protected List<TCC> trabMarcados;
 
 	public abstract void preenchePrincipal() throws Exception;
 
@@ -55,6 +57,15 @@ public abstract class Ata {
 			else
 				System.out.println("NAO deletado");
 		}
+		
+		for (int i = 0; i < trabMarcados.size(); i++) {
+			d = new File(ConfHandler.getConf("FILE.PATH") + "last" + idAluno
+					+ "-" + i + ".pdf");
+			if (d.delete())
+				System.out.println("deletado");
+			else
+				System.out.println("NAO deletado");
+		}
 
 		d = new File(ConfHandler.getConf("FILE.PATH") + "saida" + idAluno
 				+ ".pdf");
@@ -69,6 +80,8 @@ public abstract class Ata {
 			System.out.println("deletado");
 		else
 			System.out.println("NAO deletado");
+		
+		
 
 	}
 
@@ -196,6 +209,15 @@ public abstract class Ata {
 	public void setPathTemplateAta(String pathTemplateAta) {
 		this.pathTemplateAta = pathTemplateAta;
 	}
+
+	public List<TCC> getTrabMarcados() {
+		return trabMarcados;
+	}
+
+	public void setTrabMarcados(List<TCC> trabMarcados) {
+		this.trabMarcados = trabMarcados;
+	}
+	
 	
 	
 
