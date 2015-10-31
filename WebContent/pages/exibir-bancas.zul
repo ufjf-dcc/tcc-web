@@ -14,10 +14,10 @@
 			emptyMessage="@load(vm.emptyMessage)" mold="paging" pageSize="10"
 			vflex="true">
 			<auxhead>
-				<auxheader colspan="10">
+				<auxheader colspan="15">
 					<div>
 						<div>
-							<hlayout style="float:left">
+							<hlayout style="float:left;">
 								<label value="Pesquisar: "
 									style="margin-top:6px" 
 									visible="true"/>
@@ -26,35 +26,6 @@
 									visible="true"/>
 								<separator orient="vertical"
 									spacing="3px" />
-
-								<label value="Ano: "
-									style="margin-top:6px" 
-									visible="true"/>
-								<combobox id="cmbYear" width="150px"
-									readonly="true" model="@load(vm.years)"
-									value="@load(filterYear)"
-									selectedItem="@bind(vm.filterYear)"
-									visible="true">
-									<template name="model">
-										<comboitem label="@load(each)" />
-									</template>
-								</combobox>
-								
-								<label value="Tipos: " visible="true" />
-																
-								<div visible="true">
-									<combobox value="Todos" onChange="@command('filtraProjeto',item=self.selectedIndex)">
-									    <comboitem label="Todos" />
-									    <comboitem label="Projetos"/>
-									    <comboitem label="Trabalhos"/>
-									    <comboitem label="Projetos incompletos"/>
-									    <comboitem label="Projetos aguardando aprovação"/>
-									    <comboitem label="Trabalhos incompletos"/>
-									    <comboitem label="Trabalhos aguardando aprovação"/>
-									    <comboitem label="Trabalhos Finalizados"/>									   
-									    
-									</combobox>
-								</div>
 								
 								<separator orient="vertical"
 									spacing="3px" />
@@ -67,13 +38,34 @@
 								<image src="/img/help.gif"
 									tooltip="filterHelp" style="cursor: help" />
 									
-								<button style="margin-left:250px" label="Gerar PDF das bancas marcadas" onClick="@command('gerarPDFBancas')" />
+								<separator orient="vertical"
+									spacing="3px" />
+								
+								<separator orient="vertical"
+									spacing="3px" />
+								
+								<separator orient="vertical"
+									spacing="3px" />
+								
+								<button style="margin-right:70px" label="Gerar PDF das bancas marcadas" 
+								onClick="@command('gerarPDFBancas')" />
+																
+								
 							</hlayout>
 							
 							
+							
+							
 						</div>
+						
+						
 					</div>
+					
 				</auxheader>
+				
+				
+						
+				
 			</auxhead>
 			<columns > 
 				<column hflex="2"  >
@@ -156,8 +148,12 @@
 	</div>
 	<popup id="filterHelp">
 		<html>
-			<![CDATA[ Permite filtrar a lista de Trabalhos  com os seguintes filtros:
-			<ul><li>Semestre atual ou todos os semstres;</li> <li>Estados (PI,PAA,TI,TAA);</li>
+			<![CDATA[ Permite filtrar a lista de Trabalhos pelos seguintes campos:
+			<ul><li>Autor;</li> 
+			<li>Orientador;</li>
+			<li>CoOrientador;</li>
+			<li>Título;</li>
+			<li>Resumo;</li>
 			<ul>]]>
 		</html>
 	</popup>

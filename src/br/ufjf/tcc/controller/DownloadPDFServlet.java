@@ -1,6 +1,5 @@
 package br.ufjf.tcc.controller;
 
-import java.awt.Window;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,8 +10,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.zkoss.zk.ui.Executions;
 
 import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.library.FileManager;
@@ -74,6 +71,7 @@ public class DownloadPDFServlet extends HttpServlet {
 		while ((bytesRead = fis.read(buffer, 0, 8192)) != -1) {
 			baos.write(buffer, 0, bytesRead);
 		}
+		fis.close();
 		return baos.toByteArray();
 	}
 

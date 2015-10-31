@@ -101,6 +101,9 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 
 </script>
 
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	
+
 
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Lista Pública de Trabalhos Acadêmicos - UFJF</title>
@@ -112,9 +115,7 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 	String pesquisaFeita = (String) request.getAttribute("PalavaPesquisa");
 	String cursoS = (String) request.getAttribute("cursoSelected");
 	String yearSelected = (String) request.getAttribute("yearSelected");
-	
-	
-	
+
 	
 	if(cursoS==null)
 		request.setAttribute("cursoSel", "");
@@ -127,11 +128,7 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 		request.setAttribute("strBusca", pesquisaFeita);
 	
 	request.setAttribute("yearSelecionado", yearSelected);
-	
-	
-	
-	
-	
+
 %>
 
 <%!
@@ -142,7 +139,6 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 		return "" + cal.get(Calendar.YEAR);
 	}
 %>
-
 
 <body>
 <div>
@@ -181,7 +177,7 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 		
 		
 		<div class="divPesquisa" style="width: 100%;height: 40px;display: block;">
-		<form class="form-inline" action="index.jsp" method="get">
+		<form id="form" class="form-inline" action="index.jsp" method="get">
 		
 			<div style="float: left;position: relative;top: 5px;left: 20px">
 
@@ -232,17 +228,15 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 						</div>
 						
 					</div>
-					
+				
 		</div>
 		
-		
-	
+	</form>
 	</div>
 	<div style="display:none" >
 			<a href="./by-year" >by-year</a>
 		</div>
 	</div>
-	
 	
 	
 	<div style="position:absolute;z-index: 3 ; font-size: 12px;width: 99.25%;"  >
@@ -319,9 +313,6 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 				</div>
 				
 				
-					
-					
-				
 				</pg:item>
 			</c:forEach>
 			
@@ -360,11 +351,6 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 	}
 	</script>
 
-	
-	
-				
-
-  
 	
 </body>
 </html>

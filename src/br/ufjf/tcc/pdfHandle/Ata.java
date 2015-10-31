@@ -58,14 +58,17 @@ public abstract class Ata {
 				System.out.println("NAO deletado");
 		}
 		
-		for (int i = 0; i < trabMarcados.size(); i++) {
-			d = new File(ConfHandler.getConf("FILE.PATH") + "last" + idAluno
-					+ "-" + i + ".pdf");
-			if (d.delete())
-				System.out.println("deletado");
-			else
-				System.out.println("NAO deletado");
+		if(trabMarcados!=null){
+			for (int i = 0; i < trabMarcados.size(); i++) {
+				d = new File(ConfHandler.getConf("FILE.PATH") + "last" + idAluno
+						+ "-" + i + ".pdf");
+				if (d.delete())
+					System.out.println("deletado");
+				else
+					System.out.println("NAO deletado");
+			}			
 		}
+		
 
 		d = new File(ConfHandler.getConf("FILE.PATH") + "saida" + idAluno
 				+ ".pdf");

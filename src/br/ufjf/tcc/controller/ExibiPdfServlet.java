@@ -52,7 +52,7 @@ public class ExibiPdfServlet extends HttpServlet {
 		} 
 		res.setContentType("application/pdf"); 
 		res.setContentLength(bytes.length);
-		
+		res.setStatus(200);
 		res.getOutputStream().write(bytes);
 
 	}

@@ -103,7 +103,7 @@ public class AtaSCoorientador extends Ata {
 //		over.showText(avaliadores[3]);
 		
 		
-		if (qtAvaliador == 4) {
+		if (qtAvaliador >= 4) {
 			form.setFieldProperty("campoAvaliador3", "textcolor", Color.BLACK ,null);
 			form.setField("campoAvaliador3", "Avaliador 3:");
 //			over.setTextMatrix(85, 583);
@@ -120,7 +120,7 @@ public class AtaSCoorientador extends Ata {
 			over.showText("(Avaliador 03)");
 
 		}
-		if (qtAvaliador == 5) {
+		if (qtAvaliador >= 5) {
 			form.setFieldProperty("campoAvaliador4", "textcolor", Color.BLACK ,null);
 			form.setField("campoAvaliador4", "Avaliador 4:");
 //			over.setTextMatrix(85, 563);
@@ -217,17 +217,17 @@ public class AtaSCoorientador extends Ata {
 	
 		
 		form.setFieldProperty("avaliador1_2", "textcolor", Color.BLACK ,null);
-		form.setField("avaliador1_2", "3. "+avaliadores[1]);
+		form.setField("avaliador1_2", "2. "+avaliadores[1]);
 //		over.setTextMatrix(90, 560);
 //		over.showText("3. " + avaliadores[2]);
 		
 		form.setFieldProperty("avaliador2_2", "textcolor", Color.BLACK ,null);
-		form.setField("avaliador2_2", "4. "+avaliadores[2]);
+		form.setField("avaliador2_2", "3. "+avaliadores[2]);
 //		over.setTextMatrix(90, 540);
 //		over.showText("4. " + avaliadores[3]);
 		if (qtAvaliador >= 4) {
 			form.setFieldProperty("avaliador3_2", "textcolor", Color.BLACK ,null);
-			form.setField("avaliador3_2", "5. "+avaliadores[3]);
+			form.setField("avaliador3_2", "4. "+avaliadores[3]);
 //			over.setTextMatrix(90, 520);
 //			over.showText("5. " + avaliadores[4]);
 
@@ -239,7 +239,7 @@ public class AtaSCoorientador extends Ata {
 
 			if (qtAvaliador >= 5) {
 				form.setFieldProperty("avaliador4_2", "textcolor", Color.BLACK ,null);
-				form.setField("avaliador4_2", "6. "+avaliadores[4]);
+				form.setField("avaliador4_2", "5. "+avaliadores[4]);
 //				over.setTextMatrix(90, 500);
 //				over.showText("6. " + avaliadores[5]);
 				// ASSINATURA

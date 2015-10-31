@@ -33,8 +33,6 @@ public class ExibirBancasController extends CommonsController {
 	private List<TCC> tccs = null, filterTccs = tccs, xmlTccs;
 	private String filterString = "";
 	private String filterYear = "Todos";
-	private int semestre = 1;//0=atual, 1 = anteriores
-	private int tipoTrabalho = 0; //0=todos, 1 = projeto, 2 = trabalho
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss.S");
 	private List<TCC> trabalhosMarcados ;
 	private Ata ata;
@@ -45,12 +43,12 @@ public class ExibirBancasController extends CommonsController {
 		switch (getUsuario().getTipoUsuario().getIdTipoUsuario()) {
 		case Usuario.COORDENADOR:
 
-			tccs = new TCCBusiness().getAllTrabalhosBancaMarcada(getUsuario().getCurso(),getCurrentCalendar(getUsuario().getCurso()));
+			tccs = new TCCBusiness().getNotFinishedTCCsByCursoAndCalendar(getUsuario().getCurso(),getCurrentCalendar(getUsuario().getCurso()));
 			
 			break;
 		case Usuario.SECRETARIA:
 
-			tccs = new TCCBusiness().getAllTrabalhosBancaMarcada(getUsuario().getCurso(),getCurrentCalendar(getUsuario().getCurso()));
+			tccs = new TCCBusiness().getNotFinishedTCCsByCursoAndCalendar(getUsuario().getCurso(),getCurrentCalendar(getUsuario().getCurso()));
 
 			break;
 		default:
@@ -59,15 +57,17 @@ public class ExibirBancasController extends CommonsController {
 		}
 		
 		trabalhosMarcados = new ArrayList<TCC>();
-//		List<TCC> tccsAux = new TCCBusiness().getNotFinishedTCCsAndProjectsByCurso(getUsuario().getCurso());		
-//		tccs = new TCCBusiness().getFinishedTCCsByCurso(getUsuario().getCurso());
-//		
-//		for(int i=0;i<tccsAux.size();i++){
-//			tccs.add(tccsAux.get(i));
-//		}
+
 		
+		TCCBusiness tccbusiness = new TCCBusiness();
 		
-		filterTccs = tccs;
+		filterTccs = new ArrayList<TCC>();
+		for(TCC tcc:tccs){
+			if(tccbusiness.isTrabalhoAguardandoAprovacao(tcc)){
+				filterTccs.add(tcc);
+			}
+		}
+		
 
 		years = new ArrayList<String>();
 		if (tccs != null && tccs.size() > 0) {

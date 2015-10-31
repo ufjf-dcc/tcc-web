@@ -2,6 +2,7 @@ package br.ufjf.tcc.pdfHandle;
 
 import java.awt.Color;
 import java.io.FileOutputStream;
+import java.util.Calendar;
 import java.util.List;
 
 import com.lowagie.text.pdf.AcroFields;
@@ -88,13 +89,21 @@ public class PreenchimentoPDF {
 		PdfStamper stamper = new PdfStamper(leitor, saida);
 
 		PdfContentByte over;
-
+		
+		BaseFont tituloFont = BaseFont.createFont(BaseFont.TIMES_BOLD,
+				BaseFont.WINANSI, BaseFont.NOT_EMBEDDED);
+		
+		
 		BaseFont bfTextoSimples = BaseFont.createFont(BaseFont.TIMES_ROMAN,
 				BaseFont.WINANSI, BaseFont.NOT_EMBEDDED);
 		over = stamper.getOverContent(1);
 		AcroFields form = stamper.getAcroFields();
 		over.beginText();
 		over.setFontAndSize(bfTextoSimples, 12);
+		
+		form.setFieldProperty("curso", "textfont", tituloFont,null);
+		form.setFieldProperty("curso", "textcolor", Color.BLACK ,null);
+		form.setField("curso", tcc.getAluno().getCurso().getNomeCurso());
 		
 		form.setFieldProperty("nomeAluno", "textcolor", Color.BLACK ,null);
 		form.setField("nomeAluno", tcc.getAluno().getNomeUsuario());
@@ -116,48 +125,56 @@ public class PreenchimentoPDF {
 //		over.setTextMatrix(195, 72);
 //		over.showText(Ata.getMesPeloNumero(mes));
 		
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeInMillis(tcc.getDataApresentacao()
+				.getTime());
+		
+		Integer dia = calendar.get(Calendar.DAY_OF_MONTH);
+		Integer mes = calendar.get(Calendar.MONTH) + 1;
+		Integer ano = calendar.get(Calendar.YEAR);
+		String hora = Integer.toString(calendar.get(Calendar.HOUR_OF_DAY));
+
+		
 		form.setFieldProperty("dia", "textcolor", Color.BLACK ,null);
-		form.setField("dia", String.valueOf(tcc.getDataApresentacao().getDay()) );
+		form.setField("dia", formatarCamposData(dia) );
+		form.setFieldProperty("mes", "textcolor", Color.BLACK ,null);
+		form.setField("mes", formatarCamposData(mes));
 		form.setFieldProperty("ano", "textcolor", Color.BLACK ,null);
-		form.setField("mes", String.valueOf(tcc.getDataApresentacao().getMonth()));
-		form.setFieldProperty("ano", "textcolor", Color.BLACK ,null);
-		form.setField("ano", String.valueOf(tcc.getDataApresentacao().getYear()));
+		form.setField("ano", formatarCamposData(ano));
 //		over.setTextMatrix(290, 72);
 //		over.showText(ano);
 		
 		form.setFieldProperty("hora", "textcolor", Color.BLACK ,null);
-		form.setField("hora", String.valueOf(tcc.getDataApresentacao().getHours()));
+		form.setField("hora", hora);
 
 		form.setFieldProperty("sala", "textcolor", Color.BLACK ,null);
 		form.setField("sala", tcc.getSalaDefesa());
 		
+		
 		String avaliadores = "";
 		String suplente = "";
 		List<Participacao> participacoes = new ParticipacaoBusiness().getParticipacoesUsuarioByTCC(tcc);
+		
 		avaliadores += tcc.getOrientador().getNomeUsuario()+" - Orientador(a)";
-		avaliadores += "\n"+tcc.getOrientador().getTitulacao();
+		avaliadores += "\n"+retiraNull(tcc.getOrientador().getTitulacao());
+		
 		if (tcc.getCoOrientador() != null) {
-			avaliadores += "\n\n"+participacoes.get(0).getProfessor().getNomeUsuario()+" - CoOrientador(a)";
-			avaliadores += "\n" + participacoes.get(0).getProfessor().getTitulacao();
+
+			avaliadores += "\n\n"+ tcc.getCoOrientador().getNomeUsuario()+" - Coorientador(a)";
+			avaliadores += "\n" + retiraNull(participacoes.get(0).getProfessor().getTitulacao());
+			
 		}
-		
-		
-		if (participacoes.get(0).getSuplente() == 0) {
-			avaliadores +=  participacoes.get(0).getProfessor().getNomeUsuario();
-			avaliadores += "\n" + participacoes.get(0).getProfessor().getTitulacao();
-		}else{
-			suplente+=participacoes.get(0).getProfessor().getNomeUsuario();
-			suplente+="\n"+participacoes.get(0).getProfessor().getTitulacao();
-		}
-		for(int i=1;i<participacoes.size();i++){
+
+		for(int i=0;i<participacoes.size();i++){
 			if (participacoes.get(i).getSuplente() == 0) {
 				avaliadores += "\n\n" + participacoes.get(i).getProfessor().getNomeUsuario();
-				avaliadores += "\n" + participacoes.get(i).getProfessor().getTitulacao();
+				avaliadores += "\n" + retiraNull(participacoes.get(i).getProfessor().getTitulacao());
 			}else{
 				suplente+=participacoes.get(i).getProfessor().getNomeUsuario();
-				suplente+="\n"+participacoes.get(i).getProfessor().getTitulacao();
+				suplente+="\n"+retiraNull(participacoes.get(i).getProfessor().getTitulacao());
 			}
 		}
+		
 		form.setFieldProperty("avaliadores", "textcolor", Color.BLACK ,null);
 		form.setField("avaliadores",avaliadores);
 		
@@ -172,5 +189,21 @@ public class PreenchimentoPDF {
 		System.out.println("gerou o Last" + n + "pdf");
 
 	}
+	
+	public static String retiraNull(String valor){
+		if(valor==null)
+			return "";
+		else
+			return valor;
+	}
+	
+	public static String formatarCamposData(int campo){
+		
+		if(campo<10){
+			return "0"+campo;
+		}
+		return String.valueOf(campo);
+	}
+	
 
 }

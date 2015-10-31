@@ -24,7 +24,6 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
-import br.ufjf.tcc.business.CalendarioSemestreBusiness;
 import br.ufjf.tcc.business.DepartamentoBusiness;
 import br.ufjf.tcc.business.ParticipacaoBusiness;
 import br.ufjf.tcc.business.TCCBusiness;
