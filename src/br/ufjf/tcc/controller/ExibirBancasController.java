@@ -62,11 +62,15 @@ public class ExibirBancasController extends CommonsController {
 		TCCBusiness tccbusiness = new TCCBusiness();
 		
 		filterTccs = new ArrayList<TCC>();
-		for(TCC tcc:tccs){
-			if(tccbusiness.isTrabalhoAguardandoAprovacao(tcc)){
-				filterTccs.add(tcc);
+		
+		if(tccs!=null){
+			for(TCC tcc:tccs){
+				if(tccbusiness.isTrabalhoAguardandoAprovacao(tcc)){
+					filterTccs.add(tcc);
+				}
 			}
 		}
+		
 		
 
 		years = new ArrayList<String>();
