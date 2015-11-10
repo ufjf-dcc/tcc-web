@@ -39,7 +39,7 @@ public class DownloadPDFServlet extends HttpServlet {
 		
 		if(file==null){
 			try{
-				req.getRequestDispatcher("index5.jsp?").forward(req, res);
+				req.getRequestDispatcher("index.jsp?").forward(req, res);
 			}catch(Exception e2){
 				e2.printStackTrace();
 			}

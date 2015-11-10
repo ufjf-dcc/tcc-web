@@ -513,7 +513,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 		usuariosCSV.remove(usuario);
 	}
 
-	@NotifyChange("usuarios")
+	@NotifyChange("filterUsuarios")
 	@Command
 	public void submitCSV(@BindingParam("window") final Window window) {
 		Clients.showBusy(window, "Cadastrando usuários...");
@@ -539,9 +539,12 @@ public class GerenciamentoUsuarioController extends CommonsController {
 									}
 									
 									if(usuarioDAO.jaExiste(usuariosCSV.get(i).getMatricula(), null)){
-										usuariosCSV.remove(i);
-										i--;
-										usuariosNaoCadastrados++;
+										Usuario usuarioTemp = usuarioDAO.getByMatricula(usuariosCSV.get(i).getMatricula());
+										usuarioTemp.setEmail(usuariosCSV.get(i).getEmail());
+										usuarioTemp.setAtivo(usuariosCSV.get(i).isAtivo());
+										usuarioDAO.editar(usuarioTemp);
+										atualizarLista(usuarioTemp);
+
 									}
 									
 									
@@ -564,9 +567,10 @@ public class GerenciamentoUsuarioController extends CommonsController {
 									}else if(usuariosNaoCadastrados>1){
 										msgNaoCadastrados = usuariosNaoCadastrados+" usuário não foram cadastrados.";
 									}
+									
 									Messagebox.show(
 											usuariosCSV.size()
-													+ " usuários foram cadastrados com sucesso.\n"+msgNaoCadastrados,
+													+ " usuários foram cadastrados/atualizados com sucesso.\n"+msgNaoCadastrados,
 											"Concluído", Messagebox.OK,
 											Messagebox.INFORMATION);
 
@@ -596,8 +600,26 @@ public class GerenciamentoUsuarioController extends CommonsController {
 					});
 			
 		}
-
+		
+		
 		Events.echoEvent(Events.ON_NOTIFY, window, null);
+		
+	}
+	
+	public void atualizarLista(Usuario u) {
+		for(Usuario user:filterUsuarios){
+			if(user.getMatricula().equalsIgnoreCase(u.getMatricula())){
+				user.setAtivo(u.isAtivo());
+				user.setEmail(u.getEmail());
+			}
+		}
+		for(Usuario user:allUsuarios){
+			if(user.getMatricula().equalsIgnoreCase(u.getMatricula())){
+				user.setAtivo(u.isAtivo());
+				user.setEmail(u.getEmail());
+			}
+		}
+		BindUtils.postNotifyChange(null, null, this, "filterUsuarios");
 	}
 
 	/* Limpa os erros de validação e os dados do novo usuário. */

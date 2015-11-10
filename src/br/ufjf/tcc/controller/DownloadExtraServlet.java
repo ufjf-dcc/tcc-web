@@ -47,7 +47,7 @@ public class DownloadExtraServlet extends HttpServlet {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			
-				req.getRequestDispatcher("index5.jsp").forward(req, res);
+				req.getRequestDispatcher("index.jsp").forward(req, res);
 			
 			return;
 		} // Commons IO
