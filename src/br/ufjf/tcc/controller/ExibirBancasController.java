@@ -227,8 +227,8 @@ public class ExibirBancasController extends CommonsController {
 	{
 		if(getCurrentCalendar(getUsuario().getCurso())!=null)
 		{
-	    SessionManager.setAttribute("projeto",true);
-	    Executions.sendRedirect("/pages/editor.zul");
+		    SessionManager.setAttribute("projeto",true);
+		    Executions.sendRedirect("/pages/editor.zul");
 		}
 		else
 			Messagebox.show("É necessario cadastrar um calendario antes");
@@ -311,14 +311,14 @@ public class ExibirBancasController extends CommonsController {
 		ata.setIdAluno(getUsuario().getIdUsuario());
 		ata.setPathTemplateAta("/br/ufjf/tcc/pdfHandle/CompBancaTemplate/");
 		try {
-			ata.preenchePrincipal();
+			ata.preencherPrincipal();
 		} catch (Exception e) {
 			System.out.println(e);
 		}
 		Executions.getCurrent().sendRedirect(
 				"/exibePdfBanca?id="+getUsuario().getIdUsuario(), "_blank");
 		
-		ata.deleteLasts();
+		ata.deletePDFsGerados();
 	}
 	
 		

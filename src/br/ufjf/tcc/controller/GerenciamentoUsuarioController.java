@@ -14,7 +14,6 @@ import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.util.media.Media;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -31,7 +30,6 @@ import org.zkoss.zul.Window;
 
 import br.ufjf.tcc.business.CursoBusiness;
 import br.ufjf.tcc.business.DepartamentoBusiness;
-import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.business.TipoUsuarioBusiness;
 import br.ufjf.tcc.business.UsuarioBusiness;
 import br.ufjf.tcc.library.SessionManager;
@@ -39,7 +37,6 @@ import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.model.Departamento;
 import br.ufjf.tcc.model.TipoUsuario;
 import br.ufjf.tcc.model.Usuario;
-import br.ufjf.tcc.persistent.impl.UsuarioDAO;
 
 public class GerenciamentoUsuarioController extends CommonsController {
 	private UsuarioBusiness usuarioBusiness = new UsuarioBusiness();
@@ -526,7 +523,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 						@Override
 						public void onEvent(Event event) throws Exception {
 								int usuariosNaoCadastrados =0;
-								UsuarioDAO usuarioDAO = new UsuarioDAO();
+								UsuarioBusiness usuarioBusiness = new UsuarioBusiness();
 								
 								if(usuariosCSV.size()>0){
 								for(int i=0;i<usuariosCSV.size();i++){
@@ -538,24 +535,25 @@ public class GerenciamentoUsuarioController extends CommonsController {
 										}
 									}
 									
-									if(usuarioDAO.jaExiste(usuariosCSV.get(i).getMatricula(), null)){
-										Usuario usuarioTemp = usuarioDAO.getByMatricula(usuariosCSV.get(i).getMatricula());
+									if(usuarioBusiness.jaExiste(usuariosCSV.get(i).getMatricula(), null)){
+										Usuario usuarioTemp = usuarioBusiness.getByMatricula(usuariosCSV.get(i).getMatricula());
 										usuarioTemp.setEmail(usuariosCSV.get(i).getEmail());
 										usuarioTemp.setAtivo(usuariosCSV.get(i).isAtivo());
-										usuarioDAO.editar(usuarioTemp);
+										usuarioBusiness.editar(usuarioTemp);
 										atualizarLista(usuarioTemp);
-
+										substituirUsuario(allUsuarios, usuarioTemp);
 									}
 									
 									
 								}
 							if (usuariosCSV.size() > 0) {
-								if (usuarioDAO.salvarLista(usuariosCSV)) {
+								if (usuarioBusiness.salvarLista(usuariosCSV)) {
 									for(Usuario user:usuariosCSV){
-										if(user.getCurso().getIdCurso()==getUsuario().getCurso().getIdCurso())
+										if(user.getCurso().getIdCurso()==getUsuario().getCurso().getIdCurso()
+												&& !contemUsuario(allUsuarios, user))
 											allUsuarios.add(user);
+										
 									}
-									//allUsuarios.addAll(usuariosCSV);
 									filterUsuarios = allUsuarios;
 									notifyFilterUsuarios();
 									Clients.clearBusy(window);
@@ -604,6 +602,22 @@ public class GerenciamentoUsuarioController extends CommonsController {
 		
 		Events.echoEvent(Events.ON_NOTIFY, window, null);
 		
+	}
+	
+	private void substituirUsuario(List<Usuario> usuarios,Usuario u){
+		for (int i=0;i<usuarios.size();i++) {
+			if(usuarios.get(i).getMatricula().equalsIgnoreCase(u.getMatricula())){
+				usuarios.set(i, u);
+			}
+		}
+	}
+	
+	private boolean contemUsuario(List<Usuario> usuarios,Usuario u){
+		for (Usuario usuario : usuarios) {
+			if(usuario.getMatricula().equalsIgnoreCase(u.getMatricula()))
+				return true;
+		}
+		return false;
 	}
 	
 	public void atualizarLista(Usuario u) {

@@ -5,16 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import jonelo.jacksum.JacksumAPI;
-import jonelo.jacksum.algorithm.AbstractChecksum;
-import br.ufjf.ice.integra3.ws.login.interfaces.WsException_Exception;
-import br.ufjf.tcc.library.IntegraHandler;
 import br.ufjf.tcc.library.SessionManager;
 import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.model.Departamento;
 import br.ufjf.tcc.model.Permissao;
 import br.ufjf.tcc.model.Usuario;
 import br.ufjf.tcc.persistent.impl.UsuarioDAO;
+import jonelo.jacksum.JacksumAPI;
+import jonelo.jacksum.algorithm.AbstractChecksum;
 
 public class UsuarioBusiness {
 	
@@ -282,6 +280,10 @@ public class UsuarioBusiness {
 
 	public boolean salvar(Usuario usuario) {
 		return usuarioDAO.salvar(usuario);
+	}
+	
+	public boolean salvarLista(List<Usuario> usuarios){
+		return usuarioDAO.salvarLista(usuarios);
 	}
 
 	public boolean exclui(Usuario usuario) {

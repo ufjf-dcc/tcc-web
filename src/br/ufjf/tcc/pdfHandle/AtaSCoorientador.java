@@ -1,6 +1,7 @@
 package br.ufjf.tcc.pdfHandle;
 
 import java.awt.Color;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
 import com.lowagie.text.Image;
@@ -14,18 +15,18 @@ import br.ufjf.tcc.library.ConfHandler;
 
 public class AtaSCoorientador extends Ata {
 
-	// PREENCHE AS PAGINA 2 E 3 DO PDF
+	// PREENCHE AS PAGINA 2 E 3 DO PDF ATA
 	@Override
-	public void preenchePrincipal() throws Exception {
+	public void preencherPrincipal() throws Exception {
 
 		String Arquivo_Saida = ConfHandler.getConf("FILE.PATH") + "saida"
 				+ idAluno + ".pdf";
-		String template = pathTemplateAta+"TemplateSCoorientador2.pdf";
+		pathTemplateAta = ConfHandler.getConf("FILE.PATH")+"templatePDF/";
+		String template = pathTemplateAta+"TemplateSCoorientador"+tcc.getAluno().getCurso().getCodigoCurso()+".pdf";
 
 		FileOutputStream saida = new FileOutputStream(Arquivo_Saida);
 
-		PdfReader leitor = new PdfReader(
-				AtaCCoorientador.class.getResourceAsStream(template));
+		PdfReader leitor = new PdfReader(new PdfReader(new FileInputStream(template)));
 
 		PdfStamper stamper = new PdfStamper(leitor, saida);
 
@@ -46,8 +47,7 @@ public class AtaSCoorientador extends Ata {
 		// PREENCHE TABELA DE ACORDO COM A QUANTIDADE DE EXAMINADORES
 		Image tabela = null;
 		if (qtAvaliador == 4) {
-			tabela = Image.getInstance(ConfHandler.getConf("FILE.PATH")
-					+ "/tablec3.png");
+			tabela = Image.getInstance(pathTemplateAta+ "tablec3.png");
 			tabela.setAbsolutePosition(98, 437);
 			over.addImage(tabela);
 			over.setTextMatrix(102, 444);
@@ -56,8 +56,7 @@ public class AtaSCoorientador extends Ata {
 		}
 
 		if (qtAvaliador == 5) {
-			tabela = Image.getInstance(ConfHandler.getConf("FILE.PATH")
-					+ "/tablec4.png");
+			tabela = Image.getInstance(pathTemplateAta + "tablec4.png");
 			tabela.setAbsolutePosition(98, 417);
 			over.addImage(tabela);
 			over.setTextMatrix(102, 445);
@@ -76,12 +75,12 @@ public class AtaSCoorientador extends Ata {
 		//over.showText(aluno);
 		
 		over.setFontAndSize(bfTextoSimples, 12);
-		form.setField("titulo1", Divide.titulo(tituloTCC)[0]);
+		form.setField("titulo1", DivisorString.dividirTitulo(tituloTCC)[0]);
 //		over.setTextMatrix(122, 708);
 //		over.showText(Divide.titulo(tituloTCC)[0]);
 		
 		over.setFontAndSize(bfTextoSimples, 12);
-		form.setField("titulo2", Divide.titulo(tituloTCC)[1]);
+		form.setField("titulo2", DivisorString.dividirTitulo(tituloTCC)[1]);
 //		over.setTextMatrix(90, 687);
 //		over.showText(Divide.titulo(tituloTCC)[1]);
 		
@@ -199,11 +198,11 @@ public class AtaSCoorientador extends Ata {
 //		over.showText(aluno);
 		// TCC ENTITULADO
 		form.setFieldProperty("titulo1_2", "textcolor", Color.BLACK ,null);
-		form.setField("titulo1_2", Divide.titulo(tituloTCC)[0]);
+		form.setField("titulo1_2", DivisorString.dividirTitulo(tituloTCC)[0]);
 //		over.setTextMatrix(88, 435);
 //		over.showText(Divide.titulo(tituloTCC)[0]);
 		form.setFieldProperty("titulo2_2", "textcolor", Color.BLACK ,null);
-		form.setField("titulo2_2", Divide.titulo(tituloTCC)[1]);
+		form.setField("titulo2_2", DivisorString.dividirTitulo(tituloTCC)[1]);
 //		over.setTextMatrix(88, 415);
 //		over.showText(Divide.titulo(tituloTCC)[1]);
 
@@ -263,7 +262,7 @@ public class AtaSCoorientador extends Ata {
 
 			for (int i = 0; i < avaliadores.length; i++) {
 				PreenchimentoPDF.lastPag(aluno, avaliadores[i], dia, mes, ano,
-						i, idAluno,pathTemplateAta);
+						i, idAluno,pathTemplateAta,tcc);
 
 			}
 
@@ -272,8 +271,8 @@ public class AtaSCoorientador extends Ata {
 
 		}
 
-		Unir.lastPDFs(qtAvaliador, idAluno);
-		Unir.tudo(idAluno);
+		UniaoPDF.unirPDFsFichaAvaliacaoIndividual(qtAvaliador, idAluno);
+		UniaoPDF.unirPrincipalComFichaAvaliacaoIndividual(idAluno);
 
 	}
 

@@ -19,9 +19,6 @@ import br.ufjf.tcc.model.TCC;
 @WebServlet("/downloadExtra")
 public class DownloadExtraServlet extends HttpServlet {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
 	private TCC tcc = null;
@@ -34,32 +31,29 @@ public class DownloadExtraServlet extends HttpServlet {
 		if (tccId != null) {
 			TCCBusiness tccBusiness = new TCCBusiness();
 			tcc = tccBusiness.getTCCById(Integer.parseInt(tccId));
-
 		}
-		System.out.println("\n\n"+tcc.getArquivoExtraTCCFinal());
+		
 		File file = FileManager.getFile(tcc.getArquivoExtraTCCFinal());
-		System.out.println("\n\n"+tcc.getArquivoExtraTCCFinal());
+		
 		byte[] bytes = null;
+		
 		try {
 			bytes = fileToByte(file);
-			
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-			
-				req.getRequestDispatcher("index.jsp").forward(req, res);
-			
+			req.getRequestDispatcher("index.jsp").forward(req, res);
 			return;
-		} // Commons IO
-		res.setContentType("application/x-rar-compressed"); // Colocar dinamico, pelo arquivo
+		} 
+		
+		res.setContentType("application/x-rar-compressed"); 
 		res.setContentLength(bytes.length);
 		res.setHeader("Content-Disposition",
-				"attachment; filename=\""+tcc.getNomeTCC()+".rar"); // Colocar dinamico
+				"attachment; filename=\""+tcc.getNomeTCC()+".rar"); 
 		res.getOutputStream().write(bytes);
 
 	}
 
-	public static byte[] fileToByte(File imagem) throws Exception {
+	private static byte[] fileToByte(File imagem) throws Exception {
 
 		FileInputStream fis = new FileInputStream(imagem);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();

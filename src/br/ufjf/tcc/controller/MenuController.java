@@ -1,6 +1,7 @@
 package br.ufjf.tcc.controller;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -168,14 +169,10 @@ public class MenuController extends CommonsController {
 								}
 								String codigoCursoAluno = getUsuario().getCurso().getCodigoCurso();
 								
-								switch (codigoCursoAluno) {
-								case "35A":
-									ata.setPathTemplateAta("/br/ufjf/tcc/pdfHandle/AtaCienciaDaComputacao/");
-									break;
-								default:
-									
-									break;
-								}
+								String pathTemplateAta = ConfHandler.getConf("FILE.PATH")+"templatePDF/";
+							
+								ata.setPathTemplateAta(pathTemplateAta);
+							
 								
 								
 								
@@ -195,6 +192,8 @@ public class MenuController extends CommonsController {
 								String hora = Integer.toString(calendar.get(11))
 										+ "h";
 
+								ata.setTcc(tcc);
+								
 								ata.setHora(hora);
 								ata.setDia(dia.toString());
 								ata.setMes(mes.toString());
@@ -206,17 +205,20 @@ public class MenuController extends CommonsController {
 								ata.setOrientador(tcc.getOrientador()
 										.getNomeUsuario());
 								ata.setSala(tcc.getSalaDefesa());
-								ata.preencheParticipacoes(part);
-
-								if(ata.getPathTemplateAta()!=null)
-									ata.preenchePrincipal();
+								ata.inicializarParticipacoes(part);
+								ata.preencherPrincipal();
+								
+								if(possuiAta(ata.getPathTemplateAta(), tcc))
+									ata.preencherPrincipal();
 								else{
 									Messagebox
 									.show("Seu curso não possui Ata cadastrada.\n",
 											"Aviso", Messagebox.OK, Messagebox.ERROR);
 									
+									return;
+									
 								}
-								ata.deleteLasts();
+								ata.deletePDFsGerados();
 
 								Executions.getCurrent().sendRedirect(
 										"/pages/visualizaAta.zul", "_blank");
@@ -228,6 +230,27 @@ public class MenuController extends CommonsController {
 							
 					
 
+	}
+	
+	private boolean possuiAta(String path,TCC tcc){
+		File arquivoAta=null;
+		File arquivoFichaAvaliacaoIndividual = null;
+		try{
+			arquivoFichaAvaliacaoIndividual = new File(path+"FichaAvaliacaoIndividual"+tcc.getAluno().getCurso().getCodigoCurso()+".pdf");
+			if (tcc.getCoOrientador() == null){
+				arquivoAta = new File(path+"TemplateSCoorientador"+tcc.getAluno().getCurso().getCodigoCurso()+".pdf");
+			}else {
+				arquivoAta = new File(path+"TemplateCoorientador"+tcc.getAluno().getCurso().getCodigoCurso()+".pdf");
+			}			
+		}catch(Exception e){
+			return false;
+		}
+		
+		
+		if(arquivoAta!=null && arquivoAta.exists() 
+				&& arquivoFichaAvaliacaoIndividual!=null && arquivoFichaAvaliacaoIndividual.exists())
+			return true;		
+		return false;
 	}
 
 	public void setPdfArray() throws IOException {

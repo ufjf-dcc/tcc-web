@@ -11,6 +11,7 @@ public abstract class Ata {
 
 	protected static int qtAvaliador;
 
+	protected TCC tcc;
 	protected int idAluno;
 	protected String aluno;
 	protected String tituloTCC;
@@ -26,9 +27,9 @@ public abstract class Ata {
 	protected String sala;
 	protected List<TCC> trabMarcados;
 
-	public abstract void preenchePrincipal() throws Exception;
+	public abstract void preencherPrincipal() throws Exception;
 
-	public void preencheParticipacoes(List<Participacao> ps) {
+	public void inicializarParticipacoes(List<Participacao> ps) {
 		int qt = ps.size();
 
 		qtAvaliador = qt;
@@ -45,7 +46,7 @@ public abstract class Ata {
 
 	}
 
-	public void deleteLasts() {
+	public void deletePDFsGerados() {
 
 		File d;
 
@@ -219,6 +220,14 @@ public abstract class Ata {
 
 	public void setTrabMarcados(List<TCC> trabMarcados) {
 		this.trabMarcados = trabMarcados;
+	}
+
+	public TCC getTcc() {
+		return tcc;
+	}
+
+	public void setTcc(TCC tcc) {
+		this.tcc = tcc;
 	}
 	
 	

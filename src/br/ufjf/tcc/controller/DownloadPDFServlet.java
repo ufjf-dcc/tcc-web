@@ -49,15 +49,11 @@ public class DownloadPDFServlet extends HttpServlet {
 		try {
 			bytes = fileToByte(file);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-			
 		}
 		
 		res.setContentLength(bytes.length);
-		res.setHeader("Content-Disposition",
-				"attachment; filename=\""+tcc.getNomeTCC()+".pdf"+"\";"); // Colocar dinamico
-		
+		res.setHeader("Content-Disposition", "attachment; filename=\""+tcc.getNomeTCC()+".pdf"+"\";");
 		res.getOutputStream().write(bytes);
 
 	}

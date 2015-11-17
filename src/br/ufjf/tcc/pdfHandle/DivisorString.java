@@ -1,8 +1,9 @@
 package br.ufjf.tcc.pdfHandle;
 
 //CLASSE USADA APENAS PARA DIVIDIR O TITULO PARA CABER NO PDF
-public class Divide {
-	public static String[] titulo(String titulo) {
+public class DivisorString {
+	
+	public static String[] dividirTitulo(String titulo) {
 		String tituAux = titulo;
 		int resto = titulo.lastIndexOf(' ');
 		String titulo1 = "";

@@ -1,6 +1,7 @@
 package br.ufjf.tcc.pdfHandle;
 
 import java.awt.Color;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.Calendar;
 import java.util.List;
@@ -19,16 +20,15 @@ import br.ufjf.tcc.model.TCC;
 public class PreenchimentoPDF {
 
 	public static void lastPag(String nomeAluno, String nomeAvaliador,
-			String dia, String mes, String ano, int n, int idAluno,String pathAta)
+			String dia, String mes, String ano, int n, int idAluno,String pathAta,TCC tcc)
 			throws Exception {
-		String template =   pathAta+"LastPagNew.pdf";
+		String template =   pathAta+"FichaAvaliacaoIndividual"+tcc.getAluno().getCurso().getCodigoCurso()+".pdf";
 		String Arquivo_Saida = ConfHandler.getConf("FILE.PATH") + "last"
 				+ idAluno + "-" + n + ".pdf";
 
 		FileOutputStream saida = new FileOutputStream(Arquivo_Saida);
 
-		PdfReader leitor = new PdfReader(
-				PreenchimentoPDF.class.getResourceAsStream(template));
+		PdfReader leitor = new PdfReader(new PdfReader(new FileInputStream(template)));
 
 		PdfStamper stamper = new PdfStamper(leitor, saida);
 
