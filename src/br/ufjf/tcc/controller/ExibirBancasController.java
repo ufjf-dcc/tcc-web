@@ -309,16 +309,14 @@ public class ExibirBancasController extends CommonsController {
 		
 		ata.setTrabMarcados(trabalhosMarcados);
 		ata.setIdAluno(getUsuario().getIdUsuario());
-		ata.setPathTemplateAta("/br/ufjf/tcc/pdfHandle/CompBancaTemplate/");
 		try {
-			ata.preencherPrincipal();
+			ata.preencherPDF();
 		} catch (Exception e) {
 			System.out.println(e);
 		}
-		Executions.getCurrent().sendRedirect(
-				"/exibePdfBanca?id="+getUsuario().getIdUsuario(), "_blank");
+		Executions.getCurrent().sendRedirect("/exibePdfBanca?id="+getUsuario().getIdUsuario(), "_blank");
 		
-		ata.deletePDFsGerados();
+		ata.deletarPDFsExibicaoBanca();
 	}
 	
 		

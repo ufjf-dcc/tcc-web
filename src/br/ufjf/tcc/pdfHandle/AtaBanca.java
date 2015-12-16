@@ -2,21 +2,17 @@ package br.ufjf.tcc.pdfHandle;
 
 public class AtaBanca extends Ata {
 
-	@Override
-	public void preencherPrincipal() throws Exception {
+	public void preencherPDF() throws Exception {
 
 		try {
-
 			for (int i = 0; i < trabMarcados.size(); i++) 
-				PreenchimentoPDF.bancaPDF(trabMarcados.get(i), i, idAluno , pathTemplateAta);
+				PreenchimentoPDF.preencherBancaPDF(trabMarcados.get(i), i, idAluno , PASTA_COM_TEMPLATE_ATAS);
 
 		} catch (Exception e) {
 			e.printStackTrace();
-
 		}
-
-		UniaoPDF.unirPDFsExibicaoBanca(trabMarcados.size(), idAluno);
 		
+		UniaoPDF.unirPDFsExibicaoBanca(trabMarcados.size(), idAluno);
 	}
 
 }

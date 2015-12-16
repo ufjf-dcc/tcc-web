@@ -9,8 +9,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import br.ufjf.tcc.library.ConfHandler;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfContentByte;
@@ -20,15 +18,15 @@ import com.lowagie.text.pdf.PdfWriter;
 
 public class UniaoPDF {
 
-	public static void unirPDFsFichaAvaliacaoIndividual(int qt, int idAluno) {
+	public static void unirPDFsFichaAvaliacaoIndividual(int qtAvaliadores, int idAluno) {
 
 		try {
 			List<InputStream> pdfs = new ArrayList<InputStream>();
-			for (int i = 0; i < qt; i++) {
-				pdfs.add(new FileInputStream(ConfHandler.getConf("FILE.PATH")+ "last" + idAluno + "-" + i + ".pdf"));
+			for (int i = 0; i < qtAvaliadores; i++) {
+				pdfs.add(new FileInputStream(Ata.PASTA_ARQUIVOS_TEMP + idAluno + "-" + i + ".pdf"));
 			}
 
-			OutputStream output = new FileOutputStream(ConfHandler.getConf("FILE.PATH") + "saidaLP" + idAluno + ".pdf");
+			OutputStream output = new FileOutputStream(Ata.PASTA_ARQUIVOS_TEMP+ Ata.FICHA_AVALIACAO_INDIVIDUAL + idAluno + ".pdf");
 			UniaoPDF.concatPDFs(pdfs, output, true);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -36,17 +34,16 @@ public class UniaoPDF {
 
 	}
 
-	public static void unirPrincipalComFichaAvaliacaoIndividual(int idAluno) {
+	public static void unirFichaAvaliacaoFinalComFichaAvaliacaoIndividual(int idAluno) {
 
 		try {
 
 			List<InputStream> pdfs = new ArrayList<InputStream>();
 
-			pdfs.add(new FileInputStream(ConfHandler.getConf("FILE.PATH") + "saida" + idAluno + ".pdf"));
-			pdfs.add(new FileInputStream(ConfHandler.getConf("FILE.PATH") + "saidaLP" + idAluno + ".pdf"));
+			pdfs.add(new FileInputStream(Ata.PASTA_ARQUIVOS_TEMP + Ata.FICHA_AVALIACAO_FINAL + idAluno + ".pdf"));
+			pdfs.add(new FileInputStream(Ata.PASTA_ARQUIVOS_TEMP + Ata.FICHA_AVALIACAO_INDIVIDUAL + idAluno + ".pdf"));
 
-			OutputStream output = new FileOutputStream(
-					ConfHandler.getConf("FILE.PATH") + "PDFCompleto" + idAluno + ".pdf");
+			OutputStream output = new FileOutputStream(Ata.PASTA_ARQUIVOS_TEMP + Ata.FICHA_COMPLETA + idAluno + ".pdf");
 
 			UniaoPDF.concatPDFs(pdfs, output, true);
 
@@ -61,11 +58,10 @@ public class UniaoPDF {
 		try {
 			List<InputStream> pdfs = new ArrayList<InputStream>();
 			for (int i = 0; i < qt; i++) {
-				pdfs.add(new FileInputStream(ConfHandler.getConf("FILE.PATH") + "last" + idAluno + "-" + i + ".pdf"));
+				pdfs.add(new FileInputStream(Ata.PASTA_ARQUIVOS_TEMP + Ata.COMPOSICAO_BANCA + idAluno + "-" + i + ".pdf"));
 			}
 
-			OutputStream output = new FileOutputStream(
-					ConfHandler.getConf("FILE.PATH") + "PDFCompletoBanca" + idAluno + ".pdf");
+			OutputStream output = new FileOutputStream(Ata.PASTA_ARQUIVOS_TEMP + Ata.COMPOSICAO_BANCA_FINAL + idAluno + ".pdf");
 			UniaoPDF.concatPDFs(pdfs, output, true);
 		} catch (Exception e) {
 			e.printStackTrace();
