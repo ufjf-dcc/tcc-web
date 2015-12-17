@@ -226,7 +226,8 @@ var tooltip = function(L) {
 		e = o(M, "div");
 		e.className = "mcTooltipInner";
 		if (l == 1) {
-			e[P] = h;
+			$('.mcTooltipWrapper').css('display','none');
+			/*e[P] = h; */
 			var f = 1
 		} else {
 			var d = o(U, h);

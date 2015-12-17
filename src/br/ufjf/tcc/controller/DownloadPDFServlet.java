@@ -1,6 +1,5 @@
 package br.ufjf.tcc.controller;
 
-import java.awt.Window;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,8 +10,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.zkoss.zk.ui.Executions;
 
 import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.library.FileManager;
@@ -33,6 +30,8 @@ public class DownloadPDFServlet extends HttpServlet {
 			TCCBusiness tccBusiness = new TCCBusiness();
 			tcc = tccBusiness.getTCCById(Integer.parseInt(tccId));
 
+			tcc.setQtDownloads(tcc.getQtDownloads()+1);
+			tccBusiness.edit(tcc);
 		}
 
 		
@@ -40,7 +39,7 @@ public class DownloadPDFServlet extends HttpServlet {
 		
 		if(file==null){
 			try{
-				req.getRequestDispatcher("index5.jsp?").forward(req, res);
+				req.getRequestDispatcher("index.jsp?").forward(req, res);
 			}catch(Exception e2){
 				e2.printStackTrace();
 			}
@@ -50,15 +49,11 @@ public class DownloadPDFServlet extends HttpServlet {
 		try {
 			bytes = fileToByte(file);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-			
 		}
 		
 		res.setContentLength(bytes.length);
-		res.setHeader("Content-Disposition",
-				"attachment; filename=\""+tcc.getNomeTCC()+".pdf"+"\";"); // Colocar dinamico
-		
+		res.setHeader("Content-Disposition", "attachment; filename=\""+tcc.getNomeTCC()+".pdf"+"\";");
 		res.getOutputStream().write(bytes);
 
 	}
@@ -72,6 +67,7 @@ public class DownloadPDFServlet extends HttpServlet {
 		while ((bytesRead = fis.read(buffer, 0, 8192)) != -1) {
 			baos.write(buffer, 0, bytesRead);
 		}
+		fis.close();
 		return baos.toByteArray();
 	}
 

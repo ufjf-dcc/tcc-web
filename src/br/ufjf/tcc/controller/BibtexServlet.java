@@ -49,16 +49,16 @@ public class BibtexServlet extends HttpServlet {
 		citation_key+=  titulos[0].toLowerCase();
 		
 		citation_key = formatCitationKey(citation_key);
-		tituloTccLatex = formatTitulo(tituloTccLatex);
-		authorTccLatex = formatAuthor(authorTccLatex);
-		
+		tituloTccLatex = formatMaiusculo(tituloTccLatex);
+		authorTccLatex = formatMinusculo(authorTccLatex);
+		authorTccLatex = formatMaiusculo(authorTccLatex);
 		
 		PrintWriter out = res.getWriter(); 
 		out.println("@phdthesis{"+ citation_key  +" ,");
 		out.println(" title= {"+ tituloTccLatex +"},");
 		out.println(" author= {"+authorTccLatex +"},");
 		out.println(" year= {"+getTccYear(tcc)+"},");
-		out.println(" note = {Available at http://200.131.219.47/tcc-web/tcc?id="+tcc.getIdTCC()+"},");
+		out.println(" note = {Available at  http://monografias.ice.ufjf.br/tcc-web/tcc?id="+tcc.getIdTCC()+"},");
 		out.println(" school= {Federal University of Juiz de Fora},");
 		out.println(" key = {"+ nomes[nomes.length-1] +","+ getTccYear(tcc)+"}");
 		out.println("}");
@@ -103,26 +103,29 @@ public class BibtexServlet extends HttpServlet {
 		return x;
 	}
 	
-	public String formatTitulo(String x){
-		x = x.replace("Ç", "{\\CC}");
+	public String formatMaiusculo(String x){
+		x = x.replace("Ç", "{\\C{C}}");
 		x = x.replace("Á", "{\\'A}");
 		x = x.replace("À", "{\\`A}");
 		x = x.replace("Ã", "{\\~A}");
 		x = x.replace("É", "{\\'E}");
-		x = x.replace("Ẽ", "{\\'E}");
+		x = x.replace("Ẽ", "{\\~E}");
 		x = x.replace("Í", "{\\'I}");
+		x = x.replace("Ĩ", "{\\~I}");
 		x = x.replace("Ó", "{\\'O}");
 		x = x.replace("Õ", "{\\~O}");
 		x = x.replace("Ú", "{\\'U}");
 		x = x.replace("Ù", "{\\`U}");
 		
+		x = x.replace("Ñ", "{\\~N}");
+		
 		return x;
 		
 	}
 	
-	public String formatAuthor(String x){
+	public String formatMinusculo(String x){
 		
-		x = x.replace("ç", "{\\cc}");
+		x = x.replace("ç", "{\\c{c}}");
 		x = x.replace("á", "{\\'a}");
 		x = x.replace("à", "{\\`a}");
 		x = x.replace("ã", "{\\~a}");
@@ -135,6 +138,7 @@ public class BibtexServlet extends HttpServlet {
 		x = x.replace("ú", "{\\'u}");
 		x = x.replace("ù", "{\\`u}");
 		
+		x = x.replace("ñ", "{\\~n}");
 		return x;
 		
 	}

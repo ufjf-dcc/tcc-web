@@ -64,4 +64,8 @@ public class CalendarioSemestreBusiness {
 	public CalendarioSemestre getCalendarByTCC(TCC tcc) {
 		return calendarioSemestreDAO.getCalendarByTCC(tcc);
 	}
+	
+	public boolean updateFimSemCalendarById(Date fim,int id) {
+		return calendarioSemestreDAO.updateFimSemCalendarById(fim, id);
+	}
 }

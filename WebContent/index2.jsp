@@ -13,6 +13,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" >
+<meta name="description" content="Repositório de trabalhos acadêmicos da Universidade Federal de Juiz de Fora" />
+<meta name="keywords" content="sistemas de informação;monografias; tcc; dissertação;computação aplicada; informática aplicada" />
 
 		<link href="tooltip.css" rel="stylesheet" type="text/css" />
    		 <script src="tooltip.js" type="text/javascript"></script>
@@ -98,19 +101,21 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 
 </script>
 
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	
+
 
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Lista Pública de Trabalhos Acadêmicos - UFJF</title>
 </head>
 
 <%
-	ArrayList teste = (ArrayList) request.getAttribute("tccs");
+    request.setCharacterEncoding("UTF-8");
+	
 	String pesquisaFeita = (String) request.getAttribute("PalavaPesquisa");
 	String cursoS = (String) request.getAttribute("cursoSelected");
 	String yearSelected = (String) request.getAttribute("yearSelected");
-	
-	
-	request.setAttribute("lista", teste);
+
 	
 	if(cursoS==null)
 		request.setAttribute("cursoSel", "");
@@ -123,11 +128,7 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 		request.setAttribute("strBusca", pesquisaFeita);
 	
 	request.setAttribute("yearSelecionado", yearSelected);
-	
-	
-	
-	
-	
+
 %>
 
 <%!
@@ -138,7 +139,6 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 		return "" + cal.get(Calendar.YEAR);
 	}
 %>
-
 
 <body>
 <div>
@@ -177,7 +177,7 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 		
 		
 		<div class="divPesquisa" style="width: 100%;height: 40px;display: block;">
-		<form class="form-inline" action="index.jsp" method="post">
+		<form id="form" class="form-inline" action="index.jsp" method="get">
 		
 			<div style="float: left;position: relative;top: 5px;left: 20px">
 
@@ -193,8 +193,8 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 			</div>
 			<div style="float: right; padding-top: 5px; width: 520px;" >
 				<label style="font-size: 12px;font-family: Arial,sans-serif;font-weight: normal;" >Pesquisar:</label> 
-				<input class="form-control input-sm" id="pesquisa" name="pesquisa" type="text"
-					value="${strBusca}" /> 
+				<input maxlength="100" class="form-control input-sm" id="pesquisa" name="pesquisa" type="text"
+					value="${PalavaPesquisa}" /> 
 					
 					<label style="padding-left: 20px;font-size: 12px;font-family: Arial,sans-serif;font-weight: normal;" >Ano:</label> 
 					<select style="" class="form-control input-sm"  id="year" name="year">
@@ -228,13 +228,15 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 						</div>
 						
 					</div>
-	
-			
+				
 		</div>
-	
+		
+	</form>
 	</div>
+	<div style="display:none" >
+			<a href="./by-year" >by-year</a>
+		</div>
 	</div>
-	
 	
 	
 	<div style="position:absolute;z-index: 3 ; font-size: 12px;width: 99.25%;"  >
@@ -247,7 +249,7 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 				<th width="5%" style="padding: 5px 5px;vertical-align: middle;">PDF</th>
 				<th width="5%" style="padding: 5px 5px;vertical-align: middle;">Extras</th>
 			</tr>
-			<c:forEach var="tcc" items="${lista}">
+			<c:forEach var="tcc" items="${tccs}">
 				<pg:item>
 				<tr style="cursor: pointer;color:#636363;vertical-align: middle;height: 42px;margin: auto;">
 					
@@ -311,9 +313,6 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 				</div>
 				
 				
-					
-					
-				
 				</pg:item>
 			</c:forEach>
 			
@@ -321,14 +320,14 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 		</table>
 					
 		<div style="display: block;position: relative;" >
-		<ul  class="pagination pagination-sm" style="background-color: black;margin: auto " >
+		<ul  class="pagination pagination-sm" style="margin: auto " >
 		<pg:index>
 		
 		  <li ${page != 1 ? 'style="display: none;"' : ''}  > <a>&lt;&lt; Anterior</a> </li>
 		
 	    <pg:prev> 
 	    
-	     <li> <a href="<%= pageUrl.replace("index2.jsp", "index.jsp")+"&curso="+request.getAttribute("cursoSel")+"&pesquisa="+request.getAttribute("strBusca")+"&year="+request.getAttribute("yearSelecionado")+"&page="+pageNumber %>">&lt;&lt; Anterior</a> </li>
+	     <li class="btn-success" > <a href="<%= pageUrl.replace("index2.jsp", "index.jsp")+"&curso="+request.getAttribute("cursoSel")+"&pesquisa="+request.getAttribute("strBusca")+"&year="+request.getAttribute("yearSelecionado")+"&page="+pageNumber %>">&lt;&lt; Anterior</a> </li>
 	    </pg:prev>
 	    
 	    <pg:pages>
@@ -352,11 +351,6 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 	}
 	</script>
 
-	
-	
-				
-
-  
 	
 </body>
 </html>

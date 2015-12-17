@@ -17,12 +17,17 @@
 					<label value="${forEachStatus.index + 1}º " />
 					<datebox width="100%" value="@bind(each.dataFinal)"
 						format="dd/MM/yyyy" constraint="no empty"
-						disabled="@load(forEachStatus.index lt vm.currentPrazo ? 'true' : 'false')" />
+ 				  		disabled="false"
+						 />
 					<label 
 						onCreate="@command('getDescription', label=self, type=each.tipo)"/>
 				</row>
+				
+				
 			</template>
+			
 		</grid>
+		
 
 		<hlayout width="98%" style="margin:5px;">
 			<div hflex="1">

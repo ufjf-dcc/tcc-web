@@ -25,7 +25,7 @@ import br.ufjf.tcc.business.TCCBusiness;
  */
 @Entity
 @Table(name = "TCC")
-public class TCC implements Serializable {
+public class TCC implements Serializable,Comparable<TCC> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -171,6 +171,18 @@ public class TCC implements Serializable {
 	{@code @Column(name = "projeto", nullable = false)}. */ 
 	@Column(name = "projeto", nullable = false) 
 	private boolean projeto;
+	
+	@Column(name = "entregouDoc", nullable = false) 
+	private boolean entregouDoc;
+	
+	@Column(name = "trabFinal", nullable = false) 
+	private boolean trabFinal;
+	
+	@Column(name = "arqProjFinal", length = 255, nullable = true)
+	private String arqProjFinal;
+	
+	@Column(name = "arqExtraProjFinal", length = 255, nullable = true)
+	private String arqExtraProjFinal;
 
 	/**
 	 * Relacionamento N para 1 entre TCC e Usuario. Mapeando {@link Usuario} na
@@ -225,6 +237,13 @@ public class TCC implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "idCalendarioSemestre", nullable = true)
 	private CalendarioSemestre calendarioSemestre = null;
+	
+	@Column(name = "qtVisualizacoes", nullable = false) 
+	private int qtVisualizacoes;
+	
+	@Column(name = "qtDownloads", nullable = false) 
+	private int qtDownloads;
+	
 
 	public TCC() {
 
@@ -426,4 +445,71 @@ public class TCC implements Serializable {
 	{
 		return (new TCCBusiness()).getStatusTCC(this);
 	}
+	
+	public int compareTo(TCC outroTcc){
+		if(this.getDataEnvioFinal()!=null && outroTcc.getDataEnvioFinal()!=null){
+			if(this.getDataEnvioFinal().before(outroTcc.getDataEnvioFinal()))
+				return -1;
+			if(this.getDataEnvioFinal().after(outroTcc.getDataEnvioFinal()))
+				return 1;
+			return 0;
+			
+		}
+		if(this.getDataEnvioFinal()==null && outroTcc.getDataEnvioFinal()!=null){
+			return 1;
+		}
+		return -1;
+	}
+
+	public boolean isEntregouDoc() {
+		return entregouDoc;
+	}
+
+	public void setEntregouDoc(boolean entregouDoc) {
+		this.entregouDoc = entregouDoc;
+	}
+
+	public String getArqProjFinal() {
+		return arqProjFinal;
+	}
+
+	public void setArqProjFinal(String arqProjFinal) {
+		this.arqProjFinal = arqProjFinal;
+	}
+
+	public String getArqExtraProjFinal() {
+		return arqExtraProjFinal;
+	}
+
+	public void setArqExtraProjFinal(String arqExtraProjFinal) {
+		this.arqExtraProjFinal = arqExtraProjFinal;
+	}
+
+	public boolean isTrabFinal() {
+		return trabFinal;
+	}
+
+	public void setTrabFinal(boolean trabFinal) {
+		this.trabFinal = trabFinal;
+	}
+
+	public int getQtVisualizacoes() {
+		return qtVisualizacoes;
+	}
+
+	public void setQtVisualizacoes(int qtVisualizacoes) {
+		this.qtVisualizacoes = qtVisualizacoes;
+	}
+
+	public int getQtDownloads() {
+		return qtDownloads;
+	}
+
+	public void setQtDownloads(int qtDownloads) {
+		this.qtDownloads = qtDownloads;
+	}
+	
+	
+	
+	
 }

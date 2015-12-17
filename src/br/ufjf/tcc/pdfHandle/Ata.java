@@ -1,32 +1,63 @@
 package br.ufjf.tcc.pdfHandle;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.util.List;
+
+import com.lowagie.text.pdf.AcroFields;
+import com.lowagie.text.pdf.BaseFont;
+import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfReader;
+import com.lowagie.text.pdf.PdfStamper;
 
 import br.ufjf.tcc.library.ConfHandler;
 import br.ufjf.tcc.model.Participacao;
+import br.ufjf.tcc.model.TCC;
 
 public abstract class Ata {
+	
+	protected static final int numeroDePaginasBase = 3;
 
 	protected static int qtAvaliador;
 
+	protected TCC tcc;
 	protected int idAluno;
-	protected String aluno;
+	protected String nomeAluno;
 	protected String tituloTCC;
 	protected String orientador;
 	protected String coorientador = null;
 	protected String[] avaliadores;
-	protected byte[] pdfByteArray = null;
-
 	protected String dia;
 	protected String mes;
 	protected String ano;
 	protected String hora;
 	protected String sala;
+	protected List<TCC> trabMarcados;
+	
+	protected String template;
+	protected FileOutputStream saida;
+	protected PdfReader leitor;
+	protected PdfStamper stamper;
+	protected PdfContentByte over;
+	protected AcroFields form;
+	protected BaseFont bfTextoSimples ;
+	
+	public static final String COMPOSICAO_BANCA = "ComposicaoBanca";
+	public static final String COMPOSICAO_BANCA_FINAL = "ComposicaoBancaFinal";
+	
+	protected static final String FICHA_AVALIACAO_FINAL = "FichaAvaliacaoFinal";
+	protected static final String FICHA_AVALIACAO_INDIVIDUAL = "FichaAvaliacaoIndividual";
+	protected static final String TEMPLATE_SEM_COORIENTADOR = "TemplateSCoorientador";
+	protected static final String TEMPLATE_COM_COORIENTADOR = "TemplateCoorientador";
+	
+	public static final String FICHA_COMPLETA = "FichaCompleta" ;
+	public static final String EXTENSAO_PDF = ".pdf";
+	public static final String PASTA_ARQUIVOS_TEMP = ConfHandler.getConf("FILE.PATH") + "arquivosTemporarios/";
+	public static final String PASTA_COM_TEMPLATE_ATAS = ConfHandler.getConf("FILE.PATH") + "templatePDF/";
 
-	public abstract void preenchePrincipal() throws Exception;
+	public abstract void preencherPDF() throws Exception;
 
-	public void preencheParticipacoes(List<Participacao> ps) {
+	public void inicializarParticipacoes(List<Participacao> ps) {
 		int qt = ps.size();
 
 		qtAvaliador = qt;
@@ -36,48 +67,40 @@ public abstract class Ata {
 				avaliadores[i] = ps.get(i).getProfessor().getNomeUsuario();
 
 			}
-		} else {
-
-			System.out.println("participacao 0");
 		}
 
 	}
 
-	public void deleteLasts() {
-
-		File d;
+	public void deletarPDFsFichaGerados() {
 
 		for (int i = 0; i < qtAvaliador; i++) {
-			d = new File(ConfHandler.getConf("FILE.PATH") + "last" + idAluno
-					+ "-" + i + ".pdf");
-			if (d.delete())
-				System.out.println("deletado");
-			else
-				System.out.println("NAO deletado");
+			deleteFile(PASTA_ARQUIVOS_TEMP + idAluno + "-" + i + ".pdf");
 		}
+		deleteFile(PASTA_ARQUIVOS_TEMP + FICHA_AVALIACAO_FINAL + idAluno + ".pdf");
+		deleteFile(PASTA_ARQUIVOS_TEMP + FICHA_AVALIACAO_INDIVIDUAL + idAluno + ".pdf");
 
-		d = new File(ConfHandler.getConf("FILE.PATH") + "saida" + idAluno
-				+ ".pdf");
-		if (d.delete())
-			System.out.println("deletado");
-		else
-			System.out.println("NAO deletado");
-
-		d = new File(ConfHandler.getConf("FILE.PATH") + "saidaLP" + idAluno
-				+ ".pdf");
-		if (d.delete())
-			System.out.println("deletado");
-		else
-			System.out.println("NAO deletado");
-
+	}
+	
+	public void deletarPDFsExibicaoBanca(){
+		if(trabMarcados!=null){
+			for (int i = 0; i < trabMarcados.size(); i++) {
+				deleteFile(PASTA_ARQUIVOS_TEMP + Ata.COMPOSICAO_BANCA + idAluno + "-" + i + ".pdf");
+			}			
+		}
+	}
+	
+	private void deleteFile(String path){
+		File file = new File(path);
+		if(file.exists())
+			file.delete();
 	}
 
 	public String getAluno() {
-		return aluno;
+		return nomeAluno;
 	}
 
 	public void setAluno(String aluno) {
-		this.aluno = aluno;
+		this.nomeAluno = aluno;
 	}
 
 	public String getOrientador() {
@@ -166,7 +189,7 @@ public abstract class Ata {
 		String meses[] = new String[12];
 		meses[0] = "janeiro";
 		meses[1] = "fevereiro";
-		meses[2] = "março";
+		meses[2] = "marï¿½o";
 		meses[3] = "abril";
 		meses[4] = "maio";
 		meses[5] = "junho";
@@ -181,12 +204,20 @@ public abstract class Ata {
 
 	}
 
-	public byte[] getPdfByteArray() {
-		return pdfByteArray;
+	public List<TCC> getTrabMarcados() {
+		return trabMarcados;
 	}
 
-	public void setPdfByteArray(byte[] pdfByteArray) {
-		this.pdfByteArray = pdfByteArray;
+	public void setTrabMarcados(List<TCC> trabMarcados) {
+		this.trabMarcados = trabMarcados;
 	}
 
+	public TCC getTcc() {
+		return tcc;
+	}
+
+	public void setTcc(TCC tcc) {
+		this.tcc = tcc;
+	}
+	
 }

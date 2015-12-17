@@ -94,15 +94,18 @@
 					visible="@load(not vm.userSecretaria and not vm.project)" open="false">
 					<caption label="Banca Examinadora" />
 					<vlayout hflex="1" style="margin:15px">
+					
+						<radiogroup id="banca" onCheck="@command('onCheckBanca',suplente=self.selectedItem.value)"  />
+						
 						<grid model="@load(vm.tcc.participacoes)"
 							emptyMessage="Nenhum examinador adicionado"
 							style="margin-left:5px; margin-right:5px; margin-top:5px;">
 							<auxhead>
-								<auxheader colspan="2">
+								<auxheader colspan="3">
 									<vlayout>
-										<combobox
+										<combobox width="75%"
 											id="cmbDepartamentoBanca" model="@load(vm.departamentos)"
-											readonly="true" width="100%" value="Selecione o Departamento"
+											readonly="true" value="Selecione o Departamento"
 											tooltiptext="Selecione o Departamento"
 											onSelect="@command('selectedDepartamento', dep=self.selectedItem)">
 											<template name="model">
@@ -111,7 +114,7 @@
 											</template>
 										</combobox>
 										<combobox
-											model="@load(vm.orientadores)" width="100%" readonly="true"
+											model="@load(vm.orientadores)" width="75%" readonly="true"
 											value="Selecione o Examinador"
 											tooltiptext="Selecione o Examinador"
 											selectedItem="@load(vm.tempUser) @save(vm.tempUser, before='addToBanca')">
@@ -128,16 +131,23 @@
 									</vlayout>
 								</auxheader>
 							</auxhead>
+							
 							<columns>
+							
 								<column label="Nome do examinador" />
 								<column label="Ação" width="60px" />
+								<column label="Suplente" width="60px" />
+								
 							</columns>
-							<template name="model">
+							
+							<template name="model">							
 								<row>
 									<label
 										value="@load(each.professor.nomeUsuario)" />
 									<button image="/img/delete.png"
 										onClick="@command('removeFromBanca', participacao=each)" />
+									<radio style="padding:10px"  checked="@load(each.suplente eq 1 ? 'true' : 'false')"
+									 id="@load(each.professor.idUsuario)" value="@load(each)" radiogroup="banca"  />
 								</row>
 							</template>
 						</grid>

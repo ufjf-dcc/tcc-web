@@ -36,6 +36,7 @@ public class TCCBusiness {
 		validateData(tcc.getDataApresentacao(),tcc);
 		validateSala(tcc.getSalaDefesa(),tcc);
 		validateBanca(tcc.getParticipacoes(),tcc);
+		validateSuplente(tcc.getParticipacoes(),tcc);
 		validatePalavraChave(tcc.getPalavrasChave());
 		if(checkFile)
 			validateArquivoBanca(tcc.getArquivoTCCBanca());
@@ -89,6 +90,12 @@ public class TCCBusiness {
 		if(tcc!=null)
 		if ((list  == null || list.size() == 0) && !tcc.isProjeto())
 			errors.add("É necessário informar a banca\n");		
+	}
+	
+	public void validateSuplente(List<Participacao> list, TCC tcc) {
+		if(tcc!=null)
+		if ((list  == null || list.size() == 0 || !possuiSuplente(list)) && !tcc.isProjeto())
+			errors.add("É necessário informar o suplente da banca.\n");		
 	}
 	
 	public void validateArquivoBanca(String arquivo) {
@@ -228,8 +235,21 @@ public class TCCBusiness {
 		return tccDao.getAllTrabalhosAndProjetosByCurso(curso);
 	}
 	
+	public List<TCC> getAllTrabalhosBancaMarcada(Curso curso,CalendarioSemestre currentCalendar){
+		return tccDao.getAllTrabalhosBancaMarcada(curso,currentCalendar);
+	}
+	
 	public List<TCC> getTrabalhosAndProjetosByCursoAndCalendar(Curso curso, CalendarioSemestre currentCalendar){
 		return tccDao.getTrabalhosAndProjetosByCursoAndCalendar(curso, currentCalendar);
+	}
+	
+	public boolean possuiSuplente(List<Participacao> participacoes){
+		for(Participacao p:participacoes ){
+			if(p.getSuplente()==1)
+				return true;
+		}
+		
+		return false;
 	}
 
 	public boolean isProjetoAguardandoAprovacao(TCC tcc)
@@ -254,7 +274,8 @@ public class TCCBusiness {
 		if(!tcc.isProjeto() && !(tcc.getPalavrasChave()== null || tcc.getPalavrasChave().trim().length() == 0) && tcc.getArquivoTCCBanca()!=null
 				&& !(tcc.getResumoTCC()==null || tcc.getResumoTCC().trim().length() == 0) && tcc.getOrientador()!=null && tcc.getNomeTCC()!=null
 				&& !(tcc.getSalaDefesa()== null || tcc.getSalaDefesa().trim().length() == 0) && tcc.getDataApresentacao()!=null 
-				&& pb.getParticipacoesByTCC(tcc).size()>0)
+				&& pb.getParticipacoesByTCC(tcc).size()>0
+				&& possuiSuplente(pb.getParticipacoesByTCC(tcc)))
 			return true;
 		return false;
 	}
@@ -362,6 +383,18 @@ public class TCCBusiness {
 		if(tcc.getArquivoTCCBanca()!=null)
 		{
 			f = new File(ConfHandler.getConf("FILE.PATH")+tcc.getArquivoTCCBanca());
+			if(f!=null)
+				f.delete();
+		}
+		if(tcc.getArqExtraProjFinal()!=null)
+		{
+			f = new File(ConfHandler.getConf("FILE.PATH")+tcc.getArqExtraProjFinal());
+			if(f!=null)
+				f.delete();
+		}
+		if(tcc.getArqProjFinal()!=null)
+		{
+			f = new File(ConfHandler.getConf("FILE.PATH")+tcc.getArqProjFinal());
 			if(f!=null)
 				f.delete();
 		}

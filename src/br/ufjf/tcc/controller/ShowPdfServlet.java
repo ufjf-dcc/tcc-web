@@ -36,7 +36,9 @@ public class ShowPdfServlet extends HttpServlet {
 			TCCBusiness tccBusiness = new TCCBusiness();
 			tcc = tccBusiness.getTCCById(Integer.parseInt(tccId));
 
-		
+			tcc.setQtVisualizacoes(tcc.getQtVisualizacoes()+1);
+			tccBusiness.edit(tcc);
+			
 		
 		}
 		
