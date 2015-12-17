@@ -11,6 +11,7 @@ import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Iframe;
 import org.zkoss.zul.Label;
@@ -20,7 +21,6 @@ import org.zkoss.zul.Window;
 import br.ufjf.tcc.business.PermissaoBusiness;
 import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.business.UsuarioBusiness;
-import br.ufjf.tcc.library.ConfHandler;
 import br.ufjf.tcc.library.SendMail;
 import br.ufjf.tcc.library.SessionManager;
 import br.ufjf.tcc.model.Participacao;
@@ -35,7 +35,7 @@ public class MenuController extends CommonsController {
 	private String senhaNova1;
 	private String senhaNova2;
 	private Ata ata;
-	private byte[] pdfByteArray = null;
+	private byte[] arquivoFinalByteArray = null;
 	private Usuario usuarioForm = new Usuario();
 	private UsuarioBusiness usuarioBusiness;
 	@SuppressWarnings("unchecked")
@@ -46,6 +46,7 @@ public class MenuController extends CommonsController {
 
 	@Command
 	public void myTcc() {
+		
 		if (getUsuario() != null
 				&& getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ALUNO) {
 			if (getCurrentCalendar() != null) {
@@ -56,9 +57,14 @@ public class MenuController extends CommonsController {
 					tccUsuario = new TCC();
 				if (getUsuario().isAtivo()
 						&& tccUsuario.getArquivoTCCFinal() == null
-						&& tccUsuario.getDataEnvioFinal() == null)
-					Executions.sendRedirect("/pages/editor.zul");
-				else
+						&& tccUsuario.getDataEnvioFinal() == null){
+					if(tccUsuario.isTrabFinal())
+						Messagebox.show("Você já enviou a versão final de seu trabalho, portanto não pode modifica-lo.",
+								"Erro", Messagebox.OK, Messagebox.ERROR);
+					else
+						Executions.sendRedirect("/pages/editor.zul");
+				
+				}else
 					Messagebox
 							.show("Você não pode iniciar ou modificar um projeto.\n Entre em contato com o coordenador do curso.",
 									"Erro", Messagebox.OK, Messagebox.ERROR);
@@ -78,10 +84,9 @@ public class MenuController extends CommonsController {
 		
 		return false;
 	}
-
+	
 	@Command
-	public void generate() {
-	//	System.out.println("\n\n"+this.suplente.getProfessor().getNomeUsuario());
+	public void gerarAta(){
 		if (getUsuario() != null
 				&& getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ALUNO) {
 			if (getUsuario().getTcc() != null
@@ -92,63 +97,25 @@ public class MenuController extends CommonsController {
 					if (getUsuario().getTcc().get(0).getParticipacoes().size() > 2
 							&& getUsuario().getTcc().get(0).getParticipacoes()
 									.size() < 6) {
+						
 						TCC tcc = getUsuario().getTcc().get(0);
 						
 						if(possuiSuplente(tcc.getParticipacoes())){
-							try {
-								
-								if (tcc.getCoOrientador() == null)
-									ata = new AtaSCoorientador();
-								else {
-									ata = new AtaCCoorientador();
-									ata.setCoorientador(tcc.getCoOrientador()
-											.getNomeUsuario());
-
-								}
-								List<Participacao> part = new ArrayList<Participacao>() ;
-								for(Participacao p:tcc.getParticipacoes()){
-									if(p.getSuplente()!=1){
-										part.add(p);
-									}
-								}
-
-								Calendar calendar = Calendar.getInstance();
-								calendar.setTimeInMillis(tcc.getDataApresentacao()
-										.getTime());
-								Integer dia = calendar.get(5);
-								Integer mes = calendar.get(2);
-								Integer ano = calendar.get(1);
-								String hora = Integer.toString(calendar.get(11))
-										+ "h";
-
-								ata.setHora(hora);
-								ata.setDia(dia.toString());
-								ata.setMes(mes.toString());
-								ata.setAno(ano.toString());
-
-								ata.setIdAluno(getUsuario().getIdUsuario());
-								ata.setTituloTCC(tcc.getNomeTCC());
-								ata.setAluno(tcc.getAluno().getNomeUsuario());
-								ata.setOrientador(tcc.getOrientador()
-										.getNomeUsuario());
-								ata.setSala(tcc.getSalaDefesa());
-								ata.preencheParticipacoes(part);
-
-								ata.preenchePrincipal();
-								ata.deleteLasts();
-
-								Executions.getCurrent().sendRedirect(
-										"/pages/visualizaAta.zul", "_blank");
-
-							} catch (Exception e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-							
+								String mensagem = "A ata será gerada em uma nova janela. Verifique se o seu navegador permite a abertura de novas janelas";
+								Messagebox.show(mensagem, "Confirmação", Messagebox.OK, Messagebox.INFORMATION , new org.zkoss.zk.ui.event.EventListener() {
+								    public void onEvent(Event evt) throws InterruptedException {
+							        if (evt.getName().equals("onOK")) {
+										generate();
+										
+							        } 
+							        
+							        	
+							    }
+							});
 						}else{
 							Messagebox
 							.show("Para gerar a Ata a banca deve conter um suplente.\n",
-									"Erro", Messagebox.OK, Messagebox.ERROR);							
+									"Aviso", Messagebox.OK, Messagebox.EXCLAMATION);							
 						}		
 						
 
@@ -160,22 +127,113 @@ public class MenuController extends CommonsController {
 				} else
 					Messagebox
 							.show("Para gerar a Ata você deve preencher todas informações do seu Trabalho.\n",
-									"Erro", Messagebox.OK, Messagebox.ERROR);
+									"Aviso", Messagebox.OK, Messagebox.EXCLAMATION);
 			} else
 				Messagebox
 						.show("Você ainda não possui um trabalho cadastrado no semestre atual.\n",
 								"Aviso", Messagebox.OK, Messagebox.EXCLAMATION);
 		}
+	}
 
+	@Command
+	public void generate() {
+						
+		TCC tcc = getUsuario().getTcc().get(0);
+						
+		try {
+			List<Participacao> part = new ArrayList<Participacao>();
+			Participacao orientador = new Participacao();
+			Participacao coorientador = new Participacao();
+			orientador.setProfessor(tcc.getOrientador());
+			orientador.setTcc(tcc);
+			part.add(orientador);
+
+			if (tcc.getCoOrientador() == null) {
+				ata = new AtaSCoorientador();
+			} else {
+				ata = new AtaCCoorientador();
+				ata.setCoorientador(tcc.getCoOrientador().getNomeUsuario());
+				coorientador.setProfessor(tcc.getCoOrientador());
+				part.add(coorientador);
+
+			}
+
+			for (Participacao p : tcc.getParticipacoes()) {
+				if (p.getSuplente() != 1) {
+					part.add(p);
+				}
+			}
+
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTimeInMillis(tcc.getDataApresentacao().getTime());
+			Integer dia = calendar.get(5);
+			Integer mes = calendar.get(2);
+			Integer ano = calendar.get(1);
+			String hora = Integer.toString(calendar.get(11)) + "h";
+
+			ata.setTcc(tcc);
+
+			ata.setHora(hora);
+			ata.setDia(dia.toString());
+			ata.setMes(mes.toString());
+			ata.setAno(ano.toString());
+
+			ata.setIdAluno(getUsuario().getIdUsuario());
+			ata.setTituloTCC(tcc.getNomeTCC());
+			ata.setAluno(tcc.getAluno().getNomeUsuario());
+			ata.setOrientador(tcc.getOrientador().getNomeUsuario());
+			ata.setSala(tcc.getSalaDefesa());
+			ata.inicializarParticipacoes(part);
+
+			if (possuiAta(Ata.PASTA_COM_TEMPLATE_ATAS, tcc))
+				ata.preencherPDF();
+			else {
+				Messagebox.show("Seu curso não possui Ata cadastrada.\n", "Aviso", Messagebox.OK, Messagebox.ERROR);
+				return;
+			}
+			
+			ata.deletarPDFsFichaGerados();
+
+			Executions.getCurrent().sendRedirect("/pages/visualizaAta.zul", "_blank");
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+							
+					
+
+	}
+	
+	private boolean possuiAta(String path,TCC tcc){
+		File arquivoAta=null;
+		File arquivoFichaAvaliacaoIndividual = null;
+		try{
+			arquivoFichaAvaliacaoIndividual = new File(path+"FichaAvaliacaoIndividual"+tcc.getAluno().getCurso().getCodigoCurso()+".pdf");
+			if (tcc.getCoOrientador() == null){
+				arquivoAta = new File(path+"TemplateSCoorientador"+tcc.getAluno().getCurso().getCodigoCurso()+".pdf");
+			}else {
+				arquivoAta = new File(path+"TemplateCoorientador"+tcc.getAluno().getCurso().getCodigoCurso()+".pdf");
+			}			
+		}catch(Exception e){
+			return false;
+		}
+		
+		
+		if(arquivoAta!=null && arquivoAta.exists() 
+				&& arquivoFichaAvaliacaoIndividual!=null && arquivoFichaAvaliacaoIndividual.exists())
+			return true;		
+		return false;
 	}
 
 	public void setPdfArray() throws IOException {
 
-		File x = new File(ConfHandler.getConf("FILE.PATH") + "PDFCompleto"
-				+ getUsuario().getIdUsuario() + ".pdf");
-		this.pdfByteArray = FileUtils.readFileToByteArray(x);
+		File arquivoFinal = new File(Ata.PASTA_ARQUIVOS_TEMP + Ata.FICHA_COMPLETA
+				+ getUsuario().getIdUsuario() + Ata.EXTENSAO_PDF);
+		
+		arquivoFinalByteArray = FileUtils.readFileToByteArray(arquivoFinal);
 
-		if (x.delete()) {
+		if (arquivoFinal.delete()) {
 			System.out.println("ULTIMO DELETADO blabla");
 		}
 
@@ -187,8 +245,8 @@ public class MenuController extends CommonsController {
 
 		AMedia pdf;
 		setPdfArray();
-		pdf = new AMedia("PDFCompleto" + getUsuario().getIdUsuario() + ".pdf",
-				"pdf", "application/pdf", this.pdfByteArray);
+		pdf = new AMedia(Ata.FICHA_COMPLETA + getUsuario().getIdUsuario() + Ata.EXTENSAO_PDF,
+				"pdf", "application/pdf", arquivoFinalByteArray);
 
 		iframe.setContent(pdf);
 

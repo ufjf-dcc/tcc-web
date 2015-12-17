@@ -1,35 +1,16 @@
 package br.ufjf.tcc.controller;
 
 import java.io.InputStream;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
 
-import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
-import org.zkoss.util.media.AMedia;
 import org.zkoss.zhtml.Filedownload;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zul.Div;
-import org.zkoss.zul.Iframe;
-import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 
-import br.ufjf.tcc.business.PerguntaBusiness;
-import br.ufjf.tcc.business.QuestionarioBusiness;
-import br.ufjf.tcc.business.RespostaBusiness;
 import br.ufjf.tcc.business.TCCBusiness;
-import br.ufjf.tcc.business.UsuarioBusiness;
 import br.ufjf.tcc.library.FileManager;
-import br.ufjf.tcc.library.SessionManager;
-import br.ufjf.tcc.model.Participacao;
-import br.ufjf.tcc.model.Pergunta;
-import br.ufjf.tcc.model.Resposta;
 import br.ufjf.tcc.model.TCC;
-import br.ufjf.tcc.model.Usuario;
 
 public class DownloadController extends CommonsController {
 	private TCC tcc = null;

@@ -47,6 +47,23 @@ public class ParticipacaoDAO extends GenericoDAO {
 		return tccs;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public List<Participacao> getParticipacoesUsuarioByTCC(TCC tcc) {
+		List<Participacao> tccs = null;
+		try {
+			Query query = getSession().createQuery(
+					"SELECT p FROM Participacao AS p JOIN FETCH p.professor WHERE p.tcc = :tcc");
+			query.setParameter("tcc", tcc);
+			tccs = query.list();
+			getSession().close();
+			return tccs;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return tccs;
+	}
+	
 	public boolean updateList(TCC tcc) {
 		try {
 			

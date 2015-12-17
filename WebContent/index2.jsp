@@ -13,6 +13,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" >
+<meta name="description" content="Repositório de trabalhos acadêmicos da Universidade Federal de Juiz de Fora" />
+<meta name="keywords" content="sistemas de informação;monografias; tcc; dissertação;computação aplicada; informática aplicada" />
 
 		<link href="tooltip.css" rel="stylesheet" type="text/css" />
    		 <script src="tooltip.js" type="text/javascript"></script>
@@ -98,6 +101,9 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 
 </script>
 
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	
+
 
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Lista Pública de Trabalhos Acadêmicos - UFJF</title>
@@ -105,13 +111,11 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 
 <%
     request.setCharacterEncoding("UTF-8");
-	ArrayList teste = (ArrayList) request.getAttribute("tccs");
+	
 	String pesquisaFeita = (String) request.getAttribute("PalavaPesquisa");
 	String cursoS = (String) request.getAttribute("cursoSelected");
 	String yearSelected = (String) request.getAttribute("yearSelected");
-	
-	
-	request.setAttribute("lista", teste);
+
 	
 	if(cursoS==null)
 		request.setAttribute("cursoSel", "");
@@ -124,11 +128,7 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 		request.setAttribute("strBusca", pesquisaFeita);
 	
 	request.setAttribute("yearSelecionado", yearSelected);
-	
-	
-	
-	
-	
+
 %>
 
 <%!
@@ -139,7 +139,6 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 		return "" + cal.get(Calendar.YEAR);
 	}
 %>
-
 
 <body>
 <div>
@@ -178,7 +177,7 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 		
 		
 		<div class="divPesquisa" style="width: 100%;height: 40px;display: block;">
-		<form class="form-inline" action="index.jsp" method="post">
+		<form id="form" class="form-inline" action="index.jsp" method="get">
 		
 			<div style="float: left;position: relative;top: 5px;left: 20px">
 
@@ -229,13 +228,15 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 						</div>
 						
 					</div>
-	
-			
+				
 		</div>
-	
+		
+	</form>
 	</div>
+	<div style="display:none" >
+			<a href="./by-year" >by-year</a>
+		</div>
 	</div>
-	
 	
 	
 	<div style="position:absolute;z-index: 3 ; font-size: 12px;width: 99.25%;"  >
@@ -248,7 +249,7 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 				<th width="5%" style="padding: 5px 5px;vertical-align: middle;">PDF</th>
 				<th width="5%" style="padding: 5px 5px;vertical-align: middle;">Extras</th>
 			</tr>
-			<c:forEach var="tcc" items="${lista}">
+			<c:forEach var="tcc" items="${tccs}">
 				<pg:item>
 				<tr style="cursor: pointer;color:#636363;vertical-align: middle;height: 42px;margin: auto;">
 					
@@ -312,9 +313,6 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 				</div>
 				
 				
-					
-					
-				
 				</pg:item>
 			</c:forEach>
 			
@@ -353,11 +351,6 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 	}
 	</script>
 
-	
-	
-				
-
-  
 	
 </body>
 </html>

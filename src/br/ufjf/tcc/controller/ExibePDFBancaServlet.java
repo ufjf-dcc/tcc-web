@@ -11,28 +11,21 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.library.FileManager;
-import br.ufjf.tcc.model.TCC;
+import br.ufjf.tcc.pdfHandle.Ata;
 
-@WebServlet("/exibePdf")
-public class ExibiPdfServlet extends HttpServlet {
+@WebServlet("/exibePdfBanca")
+public class ExibePDFBancaServlet extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
-	private TCC tcc = null;
 
 	public void service(HttpServletRequest req, HttpServletResponse res)
 			throws ServletException, IOException {
 
-		String tccId = req.getParameter("id");
+		String Id = req.getParameter("id");
 
-		if (tccId != null) {
-			TCCBusiness tccBusiness = new TCCBusiness();
-			tcc = tccBusiness.getTCCById(Integer.parseInt(tccId));
-
-		}
-
-		File file = FileManager.getFile(tcc.getArquivoTCCFinal());
+		
+		File file = new File(Ata.PASTA_ARQUIVOS_TEMP + Ata.COMPOSICAO_BANCA_FINAL+ Id + Ata.EXTENSAO_PDF);
 		
 		
 		if(file==null){
@@ -41,7 +34,7 @@ public class ExibiPdfServlet extends HttpServlet {
 					"inline; filename=modelo.pdf");
 		}else{
 			res.setHeader("Content-Disposition",
-					"inline; filename="+tcc.getNomeTCC());
+					"inline; filename=BancasMarcadas.pdf");
 		}
 		byte[] bytes = null;
 		try {
@@ -52,8 +45,15 @@ public class ExibiPdfServlet extends HttpServlet {
 		} 
 		res.setContentType("application/pdf"); 
 		res.setContentLength(bytes.length);
-		res.setStatus(200);
+		
 		res.getOutputStream().write(bytes);
+		
+		File d = new File(Ata.PASTA_ARQUIVOS_TEMP + Ata.COMPOSICAO_BANCA_FINAL + Id + Ata.EXTENSAO_PDF);
+		
+		if (d.delete())
+			System.out.println("deletado");
+		else
+			System.out.println("NAO deletado");
 
 	}
 

@@ -5,16 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import jonelo.jacksum.JacksumAPI;
-import jonelo.jacksum.algorithm.AbstractChecksum;
-import br.ufjf.ice.integra3.ws.login.interfaces.WsException_Exception;
-import br.ufjf.tcc.library.IntegraHandler;
 import br.ufjf.tcc.library.SessionManager;
 import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.model.Departamento;
 import br.ufjf.tcc.model.Permissao;
 import br.ufjf.tcc.model.Usuario;
 import br.ufjf.tcc.persistent.impl.UsuarioDAO;
+import jonelo.jacksum.JacksumAPI;
+import jonelo.jacksum.algorithm.AbstractChecksum;
 
 public class UsuarioBusiness {
 	
@@ -142,6 +140,9 @@ public class UsuarioBusiness {
 //				users.add(user);
 //				usuarioIntegra = false;
 //
+//			} else {
+//				errors.add("Identificador ou senha inválidos.");
+//				return false;
 //			}
 //		}
 //		
@@ -163,17 +164,16 @@ public class UsuarioBusiness {
 //				SessionManager.setAttribute("usuarios", usuarios);
 //				return true;
 //			} else {
-//				errors.add("Você não possui uma conta ativa. Por favor contate o coordenador de seu curso.");
+//				errors.add("Usuário não está ativo no sistema.");
 //				return false;
 //			}
+//		}else{
+//			
+//			errors.add("Usuário não cadastrado no sistema.");
+//			return false;		
 //		}
-//
-//		errors.add("Identificador ou senha inválidos! Ou não cadastrado!");
-//		return false;
-//		
-//		
-//		errors.clear();
 
+		errors.clear();
 		List<Usuario> users = new ArrayList<Usuario>();
 
 
@@ -207,7 +207,7 @@ public class UsuarioBusiness {
 			}
 		}
 
-		errors.add("Identificador ou senha inválidos! Ou não cadastrado!");
+		errors.add("Identificador ou senha inválidos!");
 		return false;
 	}
 
@@ -280,6 +280,10 @@ public class UsuarioBusiness {
 
 	public boolean salvar(Usuario usuario) {
 		return usuarioDAO.salvar(usuario);
+	}
+	
+	public boolean salvarLista(List<Usuario> usuarios){
+		return usuarioDAO.salvarLista(usuarios);
 	}
 
 	public boolean exclui(Usuario usuario) {

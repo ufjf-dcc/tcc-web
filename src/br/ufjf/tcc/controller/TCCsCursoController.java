@@ -1,6 +1,7 @@
 package br.ufjf.tcc.controller;
 
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -17,11 +18,9 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 
-import br.ufjf.tcc.business.CalendarioSemestreBusiness;
 import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.library.FileManager;
 import br.ufjf.tcc.library.SessionManager;
-import br.ufjf.tcc.model.CalendarioSemestre;
 import br.ufjf.tcc.model.TCC;
 import br.ufjf.tcc.model.Usuario;
 
@@ -34,6 +33,7 @@ public class TCCsCursoController extends CommonsController {
 	private String filterYear = "Todos";
 	private int semestre = 1;//0=atual, 1 = anteriores
 	private int tipoTrabalho = 0; //0=todos, 1 = projeto, 2 = trabalho
+	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss.S");
 	
 	@Init
 	public void init() {		
@@ -427,5 +427,26 @@ public class TCCsCursoController extends CommonsController {
 		    }
 		});
 	}
+	
+	@Command
+	public void checkEnviouDoc(@BindingParam("tcc") TCC tcc){
+		if(tcc.isEntregouDoc()){
+			tcc.setEntregouDoc(false);
+		}else{
+			tcc.setEntregouDoc(true);
+		}
+		new TCCBusiness().edit(tcc);
+		
+	}
+
+	public SimpleDateFormat getSdf() {
+		return sdf;
+	}
+
+	public void setSdf(SimpleDateFormat sdf) {
+		this.sdf = sdf;
+	}
+	
+	
 		
 }

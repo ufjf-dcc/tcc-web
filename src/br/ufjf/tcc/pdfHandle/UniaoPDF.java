@@ -9,8 +9,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import br.ufjf.tcc.library.ConfHandler;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfContentByte;
@@ -18,52 +16,60 @@ import com.lowagie.text.pdf.PdfImportedPage;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfWriter;
 
-public class Unir {
+public class UniaoPDF {
 
-	public static void lastPDFs(int qt, int idAluno) {
+	public static void unirPDFsFichaAvaliacaoIndividual(int qtAvaliadores, int idAluno) {
+
+		try {
+			List<InputStream> pdfs = new ArrayList<InputStream>();
+			for (int i = 0; i < qtAvaliadores; i++) {
+				pdfs.add(new FileInputStream(Ata.PASTA_ARQUIVOS_TEMP + idAluno + "-" + i + ".pdf"));
+			}
+
+			OutputStream output = new FileOutputStream(Ata.PASTA_ARQUIVOS_TEMP+ Ata.FICHA_AVALIACAO_INDIVIDUAL + idAluno + ".pdf");
+			UniaoPDF.concatPDFs(pdfs, output, true);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public static void unirFichaAvaliacaoFinalComFichaAvaliacaoIndividual(int idAluno) {
+
+		try {
+
+			List<InputStream> pdfs = new ArrayList<InputStream>();
+
+			pdfs.add(new FileInputStream(Ata.PASTA_ARQUIVOS_TEMP + Ata.FICHA_AVALIACAO_FINAL + idAluno + ".pdf"));
+			pdfs.add(new FileInputStream(Ata.PASTA_ARQUIVOS_TEMP + Ata.FICHA_AVALIACAO_INDIVIDUAL + idAluno + ".pdf"));
+
+			OutputStream output = new FileOutputStream(Ata.PASTA_ARQUIVOS_TEMP + Ata.FICHA_COMPLETA + idAluno + ".pdf");
+
+			UniaoPDF.concatPDFs(pdfs, output, true);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+	
+	public static void unirPDFsExibicaoBanca(int qt, int idAluno) {
 
 		try {
 			List<InputStream> pdfs = new ArrayList<InputStream>();
 			for (int i = 0; i < qt; i++) {
-				pdfs.add(new FileInputStream(ConfHandler.getConf("FILE.PATH")
-						+ "last" + idAluno + "-" + i + ".pdf"));
-
+				pdfs.add(new FileInputStream(Ata.PASTA_ARQUIVOS_TEMP + Ata.COMPOSICAO_BANCA + idAluno + "-" + i + ".pdf"));
 			}
 
-			OutputStream output = new FileOutputStream(
-					ConfHandler.getConf("FILE.PATH") + "saidaLP" + idAluno
-							+ ".pdf");
-			Unir.concatPDFs(pdfs, output, true);
+			OutputStream output = new FileOutputStream(Ata.PASTA_ARQUIVOS_TEMP + Ata.COMPOSICAO_BANCA_FINAL + idAluno + ".pdf");
+			UniaoPDF.concatPDFs(pdfs, output, true);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 	}
 
-	public static void tudo(int idAluno) {
-
-		try {
-
-			List<InputStream> pdfs = new ArrayList<InputStream>();
-
-			pdfs.add(new FileInputStream(ConfHandler.getConf("FILE.PATH")
-					+ "saida" + idAluno + ".pdf"));
-			pdfs.add(new FileInputStream(ConfHandler.getConf("FILE.PATH")
-					+ "saidaLP" + idAluno + ".pdf"));
-
-			OutputStream output = new FileOutputStream(
-					ConfHandler.getConf("FILE.PATH") + "PDFCompleto" + idAluno
-							+ ".pdf");
-
-			Unir.concatPDFs(pdfs, output, true);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-	}
-
-	// JUNTA VÁRIOS ARQUIVOS .PDF EM UM ÚNICO
+	// JUNTA Vï¿½RIOS ARQUIVOS .PDF EM UM ï¿½NICO
 	private static void concatPDFs(List<InputStream> streamOfPDFFiles,
 			OutputStream outputStream, boolean paginate) {
 
@@ -112,9 +118,7 @@ public class Unir {
 					if (paginate) {
 						cb.beginText();
 						cb.setFontAndSize(bf, 9);
-						// cb.showTextAligned(PdfContentByte.ALIGN_CENTER, ""
-						// + currentPageNumber + " of " + totalPages, 520,
-						// 5, 0);
+					
 						cb.endText();
 					}
 				}

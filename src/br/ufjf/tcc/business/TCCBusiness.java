@@ -235,6 +235,10 @@ public class TCCBusiness {
 		return tccDao.getAllTrabalhosAndProjetosByCurso(curso);
 	}
 	
+	public List<TCC> getAllTrabalhosBancaMarcada(Curso curso,CalendarioSemestre currentCalendar){
+		return tccDao.getAllTrabalhosBancaMarcada(curso,currentCalendar);
+	}
+	
 	public List<TCC> getTrabalhosAndProjetosByCursoAndCalendar(Curso curso, CalendarioSemestre currentCalendar){
 		return tccDao.getTrabalhosAndProjetosByCursoAndCalendar(curso, currentCalendar);
 	}
@@ -379,6 +383,18 @@ public class TCCBusiness {
 		if(tcc.getArquivoTCCBanca()!=null)
 		{
 			f = new File(ConfHandler.getConf("FILE.PATH")+tcc.getArquivoTCCBanca());
+			if(f!=null)
+				f.delete();
+		}
+		if(tcc.getArqExtraProjFinal()!=null)
+		{
+			f = new File(ConfHandler.getConf("FILE.PATH")+tcc.getArqExtraProjFinal());
+			if(f!=null)
+				f.delete();
+		}
+		if(tcc.getArqProjFinal()!=null)
+		{
+			f = new File(ConfHandler.getConf("FILE.PATH")+tcc.getArqProjFinal());
 			if(f!=null)
 				f.delete();
 		}
