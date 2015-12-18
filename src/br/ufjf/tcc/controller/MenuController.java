@@ -3,7 +3,6 @@ package br.ufjf.tcc.controller;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -141,49 +140,12 @@ public class MenuController extends CommonsController {
 		TCC tcc = getUsuario().getTcc().get(0);
 						
 		try {
-			List<Participacao> part = new ArrayList<Participacao>();
-			Participacao orientador = new Participacao();
-			Participacao coorientador = new Participacao();
-			orientador.setProfessor(tcc.getOrientador());
-			orientador.setTcc(tcc);
-			part.add(orientador);
-
+		
 			if (tcc.getCoOrientador() == null) {
-				ata = new AtaSCoorientador();
+				ata = new AtaSCoorientador(tcc);
 			} else {
-				ata = new AtaCCoorientador();
-				ata.setCoorientador(tcc.getCoOrientador().getNomeUsuario());
-				coorientador.setProfessor(tcc.getCoOrientador());
-				part.add(coorientador);
-
+				ata = new AtaCCoorientador(tcc);
 			}
-
-			for (Participacao p : tcc.getParticipacoes()) {
-				if (p.getSuplente() != 1) {
-					part.add(p);
-				}
-			}
-
-			Calendar calendar = Calendar.getInstance();
-			calendar.setTimeInMillis(tcc.getDataApresentacao().getTime());
-			Integer dia = calendar.get(5);
-			Integer mes = calendar.get(2);
-			Integer ano = calendar.get(1);
-			String hora = Integer.toString(calendar.get(11)) + "h";
-
-			ata.setTcc(tcc);
-
-			ata.setHora(hora);
-			ata.setDia(dia.toString());
-			ata.setMes(mes.toString());
-			ata.setAno(ano.toString());
-
-			ata.setIdAluno(getUsuario().getIdUsuario());
-			ata.setTituloTCC(tcc.getNomeTCC());
-			ata.setAluno(tcc.getAluno().getNomeUsuario());
-			ata.setOrientador(tcc.getOrientador().getNomeUsuario());
-			ata.setSala(tcc.getSalaDefesa());
-			ata.inicializarParticipacoes(part);
 
 			if (possuiAta(Ata.PASTA_COM_TEMPLATE_ATAS, tcc))
 				ata.preencherPDF();
@@ -197,11 +159,8 @@ public class MenuController extends CommonsController {
 			Executions.getCurrent().sendRedirect("/pages/visualizaAta.zul", "_blank");
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-							
-					
 
 	}
 	
