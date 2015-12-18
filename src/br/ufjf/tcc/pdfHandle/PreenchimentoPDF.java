@@ -60,7 +60,7 @@ public class PreenchimentoPDF {
 		stamper.close();
 		saida.close();
 		leitor.close();
-		System.out.println("gerou o fichaIndividual" + numeroFicha + "pdf");
+		System.out.println("Gerou ficha: " + numeroFicha + " - "+Ata.PASTA_ARQUIVOS_TEMP + idAluno + "-" + numeroFicha + ".pdf");
 
 	}
 	
