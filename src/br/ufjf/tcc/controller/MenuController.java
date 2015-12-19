@@ -140,14 +140,12 @@ public class MenuController extends CommonsController {
 		TCC tcc = getUsuario().getTcc().get(0);
 						
 		try {
-		
-			if (tcc.getCoOrientador() == null) {
+			if (tcc.getCoOrientador() == null) 
 				ata = new AtaSCoorientador(tcc);
-			} else {
+			else
 				ata = new AtaCCoorientador(tcc);
-			}
 
-			if (possuiAta(Ata.PASTA_COM_TEMPLATE_ATAS, tcc))
+			if (ata.existe())
 				ata.preencherPDF();
 			else {
 				Messagebox.show("Seu curso não possui Ata cadastrada.\n", "Aviso", Messagebox.OK, Messagebox.ERROR);
@@ -155,34 +153,10 @@ public class MenuController extends CommonsController {
 			}
 			
 			ata.deletarPDFsFichaGerados();
-
 			Executions.getCurrent().sendRedirect("/pages/visualizaAta.zul", "_blank");
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-	}
-	
-	private boolean possuiAta(String path,TCC tcc){
-		File arquivoAta=null;
-		File arquivoFichaAvaliacaoIndividual = null;
-		try{
-			arquivoFichaAvaliacaoIndividual = new File(path+"FichaAvaliacaoIndividual"+tcc.getAluno().getCurso().getCodigoCurso()+".pdf");
-			if (tcc.getCoOrientador() == null){
-				arquivoAta = new File(path+"TemplateSCoorientador"+tcc.getAluno().getCurso().getCodigoCurso()+".pdf");
-			}else {
-				arquivoAta = new File(path+"TemplateCoorientador"+tcc.getAluno().getCurso().getCodigoCurso()+".pdf");
-			}			
-		}catch(Exception e){
-			return false;
-		}
-		
-		
-		if(arquivoAta!=null && arquivoAta.exists() 
-				&& arquivoFichaAvaliacaoIndividual!=null && arquivoFichaAvaliacaoIndividual.exists())
-			return true;		
-		return false;
 	}
 
 	public void setPdfArray() throws IOException {

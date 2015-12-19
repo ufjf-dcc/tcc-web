@@ -18,8 +18,6 @@ import br.ufjf.tcc.model.TCC;
 
 public abstract class Ata {
 	
-	protected static final int numeroDePaginasBase = 3;
-
 	protected static int qtAvaliador;
 
 	protected TCC tcc;
@@ -95,8 +93,6 @@ public abstract class Ata {
 	}
 
 	public abstract void preencherPDF() throws Exception;
-	
-	
 
 	public void inicializarParticipacoes(List<Participacao> ps) {
 		int qt = ps.size();
@@ -112,6 +108,30 @@ public abstract class Ata {
 
 	}
 
+	public boolean existe(){
+		if(tcc==null)
+			return false;
+		
+		File arquivoAta=null;
+		File arquivoFichaAvaliacaoIndividual = null;
+		try{
+			arquivoFichaAvaliacaoIndividual = new File(PASTA_COM_TEMPLATE_ATAS+FICHA_AVALIACAO_INDIVIDUAL+tcc.getAluno().getCurso().getCodigoCurso()+EXTENSAO_PDF);
+			if (tcc.getCoOrientador() == null){
+				arquivoAta = new File(PASTA_COM_TEMPLATE_ATAS+TEMPLATE_SEM_COORIENTADOR+tcc.getAluno().getCurso().getCodigoCurso()+EXTENSAO_PDF);
+			}else {
+				arquivoAta = new File(PASTA_COM_TEMPLATE_ATAS+TEMPLATE_COM_COORIENTADOR+tcc.getAluno().getCurso().getCodigoCurso()+EXTENSAO_PDF);
+			}			
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
+		
+		if(arquivoAta!=null && arquivoAta.exists() 
+				&& arquivoFichaAvaliacaoIndividual!=null && arquivoFichaAvaliacaoIndividual.exists())
+			return true;		
+		return false;
+	}
+	
 	public void deletarPDFsFichaGerados() {
 
 		for (int i = 0; i < qtAvaliador; i++) {
