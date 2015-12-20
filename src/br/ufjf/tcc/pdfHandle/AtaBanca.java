@@ -1,6 +1,12 @@
 package br.ufjf.tcc.pdfHandle;
 
+import br.ufjf.tcc.model.TCC;
+
 public class AtaBanca extends Ata {
+	
+	public AtaBanca(TCC tcc){
+		super(tcc);
+	}
 
 	public void preencherPDF() throws Exception {
 

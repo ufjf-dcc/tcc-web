@@ -13,7 +13,13 @@ import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
 
+import br.ufjf.tcc.model.TCC;
+
 public class AtaSCoorientador extends Ata {
+	
+	public AtaSCoorientador(TCC tcc){
+		super(tcc);
+	}
 
 	private void iniciarParametros() throws Exception {
 		
@@ -90,7 +96,7 @@ public class AtaSCoorientador extends Ata {
 		try {
 			//PREENCHE FICHA INDIVIDUAL PARA CADA AVALIADOR
 			for (int i = 0; i < avaliadores.length; i++) {
-				PreenchimentoPDF.preencherFichaAvaliacaoIndividual(nomeAluno, avaliadores[i], dia, mes, ano,
+				PreenchimentoPDF.preencherFichaAvaliacaoIndividual(tcc.getAluno().getNomeUsuario(), avaliadores[i], dia, mes, ano,
 						i, idAluno,PASTA_COM_TEMPLATE_ATAS,tcc);
 
 			}
@@ -120,16 +126,16 @@ public class AtaSCoorientador extends Ata {
 		
 		form.setField("sala1",sala);
 		
-		form.setField("orientador2", orientador);
+		form.setField("orientador2", tcc.getOrientador().getNomeUsuario());
 
-		form.setField("nomeAluno2", nomeAluno);
+		form.setField("nomeAluno2", tcc.getAluno().getNomeUsuario());
 		
-		form.setField("titulo1_2", DivisorString.dividirTitulo(tituloTCC)[0]);
+		form.setField("titulo1_2", DivisorString.dividirTitulo(tcc.getNomeTCC())[0]);
 		
-		form.setField("titulo2_2", DivisorString.dividirTitulo(tituloTCC)[1]);
+		form.setField("titulo2_2", DivisorString.dividirTitulo(tcc.getNomeTCC())[1]);
 
 		// EXAMINADORES
-		form.setField("orientador3", "1. "+orientador);
+		form.setField("orientador3", "1. "+tcc.getOrientador().getNomeUsuario());
 		
 		form.setField("avaliador1_2", "2. "+avaliadores[1]);
 		
@@ -163,13 +169,13 @@ public class AtaSCoorientador extends Ata {
 				BaseFont.WINANSI, BaseFont.NOT_EMBEDDED);
 
 		
-		form.setField("nomeAluno", nomeAluno);
+		form.setField("nomeAluno", tcc.getAluno().getNomeUsuario());
 		
-		form.setField("titulo1", DivisorString.dividirTitulo(tituloTCC)[0]);
+		form.setField("titulo1", DivisorString.dividirTitulo(tcc.getNomeTCC())[0]);
 		
-		form.setField("titulo2", DivisorString.dividirTitulo(tituloTCC)[1]);
+		form.setField("titulo2", DivisorString.dividirTitulo(tcc.getNomeTCC())[1]);
 		
-		form.setField("orientador1", orientador);
+		form.setField("orientador1", tcc.getOrientador().getNomeUsuario());
 
 		form.setField("avaliador1", avaliadores[1]);
 		
