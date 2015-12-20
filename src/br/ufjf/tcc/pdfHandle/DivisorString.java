@@ -9,7 +9,7 @@ public class DivisorString {
 		String titulo1 = "";
 		String titulo2 = "";
 
-		while (resto > 60) {
+		while (resto > 55) {
 			tituAux = tituAux.substring(0, resto);
 			resto = tituAux.lastIndexOf(' ');
 		}
@@ -21,7 +21,7 @@ public class DivisorString {
 		}
 		String titulos[] = new String[2];
 
-		if (titulo.length() < 60) {
+		if (titulo.length() < 55) {
 			titulos[0] = titulo;
 			titulos[1] = "";
 		} else {

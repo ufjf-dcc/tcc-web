@@ -2,6 +2,8 @@ package br.ufjf.tcc.pdfHandle;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import com.lowagie.text.pdf.AcroFields;
@@ -16,16 +18,10 @@ import br.ufjf.tcc.model.TCC;
 
 public abstract class Ata {
 	
-	protected static final int numeroDePaginasBase = 3;
-
 	protected static int qtAvaliador;
 
 	protected TCC tcc;
 	protected int idAluno;
-	protected String nomeAluno;
-	protected String tituloTCC;
-	protected String orientador;
-	protected String coorientador = null;
 	protected String[] avaliadores;
 	protected String dia;
 	protected String mes;
@@ -54,6 +50,47 @@ public abstract class Ata {
 	public static final String EXTENSAO_PDF = ".pdf";
 	public static final String PASTA_ARQUIVOS_TEMP = ConfHandler.getConf("FILE.PATH") + "arquivosTemporarios/";
 	public static final String PASTA_COM_TEMPLATE_ATAS = ConfHandler.getConf("FILE.PATH") + "templatePDF/";
+	
+	public Ata(TCC tcc){
+		if(tcc==null)
+			return;
+		
+		this.tcc = tcc;
+		idAluno = tcc.getAluno().getIdUsuario();
+		
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeInMillis(tcc.getDataApresentacao().getTime());
+		Integer dia = calendar.get(5);
+		Integer mes = calendar.get(2);
+		Integer ano = calendar.get(1);
+		String hora = Integer.toString(calendar.get(11)) + "h";
+		
+		this.dia = dia.toString() ; 
+		this.mes = mes.toString();
+		this.ano = ano.toString();
+		this.hora = hora;
+		this.sala = tcc.getSalaDefesa() ;
+		
+		List<Participacao> part = new ArrayList<Participacao>();
+		Participacao orientador = new Participacao();
+		Participacao coorientador = new Participacao();
+		orientador.setProfessor(tcc.getOrientador());
+		orientador.setTcc(tcc);
+		part.add(orientador);
+		
+		if (tcc.getCoOrientador() != null) {
+			coorientador.setProfessor(tcc.getCoOrientador());
+			part.add(coorientador);
+		}
+		
+		for (Participacao p : tcc.getParticipacoes()) {
+			if (p.getSuplente() != 1) {
+				part.add(p);
+			}
+		}
+		inicializarParticipacoes(part);
+		
+	}
 
 	public abstract void preencherPDF() throws Exception;
 
@@ -71,6 +108,30 @@ public abstract class Ata {
 
 	}
 
+	public boolean existe(){
+		if(tcc==null)
+			return false;
+		
+		File arquivoAta=null;
+		File arquivoFichaAvaliacaoIndividual = null;
+		try{
+			arquivoFichaAvaliacaoIndividual = new File(PASTA_COM_TEMPLATE_ATAS+FICHA_AVALIACAO_INDIVIDUAL+tcc.getAluno().getCurso().getCodigoCurso()+EXTENSAO_PDF);
+			if (tcc.getCoOrientador() == null){
+				arquivoAta = new File(PASTA_COM_TEMPLATE_ATAS+TEMPLATE_SEM_COORIENTADOR+tcc.getAluno().getCurso().getCodigoCurso()+EXTENSAO_PDF);
+			}else {
+				arquivoAta = new File(PASTA_COM_TEMPLATE_ATAS+TEMPLATE_COM_COORIENTADOR+tcc.getAluno().getCurso().getCodigoCurso()+EXTENSAO_PDF);
+			}			
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
+		
+		if(arquivoAta!=null && arquivoAta.exists() 
+				&& arquivoFichaAvaliacaoIndividual!=null && arquivoFichaAvaliacaoIndividual.exists())
+			return true;		
+		return false;
+	}
+	
 	public void deletarPDFsFichaGerados() {
 
 		for (int i = 0; i < qtAvaliador; i++) {
@@ -91,24 +152,10 @@ public abstract class Ata {
 	
 	private void deleteFile(String path){
 		File file = new File(path);
-		if(file.exists())
-			file.delete();
-	}
-
-	public String getAluno() {
-		return nomeAluno;
-	}
-
-	public void setAluno(String aluno) {
-		this.nomeAluno = aluno;
-	}
-
-	public String getOrientador() {
-		return orientador;
-	}
-
-	public void setOrientador(String orientador) {
-		this.orientador = orientador;
+		if(file.exists()){
+			if(file.delete())
+				System.out.println(path+" - DELETADO");
+		}
 	}
 
 	public String getSala() {
@@ -127,28 +174,12 @@ public abstract class Ata {
 		this.idAluno = idAluno;
 	}
 
-	public String getCoorientador() {
-		return coorientador;
-	}
-
-	public void setCoorientador(String coorientador) {
-		this.coorientador = coorientador;
-	}
-
 	public String[] getAvaliadores() {
 		return avaliadores;
 	}
 
 	public void setAvaliadores(String[] avaliadores) {
 		this.avaliadores = avaliadores;
-	}
-
-	public String getTituloTCC() {
-		return tituloTCC;
-	}
-
-	public void setTituloTCC(String tituloTCC) {
-		this.tituloTCC = tituloTCC;
 	}
 
 	public String getDia() {

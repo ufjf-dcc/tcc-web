@@ -305,7 +305,7 @@ public class ExibirBancasController extends CommonsController {
 	
 	private void generate(){
 		
-		ata = new AtaBanca();
+		ata = new AtaBanca(null);
 		
 		ata.setTrabMarcados(trabalhosMarcados);
 		ata.setIdAluno(getUsuario().getIdUsuario());

@@ -60,14 +60,14 @@ public class PreenchimentoPDF {
 		stamper.close();
 		saida.close();
 		leitor.close();
-		System.out.println("gerou o fichaIndividual" + numeroFicha + "pdf");
+		System.out.println("Gerou ficha: " + numeroFicha + " - "+Ata.PASTA_ARQUIVOS_TEMP + idAluno + "-" + numeroFicha + ".pdf");
 
 	}
 	
-	public static void preencherBancaPDF(TCC tcc, int n, int idAluno,String pathAta)
+	public static void preencherBancaPDF(TCC tcc, int numeroPdf, int idAluno,String pathAta)
 			throws Exception {
 		String template =   pathAta + Ata.COMPOSICAO_BANCA + Ata.EXTENSAO_PDF;
-		String Arquivo_Saida = Ata.PASTA_ARQUIVOS_TEMP + Ata.COMPOSICAO_BANCA + idAluno + "-" + n + ".pdf";
+		String Arquivo_Saida = Ata.PASTA_ARQUIVOS_TEMP + Ata.COMPOSICAO_BANCA + idAluno + "-" + numeroPdf + ".pdf";
 
 		FileOutputStream saida = new FileOutputStream(Arquivo_Saida);
 
@@ -162,7 +162,7 @@ public class PreenchimentoPDF {
 		stamper.close();
 		saida.close();
 		leitor.close();
-		System.out.println("gerou o Last" + n + "pdf");
+		System.out.println("gerou o Last" + numeroPdf + "pdf");
 
 	}
 	

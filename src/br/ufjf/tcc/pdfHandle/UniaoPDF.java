@@ -53,11 +53,11 @@ public class UniaoPDF {
 
 	}
 	
-	public static void unirPDFsExibicaoBanca(int qt, int idAluno) {
+	public static void unirPDFsExibicaoBanca(int qtMarcada, int idAluno) {
 
 		try {
 			List<InputStream> pdfs = new ArrayList<InputStream>();
-			for (int i = 0; i < qt; i++) {
+			for (int i = 0; i < qtMarcada; i++) {
 				pdfs.add(new FileInputStream(Ata.PASTA_ARQUIVOS_TEMP + Ata.COMPOSICAO_BANCA + idAluno + "-" + i + ".pdf"));
 			}
 
