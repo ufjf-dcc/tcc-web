@@ -250,7 +250,6 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 				<th width="5%" style="padding: 5px 5px;vertical-align: middle;">Extras</th>
 			</tr>
 			<c:forEach var="tcc" items="${tccs}" >
-				<c:set var="offsetIncrement" value="${offset}" scope="page" />
 				<pg:item>
 				<tr style="cursor: pointer;color:#636363;vertical-align: middle;height: 42px;margin: auto;display:${tcc == null ? 'none' : ''}">
 					

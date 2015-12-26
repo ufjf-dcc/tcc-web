@@ -11,8 +11,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.zkoss.bind.annotation.BindingParam;
-
 import br.ufjf.tcc.business.CursoBusiness;
 import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.model.Curso;
@@ -21,12 +19,7 @@ import br.ufjf.tcc.model.TCC;
 @WebServlet("/index.jsp")
 public class ListaPublicaFilter extends HttpServlet {
 
-	private static final int QUANTIDADE_ELEMENTOS_PAGINA = 10;
-	private static int FIRST_RESULT = 0;
-
 	private static final long serialVersionUID = 1L;
-	
-	private Curso curso = null;
 	
 	private TCCBusiness tccB= new TCCBusiness();
 	private List<Curso> cursos = this.getAllCursos();
@@ -34,61 +27,51 @@ public class ListaPublicaFilter extends HttpServlet {
 	private List<TCC> tccsByCurso = new ArrayList<>() ;
 	private List<TCC> filterTccs ;
 	private String filterString = "";
-	private String filterYear = "Todos";
+	private String filterYear ;
 
 	public void service(HttpServletRequest req, HttpServletResponse res) throws IOException {
+		req.setCharacterEncoding("UTF-8");
+		
 		String pagina = req.getParameter("page");
 		if (pagina == null)
 			pagina = "1";
 		
-		String offset = req.getParameter("p.offset");
-		
-		try{
-			FIRST_RESULT = (Integer.valueOf(offset) ) ;
-		}catch(Exception e){
-			FIRST_RESULT = 0;
-		}
-		
-		tccsByCurso = tccB.getAllFinishedTCCs();
-		
-		filterTccs = tccsByCurso;
-		
-		req.setCharacterEncoding("UTF-8");
 		CursoBusiness cursoBusiness = new CursoBusiness();
 
 		String pesquisa = req.getParameter("pesquisa");
 		String codCursoAux = req.getParameter("curso");
-		String year;
+		String year = req.getParameter("year");
 		String errorMsg = req.getParameter("errorMsg");
+		
 
 		if (errorMsg != null && errorMsg.equals("1")) {
-
 			req.setAttribute("errorMsg", errorMsg);
 		}
-
-		year = req.getParameter("year");
-
+		
+		Curso c = null;
 		if (codCursoAux != null && codCursoAux.length() > 1) {
-
-			Curso c = cursoBusiness.getCursoByCode(codCursoAux);
-			this.curso = c;
-		} else {
-
-			Curso c = new Curso();
-			c.setNomeCurso("Todos (trabalhos mais recentes)");
-			this.curso = c;
-
-		}
+			c = cursoBusiness.getCursoByCode(codCursoAux);
+		} 
+		
 		if (pesquisa != null && !pesquisa.isEmpty()) {
 			this.filterString = pesquisa;
 			req.setAttribute("PalavaPesquisa", pesquisa);
 
 		} else
 			this.filterString = "";
+		
+		if(year==null)
+			filterYear = "Todos";
+		else if(year.equals("null"))
+			this.filterYear = "Todos";
+		else
+			this.filterYear = year;
 
-		this.filterYear = year;
-
-		changeCurso2();
+		tccsByCurso = tccB.getAllFinishedTCCsBy(c, filterString, filterYear);
+		filterTccs = tccsByCurso;
+		
+		if(this.filterYear==null || filterYear.equalsIgnoreCase("Todos"))
+			updateYears2();
 
 		List<TCC> tccs = filterTccs;
 		List<Curso> cursos = this.cursos;
@@ -146,62 +129,6 @@ public class ListaPublicaFilter extends HttpServlet {
 		}
 		years.add(0, "Todos");
 		return years;
-	}
-	
-	public void changeCurso2() {
-		if (curso.getNomeCurso().equals("Todos (trabalhos mais recentes)"))
-		{
-			tccsByCurso = tccB.getAllFinishedTCCs();
-		}
-		else
-		if (curso.getIdCurso() > 0) {
-			tccsByCurso = tccB.getFinishedTCCsByCurso(curso);
-			if (tccsByCurso != null && tccsByCurso.size() != 0)
-				filterTccs = tccsByCurso;
-
-		} else {
-			tccsByCurso = null;
-		}
-		updateYears2();
-		if (!years.contains(filterYear))
-			filterYear = "Todos";
-
-		this.filtra();
-		
-	}
-	
-	public void filtra() {
-		String filter = filterString.toLowerCase().trim();
-		if (tccsByCurso != null) {
-			List<TCC> temp = new ArrayList<TCC>();
-			for (TCC tcc : tccsByCurso) {
-				if(tcc.getPalavrasChave()==null)
-					tcc.setPalavrasChave("");
-				if(tcc.getResumoTCC()==null)
-					tcc.setResumoTCC("");
-				if ((filterYear.contains("Todos") || filterYear
-						.contains(getTccYear(tcc)))
-						&& (filter == "" || (tcc.getNomeTCC().toLowerCase()
-								.contains(filter)
-								|| tcc.getAluno().getNomeUsuario()
-										.toLowerCase().contains(filter)
-								|| tcc.getOrientador().getNomeUsuario()
-										.toLowerCase().contains(filter)
-								|| tcc.getPalavrasChave().toLowerCase()
-										.contains(filter) || tcc.getResumoTCC()
-								.toLowerCase().contains(filter))))
-					temp.add(tcc);
-			}
-			filterTccs = temp;
-		} else {
-			filterTccs = tccsByCurso;
-		}
-	}
-	
-	public String getTccYear(@BindingParam("tcc") TCC tcc) {
-		Calendar cal = Calendar.getInstance();
-		cal.setTimeInMillis(tcc.getDataEnvioFinal().getTime());
-		return "" + cal.get(Calendar.YEAR);
 	}
 
 }

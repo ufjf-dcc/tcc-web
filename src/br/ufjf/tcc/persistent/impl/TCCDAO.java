@@ -206,27 +206,6 @@ public class TCCDAO extends GenericoDAO {
 		return null;
 	}
 	
-	public List<TCC> getFinishedTCCsByCurso(Curso curso,int firstResult, int maxResult) {
-		try {
-			Query query = getSession()
-					.createQuery(
-							"SELECT t FROM TCC AS t JOIN FETCH t.aluno AS a JOIN FETCH t.orientador LEFT JOIN FETCH t.coOrientador WHERE a.curso = :curso AND t.dataEnvioFinal IS NOT NULL AND t.arquivoTCCFinal IS NOT NULL ORDER BY t.dataEnvioFinal DESC");
-			query.setParameter("curso", curso);
-
-			List<TCC> resultados = query.setFirstResult(firstResult).setMaxResults(maxResult).list();
-
-			getSession().close();
-
-			if (resultados != null)
-				return resultados;
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-	
 	public List<TCC> getAllFinishedTCCs() {
 		try {
 			Query query = getSession()
@@ -248,14 +227,43 @@ public class TCCDAO extends GenericoDAO {
 		return null;
 	}
 	
-	public List<TCC> getAllFinishedTCCs(int firstResult, int maxResult) {
+	public List<TCC> getAllFinishedTCCsBy(Curso curso, String palavra, String year) {
 		try {
-			Query query = getSession()
-					.createQuery(
-							"SELECT t FROM TCC AS t JOIN FETCH t.aluno AS a JOIN FETCH t.orientador LEFT JOIN FETCH t.coOrientador WHERE t.dataEnvioFinal IS NOT NULL AND t.arquivoTCCFinal IS NOT NULL ORDER BY t.dataEnvioFinal DESC");
-			
 
-			List<TCC> resultados = query.setFirstResult(firstResult).setMaxResults(maxResult).list();
+			if(year!=null && year.equals("Todos"))
+				year=null;
+				
+			if(palavra==null)
+				palavra = "";
+			
+			StringBuilder queryString = new StringBuilder();
+			queryString.append("SELECT t FROM TCC AS t ");
+			queryString.append("JOIN FETCH t.aluno AS a ");
+			queryString.append("JOIN FETCH t.orientador AS o ");
+			queryString.append("LEFT JOIN FETCH t.coOrientador ");
+			queryString.append("WHERE t.dataEnvioFinal IS NOT NULL ");
+			queryString.append("AND t.arquivoTCCFinal IS NOT NULL ");
+			queryString.append("AND (EXTRACT(YEAR FROM t.dataEnvioFinal) = :year ");
+			queryString.append("OR :year IS NULL OR :year = '') ");
+			
+			queryString.append("AND (lower(t.nomeTCC) LIKE :palavra ");
+			queryString.append("OR a.nomeUsuario LIKE :palavra ");
+			queryString.append("OR o.nomeUsuario LIKE :palavra ");
+			queryString.append("OR t.palavrasChave LIKE :palavra ");
+			queryString.append("OR t.resumoTCC LIKE :palavra ");
+			queryString.append("OR :palavra IS NULL OR :palavra = '') ");
+			
+			queryString.append("AND (a.curso = :curso ");
+			queryString.append("OR :curso IS NULL) ");
+			
+			queryString.append("ORDER BY t.dataEnvioFinal DESC");
+			
+			Query query = getSession().createQuery(queryString.toString());
+			query.setString("year", year);
+			query.setString("palavra", "%"+palavra.toLowerCase()+"%");
+			query.setParameter("curso", curso);
+
+			List<TCC> resultados = query.list();
 
 			getSession().close();
 
