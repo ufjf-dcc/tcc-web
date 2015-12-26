@@ -166,8 +166,20 @@ public class TCCBusiness {
 		return tccDao.getFinishedTCCsByCurso(curso);
 	}
 	
+	public List<TCC> getFinishedTCCsByCurso(Curso curso,int firstResult, int maxResult) {
+		return tccDao.getFinishedTCCsByCurso(curso, firstResult, maxResult);
+	}
+	
 	public List<TCC> getAllFinishedTCCs() {
 		return tccDao.getAllFinishedTCCs();
+	}
+	
+	public List<TCC> getAllFinishedTCCs(int firstResult, int maxResult) {
+		return tccDao.getAllFinishedTCCs(firstResult, maxResult);
+	}
+	
+	public Integer getQuantidadeTCCs(){
+		return tccDao.getQuantidadeTCCs();
 	}
 
 	public List<TCC> getNewest(int quantidade) {

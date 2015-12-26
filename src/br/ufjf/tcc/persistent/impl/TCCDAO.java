@@ -1,5 +1,6 @@
 package br.ufjf.tcc.persistent.impl;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import org.hibernate.Query;
@@ -205,6 +206,27 @@ public class TCCDAO extends GenericoDAO {
 		return null;
 	}
 	
+	public List<TCC> getFinishedTCCsByCurso(Curso curso,int firstResult, int maxResult) {
+		try {
+			Query query = getSession()
+					.createQuery(
+							"SELECT t FROM TCC AS t JOIN FETCH t.aluno AS a JOIN FETCH t.orientador LEFT JOIN FETCH t.coOrientador WHERE a.curso = :curso AND t.dataEnvioFinal IS NOT NULL AND t.arquivoTCCFinal IS NOT NULL ORDER BY t.dataEnvioFinal DESC");
+			query.setParameter("curso", curso);
+
+			List<TCC> resultados = query.setFirstResult(firstResult).setMaxResults(maxResult).list();
+
+			getSession().close();
+
+			if (resultados != null)
+				return resultados;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+	
 	public List<TCC> getAllFinishedTCCs() {
 		try {
 			Query query = getSession()
@@ -213,6 +235,27 @@ public class TCCDAO extends GenericoDAO {
 			
 
 			List<TCC> resultados = query.list();
+
+			getSession().close();
+
+			if (resultados != null)
+				return resultados;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+	
+	public List<TCC> getAllFinishedTCCs(int firstResult, int maxResult) {
+		try {
+			Query query = getSession()
+					.createQuery(
+							"SELECT t FROM TCC AS t JOIN FETCH t.aluno AS a JOIN FETCH t.orientador LEFT JOIN FETCH t.coOrientador WHERE t.dataEnvioFinal IS NOT NULL AND t.arquivoTCCFinal IS NOT NULL ORDER BY t.dataEnvioFinal DESC");
+			
+
+			List<TCC> resultados = query.setFirstResult(firstResult).setMaxResults(maxResult).list();
 
 			getSession().close();
 
@@ -537,6 +580,22 @@ public class TCCDAO extends GenericoDAO {
 		    }
 
 		    return null;
+	}
+	
+	public Integer getQuantidadeTCCs(){
+		List<BigInteger> linhas = null;
+		try{
+			Query query = getSession().createSQLQuery("SELECT COUNT(tcc.idTCC) as quantidadeTcc FROM tcc_teste.TCC tcc;");
+			linhas = query.list();
+			
+			getSession().close();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+		
+		System.out.println("\n\n"+linhas.get(0));
+		System.out.println("oioio");
+		return  Integer.valueOf(linhas.get(0).intValue());
+	}
 	
 }

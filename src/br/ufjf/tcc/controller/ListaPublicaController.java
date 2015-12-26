@@ -33,7 +33,6 @@ public class ListaPublicaController extends CommonsController {
 	private List<TCC> filterTccs = tccsByCurso;
 	private String filterString = "";
 	private String filterYear = "Todos";
-	private List<String> years2 = updateYears2();
 
 	public String getEmptyMessage() {
 		return emptyMessage;
@@ -68,22 +67,6 @@ public class ListaPublicaController extends CommonsController {
 			Collections.sort(years, Collections.reverseOrder());
 		}
 		years.add(0, "Todos");
-	}
-	
-	public List<String> updateYears2() {
-		years = new ArrayList<String>();
-		if (tccsByCurso != null && tccsByCurso.size() > 0) {
-			for (TCC tcc : tccB.getAllFinishedTCCs()) {
-				Calendar cal = Calendar.getInstance();
-				cal.setTimeInMillis(tcc.getDataEnvioFinal().getTime());
-				int year = cal.get(Calendar.YEAR);
-				if (!years.contains("" + year))
-					years.add("" + year);
-			}
-			Collections.sort(years, Collections.reverseOrder());
-		}
-		years.add(0, "Todos");
-		return years;
 	}
 
 	public String getFilterYear() {
@@ -149,34 +132,6 @@ public class ListaPublicaController extends CommonsController {
 		BindUtils.postNotifyChange(null, null, this, "filterTccs");
 	}
 	
-	public void changeCurso2() {
-		if (curso.getNomeCurso().equals("Todos (trabalhos mais recentes)"))
-		{
-			tccsByCurso = tccB.getAllFinishedTCCs();
-		}
-		else
-		if (curso.getIdCurso() > 0) {
-			tccsByCurso = new TCCBusiness().getFinishedTCCsByCurso(curso);
-			if (tccsByCurso == null || tccsByCurso.size() == 0)
-				emptyMessage = "Nenhuma monografia encontrada para o curso de "
-						+ curso.getNomeCurso();
-			else {
-				emptyMessage = "Sem resultados para seu filtro no curso de "
-						+ curso.getNomeCurso();
-				filterTccs = tccsByCurso;
-
-			}
-		} else {
-			emptyMessage = "Selecione um curso na caixa acima.";
-			tccsByCurso = null;
-		}
-		updateYears2();
-		if (!years.contains(filterYear))
-			filterYear = "Todos";
-
-		this.filtra();
-		
-	}
 
 	public List<TCC> getFilterTccs() {
 		return filterTccs;
