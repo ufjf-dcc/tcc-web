@@ -1,5 +1,6 @@
 package br.ufjf.tcc.persistent.impl;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import org.hibernate.Query;
@@ -211,6 +212,56 @@ public class TCCDAO extends GenericoDAO {
 					.createQuery(
 							"SELECT t FROM TCC AS t JOIN FETCH t.aluno AS a JOIN FETCH t.orientador LEFT JOIN FETCH t.coOrientador WHERE t.dataEnvioFinal IS NOT NULL AND t.arquivoTCCFinal IS NOT NULL ORDER BY t.dataEnvioFinal DESC");
 			
+
+			List<TCC> resultados = query.list();
+
+			getSession().close();
+
+			if (resultados != null)
+				return resultados;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+	
+	public List<TCC> getAllFinishedTCCsBy(Curso curso, String palavra, String year) {
+		try {
+
+			if(year!=null && year.equals("Todos"))
+				year=null;
+				
+			if(palavra==null)
+				palavra = "";
+			
+			StringBuilder queryString = new StringBuilder();
+			queryString.append("SELECT t FROM TCC AS t ");
+			queryString.append("JOIN FETCH t.aluno AS a ");
+			queryString.append("JOIN FETCH t.orientador AS o ");
+			queryString.append("LEFT JOIN FETCH t.coOrientador ");
+			queryString.append("WHERE t.dataEnvioFinal IS NOT NULL ");
+			queryString.append("AND t.arquivoTCCFinal IS NOT NULL ");
+			queryString.append("AND (EXTRACT(YEAR FROM t.dataEnvioFinal) = :year ");
+			queryString.append("OR :year IS NULL OR :year = '') ");
+			
+			queryString.append("AND (lower(t.nomeTCC) LIKE :palavra ");
+			queryString.append("OR a.nomeUsuario LIKE :palavra ");
+			queryString.append("OR o.nomeUsuario LIKE :palavra ");
+			queryString.append("OR t.palavrasChave LIKE :palavra ");
+			queryString.append("OR t.resumoTCC LIKE :palavra ");
+			queryString.append("OR :palavra IS NULL OR :palavra = '') ");
+			
+			queryString.append("AND (a.curso = :curso ");
+			queryString.append("OR :curso IS NULL) ");
+			
+			queryString.append("ORDER BY t.dataEnvioFinal DESC");
+			
+			Query query = getSession().createQuery(queryString.toString());
+			query.setString("year", year);
+			query.setString("palavra", "%"+palavra.toLowerCase()+"%");
+			query.setParameter("curso", curso);
 
 			List<TCC> resultados = query.list();
 
@@ -537,6 +588,22 @@ public class TCCDAO extends GenericoDAO {
 		    }
 
 		    return null;
+	}
+	
+	public Integer getQuantidadeTCCs(){
+		List<BigInteger> linhas = null;
+		try{
+			Query query = getSession().createSQLQuery("SELECT COUNT(tcc.idTCC) as quantidadeTcc FROM tcc_teste.TCC tcc;");
+			linhas = query.list();
+			
+			getSession().close();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+		
+		System.out.println("\n\n"+linhas.get(0));
+		System.out.println("oioio");
+		return  Integer.valueOf(linhas.get(0).intValue());
+	}
 	
 }
