@@ -156,7 +156,7 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 			<z:style src="/style.css" />
 
 			<z:div apply="org.zkoss.bind.BindComposer"
-				viewModel="@id('vm') @init('br.ufjf.tcc.controller.ListaPublicaController')"
+				viewModel="@id('vm') @init('br.ufjf.tcc.controller.CommonsController')"
 				height="100%" class="publicList">
 				<z:include src="@load(vm.menu)" />
 
@@ -240,7 +240,7 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 	
 	
 	<div style="position:absolute;z-index: 3 ; font-size: 12px;width: 99.25%;"  >
-	<pg:pager id="p" maxPageItems="10" maxIndexPages="20"
+	<pg:pager id="p" maxPageItems="10" maxIndexPages="20" 
 	export="offset,currentPageNumber=pageNumber" scope="request">
 		<table class="table table-bordered" style="z-index: 2;font-family: Arial,sans-serif;font-size: 12px;margin-bottom: 2px;border: 1px solid #cfcfcf"  >
 			<tr style="color: #636363;height: 30px; " >
@@ -249,9 +249,9 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 				<th width="5%" style="padding: 5px 5px;vertical-align: middle;">PDF</th>
 				<th width="5%" style="padding: 5px 5px;vertical-align: middle;">Extras</th>
 			</tr>
-			<c:forEach var="tcc" items="${tccs}">
+			<c:forEach var="tcc" items="${tccs}" >
 				<pg:item>
-				<tr style="cursor: pointer;color:#636363;vertical-align: middle;height: 42px;margin: auto;">
+				<tr style="cursor: pointer;color:#636363;vertical-align: middle;height: 42px;margin: auto;display:${tcc == null ? 'none' : ''}">
 					
 					<td  style="vertical-align: middle;padding: 2px 5px;" >
 						<a  style="color:#636363;vertical-align: middle;" href="./tcc?id=${tcc.idTCC}" target="_blank" >
@@ -314,6 +314,7 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 				
 				
 				</pg:item>
+				<c:set var="offsetIncrement" value="${offsetIncrement+1}" scope="page" />
 			</c:forEach>
 			
 			
@@ -330,7 +331,7 @@ background:	linear-gradient(to right, #fdfdfd 0%, #f1f1f1 100%); /* W3C */
 	     <li class="btn-success" > <a href="<%= pageUrl.replace("index2.jsp", "index.jsp")+"&curso="+request.getAttribute("cursoSel")+"&pesquisa="+request.getAttribute("strBusca")+"&year="+request.getAttribute("yearSelecionado")+"&page="+pageNumber %>">&lt;&lt; Anterior</a> </li>
 	    </pg:prev>
 	    
-	    <pg:pages>
+	    <pg:pages  >
 	    
 	     <li ${pageNumber == page ? 'class="active"' : ''} >   <a href="<%= pageUrl.replace("index2.jsp", "index.jsp")+"&curso="+request.getAttribute("cursoSel")+"&pesquisa="+request.getAttribute("strBusca")+"&year="+request.getAttribute("yearSelecionado")+"&page="+pageNumber %>"><%= pageNumber %></a> </li> 
 	    </pg:pages>
