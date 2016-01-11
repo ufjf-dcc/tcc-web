@@ -66,6 +66,7 @@ public class ExibiPdfServlet extends HttpServlet {
 		while ((bytesRead = fis.read(buffer, 0, 8192)) != -1) {
 			baos.write(buffer, 0, bytesRead);
 		}
+		fis.close();
 		return baos.toByteArray();
 	}
 

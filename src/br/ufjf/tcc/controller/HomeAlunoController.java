@@ -38,6 +38,7 @@ public class HomeAlunoController extends CommonsController {
 	private PrazoBusiness prazoBusiness = new PrazoBusiness();
 	private String gridTitle = "Semestre ?";
 
+	@SuppressWarnings("unused")
 	@Init
 	public void init() {
 		CalendarioSemestre currentCalendar = getCurrentCalendar();
