@@ -88,7 +88,7 @@ public class CadastroPrazosController extends CommonsController {
 					break;
 				case Prazo.PRAZO_PROJETO:
 					DateTime agora = new DateTime();
-					agora = agora.now();
+					agora = DateTime.now();
 					agora = agora.minusDays(-21);
 					if(agora.isBefore(finalDate.minusDays(14)))
 						aux.setDataFinal(agora.toDate());

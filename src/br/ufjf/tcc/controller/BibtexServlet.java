@@ -17,11 +17,8 @@ import br.ufjf.tcc.model.TCC;
 @WebServlet("/bibtex")
 public class BibtexServlet extends HttpServlet {
 
-		private TCC tcc=null;
+	private TCC tcc=null;
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	public void service(HttpServletRequest req,HttpServletResponse res) throws IOException,ServletException {

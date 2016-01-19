@@ -284,6 +284,8 @@ public class ExibirBancasController extends CommonsController {
 	
 	
 	
+	
+	@SuppressWarnings({"unchecked","rawtypes"})
 	@Command
 	public void gerarPDFBancas(){
 		if(!trabalhosMarcados.isEmpty()){

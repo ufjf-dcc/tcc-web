@@ -84,6 +84,7 @@ public class MenuController extends CommonsController {
 		return false;
 	}
 	
+	@SuppressWarnings({"unchecked", "rawtypes"})
 	@Command
 	public void gerarAta(){
 		if (getUsuario() != null

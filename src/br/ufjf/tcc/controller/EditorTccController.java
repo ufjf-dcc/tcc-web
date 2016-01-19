@@ -265,7 +265,8 @@ public class EditorTccController extends CommonsController {
 				"application/pdf", is);
 		iframe.setContent(amedia);
 	}
-
+	
+	@SuppressWarnings({"unchecked", "rawtypes"})
 	@Command
 	public void upload(@BindingParam("evt") UploadEvent evt) {
 		String alerta1 = "Você está enviando a versão final do seu trabalho?";
@@ -448,7 +449,9 @@ public class EditorTccController extends CommonsController {
 		
 		return true;
 	}
+	
 	// Submit do TCC
+	@SuppressWarnings({"rawtypes","unchecked"})
 	@Command("submit")
 	public void submit() {
 		System.out.println("\n\n"+new Date().toString());
@@ -638,6 +641,7 @@ public class EditorTccController extends CommonsController {
 		p.setSuplente(1);
 	}
 
+	
 
 	
 }

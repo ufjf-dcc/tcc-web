@@ -404,6 +404,7 @@ public class VisualizaTCCController extends CommonsController {
 		return false;
 	}
 	
+	@SuppressWarnings({"unchecked","rawtypes"})
 	@Command
 	public void finalizaProjeto()
 	{
@@ -429,6 +430,7 @@ public class VisualizaTCCController extends CommonsController {
 
 	}
 	
+	@SuppressWarnings({"unchecked", "rawtypes"})
 	@Command
 	public void finalizaTrabalho()
 	{

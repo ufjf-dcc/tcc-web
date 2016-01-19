@@ -24,6 +24,7 @@ import br.ufjf.tcc.library.SessionManager;
 import br.ufjf.tcc.model.TCC;
 import br.ufjf.tcc.model.Usuario;
 
+@SuppressWarnings("unused")
 public class TCCsCursoController extends CommonsController {
 
 	private List<String> years;
@@ -392,6 +393,7 @@ public class TCCsCursoController extends CommonsController {
 		filtraProjeto(tipoTrabalho);
 	}
 	
+	@SuppressWarnings({"unchecked","rawtypes"})
 	@Command
 	public void excluirTCC(@BindingParam("tcc") final TCC tcc)
 	{
