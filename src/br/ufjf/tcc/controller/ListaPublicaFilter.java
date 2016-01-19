@@ -2,8 +2,6 @@ package br.ufjf.tcc.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.annotation.WebServlet;
@@ -23,7 +21,7 @@ public class ListaPublicaFilter extends HttpServlet {
 	
 	private TCCBusiness tccB= new TCCBusiness();
 	private List<Curso> cursos = this.getAllCursos();
-	List<String> years;
+	private List<String> years ;
 	private List<TCC> tccsByCurso = new ArrayList<>() ;
 	private List<TCC> filterTccs ;
 	private String filterString = "";
@@ -33,8 +31,12 @@ public class ListaPublicaFilter extends HttpServlet {
 		req.setCharacterEncoding("UTF-8");
 		
 		String pagina = req.getParameter("page");
+		
 		if (pagina == null)
 			pagina = "1";
+
+		Integer firstResult = (new Integer(pagina)-1) * 10;
+		Integer maxResult = 100;
 		
 		CursoBusiness cursoBusiness = new CursoBusiness();
 
@@ -42,7 +44,6 @@ public class ListaPublicaFilter extends HttpServlet {
 		String codCursoAux = req.getParameter("curso");
 		String year = req.getParameter("year");
 		String errorMsg = req.getParameter("errorMsg");
-		
 
 		if (errorMsg != null && errorMsg.equals("1")) {
 			req.setAttribute("errorMsg", errorMsg);
@@ -67,12 +68,15 @@ public class ListaPublicaFilter extends HttpServlet {
 		else
 			this.filterYear = year;
 
-		tccsByCurso = tccB.getAllFinishedTCCsBy(c, filterString, filterYear);
+		tccsByCurso = tccB.getAllFinishedTCCsBy(c, filterString, filterYear, firstResult, maxResult);
 		filterTccs = tccsByCurso;
 		
-		if(this.filterYear==null || filterYear.equalsIgnoreCase("Todos"))
-			updateYears2();
-
+		this.years = new ArrayList<String>();
+		for(Integer eachYear:tccB.getAllYears()){
+				this.years.add("" + eachYear);
+		}
+		this.years.add(0, "Todos");
+		
 		List<TCC> tccs = filterTccs;
 		List<Curso> cursos = this.cursos;
 		List<String> years = this.years;
@@ -113,22 +117,6 @@ public class ListaPublicaFilter extends HttpServlet {
 		if (cursos != null)
 			cursoss.addAll(cursos);
 		return cursoss;
-	}
-	
-	public List<String> updateYears2() {
-		years = new ArrayList<String>();
-		if (tccsByCurso != null && tccsByCurso.size() > 0) {
-			for (TCC tcc : tccsByCurso) {
-				Calendar cal = Calendar.getInstance();
-				cal.setTimeInMillis(tcc.getDataEnvioFinal().getTime());
-				int year = cal.get(Calendar.YEAR);
-				if (!years.contains("" + year))
-					years.add("" + year);
-			}
-			Collections.sort(years, Collections.reverseOrder());
-		}
-		years.add(0, "Todos");
-		return years;
 	}
 
 }
