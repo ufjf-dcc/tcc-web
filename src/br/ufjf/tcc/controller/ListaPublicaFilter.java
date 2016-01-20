@@ -28,67 +28,67 @@ public class ListaPublicaFilter extends HttpServlet {
 	private String filterYear ;
 
 	public void service(HttpServletRequest req, HttpServletResponse res) throws IOException {
-		req.setCharacterEncoding("UTF-8");
-		
-		String pagina = req.getParameter("page");
-		
-		if (pagina == null)
-			pagina = "1";
-
-		Integer firstResult = (new Integer(pagina)-1) * 10;
-		Integer maxResult = 100;
-		
-		CursoBusiness cursoBusiness = new CursoBusiness();
-
-		String pesquisa = req.getParameter("pesquisa");
-		String codCursoAux = req.getParameter("curso");
-		String year = req.getParameter("year");
-		String errorMsg = req.getParameter("errorMsg");
-
-		if (errorMsg != null && errorMsg.equals("1")) {
-			req.setAttribute("errorMsg", errorMsg);
-		}
-		
-		Curso c = null;
-		if (codCursoAux != null && codCursoAux.length() > 1) {
-			c = cursoBusiness.getCursoByCode(codCursoAux);
-		} 
-		
-		if (pesquisa != null && !pesquisa.isEmpty()) {
-			this.filterString = pesquisa;
-			req.setAttribute("PalavaPesquisa", pesquisa);
-
-		} else
-			this.filterString = "";
-		
-		if(year==null)
-			filterYear = "Todos";
-		else if(year.equals("null"))
-			this.filterYear = "Todos";
-		else
-			this.filterYear = year;
-
-		tccsByCurso = tccB.getAllFinishedTCCsBy(c, filterString, filterYear, firstResult, maxResult);
-		filterTccs = tccsByCurso;
-		
-		this.years = new ArrayList<String>();
-		for(Integer eachYear:tccB.getAllYears()){
-				this.years.add("" + eachYear);
-		}
-		this.years.add(0, "Todos");
-		
-		List<TCC> tccs = filterTccs;
-		List<Curso> cursos = this.cursos;
-		List<String> years = this.years;
-		req.setAttribute("tccs", tccs);
-		req.setAttribute("cursos", cursos);
-		req.setAttribute("cursoSelected", codCursoAux);
-		req.setAttribute("years", years);
-		req.setAttribute("yearSelected", year);
-		req.setAttribute("lpc", codCursoAux);
-		req.setAttribute("page", pagina);
-
 		try {
+			req.setCharacterEncoding("UTF-8");
+
+			String pagina = req.getParameter("page");
+
+			if (pagina == null)
+				pagina = "1";
+
+			Integer firstResult = (new Integer(pagina) - 1) * 10;
+			Integer maxResult = 100;
+
+			CursoBusiness cursoBusiness = new CursoBusiness();
+
+			String pesquisa = req.getParameter("pesquisa");
+			String codCursoAux = req.getParameter("curso");
+			String year = req.getParameter("year");
+			String errorMsg = req.getParameter("errorMsg");
+
+			if (errorMsg != null && errorMsg.equals("1")) {
+				req.setAttribute("errorMsg", errorMsg);
+			}
+
+			Curso c = null;
+			if (codCursoAux != null && codCursoAux.length() > 1) {
+				c = cursoBusiness.getCursoByCode(codCursoAux);
+			}
+
+			if (pesquisa != null && !pesquisa.isEmpty()) {
+				this.filterString = pesquisa;
+				req.setAttribute("PalavaPesquisa", pesquisa);
+
+			} else
+				this.filterString = "";
+
+			if (year == null)
+				filterYear = "Todos";
+			else if (year.equals("null"))
+				this.filterYear = "Todos";
+			else
+				this.filterYear = year;
+
+			tccsByCurso = tccB.getAllFinishedTCCsBy(c, filterString, filterYear, firstResult, maxResult);
+			filterTccs = tccsByCurso;
+
+			this.years = new ArrayList<String>();
+			for (Integer eachYear : tccB.getAllYears()) {
+				this.years.add("" + eachYear);
+			}
+			this.years.add(0, "Todos");
+
+			List<TCC> tccs = filterTccs;
+			List<Curso> cursos = this.cursos;
+			List<String> years = this.years;
+			req.setAttribute("tccs", tccs);
+			req.setAttribute("cursos", cursos);
+			req.setAttribute("cursoSelected", codCursoAux);
+			req.setAttribute("years", years);
+			req.setAttribute("yearSelected", year);
+			req.setAttribute("lpc", codCursoAux);
+			req.setAttribute("page", pagina);
+
 			req.getRequestDispatcher("index2.jsp").forward(req, res);
 		} catch (Exception e) {
 			e.printStackTrace();
