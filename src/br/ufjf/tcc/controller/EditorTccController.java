@@ -641,7 +641,12 @@ public class EditorTccController extends CommonsController {
 		p.setSuplente(1);
 	}
 
-	
+	public boolean isAlunoVerified() {
+		return alunoVerified;
+	}
 
-	
+	public void setAlunoVerified(boolean alunoVerified) {
+		this.alunoVerified = alunoVerified;
+	}
+
 }

@@ -247,17 +247,16 @@ th {
 							<tr
 								style="cursor: pointer;color:#636363;vertical-align: middle;height: 42px;margin: auto;display:${tcc == null ? 'none' : ''}">
 
-								<td style="vertical-align: middle; padding: 2px 5px;"><a
-									style="color: #636363; vertical-align: middle;"
-									href="./tcc?id=${tcc.idTCC}" target="_blank">
-										<div
-											onmouseover="tooltip.pop(this,'#${tcc.idTCC}',{position:2})"
-											style="padding: 4px 5px; line-height: 24px">
+								<td style="vertical-align: middle; padding: 2px 5px;">
+									<a style="color: #636363; vertical-align: middle;"
+										href="./tcc?id=${tcc.idTCC}" target="_blank">
+										<div onmouseover="tooltip.pop(this,'#${tcc.idTCC}',{position:2})" style="padding: 4px 5px; line-height: 24px">
 											<div style="line-height: 24px">
 												<span style="line-height: normal;"> ${tcc.nomeTCC} </span>
 											</div>
 										</div>
-								</a></td>
+									</a>
+								</td>
 
 								<td style="vertical-align: middle; padding: 5px 5px;"
 									onclick="window.open('./tcc?id=${tcc.idTCC}','_blank')"><a

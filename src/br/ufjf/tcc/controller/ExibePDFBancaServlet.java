@@ -28,7 +28,7 @@ public class ExibePDFBancaServlet extends HttpServlet {
 		File file = new File(Ata.PASTA_ARQUIVOS_TEMP + Ata.COMPOSICAO_BANCA_FINAL+ Id + Ata.EXTENSAO_PDF);
 		
 		
-		if(file==null){
+		if(!file.exists()){
 			file = FileManager.getFile("modelo.pdf");
 			res.setHeader("Content-Disposition",
 					"inline; filename=modelo.pdf");
@@ -66,6 +66,7 @@ public class ExibePDFBancaServlet extends HttpServlet {
 		while ((bytesRead = fis.read(buffer, 0, 8192)) != -1) {
 			baos.write(buffer, 0, bytesRead);
 		}
+		fis.close();
 		return baos.toByteArray();
 	}
 
