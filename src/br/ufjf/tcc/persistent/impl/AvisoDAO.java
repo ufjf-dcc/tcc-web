@@ -15,8 +15,7 @@ public class AvisoDAO extends GenericoDAO {
 	public List<Aviso> getAvisosByCurso(Curso curso) {
 		List<Aviso> avisos = null;
 		try {
-			Query query = getSession().createQuery(
-					"SELECT a FROM Aviso a WHERE a.curso = :questionario");
+			Query query = getSession().createQuery("SELECT a FROM Aviso a WHERE a.curso = :questionario");
 			query.setParameter("questionario", curso);
 
 			avisos = query.list();
@@ -29,13 +28,12 @@ public class AvisoDAO extends GenericoDAO {
 
 		return avisos;
 	}
-	
+
+	@SuppressWarnings("unchecked")
 	public List<Aviso> getAllAvisos() {
 		List<Aviso> avisos = null;
 		try {
-			Query query = getSession().createQuery(
-					"SELECT a FROM Aviso a GROUP BY a.mensagem");
-			
+			Query query = getSession().createQuery("SELECT a FROM Aviso a GROUP BY a.mensagem");
 
 			avisos = query.list();
 
@@ -47,30 +45,20 @@ public class AvisoDAO extends GenericoDAO {
 
 		return avisos;
 	}
-	
-	public boolean excluiAll(Aviso aviso){
-	try {
-				
-				Transaction trs = getSession().beginTransaction();
-				
-				Query query = getSession().createQuery(
-						"DELETE FROM Aviso AS a WHERE a.mensagem = :m");
-				query.setParameter("m", aviso.getMensagem());
-				int result = query.executeUpdate();
-				
-						
-				
-				trs.commit();
-				
-				getSession().close();
-				
-				
-				return true;
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			
-			return false;
+
+	public boolean excluiAll(Aviso aviso) {
+		try {
+			Transaction trs = getSession().beginTransaction();
+			Query query = getSession().createQuery("DELETE FROM Aviso AS a WHERE a.mensagem = :m");
+			query.setParameter("m", aviso.getMensagem());
+			query.executeUpdate();
+			trs.commit();
+			getSession().close();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+		return false;
+	}
 
 }

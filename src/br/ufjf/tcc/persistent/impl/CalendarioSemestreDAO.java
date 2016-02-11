@@ -76,7 +76,6 @@ public class CalendarioSemestreDAO extends GenericoDAO {
 	}
 	
 	public boolean updateFimSemCalendarById(Date fim,int id) {
-		CalendarioSemestre currentCalendar = null;
 		try {
 			
 			Transaction trs = getSession().beginTransaction();
@@ -86,7 +85,7 @@ public class CalendarioSemestreDAO extends GenericoDAO {
 			query.setParameter("final", fim);
 			query.setParameter("idcalend", id);
 			
-			int result = query.executeUpdate();
+			query.executeUpdate();
 			System.out.println("\n\n\n");
 			
 			trs.commit();

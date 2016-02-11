@@ -8,31 +8,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import br.ufjf.tcc.model.Curso;
-import br.ufjf.tcc.model.TCC;
-import br.ufjf.tcc.persistent.impl.CursoDAO;
-
-
-
 @WebServlet("/by-year")
 public class ListaAnosServlet extends HttpServlet {
-	
 	
 	private static final long serialVersionUID = 1L;
 	private ListaPublicaController lpc = new ListaPublicaController();
 	
-	
 	public void service(HttpServletRequest req,HttpServletResponse res) throws UnsupportedEncodingException{
 		req.setCharacterEncoding("UTF-8");
 		
-		
-		List<Curso> cursos = lpc.getCursos();
 		List<String> years = lpc.getYears();
 		
-		
 		req.setAttribute("years", years);
-		
-		
 		
 		try{
 			req.getRequestDispatcher("listaAnos.jsp").forward(req, res);

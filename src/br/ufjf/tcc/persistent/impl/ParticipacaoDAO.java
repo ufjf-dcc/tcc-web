@@ -10,10 +10,9 @@ import br.ufjf.tcc.model.TCC;
 import br.ufjf.tcc.model.Usuario;
 import br.ufjf.tcc.persistent.GenericoDAO;
 
-
+@SuppressWarnings("unchecked")
 public class ParticipacaoDAO extends GenericoDAO {
 
-	@SuppressWarnings("unchecked")
 	public List<Participacao> getParticipacoesByUser(Usuario professor) {
 		List<Participacao> participacoes = null;
 		try {
@@ -30,7 +29,6 @@ public class ParticipacaoDAO extends GenericoDAO {
 		return participacoes;
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<Participacao> getParticipacoesByTCC(TCC tcc) {
 		List<Participacao> tccs = null;
 		try {
@@ -47,7 +45,7 @@ public class ParticipacaoDAO extends GenericoDAO {
 		return tccs;
 	}
 	
-	@SuppressWarnings("unchecked")
+	
 	public List<Participacao> getParticipacoesUsuarioByTCC(TCC tcc) {
 		List<Participacao> tccs = null;
 		try {
@@ -68,14 +66,10 @@ public class ParticipacaoDAO extends GenericoDAO {
 		try {
 			
 			Transaction trs = getSession().beginTransaction();
-			
 			Query query = getSession().createQuery(
 					"DELETE FROM Participacao AS p WHERE p.tcc = :tcc");
 			query.setParameter("tcc", tcc);
-			int result = query.executeUpdate();
-			
-					
-			
+			query.executeUpdate();
 			trs.commit();
 			
 			getSession().close();

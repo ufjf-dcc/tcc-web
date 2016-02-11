@@ -1,8 +1,5 @@
 package br.ufjf.tcc.controller;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Calendar;
 
@@ -11,9 +8,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.zkoss.bind.annotation.BindingParam;
-import org.zkoss.zul.Label;
 
 import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.model.TCC;

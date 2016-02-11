@@ -773,6 +773,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 		return editUsuario;
 	}
 
+	@SuppressWarnings({"rawtypes","unchecked"})
 	@Command
 	public void mudarAtivo(@BindingParam("check") final Checkbox check,@BindingParam("usuario") final Usuario usuario)
 	{

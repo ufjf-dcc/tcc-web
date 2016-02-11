@@ -44,13 +44,23 @@ public class DownloadExtraServlet extends HttpServlet {
 			req.getRequestDispatcher("index.jsp").forward(req, res);
 			return;
 		} 
+		String extensaoArquivo = setExtensaoArquivo(file, res);
 		
-		res.setContentType("application/x-rar-compressed"); 
 		res.setContentLength(bytes.length);
 		res.setHeader("Content-Disposition",
-				"attachment; filename=\""+tcc.getNomeTCC()+".rar"); 
+				"attachment; filename=\""+tcc.getNomeTCC()+"."+extensaoArquivo); 
 		res.getOutputStream().write(bytes);
 
+	}
+	
+	private String setExtensaoArquivo(File file, HttpServletResponse res) {
+		String extensaoArquivo = "rar" ;
+		res.setContentType("application/x-rar-compressed");
+		if(file.getName().contains("zip")){
+			extensaoArquivo = "zip" ;
+			res.setContentType("application/zip");
+		}
+		return extensaoArquivo;
 	}
 
 	private static byte[] fileToByte(File imagem) throws Exception {

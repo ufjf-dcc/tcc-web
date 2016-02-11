@@ -28,7 +28,7 @@ public class DownloadPDFServlet extends HttpServlet {
 
 		if (tccId != null) {
 			TCCBusiness tccBusiness = new TCCBusiness();
-			tcc = tccBusiness.getTCCById(Integer.parseInt(tccId));
+			tcc = tccBusiness.getTCCById(Integer.valueOf(tccId));
 
 			tcc.setQtDownloads(tcc.getQtDownloads()+1);
 			tccBusiness.edit(tcc);

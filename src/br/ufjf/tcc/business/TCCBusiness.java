@@ -170,8 +170,12 @@ public class TCCBusiness {
 		return tccDao.getAllFinishedTCCs();
 	}
 	
-	public List<TCC> getAllFinishedTCCsBy(Curso curso, String palavra, String year) {
-		return tccDao.getAllFinishedTCCsBy(curso, palavra, year);
+	public List<TCC> getAllFinishedTCCsBy(Curso curso, String palavra, String year, int firstResult, int maxResult) {
+		return tccDao.getAllFinishedTCCsBy(curso, palavra, year, firstResult, maxResult);
+	}
+	
+	public List<Integer> getAllYears(){
+		return tccDao.getAllYears();
 	}
 	
 	public Integer getQuantidadeTCCs(){
