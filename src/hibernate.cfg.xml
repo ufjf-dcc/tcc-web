@@ -5,7 +5,7 @@
 <hibernate-configuration>
 	<session-factory>
 		<!-- propriedade que mostra os comandos sql utilizados no Console da IDE -->
-		<property name="show_sql">true</property>
+		<property name="show_sql">false</property>
 
 		<property name="hibernate.c3p0.min_size">5</property>
 		<property name="hibernate.c3p0.max_size">20</property>
