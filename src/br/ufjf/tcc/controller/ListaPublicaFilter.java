@@ -35,6 +35,10 @@ public class ListaPublicaFilter extends HttpServlet {
 
 			if (pagina == null)
 				pagina = "1";
+			
+			if(pagina.equals("1")){
+				System.gc();
+			}
 
 			Integer firstResult = (new Integer(pagina) - 1) * 10;
 			Integer maxResult = 100;
@@ -70,18 +74,16 @@ public class ListaPublicaFilter extends HttpServlet {
 				this.filterYear = year;
 
 			tccsByCurso = tccB.getAllFinishedTCCsBy(c, filterString, filterYear, firstResult, maxResult);
-			filterTccs = tccsByCurso;
-
+			
 			this.years = new ArrayList<String>();
 			for (Integer eachYear : tccB.getAllYears()) {
 				this.years.add("" + eachYear);
 			}
 			this.years.add(0, "Todos");
 
-			List<TCC> tccs = filterTccs;
 			List<Curso> cursos = this.cursos;
 			List<String> years = this.years;
-			req.setAttribute("tccs", tccs);
+			req.setAttribute("tccs", tccsByCurso);
 			req.setAttribute("cursos", cursos);
 			req.setAttribute("cursoSelected", codCursoAux);
 			req.setAttribute("years", years);
@@ -90,6 +92,9 @@ public class ListaPublicaFilter extends HttpServlet {
 			req.setAttribute("page", pagina);
 
 			req.getRequestDispatcher("index2.jsp").forward(req, res);
+			
+			tccsByCurso = null;
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
