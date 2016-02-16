@@ -2,7 +2,6 @@
 <%@page import="org.hibernate.mapping.Collection"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.Calendar "%>
-<%@page import="br.ufjf.tcc.controller.ListaPublicaController"%>
 <%@page import="br.ufjf.tcc.model.*"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
