@@ -35,23 +35,36 @@ public class PreenchimentoPDF {
 
 		BaseFont bfTextoSimples = BaseFont.createFont(BaseFont.TIMES_ROMAN,
 				BaseFont.WINANSI, BaseFont.NOT_EMBEDDED);
+		BaseFont campoStyle = BaseFont.createFont(BaseFont.TIMES_ROMAN,
+				BaseFont.WINANSI, BaseFont.NOT_EMBEDDED);
 		over = stamper.getOverContent(1);
 		AcroFields form = stamper.getAcroFields();
 		over.beginText();
 		over.setFontAndSize(bfTextoSimples, 12);
 
+		
 		form.setFieldProperty("nomeAluno", "textcolor", Color.BLACK ,null);
 		form.setField("nomeAluno", nomeAluno);
+		form.setFieldProperty("nomeAluno", "textfont", campoStyle ,null);
+		form.setFieldProperty("nomeAluno", "textsize", new Float(12) ,null);
 		
+		form.setFieldProperty("nomeAvaliador", "textfont", campoStyle ,null);
+		form.setFieldProperty("nomeAvaliador", "textsize", new Float(12) ,null);
 		form.setFieldProperty("nomeAvaliador", "textcolor", Color.BLACK ,null);
 		form.setField("nomeAvaliador", nomeAvaliador);
 
+		form.setFieldProperty("dia", "textfont", campoStyle ,null);
+		form.setFieldProperty("dia", "textsize", new Float(12) ,null);
 		form.setFieldProperty("dia", "textcolor", Color.BLACK ,null);
 		form.setField("dia", dia);
 		
+		form.setFieldProperty("mes", "textfont", campoStyle ,null);
+		form.setFieldProperty("mes", "textsize", new Float(12) ,null);
 		form.setFieldProperty("mes", "textcolor", Color.BLACK ,null);
 		form.setField("mes", Ata.getMesPeloNumero(mes));
 		
+		form.setFieldProperty("ano", "textfont", campoStyle ,null);
+		form.setFieldProperty("ano", "textsize", new Float(12) ,null);
 		form.setFieldProperty("ano", "textcolor", Color.BLACK ,null);
 		form.setField("ano", ano);
 

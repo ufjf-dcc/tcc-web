@@ -37,6 +37,7 @@ public abstract class Ata {
 	protected PdfContentByte over;
 	protected AcroFields form;
 	protected BaseFont bfTextoSimples ;
+	protected BaseFont campoStyle ;
 	
 	public static final String COMPOSICAO_BANCA = "ComposicaoBanca";
 	public static final String COMPOSICAO_BANCA_FINAL = "ComposicaoBancaFinal";
@@ -220,7 +221,7 @@ public abstract class Ata {
 		String meses[] = new String[12];
 		meses[0] = "janeiro";
 		meses[1] = "fevereiro";
-		meses[2] = "mar�o";
+		meses[2] = "março";
 		meses[3] = "abril";
 		meses[4] = "maio";
 		meses[5] = "junho";
