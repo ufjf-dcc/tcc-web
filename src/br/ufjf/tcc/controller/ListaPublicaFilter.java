@@ -112,6 +112,7 @@ public class ListaPublicaFilter extends HttpServlet {
 		empty.setNomeCurso("Todos (trabalhos mais recentes)");
 		cursoss.add(empty);
 		List<Curso> cursos = (new CursoBusiness()).getAll();
+		tccB = new TCCBusiness();
 	    for(int i=1;i<cursos.size();i++)
 	    {
 	        if(cursos.get(i)!=null)
