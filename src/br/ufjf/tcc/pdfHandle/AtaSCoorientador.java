@@ -213,6 +213,8 @@ public class AtaSCoorientador extends Ata {
 		form.setField("titulo1_2", DivisorString.dividirTitulo(tcc.getNomeTCC())[0]);
 		
 		form.setField("titulo2_2", DivisorString.dividirTitulo(tcc.getNomeTCC())[1]);
+		
+		form.setField("titulo2_3", DivisorString.dividirTitulo(tcc.getNomeTCC())[2]);
 
 		// EXAMINADORES
 		form.setField("orientador3", "1. "+tcc.getOrientador().getNomeUsuario());
@@ -254,6 +256,8 @@ public class AtaSCoorientador extends Ata {
 		form.setField("titulo1", DivisorString.dividirTitulo(tcc.getNomeTCC())[0]);
 		
 		form.setField("titulo2", DivisorString.dividirTitulo(tcc.getNomeTCC())[1]);
+		
+		form.setField("titulo3", DivisorString.dividirTitulo(tcc.getNomeTCC())[2]);
 		
 		form.setField("orientador1", tcc.getOrientador().getNomeUsuario());
 
