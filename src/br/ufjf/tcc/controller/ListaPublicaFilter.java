@@ -19,20 +19,28 @@ public class ListaPublicaFilter extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 	
-	private TCCBusiness tccB = new TCCBusiness();
-	private CursoBusiness cursoBusiness = new CursoBusiness();
+	private static TCCBusiness tccB ;
+	private static CursoBusiness cursoBusiness ;
 	private List<Curso> cursos;
 	private List<String> years ;
-	private List<TCC> tccsByCurso = new ArrayList<>() ;
-	private List<TCC> filterTccs ;
+	private static List<TCC> tccsByCurso ;
+	private static List<TCC> filterTccs ;
 	private String filterString = "";
 	private String filterYear ;
+	
+	public ListaPublicaFilter() {
+		super();
+		if(tccB==null)
+			tccB = new TCCBusiness();
+		if(cursos==null)
+			cursos = this.getAllCursos();
+		if(tccsByCurso==null)
+			tccsByCurso = new ArrayList<>() ;
+	}
 	
 	@Override
 	public void service(HttpServletRequest req, HttpServletResponse res) throws IOException {
 		try {
-			tccB = new TCCBusiness();
-			cursos = this.getAllCursos();
 			req.setCharacterEncoding("UTF-8");
 
 			String pagina = req.getParameter("page");
@@ -112,8 +120,7 @@ public class ListaPublicaFilter extends HttpServlet {
 		empty.setNomeCurso("Todos (trabalhos mais recentes)");
 		cursoss.add(empty);
 		List<Curso> cursos = (new CursoBusiness()).getAll();
-		tccB = new TCCBusiness();
-	    for(int i=1;i<cursos.size();i++)
+		for(int i=1;i<cursos.size();i++)
 	    {
 	        if(cursos.get(i)!=null)
 	        {
