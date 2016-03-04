@@ -10,6 +10,7 @@
 		<display-name>ZK Session cleaner</display-name>
 		<listener-class>org.zkoss.zk.ui.http.HttpSessionListener</listener-class>
 	</listener>
+	
 	<servlet>
 		<description>
   	The ZK loader for ZUML pages</description>
@@ -66,6 +67,28 @@
 	    <display-name>ZK JSP Initiator</display-name>
 	    <listener-class>org.zkoss.jsp.spec.JspFactoryContextListener</listener-class>
 	</listener>
+	
+	<listener>
+        <listener-class>org.quartz.ee.servlet.QuartzInitializerListener</listener-class>
+    </listener>
+    
+    <servlet>
+    	<servlet-name>quartzInit</servlet-name>
+    	<servlet-class>org.quartz.ee.servlet.QuartzInitializerServlet</servlet-class>
+    	<init-param>
+    		<param-name>config-file</param-name>
+    		<param-value>/quartz-config/quartz.properties</param-value>
+    	</init-param>
+    	<init-param>  
+	        <param-name>shutdown-on-unload</param-name>  
+	        <param-value>true</param-value>  
+	    </init-param>  
+	    <init-param>  
+	        <param-name>start-scheduler-on-load</param-name>  
+	        <param-value>true</param-value>  
+	    </init-param> 
+    	<load-on-startup>1</load-on-startup>
+    </servlet>
 	
 	
 	
