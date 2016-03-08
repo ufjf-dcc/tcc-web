@@ -2,6 +2,7 @@
 ## Eclipse
 #################
 
+/src/br/ufjf/tcc/library/config.txt
 *.pydevproject
 bin/
 tmp/
@@ -15,7 +16,7 @@ local.properties
 .settings
 .project
 .classpath
-
+src/br/ufjf/tcc/library/config.txt
 # External tool builders
 .externalToolBuilders/
 
