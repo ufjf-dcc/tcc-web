@@ -102,7 +102,7 @@ public class CommonsController {
 			Executions.sendRedirect("/pages/home-secretaria.zul");
 			break;
 		default:
-			Executions.sendRedirect("/index.zul");
+			Executions.sendRedirect("/index.jsp");
 		}
 
 	}
@@ -110,7 +110,7 @@ public class CommonsController {
 	public boolean checkLogin() {
 		UsuarioBusiness usuarioBusiness = new UsuarioBusiness();
 		if (!usuarioBusiness.checaLogin(getUsuario())) {
-			Executions.sendRedirect("/index.zul");
+			Executions.sendRedirect("/index.jsp");
 			return false;
 		} else
 			return true;

@@ -9,7 +9,7 @@ margin-top:-92px; left:50%; margin-left:-150px;">
 				<vlayout>
 					<label value="@load(vm.message)" />
 					<button label="Ir para a Página Inicial"
-						href="/index.zul" style="margin-bottom:5px" />
+						href="/index.jsp" style="margin-bottom:5px" />
 				</vlayout>
 			</panelchildren>
 		</panel>
