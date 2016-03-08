@@ -1,5 +1,6 @@
 package br.ufjf.tcc.library;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,7 +16,7 @@ public class ConfHandler {
 
 	private ConfHandler() {
 		try {
-			InputStream inputStream = getClass().getResourceAsStream("config.txt");
+			InputStream inputStream = new FileInputStream("/tcc-config/config.txt");
 	        String arquivo = IOUtils.toString(inputStream);
 			confs = new HashMap<String, String>();
 			Pattern patternConf = Pattern.compile("^([A-Z]+\\.[A-Z]+) = (.*)$", Pattern.MULTILINE);
