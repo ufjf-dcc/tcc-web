@@ -158,7 +158,7 @@ th {
 				style="margin: auto; width: 100%; height: 32px; font-size: 12px; font-weight: bold; color: #636363">
 				<div style="padding: 8px 5px 3px; vertical-align: middle;">
 
-					Lista Pública de Trabalhos Acadêmico</div>
+					Lista Pública de Trabalhos Acadêmicos</div>
 
 			</div>
 
