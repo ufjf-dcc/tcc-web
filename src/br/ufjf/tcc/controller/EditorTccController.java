@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
@@ -30,6 +33,8 @@ import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.business.UsuarioBusiness;
 import br.ufjf.tcc.library.FileManager;
 import br.ufjf.tcc.library.SessionManager;
+import br.ufjf.tcc.mail.Email;
+import br.ufjf.tcc.mail.EmailBuilder;
 import br.ufjf.tcc.model.Departamento;
 import br.ufjf.tcc.model.Participacao;
 import br.ufjf.tcc.model.TCC;
@@ -41,6 +46,7 @@ public class EditorTccController extends CommonsController {
 	private TCCBusiness tccBusiness = new TCCBusiness();
 	private Usuario tempUser = null;
 	private TCC tcc = null;
+	private String statusInicialTCC = "";
 	private Iframe iframe;
 	private InputStream tccFile = null, extraFile = null;
 	private AMedia pdf = null;
@@ -75,6 +81,12 @@ public class EditorTccController extends CommonsController {
 					if (getUsuario().getCurso() != null)
 						tcc.getAluno().setCurso(getUsuario().getCurso());
 					tcc.setAluno(getUsuario());
+					//TODO: ACAO DE ENVIAR EMAIL (PROJETO CRIADO)
+					EmailBuilder emailBuilder = new EmailBuilder(true);
+					emailBuilder.appendHtmlTopico("Projeto criado");
+					emailBuilder.appendMensagemBreakLine("O aluno <b>"+tcc.getAluno().getNomeUsuario()+"<b> começou seu projeto.");
+					//adicionar destinatarios;
+					//enviarEmail(emailBuilder);
 				}
 
 			canChangeOrientacao = true;
@@ -109,6 +121,16 @@ public class EditorTccController extends CommonsController {
 			hasSubtitulo = (tcc.getSubNomeTCC() != null);
 		}
 		departamentos = (new DepartamentoBusiness()).getAll();
+		statusInicialTCC = tcc.getStatusTCC();
+	}
+	
+	private boolean statusFoiAlteradoPara(String status) {
+		if(statusInicialTCC.equals(tcc.getStatusTCC()))
+			return false;
+		else if(tcc.getStatusTCC().equals(status)) {
+			return true;
+		}
+		return false;
 	}
 
 	private boolean canEdit() {
@@ -457,8 +479,6 @@ public class EditorTccController extends CommonsController {
 		System.out.println("\n\n"+new Date().toString());
 		if(trabFinal){
 			tcc.setTrabFinal(true);
-		}else{
-			System.out.println("\n\n\nNao passou da dta de defesa");
 		}
 		if (getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.SECRETARIA
 				&& (tcc.getArquivoTCCFinal() == null && !tccFileChanged)) {
@@ -562,6 +582,33 @@ public class EditorTccController extends CommonsController {
 					alerta = "Projeto salvo!";
 				else
 					alerta = "Trabalho salvo!";
+				
+				if(statusFoiAlteradoPara("PAA")) {
+					EmailBuilder emailBuilder = new EmailBuilder(true);
+					emailBuilder.appendHtmlTopico("Projeto aguardando aprovação(PAA)");
+					emailBuilder.appendMensagemBreakLine("O projeto do aluno <b>"+tcc.getAluno().getNomeUsuario()+"<b> está aguardando aprovação do Coordenador do curso.");
+					//adicionar destinatarios;
+					//enviarEmail(emailBuilder);
+				} else if(statusFoiAlteradoPara("TAA")) {
+					EmailBuilder emailBuilder = new EmailBuilder(true);
+					emailBuilder.appendHtmlTopico("Trabalho aguardando aprovação(TAA)");
+					emailBuilder.appendMensagemBreakLine("O trabalho do aluno <b>"+tcc.getAluno().getNomeUsuario()+"<b> está aguardando aprovação do Coordenador do curso.");
+					
+					emailBuilder.appendHtmlTopico("Informações da defesa:");
+					DateTime jodatime = new DateTime(tcc.getDataApresentacao().getTime());
+					String dataFormatada = jodatime.toString("dd/MM/yyyy - HH:mm");
+					emailBuilder.appendMensagem("Data: "+dataFormatada);
+					emailBuilder.appendMensagem("Local: "+tcc.getSalaDefesa());
+					//adicionar destinatarios;
+					//enviarEmail(emailBuilder);
+				}
+				if(tcc.isTrabFinal()){
+					EmailBuilder emailBuilder = new EmailBuilder(true);
+					emailBuilder.appendHtmlTopico("Trabalho Final enviado");
+					emailBuilder.appendMensagemBreakLine("O aluno <b>"+tcc.getAluno().getNomeUsuario()+"<b> enviou seu trabalho final.");
+					//adicionar destinatarios;
+					//enviarEmail(emailBuilder);
+				}
 				Messagebox.show(alerta, "Confirmação", Messagebox.OK , Messagebox.EXCLAMATION, new org.zkoss.zk.ui.event.EventListener() {
 				    public void onEvent(Event evt) throws InterruptedException {
 				        if (evt.getName().equals("onOK")) {
@@ -594,6 +641,16 @@ public class EditorTccController extends CommonsController {
 		}
 		
 		
+	}
+	
+	private void enviarEmail(EmailBuilder emailBuilder) {
+		try{
+			Email email = new Email();
+			email.enviar(emailBuilder);
+			
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Command
