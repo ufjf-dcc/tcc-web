@@ -84,7 +84,7 @@ public class CadastroPrazosController extends CommonsController {
 					aux.setDataFinal(finalDate.toDate());
 					break;
 				case Prazo.FIM_SEMESTRE:
-					aux.setDataFinal(finalDate.toDate());
+					aux.setDataFinal(finalDate.plus(1).toDate());
 					break;
 				case Prazo.PRAZO_PROJETO:
 					DateTime agora = new DateTime();
