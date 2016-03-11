@@ -5,7 +5,7 @@ import javax.mail.PasswordAuthentication;
 
 import br.ufjf.tcc.library.ConfHandler;
 
-public class Autenticacao extends Authenticator {
+public class AutenticacaoEmail extends Authenticator {
 
 	@Override
 	public PasswordAuthentication getPasswordAuthentication() {
