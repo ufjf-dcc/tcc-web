@@ -142,7 +142,7 @@
 					<checkbox disabled="@load(each.statusTCC eq 'Aprovado'? 'true' : 'false')" style="center" checked="@load(each.entregouDoc)" onCheck="@command('checkEnviouDoc',tcc=each)" />
 					</div>
 					<div align="center" >
-					<checkbox disabled="true" style="center" checked="@load(each.trabFinal)" />
+					<checkbox disabled="@load(!vm.podeMarcarTrabFinal or each.statusTCC eq 'Aprovado')" style="center" checked="@load(each.trabFinal)" onCheck="@command('checkEnviouTrabFinal',tcc=each)" />
 					</div>
 					<button image="/img/delete.png" 
 						onClick="@command('excluirTCC', tcc=each)" />
