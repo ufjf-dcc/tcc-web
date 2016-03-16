@@ -84,7 +84,7 @@ public class EditorTccController extends CommonsController {
 					//TODO: ACAO DE ENVIAR EMAIL (PROJETO CRIADO)
 					EmailBuilder emailBuilder = new EmailBuilder(true);
 					emailBuilder.appendHtmlTopico("Projeto criado");
-					emailBuilder.appendMensagemBreakLine("O aluno <b>"+tcc.getAluno().getNomeUsuario()+"<b> começou seu projeto.");
+					emailBuilder.appendMensagem("O aluno <b>"+tcc.getAluno().getNomeUsuario()+"<b> começou seu projeto.").breakLine();
 					//adicionar destinatarios;
 					//enviarEmail(emailBuilder);
 				}
@@ -586,15 +586,19 @@ public class EditorTccController extends CommonsController {
 				if(statusFoiAlteradoPara("PAA")) {
 					EmailBuilder emailBuilder = new EmailBuilder(true);
 					emailBuilder.appendHtmlTopico("Projeto aguardando aprovação(PAA)");
-					emailBuilder.appendMensagemBreakLine("O projeto do aluno <b>"+tcc.getAluno().getNomeUsuario()+"<b> está aguardando aprovação do Coordenador do curso.");
+					emailBuilder.appendMensagem("O projeto do aluno <b>"+tcc.getAluno().getNomeUsuario()+"<b> está aguardando aprovação do Coordenador do curso.").breakLine();
 					//adicionar destinatarios;
 					//enviarEmail(emailBuilder);
 				} else if(statusFoiAlteradoPara("TAA")) {
 					EmailBuilder emailBuilder = new EmailBuilder(true);
 					emailBuilder.appendHtmlTopico("Trabalho aguardando aprovação(TAA)");
-					emailBuilder.appendMensagemBreakLine("O trabalho do aluno <b>"+tcc.getAluno().getNomeUsuario()+"<b> está aguardando aprovação do Coordenador do curso.");
+					emailBuilder.appendMensagem("O trabalho do aluno <b>"+tcc.getAluno().getNomeUsuario()+"<b> está aguardando aprovação do Coordenador do curso.").breakLine();
 					
 					emailBuilder.appendHtmlTopico("Informações da defesa:");
+					emailBuilder.appendHtmlTextBold("Banca examinadora: ");
+					for(Participacao p : tcc.getParticipacoes()) {
+						emailBuilder.appendMensagem(p.getProfessor().getNomeUsuario());
+					}
 					DateTime jodatime = new DateTime(tcc.getDataApresentacao().getTime());
 					String dataFormatada = jodatime.toString("dd/MM/yyyy - HH:mm");
 					emailBuilder.appendMensagem("Data: "+dataFormatada);
@@ -605,7 +609,7 @@ public class EditorTccController extends CommonsController {
 				if(tcc.isTrabFinal()){
 					EmailBuilder emailBuilder = new EmailBuilder(true);
 					emailBuilder.appendHtmlTopico("Trabalho Final enviado");
-					emailBuilder.appendMensagemBreakLine("O aluno <b>"+tcc.getAluno().getNomeUsuario()+"<b> enviou seu trabalho final.");
+					emailBuilder.appendMensagem("O aluno <b>"+tcc.getAluno().getNomeUsuario()+"<b> enviou seu trabalho final.").breakLine();
 					//adicionar destinatarios;
 					//enviarEmail(emailBuilder);
 				}

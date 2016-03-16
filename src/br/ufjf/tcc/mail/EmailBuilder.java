@@ -21,28 +21,32 @@ public class EmailBuilder {
 			destinatarios.append(destinatario);
 	}
 
-	public void appendMensagem(String texto) {
+	public EmailBuilder appendMensagem(String texto) {
 		if (isHtmlFormat())
 			mensagem.append("<p>" + texto + "</p>");
 		else
 			mensagem.append(texto);
-	}
-
-	public void appendMensagemBreakLine(String texto) {
-		if (isHtmlFormat())
-			mensagem.append("<p>" + texto + "</p>");
-		else
-			mensagem.append(texto + "\n");
-	}
-
-	public void appendHtmlTextBold(String texto) {
-		mensagem.append("<b>" + texto + "</b");
+		return this;
 	}
 	
-	public void appendHtmlTopico(String texto) {
+	public EmailBuilder breakLine(){
+		if (isHtmlFormat())
+			mensagem.append("<br>");
+		else
+			mensagem.append("\n");
+		return this;
+	}
+
+	public EmailBuilder appendHtmlTextBold(String texto) {
+		mensagem.append("<b>" + texto + "</b>");
+		return this;
+	}
+	
+	public EmailBuilder appendHtmlTopico(String texto) {
 		mensagem.append("<font size=\'3\'>");
 		appendHtmlTextBold(texto);
 		mensagem.append("</font>");
+		return this;
 	}
 
 	public boolean isHtmlFormat() {
