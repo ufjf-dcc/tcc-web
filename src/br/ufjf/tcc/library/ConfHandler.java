@@ -16,7 +16,8 @@ public class ConfHandler {
 
 	private ConfHandler() {
 		try {
-			InputStream inputStream = new FileInputStream("/tcc-config/config.txt");
+			//InputStream inputStream = new FileInputStream("/tcc-config/config.txt");
+			InputStream inputStream = new FileInputStream("/tcc-teste-config/config.txt");
 	        String arquivo = IOUtils.toString(inputStream);
 			confs = new HashMap<String, String>();
 			Pattern patternConf = Pattern.compile("^([A-Z]+\\.[A-Z]+) = (.*)$", Pattern.MULTILINE);
