@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import br.ufjf.ice.integra3.ws.login.interfaces.WsException_Exception;
+import br.ufjf.tcc.library.IntegraHandler;
 import br.ufjf.tcc.library.SessionManager;
 import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.model.Departamento;
@@ -117,62 +119,70 @@ public class UsuarioBusiness {
 
 	// comunicação com o UsuarioDAO
 	public boolean login(String login, String password) {
-//		errors.clear();
-//
-//		List<Usuario> users = new ArrayList<Usuario>();
-//		IntegraHandler integra = new IntegraHandler();
-//		boolean usuarioIntegra = false;
-//		
-//		if (login.matches("[0-9]+")) {
-//			try {
-//				integra.doLogin(login, this.encripta(password, "md5"));
-//				users = usuarioDAO.getByMatricula(integra.getProfiles());
-//				usuarioIntegra = true;
-//				
-//			} catch (WsException_Exception e) {
-//				errors.add(e.getFaultInfo().getErrorUserMessage());
-//				return false;
-//			}
-//		} else {
-//			Usuario user = usuarioDAO.retornaUsuario(login, this.encripta(password));
-//			if(user != null)
-//			{
-//				users.add(user);
-//				usuarioIntegra = false;
-//
-//			} else {
-//				errors.add("Identificador ou senha inválidos.");
-//				return false;
-//			}
-//		}
-//		
-//		if (users != null && users.size() > 0) {
-//			List<Usuario> usuarios = new ArrayList<Usuario>();
-//			for (Usuario user : users) {
-//				if (user.isAtivo()) {
-//					if(usuarioIntegra)
-//						if(user.getNomeUsuario() != integra.getInfos().getNome() || user.getEmail() != integra.getInfos().getEmailSiga()) {
-//							user.setNomeUsuario(integra.getInfos().getNome());
-//							user.setEmail(integra.getInfos().getEmailSiga());
-//							this.editar(user);
-//						}
-//					usuarios.add(user);
-//				}
-//			}
-//
-//			if (usuarios.size() > 0) {
-//				SessionManager.setAttribute("usuarios", usuarios);
-//				return true;
-//			} else {
-//				errors.add("Usuário não está ativo no sistema.");
-//				return false;
-//			}
-//		}else{
-//			
-//			errors.add("Usuário não cadastrado no sistema.");
-//			return false;		
-//		}
+		//return loginIntegra(login, password);
 
+		return loginTeste();
+	}
+
+	private boolean loginIntegra(String login, String password) {
+		errors.clear();
+
+		List<Usuario> users = new ArrayList<Usuario>();
+		IntegraHandler integra = new IntegraHandler();
+		boolean usuarioIntegra = false;
+		
+		if (login.matches("[0-9]+")) {
+			try {
+				integra.doLogin(login, this.encripta(password, "md5"));
+				users = usuarioDAO.getByMatricula(integra.getProfiles());
+				usuarioIntegra = true;
+				
+			} catch (WsException_Exception e) {
+				errors.add(e.getFaultInfo().getErrorUserMessage());
+				return false;
+			}
+		} else {
+			Usuario user = usuarioDAO.retornaUsuario(login, this.encripta(password));
+			if(user != null)
+			{
+				users.add(user);
+				usuarioIntegra = false;
+
+			} else {
+				errors.add("Identificador ou senha inválidos.");
+				return false;
+			}
+		}
+		
+		if (users != null && users.size() > 0) {
+			List<Usuario> usuarios = new ArrayList<Usuario>();
+			for (Usuario user : users) {
+				if (user.isAtivo()) {
+					if(usuarioIntegra)
+						if(user.getNomeUsuario() != integra.getInfos().getNome() || user.getEmail() != integra.getInfos().getEmailSiga()) {
+							user.setNomeUsuario(integra.getInfos().getNome());
+							user.setEmail(integra.getInfos().getEmailSiga());
+							this.editar(user);
+						}
+					usuarios.add(user);
+				}
+			}
+
+			if (usuarios.size() > 0) {
+				SessionManager.setAttribute("usuarios", usuarios);
+				return true;
+			} else {
+				errors.add("Usuário não está ativo no sistema.");
+				return false;
+			}
+		}else{
+			
+			errors.add("Usuário não cadastrado no sistema.");
+			return false;		
+		}
+	}
+
+	private boolean loginTeste() {
 		errors.clear();
 		List<Usuario> users = new ArrayList<Usuario>();
 
