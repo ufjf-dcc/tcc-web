@@ -1,5 +1,6 @@
 package br.ufjf.tcc.persistent.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Query;
@@ -249,25 +250,44 @@ public class UsuarioDAO extends GenericoDAO {
 		return null;
 	}
 
-	public Usuario getCoordenadorByCurso(Curso curso) {
+	public List<Usuario> getCoordenadoresByCurso(Curso curso) {
+		List<Usuario> coordenadores = new ArrayList<>();
 		try {
 			Query query = getSession()
 					.createQuery(
-							"SELECT u FROM Usuario AS u LEFT JOIN FETCH u.curso JOIN FETCH u.tipoUsuario WHERE u.curso = :curso");
+							"SELECT u FROM Usuario AS u LEFT JOIN FETCH u.curso JOIN FETCH u.tipoUsuario tp WHERE u.curso = :curso AND tp.idTipoUsuario = :tipo");
 			query.setParameter("curso", curso);
+			query.setParameter("tipo", Usuario.COORDENADOR);
 
-			Usuario resultado = (Usuario) query.uniqueResult();
+			coordenadores =  query.list();
 
 			getSession().close();
-
-			if (resultado != null)
-				return resultado;
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		return null;
+		return coordenadores;
+	}
+	
+	public List<Usuario> getSecretariasByCurso(Curso curso) {
+		List<Usuario> secretarias = new ArrayList<Usuario>();
+		try {
+			Query query = getSession()
+					.createQuery(
+							"SELECT u FROM Usuario AS u LEFT JOIN FETCH u.curso JOIN FETCH u.tipoUsuario tp WHERE u.curso = :curso AND tp.idTipoUsuario = :tipo");
+			query.setParameter("curso", curso);
+			query.setParameter("tipo", Usuario.SECRETARIA);
+
+			secretarias = query.list();
+
+			getSession().close();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return secretarias;
 	}
 
 	public Usuario getByName(String nomeUsuario) {
