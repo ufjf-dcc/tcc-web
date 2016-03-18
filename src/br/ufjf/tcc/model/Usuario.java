@@ -181,6 +181,10 @@ public class Usuario implements Serializable {
 		this.tipoUsuario = tipoUsuario;
 		this.curso = curso;
 	}
+	
+	public boolean isEmailValido() {
+		return this.email != null && !this.email.equals("a@a.com");
+	}
 
 	public int getIdUsuario() {
 		return idUsuario;
