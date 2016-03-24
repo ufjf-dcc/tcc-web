@@ -287,7 +287,7 @@ public class TCCBusiness {
 				&& !(tcc.getResumoTCC()==null || tcc.getResumoTCC().trim().length() == 0) && tcc.getOrientador()!=null && tcc.getNomeTCC()!=null
 				&& !(tcc.getSalaDefesa()== null || tcc.getSalaDefesa().trim().length() == 0) && tcc.getDataApresentacao()!=null 
 				&& pb.getParticipacoesByTCC(tcc).size()>0
-				&& possuiSuplente(pb.getParticipacoesByTCC(tcc)))
+				&& possuiSuplente(tcc.getParticipacoes()))
 			return true;
 		return false;
 	}
