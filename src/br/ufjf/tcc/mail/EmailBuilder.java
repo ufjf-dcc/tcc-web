@@ -4,13 +4,20 @@ public class EmailBuilder {
 
 	private StringBuilder mensagem;
 	private StringBuilder destinatarios;
+	private String titulo;
 	private boolean isHtmlFormat;
 	private static String VIRGULA_ESPACO = ", ";
 
 	public EmailBuilder(boolean isHtmlFormat) {
 		mensagem = new StringBuilder();
 		destinatarios = new StringBuilder();
+		titulo = new String();
 		this.isHtmlFormat = isHtmlFormat;
+	}
+	
+	public EmailBuilder comTitulo(String titulo) {
+		this.titulo = titulo;
+		return this;
 	}
 
 	public void appendDestinatario(String destinatario) {
@@ -22,10 +29,8 @@ public class EmailBuilder {
 	}
 
 	public EmailBuilder appendMensagem(String texto) {
-		if (isHtmlFormat())
-			mensagem.append("<p>" + texto + "</p>");
-		else
-			mensagem.append(texto);
+		
+		mensagem.append(texto);
 		return this;
 	}
 	
@@ -64,5 +69,10 @@ public class EmailBuilder {
 	public String getMensagem() {
 		return this.mensagem.toString();
 	}
+
+	public String getTitulo() {
+		return titulo;
+	}
+	
 
 }

@@ -32,9 +32,9 @@ public class Email {
 			message.setFrom(new InternetAddress(ConfHandler.getConf("MAIL.FROM"))); // Remetente
 
 			Address[] toUser = InternetAddress.parse(builder.getDestinatarios()); // Destinatário(s)
-
 			message.setRecipients(Message.RecipientType.TO, toUser);
-			message.setSubject("[NOTIFICAÇÃO TCC-WEB]"); // Assunto
+
+			message.setSubject(builder.getTitulo()); // Assunto
 			if(builder.isHtmlFormat())
 				message.setContent(builder.getMensagem(), "text/html");
 			else
