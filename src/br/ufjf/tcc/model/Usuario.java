@@ -183,7 +183,10 @@ public class Usuario implements Serializable {
 	}
 	
 	public boolean isEmailValido() {
-		return this.email != null && !this.email.equals("a@a.com");
+		return this.email != null 
+				&& (this.email.contains("@"))
+				&& (this.email.split("@")[0].length() > 3 )
+				&& !this.email.equals("a@a.com");
 	}
 
 	public int getIdUsuario() {
