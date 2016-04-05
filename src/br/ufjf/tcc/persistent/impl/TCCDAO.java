@@ -545,7 +545,7 @@ public class TCCDAO extends GenericoDAO {
 		 try {
 		        Query query = getSession()
 		                .createQuery(
-		                        "SELECT t FROM TCC AS t JOIN FETCH t.aluno AS a JOIN FETCH t.orientador LEFT JOIN FETCH t.coOrientador WHERE a.curso = :curso ORDER BY t.dataEnvioFinal DESC");
+		                        "SELECT DISTINCT t FROM TCC AS t JOIN FETCH t.aluno AS a JOIN FETCH t.orientador LEFT JOIN FETCH t.participacoes LEFT JOIN FETCH t.coOrientador WHERE a.curso = :curso ORDER BY t.dataEnvioFinal DESC");
 		        query.setParameter("curso", curso);
 
 		        List<TCC> resultados = query.list();
