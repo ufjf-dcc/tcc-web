@@ -620,7 +620,8 @@ public class EditorTccController extends CommonsController {
 				} else if(statusFoiAlteradoPara("TAA")) {
 					EmailBuilder emailBuilder = new EmailBuilder(true).comTitulo("[TCC-WEB] Trabalho aguardando aprovação - "+nomeAluno);
 					emailBuilder.appendMensagem("Prezado(a) coordenador(a) de curso, ").breakLine().breakLine();
-					emailBuilder.appendMensagem("O trabalho do aluno(a) <b>" + nomeAluno + "</b> está aguardando aprovação do Coordenador do curso.").breakLine().breakLine();
+					emailBuilder.appendMensagem("O trabalho do aluno(a) <b>" + nomeAluno + "</b> está aguardando aprovação do Coordenador do curso. ");
+					emailBuilder.appendMensagem("Uma vez aprovado o trabalho, ele ficará disponível para acesso público no repositório de trabalhos acadêmicos.").breakLine().breakLine();
 					emailBuilder.appendHtmlTopico("Informações do trabalho:").breakLine().breakLine();
 					emailBuilder.appendHtmlTextBold("Título: ");
 					emailBuilder.appendMensagem(tcc.getNomeTCC()).breakLine();
