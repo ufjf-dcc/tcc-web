@@ -601,12 +601,12 @@ public class EditorTccController extends CommonsController {
 				if(statusFoiAlteradoPara("PAA")) {
 					EmailBuilder emailBuilder = new EmailBuilder(true).comTitulo("[TCC-WEB] Projeto aguardando aprovação - "+nomeAluno);
 					emailBuilder.appendMensagem("Prezado(a) coordenador(a) de curso, ").breakLine().breakLine();
-					emailBuilder.appendMensagem("O projeto de TCC do aluno(a) <b>" + nomeAluno + "</b> está aguardando sua aprovação no sistema de monografias. ");
-					emailBuilder.appendMensagem("Após a aprovação do projeto o discente poderá dar início ao seu TCC e informar os dados de defesa, ");
-					emailBuilder.appendMensagem("banca avaliadora e deixar disponível no sistema o TCC para a banca. ").breakLine().breakLine();
+					emailBuilder.appendMensagem("O projeto de TCC do aluno(a) <b>" + nomeAluno + "</b> está aguardando sua aprovação no sistema de monografias.");
+					emailBuilder.appendMensagem(" Após a aprovação do projeto o discente poderá dar início ao seu TCC e informar os dados de defesa,");
+					emailBuilder.appendMensagem(" banca avaliadora e deixar disponível no sistema o TCC para a banca. ").breakLine().breakLine();
 					emailBuilder.appendMensagem("Título do projeto: "+tcc.getNomeTCC()).breakLine();
 					emailBuilder.appendMensagem("Orientador(a): "+tcc.getOrientador().getNomeUsuario()).breakLine();
-					if(tcc.getCoOrientador()!=null){
+					if(tcc.possuiCoorientador()){
 						emailBuilder.appendMensagem("Coorientador(a): "+tcc.getCoOrientador().getNomeUsuario()).breakLine();
 					}
 					emailBuilder.appendMensagem("Resumo: "+tcc.getPalavrasChave()).breakLine();
@@ -618,53 +618,24 @@ public class EditorTccController extends CommonsController {
 					inserirDestinatarios(coordenadoresESecretarias, emailBuilder);
 					enviarEmail(emailBuilder);
 				} else if(statusFoiAlteradoPara("TAA")) {
-					EmailBuilder emailBuilder = new EmailBuilder(true).comTitulo("[TCC-WEB] Trabalho aguardando aprovação - "+nomeAluno);
-					emailBuilder.appendMensagem("Prezado(a) coordenador(a) de curso, ").breakLine().breakLine();
-					emailBuilder.appendMensagem("O trabalho do aluno(a) <b>" + nomeAluno + "</b> está aguardando aprovação do Coordenador do curso. ");
-					emailBuilder.appendMensagem("Uma vez aprovado o trabalho, ele ficará disponível para acesso público no repositório de trabalhos acadêmicos.").breakLine().breakLine();
-					emailBuilder.appendHtmlTopico("Informações do trabalho:").breakLine().breakLine();
-					emailBuilder.appendHtmlTextBold("Título: ");
-					emailBuilder.appendMensagem(tcc.getNomeTCC()).breakLine();
-					emailBuilder.appendMensagem("<b>Orientador(a):</b> " + tcc.getOrientador().getNomeUsuario()).breakLine();
-					if(tcc.getCoOrientador()!=null) {
-						emailBuilder.appendMensagem("<b>Coorientador(a):</b> " + tcc.getCoOrientador().getNomeUsuario()).breakLine();
-					}
-					emailBuilder.appendHtmlTextBold("Banca examinadora: ").breakLine();
-					for(Participacao p : tcc.getParticipacoes()) {
-						if(p.getSuplente()==1){
-							emailBuilder.appendMensagem("  - " + p.getProfessor().getNomeUsuario() + " (Suplente)").breakLine();
-						} else {
-							emailBuilder.appendMensagem("  - " + p.getProfessor().getNomeUsuario()).breakLine();
-						}
-					}
-					String dataFormatada = new DateTime(tcc.getDataApresentacao().getTime()).toString("dd/MM/yyyy - HH:mm");
-					emailBuilder.appendMensagem("<b>Data da apresentação:</b> "+dataFormatada).breakLine();
-					emailBuilder.appendMensagem("<b>Local de defesa:</b> "+tcc.getSalaDefesa()).breakLine();
-					UsuarioBusiness ub = new UsuarioBusiness();
-					List<Usuario> destinatarios = new ArrayList<>();
-					destinatarios.addAll(ub.getCoordenadoresByCurso(tcc.getAluno().getCurso()));
-					destinatarios.addAll(ub.getSecretariasByCurso(tcc.getAluno().getCurso()));
-					destinatarios.add(tcc.getOrientador());
-					for(Participacao p : tcc.getParticipacoes()) {
-						destinatarios.add(p.getProfessor());
-					}
-					inserirDestinatarios(destinatarios, emailBuilder);
-					enviarEmail(emailBuilder);
+					enviarEmailParaCoordenador(nomeAluno);
+					enviarEmailParaProfessores(nomeAluno);
 				}
 				if(tcc.isTrabFinal()){
-					EmailBuilder emailBuilder = new EmailBuilder(true).comTitulo("[TCC-WEB] Trabalho Final enviado");
+					EmailBuilder emailBuilder = new EmailBuilder(true).comTitulo("[TCC-WEB] Trabalho aguardando aprovação - " + nomeAluno);
 					emailBuilder.appendMensagem("Prezado(a) coordenador(a) de curso, ").breakLine().breakLine();
-					emailBuilder.appendMensagem("O aluno(a) <b>"+nomeAluno+"<b> enviou seu trabalho final.").breakLine().breakLine();
+					emailBuilder.appendMensagem("O aluno(a) <b>"+nomeAluno+"</b> enviou a versão final do seu trabalho de conclusão de curso e aguarda aprovação da coordenação de curso.").breakLine();
+					emailBuilder.appendMensagem(" Após a aprovação do trabalho, este estará disponível para acesso público no repositório de trabalhos acadêmicos.").breakLine().breakLine();
 					emailBuilder.appendHtmlTopico("Informações do trabalho:").breakLine().breakLine();
 					emailBuilder.appendHtmlTextBold("Título: ");
 					emailBuilder.appendMensagem(tcc.getNomeTCC()).breakLine();
 					emailBuilder.appendMensagem("<b>Orientador(a):</b> " + tcc.getOrientador().getNomeUsuario()).breakLine();
-					if(tcc.getCoOrientador()!=null) {
+					if(tcc.possuiCoorientador()) {
 						emailBuilder.appendMensagem("<b>Coorientador(a):</b> " + tcc.getCoOrientador().getNomeUsuario()).breakLine();
 					}
 					emailBuilder.appendHtmlTextBold("Banca examinadora: ").breakLine();
 					for(Participacao p : tcc.getParticipacoes()) {
-						if(p.getSuplente()==1){
+						if(p.isSuplente()){
 							emailBuilder.appendMensagem("  - " + p.getProfessor().getNomeUsuario() + " (Suplente)").breakLine();
 						} else {
 							emailBuilder.appendMensagem("  - " + p.getProfessor().getNomeUsuario()).breakLine();
@@ -713,6 +684,63 @@ public class EditorTccController extends CommonsController {
 		}
 		
 		
+	}
+
+	private void enviarEmailParaCoordenador(String nomeAluno) {
+		EmailBuilder emailBuilder = new EmailBuilder(true).comTitulo("[TCC-WEB] Trabalho com defesa agendada - "+nomeAluno);
+		emailBuilder.appendMensagem("Prezado(a) coordenador(a) de curso, ").breakLine().breakLine();
+		emailBuilder.appendMensagem("O aluno(a) <b>" + nomeAluno + "</b> informou os dados da sua defesa de trabalho de conclusão de curso.");
+		emailBuilder.appendMensagem(" Após a defesa, o aluno(a) deverá enviar a versão final do trabalho para ser publicado no repositório de trabalhos acadêmicos.").breakLine().breakLine();
+		emailBuilder.appendHtmlTopico("Informações do trabalho:").breakLine().breakLine();
+		emailBuilder.appendHtmlTextBold("Título: ");
+		emailBuilder.appendMensagem(tcc.getNomeTCC()).breakLine();
+		emailBuilder.appendMensagem("<b>Orientador(a):</b> " + tcc.getOrientador().getNomeUsuario()).breakLine();
+		if(tcc.possuiCoorientador()) {
+			emailBuilder.appendMensagem("<b>Coorientador(a):</b> " + tcc.getCoOrientador().getNomeUsuario()).breakLine();
+		}
+		emailBuilder.appendHtmlTextBold("Banca examinadora: ").breakLine();
+		for(Participacao p : tcc.getParticipacoes()) {
+			if(p.isSuplente()){
+				emailBuilder.appendMensagem("  - " + p.getProfessor().getNomeUsuario() + " (Suplente)").breakLine();
+			} else {
+				emailBuilder.appendMensagem("  - " + p.getProfessor().getNomeUsuario()).breakLine();
+			}
+		}
+		String dataFormatada = new DateTime(tcc.getDataApresentacao().getTime()).toString("dd/MM/yyyy - HH:mm");
+		emailBuilder.appendMensagem("<b>Data da apresentação:</b> "+dataFormatada).breakLine();
+		emailBuilder.appendMensagem("<b>Local de defesa:</b> "+tcc.getSalaDefesa()).breakLine();
+		UsuarioBusiness ub = new UsuarioBusiness();
+		inserirDestinatarios(ub.getCoordenadoresByCurso(tcc.getAluno().getCurso()), emailBuilder);
+		enviarEmail(emailBuilder);
+	}
+	
+	private void enviarEmailParaProfessores(String nomeAluno) {
+		EmailBuilder emailBuilder = new EmailBuilder(true).comTitulo("[TCC-WEB] Trabalho com defesa agendada - "+nomeAluno);
+		emailBuilder.appendMensagem("Prezado(a) professor(a), ").breakLine().breakLine();
+		emailBuilder.appendMensagem("O aluno(a) <b>" + nomeAluno + "</b> informou os dados da sua defesa de trabalho de conclusão de curso.");
+		emailBuilder.appendMensagem(" O texto do trabalho está disponível no sistema de acompanhamento de monografias. Para ter acesso ao trabalho, basta logar no sistema.").breakLine().breakLine();
+		emailBuilder.appendHtmlTopico("Informações do trabalho:").breakLine().breakLine();
+		emailBuilder.appendHtmlTextBold("Título: ");
+		emailBuilder.appendMensagem(tcc.getNomeTCC()).breakLine();
+		emailBuilder.appendMensagem("<b>Orientador(a):</b> " + tcc.getOrientador().getNomeUsuario()).breakLine();
+		if(tcc.possuiCoorientador()) {
+			emailBuilder.appendMensagem("<b>Coorientador(a):</b> " + tcc.getCoOrientador().getNomeUsuario()).breakLine();
+		}
+		emailBuilder.appendHtmlTextBold("Banca examinadora: ").breakLine();
+		for(Participacao p : tcc.getParticipacoes()) {
+			if(p.isSuplente()){
+				emailBuilder.appendMensagem("  - " + p.getProfessor().getNomeUsuario() + " (Suplente)").breakLine();
+			} else {
+				emailBuilder.appendMensagem("  - " + p.getProfessor().getNomeUsuario()).breakLine();
+			}
+		}
+		String dataFormatada = new DateTime(tcc.getDataApresentacao().getTime()).toString("dd/MM/yyyy - HH:mm");
+		emailBuilder.appendMensagem("<b>Data da apresentação:</b> "+dataFormatada).breakLine();
+		emailBuilder.appendMensagem("<b>Local de defesa:</b> "+tcc.getSalaDefesa()).breakLine();
+		
+		emailBuilder.appendMensagem("<b> * Funcionalidade disponível somente para usuários do SIGA-UFJF. </b>").breakLine();
+		inserirDestinatarios(tcc.getProfessoresParticipacoes(), emailBuilder);
+		enviarEmail(emailBuilder);
 	}
 	
 	private void enviarEmail(EmailBuilder emailBuilder) {
