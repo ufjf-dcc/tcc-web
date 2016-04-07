@@ -146,7 +146,7 @@
 										value="@load(each.professor.nomeUsuario)" />
 									<button image="/img/delete.png"
 										onClick="@command('removeFromBanca', participacao=each)" />
-									<radio style="padding:10px"  checked="@load(each.suplente eq 1 ? 'true' : 'false')"
+									<radio style="padding:10px"  checked="@load(each.isSuplente())"
 									 id="@load(each.professor.idUsuario)" value="@load(each)" radiogroup="banca"  />
 								</row>
 							</template>

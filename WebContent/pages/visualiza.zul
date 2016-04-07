@@ -69,7 +69,7 @@
 										<template name="participacoes">
 											<row>
 												<label  style="color:black" value="@load(each.professor.nomeUsuario)" />
-												<label  style="color:black;" visible="@load(each.suplente eq 1 ? 'true' : false)" value="(Suplente)" />
+												<label  style="color:black;" visible="@load(each.isSuplente())" value="(Suplente)" />
 											</row>
 										</template>
 									</grid>
