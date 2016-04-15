@@ -1,8 +1,5 @@
 package br.ufjf.tcc.pdfHandle;
 
-import java.awt.Color;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
@@ -10,8 +7,6 @@ import com.lowagie.text.BadElementException;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Image;
 import com.lowagie.text.pdf.BaseFont;
-import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.PdfStamper;
 
 import br.ufjf.tcc.model.TCC;
 
@@ -21,54 +16,8 @@ public class AtaCCoorientador extends Ata {
 		super(tcc);
 	}
 
-	private void iniciarParametros() throws Exception {
-
-		String ARQUIVO_SAIDA = PASTA_ARQUIVOS_TEMP + FICHA_AVALIACAO_FINAL + idAluno + EXTENSAO_PDF;
-		template = PASTA_COM_TEMPLATE_ATAS + TEMPLATE_COM_COORIENTADOR + tcc.getAluno().getCurso().getCodigoCurso()
-				+ EXTENSAO_PDF;
-		saida = new FileOutputStream(ARQUIVO_SAIDA);
-		leitor = new PdfReader(new FileInputStream(template));
-		stamper = new PdfStamper(leitor, saida);
-		bfTextoSimples = BaseFont.createFont(BaseFont.TIMES_BOLD, BaseFont.WINANSI, BaseFont.NOT_EMBEDDED);
-		form = stamper.getAcroFields();
-
-	}
-	
-	private void iniciarPropriedadeCampos(){
-		form.setFieldProperty("nomeAluno", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("titulo1", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("titulo2", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("orientador1", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("coorientador1", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("avaliador1", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("avaliador2", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("campoAvaliador3", "textcolor", Color.BLACK  ,null);
-		form.setFieldProperty("campoAvaliador4", "textcolor", Color.BLACK  ,null);
-		form.setFieldProperty("avaliador3", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("avaliador4", "textcolor", Color.BLACK ,null);
-		
-		form.setFieldProperty("dia1", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("mes1", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("ano1", "textcolor", Color.BLACK ,null);
-		
-		form.setFieldProperty("dia2", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("mes2", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("ano2", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("hora1", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("sala1", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("orientador2", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("orientador3", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("nomeAluno2", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("titulo1_2", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("titulo2_2", "textcolor", Color.BLACK ,null);
-		
-		form.setFieldProperty("orientador3", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("coorientador2", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("avaliador1_2", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("avaliador2_2", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("avaliador3_2", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("avaliador4_2", "textcolor", Color.BLACK ,null);
-			
+	protected String getPathTemplate() throws Exception {
+		return PASTA_COM_TEMPLATE_ATAS + TEMPLATE_COM_COORIENTADOR + tcc.getAluno().getCurso().getCodigoCurso() + EXTENSAO_PDF;
 	}
 	
 	// PREENCHE AS PAGINAS QUE CONTEM INFORMAÇÕES
@@ -76,7 +25,6 @@ public class AtaCCoorientador extends Ata {
 	public void preencherPDF() throws Exception {
 
 		iniciarParametros();
-		iniciarPropriedadeCampos();
 		over = stamper.getOverContent(leitor.getNumberOfPages()-1);
 		over.beginText();
 		over.setFontAndSize(bfTextoSimples, 12);
@@ -90,21 +38,6 @@ public class AtaCCoorientador extends Ata {
 		UniaoPDF.unirPDFsFichaAvaliacaoIndividual(qtAvaliador, idAluno);
 		UniaoPDF.unirFichaAvaliacaoFinalComFichaAvaliacaoIndividual(idAluno);
 
-	}
-
-	private void preencherFichasAvaliacaoIndividual() {
-		try {
-
-			for (int i = 0; i < avaliadores.length; i++) {
-				PreenchimentoPDF.preencherFichaAvaliacaoIndividual(tcc.getAluno().getNomeUsuario(), avaliadores[i], dia, mes, ano,
-						i, idAluno,PASTA_COM_TEMPLATE_ATAS,tcc);
-
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-
-		}
 	}
 
 	private void inserirDadosSegundaPagina() throws IOException, DocumentException {
@@ -241,12 +174,4 @@ public class AtaCCoorientador extends Ata {
 		}
 	}
 	
-	private void fecharFluxos() throws DocumentException, IOException {
-		stamper.setFormFlattening(true);
-		over.endText();
-		stamper.close();
-		saida.close();
-		leitor.close();
-	}
-
 }

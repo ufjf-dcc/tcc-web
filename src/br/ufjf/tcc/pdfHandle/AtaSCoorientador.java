@@ -1,8 +1,5 @@
 package br.ufjf.tcc.pdfHandle;
 
-import java.awt.Color;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
@@ -10,8 +7,6 @@ import com.lowagie.text.BadElementException;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Image;
 import com.lowagie.text.pdf.BaseFont;
-import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.PdfStamper;
 
 import br.ufjf.tcc.model.TCC;
 
@@ -21,137 +16,14 @@ public class AtaSCoorientador extends Ata {
 		super(tcc);
 	}
 
-	private void iniciarParametros() throws Exception {
-		
-		String ARQUIVO_SAIDA = PASTA_ARQUIVOS_TEMP +  FICHA_AVALIACAO_FINAL + idAluno + EXTENSAO_PDF;
-		template = PASTA_COM_TEMPLATE_ATAS + TEMPLATE_SEM_COORIENTADOR + tcc.getAluno().getCurso().getCodigoCurso() + EXTENSAO_PDF;
-		saida = new FileOutputStream(ARQUIVO_SAIDA);
-		leitor = new PdfReader(new PdfReader(new FileInputStream(template)));
-		stamper = new PdfStamper(leitor, saida);
-		bfTextoSimples = BaseFont.createFont(BaseFont.TIMES_BOLD, BaseFont.WINANSI, BaseFont.NOT_EMBEDDED);
-		campoStyle = BaseFont.createFont(BaseFont.TIMES_ROMAN, BaseFont.WINANSI, BaseFont.NOT_EMBEDDED);
-		form = stamper.getAcroFields();
-
-	}
-	
-	private void iniciarPropriedadeCampos(){
-		form.setFieldProperty("nomeAluno", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("nomeAluno", "textfont", campoStyle ,null);
-		form.setFieldProperty("nomeAluno", "textsize", new Float(12) ,null);
-		
-		form.setFieldProperty("titulo1", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("titulo1", "textfont", campoStyle ,null);
-		form.setFieldProperty("titulo1", "textsize", new Float(12) ,null);
-		
-		form.setFieldProperty("titulo2", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("titulo2", "textfont", campoStyle ,null);
-		form.setFieldProperty("titulo2", "textsize", new Float(12) ,null);
-		
-		form.setFieldProperty("orientador1", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("orientador1", "textfont", campoStyle ,null);
-		form.setFieldProperty("orientador1", "textsize", new Float(12) ,null);
-		
-		form.setFieldProperty("avaliador1", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("avaliador1", "textfont", campoStyle ,null);
-		form.setFieldProperty("avaliador1", "textsize", new Float(12) ,null);
-		
-		form.setFieldProperty("avaliador2", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("avaliador2", "textfont", campoStyle ,null);
-		form.setFieldProperty("avaliador2", "textsize", new Float(12) ,null);
-		
-		form.setFieldProperty("campoAvaliador3", "textcolor", Color.BLACK  ,null);
-		form.setFieldProperty("campoAvaliador3", "textfont", campoStyle ,null);
-		form.setFieldProperty("campoAvaliador3", "textsize", new Float(12) ,null);
-		
-		form.setFieldProperty("campoAvaliador4", "textcolor", Color.BLACK  ,null);
-		form.setFieldProperty("campoAvaliador4", "textfont", campoStyle ,null);
-		form.setFieldProperty("campoAvaliador4", "textsize", new Float(12) ,null);
-		
-		form.setFieldProperty("avaliador3", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("avaliador3", "textfont", campoStyle ,null);
-		form.setFieldProperty("avaliador3", "textsize", new Float(12) ,null);
-		
-		form.setFieldProperty("avaliador4", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("avaliador4", "textfont", campoStyle ,null);
-		form.setFieldProperty("avaliador4", "textsize", new Float(12) ,null);
-		
-		form.setFieldProperty("dia1", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("dia1", "textfont", campoStyle ,null);
-		form.setFieldProperty("dia1", "textsize", new Float(12) ,null);
-		
-		form.setFieldProperty("mes1", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("mes1", "textfont", campoStyle ,null);
-		form.setFieldProperty("mes1", "textsize", new Float(12) ,null);
-		
-		form.setFieldProperty("ano1", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("ano1", "textfont", campoStyle ,null);
-		form.setFieldProperty("ano1", "textsize", new Float(12) ,null);
-		
-		form.setFieldProperty("dia2", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("dia2", "textfont", campoStyle ,null);
-		form.setFieldProperty("dia2", "textsize", new Float(12) ,null);
-		
-		form.setFieldProperty("mes2", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("mes2", "textfont", campoStyle ,null);
-		form.setFieldProperty("mes2", "textsize", new Float(12) ,null);
-		
-		form.setFieldProperty("ano2", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("ano2", "textfont", campoStyle ,null);
-		form.setFieldProperty("ano2", "textsize", new Float(12) ,null);
-		
-		form.setFieldProperty("hora1", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("hora1", "textfont", campoStyle ,null);
-		form.setFieldProperty("hora1", "textsize", new Float(12) ,null);
-		
-		form.setFieldProperty("sala1", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("sala1", "textfont", campoStyle ,null);
-		form.setFieldProperty("sala1", "textsize", new Float(12) ,null);
-		
-		form.setFieldProperty("orientador2", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("orientador2", "textfont", campoStyle ,null);
-		form.setFieldProperty("orientador2", "textsize", new Float(12) ,null);
-		
-		form.setFieldProperty("nomeAluno2", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("nomeAluno2", "textfont", campoStyle ,null);
-		form.setFieldProperty("nomeAluno2", "textsize", new Float(12) ,null);
-		
-		form.setFieldProperty("titulo1_2", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("titulo1_2", "textfont", campoStyle ,null);
-		form.setFieldProperty("titulo1_2", "textsize", new Float(12) ,null);
-		
-		form.setFieldProperty("titulo2_2", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("titulo2_2", "textfont", campoStyle ,null);
-		form.setFieldProperty("titulo2_2", "textsize", new Float(12) ,null);
-		
-		//:TODO comecar daqui form.setFieldProperty("nomeAluno", "textfont", campoStyle ,null);
-		
-		form.setFieldProperty("orientador3", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("orientador3", "textfont", campoStyle ,null);
-		form.setFieldProperty("orientador3", "textsize", new Float(12) ,null);
-		
-		form.setFieldProperty("avaliador1_2", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("avaliador1_2", "textfont", campoStyle ,null);
-		form.setFieldProperty("avaliador1_2", "textsize", new Float(12) ,null);
-		
-		form.setFieldProperty("avaliador2_2", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("avaliador2_2", "textfont", campoStyle ,null);
-		form.setFieldProperty("avaliador2_2", "textsize", new Float(12) ,null);
-		
-		form.setFieldProperty("avaliador3_2", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("avaliador3_2", "textfont", campoStyle ,null);
-		form.setFieldProperty("avaliador3_2", "textsize", new Float(12) ,null);
-		
-		form.setFieldProperty("avaliador4_2", "textcolor", Color.BLACK ,null);
-		form.setFieldProperty("avaliador4_2", "textfont", campoStyle ,null);
-		form.setFieldProperty("avaliador4_2", "textsize", new Float(12) ,null);
-		
+	protected String getPathTemplate() throws Exception {
+		return PASTA_COM_TEMPLATE_ATAS + TEMPLATE_SEM_COORIENTADOR + tcc.getAluno().getCurso().getCodigoCurso() + EXTENSAO_PDF;
 	}
 	
 	// PREENCHE AS PAGINAS QUE CONTEM INFORMAÇÕES
 	@Override
 	public void preencherPDF() throws Exception {
 		iniciarParametros();
-		iniciarPropriedadeCampos();		
 		
 		over = stamper.getOverContent(leitor.getNumberOfPages()-1);
 		over.beginText();
@@ -170,21 +42,6 @@ public class AtaSCoorientador extends Ata {
 		UniaoPDF.unirPDFsFichaAvaliacaoIndividual(qtAvaliador, idAluno);
 		UniaoPDF.unirFichaAvaliacaoFinalComFichaAvaliacaoIndividual(idAluno);
 
-	}
-
-	private void preencherFichasAvaliacaoIndividual() {
-		try {
-			//PREENCHE FICHA INDIVIDUAL PARA CADA AVALIADOR
-			for (int i = 0; i < avaliadores.length; i++) {
-				PreenchimentoPDF.preencherFichaAvaliacaoIndividual(tcc.getAluno().getNomeUsuario(), avaliadores[i], dia, mes, ano,
-						i, idAluno,PASTA_COM_TEMPLATE_ATAS,tcc);
-
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-
-		}
 	}
 
 	private void inserirDadosSegundaPagina() throws IOException, DocumentException {
@@ -327,14 +184,6 @@ public class AtaSCoorientador extends Ata {
 			over.showText("Avaliador(a) 4");
 
 		}
-	}
-
-	private void fecharFluxos() throws DocumentException, IOException {
-		stamper.setFormFlattening(true);
-		over.endText();
-		stamper.close();
-		saida.close();
-		leitor.close();
 	}
 
 }
