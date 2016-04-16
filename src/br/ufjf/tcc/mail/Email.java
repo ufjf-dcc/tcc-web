@@ -28,6 +28,8 @@ public class Email {
 	}
 
 	public void enviar(EmailBuilder builder) throws RuntimeException {
+		if(builder==null)
+			return;
 		try {
 			message.setFrom(new InternetAddress(ConfHandler.getConf("MAIL.FROM"))); // Remetente
 
