@@ -330,12 +330,16 @@ public class UsuarioBusiness {
 		return usuarioDAO.getByMatricula(matricula);
 	}
 
-	public Usuario getCoordenadorByCurso(Curso curso) {
-		return usuarioDAO.getCoordenadorByCurso(curso);
+	public List<Usuario> getCoordenadoresByCurso(Curso curso) {
+		return usuarioDAO.getCoordenadoresByCurso(curso);
 	}
 
 	public Usuario getByName(String nomeUsuario) {
 		return usuarioDAO.getByName(nomeUsuario);
+	}
+	
+	public List<Usuario> getSecretariasByCurso(Curso curso) {
+		return usuarioDAO.getSecretariasByCurso(curso);
 	}
 
 }

@@ -281,13 +281,13 @@ public class TCCBusiness {
 	
 	public boolean isTrabalhoAguardandoAprovacao(TCC tcc)
 	{
-		ParticipacaoBusiness pb = new ParticipacaoBusiness();
 				
 		if(!tcc.isProjeto() && !(tcc.getPalavrasChave()== null || tcc.getPalavrasChave().trim().length() == 0) && tcc.getArquivoTCCBanca()!=null
 				&& !(tcc.getResumoTCC()==null || tcc.getResumoTCC().trim().length() == 0) && tcc.getOrientador()!=null && tcc.getNomeTCC()!=null
 				&& !(tcc.getSalaDefesa()== null || tcc.getSalaDefesa().trim().length() == 0) && tcc.getDataApresentacao()!=null 
-				&& pb.getParticipacoesByTCC(tcc).size()>0
-				&& possuiSuplente(pb.getParticipacoesByTCC(tcc)))
+				&& tcc.getParticipacoes()!=null
+				&& !tcc.getParticipacoes().isEmpty()
+				&& possuiSuplente(tcc.getParticipacoes()))
 			return true;
 		return false;
 	}

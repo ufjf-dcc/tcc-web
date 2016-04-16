@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.joda.time.DateTime;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
@@ -30,6 +31,10 @@ import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.business.UsuarioBusiness;
 import br.ufjf.tcc.library.FileManager;
 import br.ufjf.tcc.library.SessionManager;
+import br.ufjf.tcc.mail.Email;
+import br.ufjf.tcc.mail.EmailBuilder;
+import br.ufjf.tcc.mail.EnviadorEmailChain;
+import br.ufjf.tcc.mail.EnviadorEmailProjetoCriado;
 import br.ufjf.tcc.model.Departamento;
 import br.ufjf.tcc.model.Participacao;
 import br.ufjf.tcc.model.TCC;
@@ -41,6 +46,7 @@ public class EditorTccController extends CommonsController {
 	private TCCBusiness tccBusiness = new TCCBusiness();
 	private Usuario tempUser = null;
 	private TCC tcc = null;
+	private String statusInicialTCC = "";
 	private Iframe iframe;
 	private InputStream tccFile = null, extraFile = null;
 	private AMedia pdf = null;
@@ -50,6 +56,7 @@ public class EditorTccController extends CommonsController {
 			canEditUser = false, alunoVerified = false, tccFileChanged = false,
 			extraFileChanged = false, hasSubtitulo = false,
 			hasCoOrientador = false, orientadorWindow = true,trabFinal = false;
+	private EnviadorEmailChain enviadorEmail = new EnviadorEmailProjetoCriado();
 	
 
 	@Init
@@ -64,6 +71,7 @@ public class EditorTccController extends CommonsController {
 			if (tempTCC != null) {
 				getUsuario().getTcc().add(tempTCC);
 				tcc = getUsuario().getTcc().get(0);
+				statusInicialTCC = tcc.getStatusTCC();
 			} else
 				if(!getUsuario().isAtivo())
 					redirectHome();
@@ -75,6 +83,9 @@ public class EditorTccController extends CommonsController {
 					if (getUsuario().getCurso() != null)
 						tcc.getAluno().setCurso(getUsuario().getCurso());
 					tcc.setAluno(getUsuario());
+					
+					statusInicialTCC = "ProjetoCriado";
+					
 				}
 
 			canChangeOrientacao = true;
@@ -109,6 +120,23 @@ public class EditorTccController extends CommonsController {
 			hasSubtitulo = (tcc.getSubNomeTCC() != null);
 		}
 		departamentos = (new DepartamentoBusiness()).getAll();
+	}
+	
+	private void inserirDestinatarios(List<Usuario> usuarios, EmailBuilder builder) {
+		for (Usuario usuario : usuarios) {
+			if(usuario.isEmailValido()) {
+				builder.appendDestinatario(usuario.getEmail());
+			}
+		}
+	}
+	
+	private boolean statusFoiAlteradoPara(String status) {
+		if(statusInicialTCC.equals(tcc.getStatusTCC()))
+			return false;
+		else if(tcc.getStatusTCC().equals(status)) {
+			return true;
+		}
+		return false;
 	}
 
 	private boolean canEdit() {
@@ -457,8 +485,6 @@ public class EditorTccController extends CommonsController {
 		System.out.println("\n\n"+new Date().toString());
 		if(trabFinal){
 			tcc.setTrabFinal(true);
-		}else{
-			System.out.println("\n\n\nNao passou da dta de defesa");
 		}
 		if (getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.SECRETARIA
 				&& (tcc.getArquivoTCCFinal() == null && !tccFileChanged)) {
@@ -562,6 +588,10 @@ public class EditorTccController extends CommonsController {
 					alerta = "Projeto salvo!";
 				else
 					alerta = "Trabalho salvo!";
+				
+				//ENVIA E-MAIL
+				enviadorEmail.enviarEmail(tcc, statusInicialTCC);
+				
 				Messagebox.show(alerta, "Confirmação", Messagebox.OK , Messagebox.EXCLAMATION, new org.zkoss.zk.ui.event.EventListener() {
 				    public void onEvent(Event evt) throws InterruptedException {
 				        if (evt.getName().equals("onOK")) {
@@ -594,6 +624,77 @@ public class EditorTccController extends CommonsController {
 		}
 		
 		
+	}
+
+	private void enviarEmailParaCoordenador(String nomeAluno) {
+		EmailBuilder emailBuilder = new EmailBuilder(true).comTitulo("[TCC-WEB] Trabalho com defesa agendada - "+nomeAluno);
+		emailBuilder.appendMensagem("Prezado(a) coordenador(a) de curso, ").breakLine().breakLine();
+		emailBuilder.appendMensagem("O aluno(a) <b>" + nomeAluno + "</b> informou os dados da sua defesa de trabalho de conclusão de curso.");
+		emailBuilder.appendMensagem(" Após a defesa, o aluno(a) deverá enviar a versão final do trabalho para ser publicado no repositório de trabalhos acadêmicos.").breakLine().breakLine();
+		emailBuilder.appendHtmlTopico("Informações do trabalho:").breakLine().breakLine();
+		emailBuilder.appendHtmlTextBold("Título: ");
+		emailBuilder.appendMensagem(tcc.getNomeTCC()).breakLine();
+		emailBuilder.appendHtmlTextBold("Resumo: ");
+		emailBuilder.appendMensagem(tcc.getResumoTCC()).breakLine();
+		emailBuilder.appendMensagem("<b>Orientador(a):</b> " + tcc.getOrientador().getNomeUsuario()).breakLine();
+		if(tcc.possuiCoorientador()) {
+			emailBuilder.appendMensagem("<b>Coorientador(a):</b> " + tcc.getCoOrientador().getNomeUsuario()).breakLine();
+		}
+		emailBuilder.appendHtmlTextBold("Banca examinadora: ").breakLine();
+		for(Participacao p : tcc.getParticipacoes()) {
+			if(p.isSuplente()){
+				emailBuilder.appendMensagem("  - " + p.getProfessor().getNomeUsuario() + " (Suplente)").breakLine();
+			} else {
+				emailBuilder.appendMensagem("  - " + p.getProfessor().getNomeUsuario()).breakLine();
+			}
+		}
+		String dataFormatada = new DateTime(tcc.getDataApresentacao().getTime()).toString("dd/MM/yyyy - HH:mm");
+		emailBuilder.appendMensagem("<b>Data da apresentação:</b> "+dataFormatada).breakLine();
+		emailBuilder.appendMensagem("<b>Local de defesa:</b> "+tcc.getSalaDefesa()).breakLine();
+		UsuarioBusiness ub = new UsuarioBusiness();
+		inserirDestinatarios(ub.getCoordenadoresByCurso(tcc.getAluno().getCurso()), emailBuilder);
+		enviarEmail(emailBuilder);
+	}
+	
+	private void enviarEmailParaProfessores(String nomeAluno) {
+		EmailBuilder emailBuilder = new EmailBuilder(true).comTitulo("[TCC-WEB] Trabalho com defesa agendada - "+nomeAluno);
+		emailBuilder.appendMensagem("Prezado(a) professor(a), ").breakLine().breakLine();
+		emailBuilder.appendMensagem("O aluno(a) <b>" + nomeAluno + "</b> informou os dados da sua defesa de trabalho de conclusão de curso.");
+		emailBuilder.appendMensagem(" O texto do trabalho está disponível no sistema de acompanhamento de monografias. Para ter acesso ao trabalho, basta logar no sistema*.").breakLine().breakLine();
+		emailBuilder.appendHtmlTopico("Informações do trabalho:").breakLine();
+		emailBuilder.appendHtmlTextBold("Título: ");
+		emailBuilder.appendMensagem(tcc.getNomeTCC()).breakLine();
+		emailBuilder.appendHtmlTextBold("Resumo: ");
+		emailBuilder.appendMensagem(tcc.getResumoTCC()).breakLine();
+		emailBuilder.appendMensagem("<b>Orientador(a):</b> " + tcc.getOrientador().getNomeUsuario()).breakLine();
+		if(tcc.possuiCoorientador()) {
+			emailBuilder.appendMensagem("<b>Coorientador(a):</b> " + tcc.getCoOrientador().getNomeUsuario()).breakLine();
+		}
+		emailBuilder.appendHtmlTextBold("Banca examinadora: ").breakLine();
+		for(Participacao p : tcc.getParticipacoes()) {
+			if(p.isSuplente()){
+				emailBuilder.appendMensagem("  - " + p.getProfessor().getNomeUsuario() + " (Suplente)").breakLine();
+			} else {
+				emailBuilder.appendMensagem("  - " + p.getProfessor().getNomeUsuario()).breakLine();
+			}
+		}
+		String dataFormatada = new DateTime(tcc.getDataApresentacao().getTime()).toString("dd/MM/yyyy - HH:mm");
+		emailBuilder.appendMensagem("<b>Data da apresentação:</b> "+dataFormatada).breakLine();
+		emailBuilder.appendMensagem("<b>Local de defesa:</b> "+tcc.getSalaDefesa()).breakLine().breakLine();
+		
+		emailBuilder.appendMensagem("<b> * Funcionalidade disponível somente para usuários do SIGA-UFJF. </b>").breakLine();
+		inserirDestinatarios(tcc.getProfessoresParticipacoes(), emailBuilder);
+		enviarEmail(emailBuilder);
+	}
+	
+	private void enviarEmail(EmailBuilder emailBuilder) {
+		try{
+			Email email = new Email();
+			email.enviar(emailBuilder);
+			
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Command
