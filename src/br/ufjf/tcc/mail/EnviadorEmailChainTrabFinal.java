@@ -28,6 +28,8 @@ public class EnviadorEmailChainTrabFinal extends EnviadorEmailChain {
 			emailBuilder.appendHtmlTopico("Informações do trabalho:").breakLine().breakLine();
 			emailBuilder.appendHtmlTextBold("Título: ");
 			emailBuilder.appendMensagem(tcc.getNomeTCC()).breakLine();
+			emailBuilder.appendHtmlTextBold("Resumo: ");
+			emailBuilder.appendMensagem(tcc.getResumoTCC()).breakLine();
 			emailBuilder.appendMensagem("<b>Orientador(a):</b> " + tcc.getOrientador().getNomeUsuario()).breakLine();
 			if(tcc.possuiCoorientador()) {
 				emailBuilder.appendMensagem("<b>Coorientador(a):</b> " + tcc.getCoOrientador().getNomeUsuario()).breakLine();
