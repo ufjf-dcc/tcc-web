@@ -521,4 +521,8 @@ public class TCC implements Serializable,Comparable<TCC> {
 		return coOrientador!=null;
 	}
 	
+	public boolean isQuantidadeParticipacoesValidas(){
+		return getParticipacoes()!=null && getParticipacoes().size() >= 3;
+	}
+	
 }

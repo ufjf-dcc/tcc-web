@@ -300,7 +300,7 @@ public class EditorTccController extends CommonsController {
 		String alerta1 = "Você está enviando a versão final do seu trabalho?";
 		final String alerta2 = "Atenção, após submeter a versão final do seu trabalho e clicar em atualizar, ele não poderá mais ser alterado. Deseja continuar?";
 		if(getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ALUNO){
-			if(tcc!=null && tcc.getDataApresentacao()!=null){
+			if(tcc!=null && tcc.getDataApresentacao()!=null && tcc.isQuantidadeParticipacoesValidas()){
 				if(!tcc.isProjeto()  && tcc.getDataApresentacao().before(new Date())){
 					Messagebox.show(alerta1, "Aviso Importante", Messagebox.YES|Messagebox.NO, Messagebox.EXCLAMATION, new org.zkoss.zk.ui.event.EventListener() {
 					    public void onEvent(Event evt) throws InterruptedException {
@@ -333,7 +333,7 @@ public class EditorTccController extends CommonsController {
 			return;
 		}
 		pdf = new AMedia(tcc.getNomeTCC(), "pdf", "application/pdf", evt
-				.getMedia().getStreamData());
+				.getMedia().getByteData());
 		tccFile = evt.getMedia().getStreamData();
 		tccFileChanged = true;
 		iframe.setContent(pdf);

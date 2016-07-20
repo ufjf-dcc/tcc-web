@@ -88,7 +88,7 @@ public class TCCBusiness {
 	
 	public void validateBanca(List<Participacao> list, TCC tcc) {
 		if(tcc!=null)
-		if ((list  == null || list.size() == 0) && !tcc.isProjeto())
+		if ((list  == null || list.size() < 3) && !tcc.isProjeto())
 			errors.add("É necessário informar a banca\n");		
 	}
 	
