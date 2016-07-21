@@ -10,6 +10,7 @@
 		<display-name>ZK Session cleaner</display-name>
 		<listener-class>org.zkoss.zk.ui.http.HttpSessionListener</listener-class>
 	</listener>
+	
 	<servlet>
 		<description>
   	The ZK loader for ZUML pages</description>
@@ -58,7 +59,6 @@
 		<welcome-file>default.html</welcome-file>
 		<welcome-file>default.htm</welcome-file>
 		<welcome-file>default.jsp</welcome-file>
-		<welcome-file>index.zul</welcome-file>
 	</welcome-file-list>
 	
 	<listener>
@@ -66,7 +66,5 @@
 	    <display-name>ZK JSP Initiator</display-name>
 	    <listener-class>org.zkoss.jsp.spec.JspFactoryContextListener</listener-class>
 	</listener>
-	
-	
 	
 </web-app>
