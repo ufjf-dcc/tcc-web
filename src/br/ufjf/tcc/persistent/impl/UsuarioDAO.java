@@ -23,7 +23,9 @@ public class UsuarioDAO extends GenericoDAO {
 			query.setParameter("senha", senha);
 
 			Usuario resultado = (Usuario) query.uniqueResult();
-
+			if(resultado!=null) {
+				resultado.getTcc().size();
+			}
 			getSession().close();
 
 			if (resultado != null)
@@ -215,7 +217,9 @@ public class UsuarioDAO extends GenericoDAO {
 			query.setParameter("matricula", matricula);
 
 			Usuario resultado = (Usuario) query.uniqueResult();
-
+			if(resultado!=null) {
+				resultado.getTcc().size();
+			}
 			getSession().close();
 
 			if (resultado != null)
@@ -237,6 +241,9 @@ public class UsuarioDAO extends GenericoDAO {
 
 			@SuppressWarnings("unchecked")
 			List<Usuario> resultado = query.list();
+			for (Usuario usuario : resultado) {
+				usuario.getTcc().size();
+			}
 
 			getSession().close();
 
