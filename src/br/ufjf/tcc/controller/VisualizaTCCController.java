@@ -19,6 +19,7 @@ import org.zkoss.zul.Iframe;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 
+import br.ufjf.tcc.business.ParticipacaoBusiness;
 import br.ufjf.tcc.business.PerguntaBusiness;
 import br.ufjf.tcc.business.QuestionarioBusiness;
 import br.ufjf.tcc.business.RespostaBusiness;
@@ -87,7 +88,8 @@ public class VisualizaTCCController extends CommonsController {
 											.getAluno().getCurso()));
 
 					Participacao p = null;
-					for (Participacao aux : getUsuario().getParticipacoes()) {
+					List<Participacao> participacoes = new ParticipacaoBusiness().getParticipacoesByUser(getUsuario());
+					for (Participacao aux : participacoes) {
 						if (aux.getTcc().getIdTCC() == tcc.getIdTCC())
 							p = aux;
 					}
