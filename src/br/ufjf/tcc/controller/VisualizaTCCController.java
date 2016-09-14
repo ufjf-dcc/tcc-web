@@ -129,8 +129,7 @@ public class VisualizaTCCController extends CommonsController {
 					|| getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ADMINISTRADOR
 					|| ((getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.COORDENADOR 
 					|| (getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.SECRETARIA 
-					&& tcc.getDataEnvioFinal() != null)) 
-					&& getUsuario().getCurso().getIdCurso() == tcc.getAluno().getCurso().getIdCurso())) {
+					&& tcc.getDataEnvioFinal() != null)))) {
 				
 				if(getUsuario().getTipoUsuario().getIdTipoUsuario() != Usuario.PROFESSOR)
 				canEdit = true;
