@@ -139,7 +139,7 @@
 					<checkbox disabled="true" style="center" checked="@load(each.trabFinal)" />
 					</div>
 					<div align="center" >
-						<checkbox disabled="false" style="center" checked="false" onCheck="@command('marcarTrabalho',tcc=each)" />
+						<checkbox disabled="@load(each.dataApresentacao eq null)" style="center" checked="false" onCheck="@command('marcarTrabalho',tcc=each)" />
 					</div>
 					
 				</row>

@@ -146,7 +146,7 @@
 										value="@load(each.professor.nomeUsuario)" />
 									<button image="/img/delete.png"
 										onClick="@command('removeFromBanca', participacao=each)" />
-									<radio style="padding:10px"  checked="@load(each.suplente eq 1 ? 'true' : 'false')"
+									<radio style="padding:10px"  checked="@load(each.isSuplente())"
 									 id="@load(each.professor.idUsuario)" value="@load(each)" radiogroup="banca"  />
 								</row>
 							</template>
@@ -197,7 +197,7 @@
 							<label value="Data de Apresentação: "
 								style="margin-top:5px" />
 							<datebox
-								value="@bind(vm.tcc.dataApresentacao)" format="dd/MM/yyyy hh:mm a"
+								value="@bind(vm.tcc.dataApresentacao)" format="dd/MM/yyyy HH:mm"
 								hflex="1" />
 						</hlayout>
 

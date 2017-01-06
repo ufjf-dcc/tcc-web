@@ -197,23 +197,29 @@ public class HomeProfessorController extends CommonsController {
 	@NotifyChange("filterTccs")
 	@Command
 	public void filterType(@BindingParam("type") int type) {
+		int idUsuarioLogado = getUsuario().getIdUsuario();
 		switch (type) {
 		case 0:
 			filterTccs = showAll ? allTccs : tccs;
 			break;
 		case 1:
 			filterTccs = new ArrayList<TCC>();
-			for (TCC t : showAll ? allTccs : tccs)
-				if (t.getOrientador().getIdUsuario() == getUsuario()
-						.getIdUsuario())
+			for (TCC t : showAll ? allTccs : tccs){
+				int idOrientador = t.getOrientador().getIdUsuario();
+				int idCoOrientador = t.getCoOrientador() !=null ? t.getCoOrientador().getIdUsuario() : -1;
+				if (idOrientador == idUsuarioLogado || idCoOrientador == idUsuarioLogado){
 					filterTccs.add(t);
+				}
+			}
 			break;
 		case 2:
 			filterTccs = new ArrayList<TCC>();
-			for (TCC t : showAll ? allTccs : tccs)
-				if (t.getOrientador().getIdUsuario() != getUsuario()
-						.getIdUsuario())
+			for (TCC t : showAll ? allTccs : tccs){
+				int idOrientador = t.getOrientador().getIdUsuario();
+				int idCoOrientador = t.getCoOrientador() !=null ? t.getCoOrientador().getIdUsuario() : idUsuarioLogado;
+				if (idOrientador != idUsuarioLogado && idCoOrientador != idUsuarioLogado)
 					filterTccs.add(t);
+			}
 			break;
 		}
 	}

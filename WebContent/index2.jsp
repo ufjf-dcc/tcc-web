@@ -2,10 +2,8 @@
 <%@page import="org.hibernate.mapping.Collection"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.Calendar "%>
-<%@page import="br.ufjf.tcc.controller.ListaPublicaController"%>
 <%@page import="br.ufjf.tcc.model.*"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://www.zkoss.org/jsp/zul" prefix="z"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://jsptags.com/tags/navigation/pager" prefix="pg"%>
@@ -14,15 +12,14 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="description"
-	content="Repositório de trabalhos acadêmicos da Universidade Federal de Juiz de Fora" />
+<meta name="description" content="Repositório de trabalhos acadêmicos da Universidade Federal de Juiz de Fora" />
 <meta name="keywords"
 	content="sistemas de informação;monografias; tcc; dissertação;computação aplicada; informática aplicada" />
 
 <link href="tooltip.css" rel="stylesheet" type="text/css" />
 <script src="tooltip.js" type="text/javascript"></script>
 
-<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
 <script src="http://cdn.kendostatic.com/2015.2.624/js/kendo.all.min.js"></script>
 
 <script type="text/javascript">
@@ -45,7 +42,16 @@ th {
 }
 
 .table td {
+	vertical-align: middle !important;
+	padding: 5px 5px !important;
+}
+
+.table tr {
+	cursor: pointer;
+	color: #636363;
 	vertical-align: middle;
+	height: 42px;
+	margin: auto;
 }
 
 .table tr:HOVER {
@@ -77,24 +83,28 @@ th {
 .escondePag {
 	display: none;
 }
+
+.aLinkTable {
+	color: #636363; 
+	vertical-align: middle;
+}
+
+.divToolTip {
+}
 </style>
 
 <!-- Latest compiled and minified CSS -->
-<link rel="stylesheet"
-	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 
 <!-- Optional theme -->
-<link rel="stylesheet"
-	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
 
 <!-- Latest compiled and minified JavaScript -->
-<script
-	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js">
 	
 </script>
 
-<script type="text/javascript"
-	src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 
 
 
@@ -144,8 +154,7 @@ th {
 		</z:script>
 				<z:style src="/style.css" />
 
-				<z:div apply="org.zkoss.bind.BindComposer"
-					viewModel="@id('vm') @init('br.ufjf.tcc.controller.CommonsController')"
+				<z:div apply="org.zkoss.bind.BindComposer" viewModel="@id('vm') @init('br.ufjf.tcc.controller.CommonsController')"
 					height="100%" class="publicList">
 					<z:include src="@load(vm.menu)" />
 
@@ -157,59 +166,48 @@ th {
 
 			<div class="headerPub" align="center"
 				style="margin: auto; width: 100%; height: 32px; font-size: 12px; font-weight: bold; color: #636363">
-				<div style="padding: 8px 5px 3px; vertical-align: middle;">
-
-					Lista Pública de Trabalhos Acadêmico</div>
+				<div style="padding: 8px 5px 3px; vertical-align: middle;">Lista Pública de Trabalhos Acadêmicos</div>
 
 			</div>
 
 
-			<div class="divPesquisa"
-				style="width: 100%; height: 40px; display: block;">
+			<div class="divPesquisa" style="width: 100%; height: 40px; display: block;">
 				<form id="form" class="form-inline" action="index.jsp" method="get">
 
 					<div style="float: left; position: relative; top: 5px; left: 20px">
 
-						<label
-							style="font-size: 12px; font-family: Arial, sans-serif; font-weight: normal;">Curso:</label>
-						<select class="form-control input-sm" style="width: 250px;"
-							id="curso" name="curso" onchange="this.form.submit()">
+						<label style="font-size: 12px; font-family: Arial, sans-serif; font-weight: normal;">Curso:</label> <select
+							class="form-control input-sm" style="width: 250px;" id="curso" name="curso" onchange="this.form.submit()">
 
 							<c:forEach var="curso" items="${cursos}">
-								<option value="${curso.codigoCurso}"
-									${cursoSel == curso.codigoCurso? 'selected="selected"' : '' }>${curso.nomeCurso}</option>
+								<option value="${curso.codigoCurso}" ${cursoSel == curso.codigoCurso? 'selected="selected"' : '' }>${curso.nomeCurso}</option>
 							</c:forEach>
 
 						</select>
 					</div>
 					<div style="float: right; padding-top: 5px; width: 520px;">
-						<label
-							style="font-size: 12px; font-family: Arial, sans-serif; font-weight: normal;">Pesquisar:</label>
-						<input maxlength="100" class="form-control input-sm" id="pesquisa"
-							name="pesquisa" type="text" value="${PalavaPesquisa}" /> <label
-							style="padding-left: 20px; font-size: 12px; font-family: Arial, sans-serif; font-weight: normal;">Ano:</label>
-						<select style="" class="form-control input-sm" id="year"
-							name="year">
+						<label style="font-size: 12px; font-family: Arial, sans-serif; font-weight: normal;">Pesquisar:</label> <input
+							maxlength="100" class="form-control input-sm" id="pesquisa" name="pesquisa" type="text" value="${PalavaPesquisa}" />
+						<label style="padding-left: 20px; font-size: 12px; font-family: Arial, sans-serif; font-weight: normal;">Ano:</label>
+						<select style="" class="form-control input-sm" id="year" name="year">
 							<c:forEach var="year" items="${years}">
 								<option ${yearSelecionado == year? 'selected="selected"' : '' }>${year}</option>
 							</c:forEach>
 
 						</select>
 
-						<button class="btn btn-primary btn-sm" style="margin-left: 20px;"
-							type="submit">Filtrar</button>
+						<button id="btnFiltrar" class="btn btn-primary btn-sm" style="margin-left: 20px;" type="submit">Filtrar</button>
 
-						<img src="./img/help.gif" style="cursor: help; padding-left: 20px"
-							onmouseover="showPopup()" onmouseout="hidePopup()" />
+						<img src="./img/help.gif" style="cursor: help; padding-left: 20px" onmouseover="showPopup()"
+							onmouseout="hidePopup()" />
 
 						<div id="popup" align="left"
 							style="position: relative; z-index: 5; margin: auto; width: 380px; height: 150px; font-size: 12px; font-weight: bold; color: #636363; display: none; background-color: white;">
-							<div
-								style="padding-top: 7px; padding-left: 10px; background-color: white; z-index: 4">
+							<div style="padding-top: 7px; padding-left: 10px; background-color: white; z-index: 4">
 
 
-								Permite filtrar a lista de TCCs com o curso, o termo e o ano <br>
-								escolhidos. O termo pode ser, por exemplo:<br>
+								Permite filtrar a lista de TCCs com o curso, o termo e o ano <br> escolhidos. O termo pode ser, por
+								exemplo:<br>
 								<ul>
 									<li>Autor ou orientador;</li>
 									<li>Nome do TCC;</li>
@@ -230,10 +228,9 @@ th {
 		</div>
 
 
-		<div
-			style="position: absolute; z-index: 3; font-size: 12px; width: 99.25%;">
-			<pg:pager id="p" maxPageItems="10" maxIndexPages="20" isOffset="true"
-				export="offset,currentPageNumber=pageNumber" scope="request">
+		<div style="position: absolute; z-index: 3; font-size: 12px; width: 99.25%;">
+			<pg:pager id="p" maxPageItems="10" maxIndexPages="20" isOffset="true" export="offset,currentPageNumber=pageNumber"
+				scope="request">
 				<table class="table table-bordered"
 					style="z-index: 2; font-family: Arial, sans-serif; font-size: 12px; margin-bottom: 2px; border: 1px solid #cfcfcf">
 					<tr style="color: #636363; height: 30px;">
@@ -244,13 +241,10 @@ th {
 					</tr>
 					<c:forEach var="tcc" items="${tccs}">
 						<pg:item>
-							<tr
-								style="cursor: pointer;color:#636363;vertical-align: middle;height: 42px;margin: auto;display:${tcc == null ? 'none' : ''}">
-
-								<td style="vertical-align: middle; padding: 2px 5px;">
-									<a style="color: #636363; vertical-align: middle;"
-										href="./tcc?id=${tcc.idTCC}" target="_blank">
-										<div onmouseover="tooltip.pop(this,'#${tcc.idTCC}',{position:2})" style="padding: 4px 5px; line-height: 24px">
+							<tr style="display:${tcc == null ? 'none' : ''}">
+								<td>
+									<a class="aLinkTable" href="./tcc?id=${tcc.idTCC}" target="_blank">
+										<div class="divToolTip" onmouseover="tooltip.pop(this,'#${tcc.idTCC}',{position:2})" >
 											<div style="line-height: 24px">
 												<span style="line-height: normal;"> ${tcc.nomeTCC} </span>
 											</div>
@@ -258,28 +252,25 @@ th {
 									</a>
 								</td>
 
-								<td style="vertical-align: middle; padding: 5px 5px;"
-									onclick="window.open('./tcc?id=${tcc.idTCC}','_blank')"><a
-									style="color: #636363; vertical-align: middle;"
-									href="./tcc?id=${tcc.idTCC}" target="_blank">
-										<div
-											onmouseover="tooltip.pop(this,'#${tcc.idTCC}',{position:3})"
-											style="padding: 4px 5px; line-height: 24px">
+								<td onclick="window.open('./tcc?id=${tcc.idTCC}','_blank')">
+									<a class="aLinkTable" href="./tcc?id=${tcc.idTCC}" target="_blank">
+										<div class="divToolTip"  onmouseover="tooltip.pop(this,'#${tcc.idTCC}',{position:3})" >
 											<div style="line-height: 24px">
-												<span style="line-height: normal;">
-													${tcc.aluno.nomeUsuario} </span>
+												<span style="line-height: normal;"> ${tcc.aluno.nomeUsuario} </span>
 											</div>
 										</div>
-								</a></td>
+									</a>
+								</td>
 
-								<td style="vertical-align: middle; padding: 5px 5px;"
-									onClick="location.href='downloadPdf?id=${tcc.idTCC}'"><img
-									src="img/pdf.png"
-									style="cursor: pointer; float: right; padding-right: 10px;" /></td>
-								<td style="vertical-align: middle; padding: 5px 5px;"><img
-									${tcc.arquivoExtraTCCFinal == null || tcc.arquivoExtraTCCFinal == "" ?'src="img/norar.png" onClick="showError()" '  : 'src="img/rar.png"' }
-									style="cursor: pointer; float: right; padding-right: 10px;"
-									onClick="location.href='downloadExtra?id=${tcc.idTCC}'" /></td>
+								<td onClick="location.href='downloadPdf?id=${tcc.idTCC}'">
+									<img src="img/pdf.png" style="cursor: pointer; float: right; padding-right: 10px;" />
+								</td>
+								
+								<td>
+									<img ${tcc.arquivoExtraTCCFinal == null || tcc.arquivoExtraTCCFinal == "" ?'src="img/norar.png" onClick="showError()" '  : 'src="img/rar.png"' }
+										style="cursor: pointer; float: right; padding-right: 10px;"
+										onClick="location.href='downloadExtra?id=${tcc.idTCC}'" />
+								</td>
 
 							</tr>
 
@@ -287,37 +278,29 @@ th {
 							<div style="display: none;">
 								<div id="${tcc.idTCC}">
 									<div style="width: 550px;">
-										<label
-											style="font-size: 14px; font-weight: bold; text-align: justify; display: block;">Resumo
-										</label> <label
-											style="font-size: 12px; font-family: Arial, sans-serif; font-weight: normal;">${tcc.resumoTCC}
-										</label>
+										<label style="font-size: 14px; font-weight: bold; text-align: justify; display: block;">Resumo </label> <label
+											style="font-size: 12px; font-family: Arial, sans-serif; font-weight: normal;">${tcc.resumoTCC} </label>
 										<div>
 											<label style="font-weight: bold;">Ano</label> <label
 												style="font-size: 12px; font-family: Arial, sans-serif; font-weight: normal;">
 												${tcc.dataEnvioFinal.toString().substring(0,4) } </label>
 										</div>
-										<label
-											style="font-size: 14px; font-weight: bold; text-align: justify; display: block;">Orientador
-										</label> <label
+										<label style="font-size: 14px; font-weight: bold; text-align: justify; display: block;">Orientador </label> <label
 											style="font-size: 12px; font-family: Arial, sans-serif; font-weight: normal;">${tcc.orientador.nomeUsuario }
 										</label> <label
 											style="font-size: 14px; font-weight: bold; text-align: justify;${tcc.coOrientador != null? 'display:block' : 'display:none'} ">Co-Orientador
 										</label> <label
 											style="font-size: 12px;font-family: Arial,sans-serif;font-weight: normal;${tcc.coOrientador != null? 'display:block' : 'display:none'}">
 											${tcc.coOrientador.nomeUsuario}</label> <label
-											style="font-size: 14px; font-weight: bold; text-align: justify; display: block;">Palavras-chave</label>
-										<label
-											style="font-size: 12px; font-family: Arial, sans-serif; font-weight: normal;">${tcc.palavrasChave}
-										</label>
+											style="font-size: 14px; font-weight: bold; text-align: justify; display: block;">Palavras-chave</label> <label
+											style="font-size: 12px; font-family: Arial, sans-serif; font-weight: normal;">${tcc.palavrasChave} </label>
 									</div>
 								</div>
 							</div>
 
 
 						</pg:item>
-						<c:set var="offsetIncrement" value="${offsetIncrement+1}"
-							scope="page" />
+						<c:set var="offsetIncrement" value="${offsetIncrement+1}" scope="page" />
 					</c:forEach>
 
 
@@ -327,8 +310,7 @@ th {
 					<ul class="pagination pagination-sm" style="margin: auto">
 						<pg:index>
 
-							<li ${page != 1 ? 'style="display: none;"' : ''}><a>&lt;&lt;
-									Anterior</a></li>
+							<li ${page != 1 ? 'style="display: none;"' : ''}><a>&lt;&lt; Anterior</a></li>
 
 							<pg:prev>
 
@@ -366,6 +348,7 @@ th {
 	function showError(){
 		window.alert("Arquivo não encontrado!");
 	}
+
 	</script>
 
 

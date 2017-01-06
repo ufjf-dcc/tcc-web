@@ -191,7 +191,7 @@ public class MenuController extends CommonsController {
 		SessionManager.setAttribute("usuario", null);
 		SessionManager.setAttribute("usuarios", null);
 
-		Executions.sendRedirect("/index.zul");
+		Executions.sendRedirect("/index.jsp");
 	}
 
 	public Usuario getUsuarioForm() {

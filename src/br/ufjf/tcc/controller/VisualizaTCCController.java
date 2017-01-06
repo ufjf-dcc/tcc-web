@@ -19,6 +19,7 @@ import org.zkoss.zul.Iframe;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 
+import br.ufjf.tcc.business.ParticipacaoBusiness;
 import br.ufjf.tcc.business.PerguntaBusiness;
 import br.ufjf.tcc.business.QuestionarioBusiness;
 import br.ufjf.tcc.business.RespostaBusiness;
@@ -26,6 +27,8 @@ import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.business.UsuarioBusiness;
 import br.ufjf.tcc.library.FileManager;
 import br.ufjf.tcc.library.SessionManager;
+import br.ufjf.tcc.mail.Email;
+import br.ufjf.tcc.mail.EmailBuilder;
 import br.ufjf.tcc.model.Participacao;
 import br.ufjf.tcc.model.Pergunta;
 import br.ufjf.tcc.model.Resposta;
@@ -85,7 +88,8 @@ public class VisualizaTCCController extends CommonsController {
 											.getAluno().getCurso()));
 
 					Participacao p = null;
-					for (Participacao aux : getUsuario().getParticipacoes()) {
+					List<Participacao> participacoes = new ParticipacaoBusiness().getParticipacoesByUser(getUsuario());
+					for (Participacao aux : participacoes) {
 						if (aux.getTcc().getIdTCC() == tcc.getIdTCC())
 							p = aux;
 					}
@@ -125,8 +129,7 @@ public class VisualizaTCCController extends CommonsController {
 					|| getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ADMINISTRADOR
 					|| ((getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.COORDENADOR 
 					|| (getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.SECRETARIA 
-					&& tcc.getDataEnvioFinal() != null)) 
-					&& getUsuario().getCurso().getIdCurso() == tcc.getAluno().getCurso().getIdCurso())) {
+					&& tcc.getDataEnvioFinal() != null)))) {
 				
 				if(getUsuario().getTipoUsuario().getIdTipoUsuario() != Usuario.PROFESSOR)
 				canEdit = true;
@@ -419,6 +422,17 @@ public class VisualizaTCCController extends CommonsController {
 			        	tcc.setArquivoExtraTCCBanca(null);
 			        	tcc.setArquivoTCCBanca(null);
 						new TCCBusiness().edit(tcc);
+						String nomeAluno = tcc.getAluno().getNomeUsuario();
+						EmailBuilder emailBuilder = new EmailBuilder(true).comTitulo("[TCC-WEB] Projeto Aprovado - "+nomeAluno);
+						emailBuilder.appendMensagem("Prezado(a) "+tcc.getAluno().getNomeUsuario()).breakLine().breakLine();
+						emailBuilder.appendMensagem("O seu projeto de TCC foi aprovado pela Coordenação de Curso. ");
+						emailBuilder.appendMensagem("Atente-se ao calendário definido pela sua Coordenação como prazo máximo para envio dos dados da sua defesa e ");
+						emailBuilder.appendMensagem("envio da versão digital do seu trabalho. ");
+						
+						List<Usuario> alunos = new ArrayList<>();
+						alunos.add(tcc.getAluno());
+						inserirDestinatarios(alunos, emailBuilder);
+						enviarEmail(emailBuilder);
 						SessionManager.setAttribute("trabalhos_semestre",true);
 						Executions.sendRedirect("/pages/tccs-curso.zul");
 					}
@@ -445,9 +459,20 @@ public class VisualizaTCCController extends CommonsController {
 			        	tcc.setArquivoExtraTCCFinal(tcc.getArquivoExtraTCCBanca());
 			        	tcc.setArquivoTCCBanca(null);
 			        	tcc.setArquivoExtraTCCBanca(null);
+			        	UsuarioBusiness ub = new UsuarioBusiness();
 						new TCCBusiness().edit(tcc);
 						tcc.getAluno().setAtivo(false);
-						new UsuarioBusiness().editar(tcc.getAluno());
+						ub.editar(tcc.getAluno());
+						String nomeAluno = tcc.getAluno().getNomeUsuario();
+						EmailBuilder emailBuilder = new EmailBuilder(true).comTitulo("[TCC-WEB] Trabalho Aprovado - "+nomeAluno);
+						emailBuilder.appendMensagem("Prezado(a) "+tcc.getAluno().getNomeUsuario()).breakLine().breakLine();
+						emailBuilder.appendMensagem("Parabéns. O seu trabalho foi aprovado pela Coordenação de Curso e ");
+						emailBuilder.appendMensagem("está disponível para acesso público no repositório de trabalhos acadêmicos.");
+						
+						List<Usuario> alunos = new ArrayList<>();
+						alunos.add(tcc.getAluno());
+						inserirDestinatarios(alunos, emailBuilder);
+						enviarEmail(emailBuilder);
 						SessionManager.setAttribute("trabalhos_semestre",true);
 						Executions.sendRedirect("/pages/tccs-curso.zul");
 		        	}
@@ -457,6 +482,24 @@ public class VisualizaTCCController extends CommonsController {
 		    }
 		});
 
+	}
+	
+	private void enviarEmail(EmailBuilder emailBuilder) {
+		try{
+			Email email = new Email();
+			email.enviar(emailBuilder);
+			
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void inserirDestinatarios(List<Usuario> usuarios, EmailBuilder builder) {
+		for (Usuario usuario : usuarios) {
+			if(usuario.isEmailValido()) {
+				builder.appendDestinatario(usuario.getEmail());
+			}
+		}
 	}
 	
 	public boolean isSecretaria()

@@ -509,7 +509,20 @@ public class TCC implements Serializable,Comparable<TCC> {
 		this.qtDownloads = qtDownloads;
 	}
 	
+	public List<Usuario> getProfessoresParticipacoes() {
+		List<Usuario> usuarioParticipacoes = new ArrayList<>();
+		for (Participacao participacao : getParticipacoes()) {
+			usuarioParticipacoes.add(participacao.getProfessor());
+		}
+		return usuarioParticipacoes;
+	}
 	
+	public boolean possuiCoorientador() {
+		return coOrientador!=null;
+	}
 	
+	public boolean isQuantidadeParticipacoesValidas(){
+		return getParticipacoes()!=null && getParticipacoes().size() >= 3;
+	}
 	
 }

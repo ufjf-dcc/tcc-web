@@ -34,6 +34,7 @@ public class TCCsCursoController extends CommonsController {
 	private int semestre = 1;// 0=atual, 1 = anteriores
 	private int tipoTrabalho = 0; // 0=todos, 1 = projeto, 2 = trabalho
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss.S");
+	private boolean podeMarcarTrabFinal = false;
 
 	@Init
 	public void init() {
@@ -42,7 +43,7 @@ public class TCCsCursoController extends CommonsController {
 		case Usuario.COORDENADOR:
 
 			tccs = new TCCBusiness().getAllTrabalhosAndProjetosByCurso(getUsuario().getCurso());
-
+			podeMarcarTrabFinal = true;
 			break;
 		case Usuario.SECRETARIA:
 
@@ -424,6 +425,16 @@ public class TCCsCursoController extends CommonsController {
 			tcc.setEntregouDoc(true);
 		}
 		new TCCBusiness().edit(tcc);
+	}
+	
+	@Command
+	public void checkEnviouTrabFinal(@BindingParam("tcc") TCC tcc) {
+		if (tcc.isTrabFinal()) {
+			tcc.setTrabFinal(false);
+		} else {
+			tcc.setTrabFinal(true);
+		}
+		new TCCBusiness().edit(tcc);
 
 	}
 
@@ -441,6 +452,14 @@ public class TCCsCursoController extends CommonsController {
 
 	public void setSemestre(int semestre) {
 		this.semestre = semestre;
+	}
+
+	public boolean isPodeMarcarTrabFinal() {
+		return podeMarcarTrabFinal;
+	}
+
+	public void setPodeMarcarTrabFinal(boolean podeMarcarTrabFinal) {
+		this.podeMarcarTrabFinal = podeMarcarTrabFinal;
 	}
 	
 }

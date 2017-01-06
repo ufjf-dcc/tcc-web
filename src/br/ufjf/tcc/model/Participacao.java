@@ -130,5 +130,9 @@ public class Participacao implements Serializable {
 	public void setSuplente(int suplente) {
 		this.suplente = suplente;
 	}
+	
+	public boolean isSuplente() {
+		return getSuplente()==1;
+	}
 
 }

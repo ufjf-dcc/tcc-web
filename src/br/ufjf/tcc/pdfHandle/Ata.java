@@ -1,11 +1,14 @@
 package br.ufjf.tcc.pdfHandle;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.AcroFields;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfContentByte;
@@ -37,6 +40,7 @@ public abstract class Ata {
 	protected PdfContentByte over;
 	protected AcroFields form;
 	protected BaseFont bfTextoSimples ;
+	protected BaseFont campoStyle ;
 	
 	public static final String COMPOSICAO_BANCA = "ComposicaoBanca";
 	public static final String COMPOSICAO_BANCA_FINAL = "ComposicaoBancaFinal";
@@ -93,6 +97,7 @@ public abstract class Ata {
 	}
 
 	public abstract void preencherPDF() throws Exception;
+	protected abstract String getPathTemplate() throws Exception;
 
 	public void inicializarParticipacoes(List<Participacao> ps) {
 		int qt = ps.size();
@@ -108,6 +113,41 @@ public abstract class Ata {
 
 	}
 
+	protected void iniciarParametros() throws Exception {
+		
+		String ARQUIVO_SAIDA = PASTA_ARQUIVOS_TEMP + FICHA_AVALIACAO_FINAL + idAluno + EXTENSAO_PDF;
+		template = getPathTemplate();
+		saida = new FileOutputStream(ARQUIVO_SAIDA);
+		leitor = new PdfReader(new FileInputStream(template));
+		stamper = new PdfStamper(leitor, saida);
+		bfTextoSimples = BaseFont.createFont(BaseFont.TIMES_BOLD, BaseFont.WINANSI, BaseFont.NOT_EMBEDDED);
+		form = stamper.getAcroFields();
+
+	}
+	
+	protected void preencherFichasAvaliacaoIndividual() {
+		try {
+
+			for (int i = 0; i < avaliadores.length; i++) {
+				PreenchimentoPDF.preencherFichaAvaliacaoIndividual(tcc.getAluno().getNomeUsuario(), avaliadores[i], dia, mes, ano,
+						i, idAluno,PASTA_COM_TEMPLATE_ATAS,tcc);
+
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		}
+	}
+	
+	protected void fecharFluxos() throws DocumentException, IOException {
+		stamper.setFormFlattening(true);
+		over.endText();
+		stamper.close();
+		saida.close();
+		leitor.close();
+	}
+	
 	public boolean existe(){
 		if(tcc==null)
 			return false;
@@ -220,7 +260,7 @@ public abstract class Ata {
 		String meses[] = new String[12];
 		meses[0] = "janeiro";
 		meses[1] = "fevereiro";
-		meses[2] = "mar�o";
+		meses[2] = "março";
 		meses[3] = "abril";
 		meses[4] = "maio";
 		meses[5] = "junho";

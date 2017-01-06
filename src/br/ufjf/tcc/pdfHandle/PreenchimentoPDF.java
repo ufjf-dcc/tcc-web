@@ -39,20 +39,11 @@ public class PreenchimentoPDF {
 		AcroFields form = stamper.getAcroFields();
 		over.beginText();
 		over.setFontAndSize(bfTextoSimples, 12);
-
-		form.setFieldProperty("nomeAluno", "textcolor", Color.BLACK ,null);
+		
 		form.setField("nomeAluno", nomeAluno);
-		
-		form.setFieldProperty("nomeAvaliador", "textcolor", Color.BLACK ,null);
 		form.setField("nomeAvaliador", nomeAvaliador);
-
-		form.setFieldProperty("dia", "textcolor", Color.BLACK ,null);
 		form.setField("dia", dia);
-		
-		form.setFieldProperty("mes", "textcolor", Color.BLACK ,null);
 		form.setField("mes", Ata.getMesPeloNumero(mes));
-		
-		form.setFieldProperty("ano", "textcolor", Color.BLACK ,null);
 		form.setField("ano", ano);
 
 		stamper.setFormFlattening(true);

@@ -88,8 +88,8 @@ public class TCCBusiness {
 	
 	public void validateBanca(List<Participacao> list, TCC tcc) {
 		if(tcc!=null)
-		if ((list  == null || list.size() == 0) && !tcc.isProjeto())
-			errors.add("É necessário informar a banca\n");		
+		if ((list  == null || list.size() < 3) && !tcc.isProjeto())
+			errors.add("É necessário informar a banca. Mínimo de 3 participantes.\n");		
 	}
 	
 	public void validateSuplente(List<Participacao> list, TCC tcc) {
@@ -281,13 +281,13 @@ public class TCCBusiness {
 	
 	public boolean isTrabalhoAguardandoAprovacao(TCC tcc)
 	{
-		ParticipacaoBusiness pb = new ParticipacaoBusiness();
 				
 		if(!tcc.isProjeto() && !(tcc.getPalavrasChave()== null || tcc.getPalavrasChave().trim().length() == 0) && tcc.getArquivoTCCBanca()!=null
 				&& !(tcc.getResumoTCC()==null || tcc.getResumoTCC().trim().length() == 0) && tcc.getOrientador()!=null && tcc.getNomeTCC()!=null
 				&& !(tcc.getSalaDefesa()== null || tcc.getSalaDefesa().trim().length() == 0) && tcc.getDataApresentacao()!=null 
-				&& pb.getParticipacoesByTCC(tcc).size()>0
-				&& possuiSuplente(pb.getParticipacoesByTCC(tcc)))
+				&& tcc.getParticipacoes()!=null
+				&& tcc.isQuantidadeParticipacoesValidas()
+				&& possuiSuplente(tcc.getParticipacoes()))
 			return true;
 		return false;
 	}

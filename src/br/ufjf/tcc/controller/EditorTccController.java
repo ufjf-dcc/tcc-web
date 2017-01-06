@@ -30,6 +30,8 @@ import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.business.UsuarioBusiness;
 import br.ufjf.tcc.library.FileManager;
 import br.ufjf.tcc.library.SessionManager;
+import br.ufjf.tcc.mail.EnviadorEmailChain;
+import br.ufjf.tcc.mail.EnviadorEmailProjetoCriado;
 import br.ufjf.tcc.model.Departamento;
 import br.ufjf.tcc.model.Participacao;
 import br.ufjf.tcc.model.TCC;
@@ -41,6 +43,7 @@ public class EditorTccController extends CommonsController {
 	private TCCBusiness tccBusiness = new TCCBusiness();
 	private Usuario tempUser = null;
 	private TCC tcc = null;
+	private String statusInicialTCC = "";
 	private Iframe iframe;
 	private InputStream tccFile = null, extraFile = null;
 	private AMedia pdf = null;
@@ -50,6 +53,7 @@ public class EditorTccController extends CommonsController {
 			canEditUser = false, alunoVerified = false, tccFileChanged = false,
 			extraFileChanged = false, hasSubtitulo = false,
 			hasCoOrientador = false, orientadorWindow = true,trabFinal = false;
+	private EnviadorEmailChain enviadorEmail = new EnviadorEmailProjetoCriado();
 	
 
 	@Init
@@ -64,6 +68,7 @@ public class EditorTccController extends CommonsController {
 			if (tempTCC != null) {
 				getUsuario().getTcc().add(tempTCC);
 				tcc = getUsuario().getTcc().get(0);
+				statusInicialTCC = tcc.getStatusTCC();
 			} else
 				if(!getUsuario().isAtivo())
 					redirectHome();
@@ -75,6 +80,9 @@ public class EditorTccController extends CommonsController {
 					if (getUsuario().getCurso() != null)
 						tcc.getAluno().setCurso(getUsuario().getCurso());
 					tcc.setAluno(getUsuario());
+					
+					statusInicialTCC = "ProjetoCriado";
+					
 				}
 
 			canChangeOrientacao = true;
@@ -110,7 +118,7 @@ public class EditorTccController extends CommonsController {
 		}
 		departamentos = (new DepartamentoBusiness()).getAll();
 	}
-
+	
 	private boolean canEdit() {
 		return (tcc.getOrientador() == null
 				|| tcc.getOrientador().getIdUsuario() == getUsuario()
@@ -272,7 +280,7 @@ public class EditorTccController extends CommonsController {
 		String alerta1 = "Você está enviando a versão final do seu trabalho?";
 		final String alerta2 = "Atenção, após submeter a versão final do seu trabalho e clicar em atualizar, ele não poderá mais ser alterado. Deseja continuar?";
 		if(getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ALUNO){
-			if(tcc!=null && tcc.getDataApresentacao()!=null){
+			if(tcc!=null && tcc.getDataApresentacao()!=null && tcc.isQuantidadeParticipacoesValidas()){
 				if(!tcc.isProjeto()  && tcc.getDataApresentacao().before(new Date())){
 					Messagebox.show(alerta1, "Aviso Importante", Messagebox.YES|Messagebox.NO, Messagebox.EXCLAMATION, new org.zkoss.zk.ui.event.EventListener() {
 					    public void onEvent(Event evt) throws InterruptedException {
@@ -305,7 +313,7 @@ public class EditorTccController extends CommonsController {
 			return;
 		}
 		pdf = new AMedia(tcc.getNomeTCC(), "pdf", "application/pdf", evt
-				.getMedia().getStreamData());
+				.getMedia().getByteData());
 		tccFile = evt.getMedia().getStreamData();
 		tccFileChanged = true;
 		iframe.setContent(pdf);
@@ -457,8 +465,6 @@ public class EditorTccController extends CommonsController {
 		System.out.println("\n\n"+new Date().toString());
 		if(trabFinal){
 			tcc.setTrabFinal(true);
-		}else{
-			System.out.println("\n\n\nNao passou da dta de defesa");
 		}
 		if (getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.SECRETARIA
 				&& (tcc.getArquivoTCCFinal() == null && !tccFileChanged)) {
@@ -562,6 +568,13 @@ public class EditorTccController extends CommonsController {
 					alerta = "Projeto salvo!";
 				else
 					alerta = "Trabalho salvo!";
+				
+				//ENVIA E-MAIL
+				if(!(getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.COORDENADOR)
+						&& !(getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.SECRETARIA)) {
+					enviadorEmail.enviarEmail(tcc, statusInicialTCC);
+				}
+				
 				Messagebox.show(alerta, "Confirmação", Messagebox.OK , Messagebox.EXCLAMATION, new org.zkoss.zk.ui.event.EventListener() {
 				    public void onEvent(Event evt) throws InterruptedException {
 				        if (evt.getName().equals("onOK")) {
@@ -606,8 +619,13 @@ public class EditorTccController extends CommonsController {
 				tcc.setArquivoTCCFinal(newFileName);
 				break;
 			default:
-				FileManager.deleteFile(tcc.getArquivoTCCBanca());
-				tcc.setArquivoTCCBanca(newFileName);
+				if(tcc.getArquivoTCCFinal() != null) {
+					FileManager.deleteFile(tcc.getArquivoTCCFinal());
+					tcc.setArquivoTCCFinal(newFileName);
+				}else{
+					FileManager.deleteFile(tcc.getArquivoTCCBanca());
+					tcc.setArquivoTCCBanca(newFileName);
+				}
 				break;
 			}
 		}
@@ -617,8 +635,13 @@ public class EditorTccController extends CommonsController {
 	public void saveExtraFile() {
 		String newFileName = FileManager.saveFileInputSream(extraFile, ".pdf");
 		if (newFileName != null) {
-			FileManager.deleteFile(tcc.getArquivoExtraTCCBanca());
-			tcc.setArquivoExtraTCCBanca(newFileName);
+			if(tcc.getArquivoExtraTCCFinal()!=null) {
+				FileManager.deleteFile(tcc.getArquivoExtraTCCFinal());
+				tcc.setArquivoExtraTCCFinal(newFileName);
+			}else{
+				FileManager.deleteFile(tcc.getArquivoExtraTCCBanca());
+				tcc.setArquivoExtraTCCBanca(newFileName);
+			}
 		}
 	}
 

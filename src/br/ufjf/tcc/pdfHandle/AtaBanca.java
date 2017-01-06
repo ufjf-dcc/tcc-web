@@ -21,4 +21,9 @@ public class AtaBanca extends Ata {
 		UniaoPDF.unirPDFsExibicaoBanca(trabMarcados.size(), idAluno);
 	}
 
+	@Override
+	protected String getPathTemplate() throws Exception {
+		return null;
+	}
+
 }
