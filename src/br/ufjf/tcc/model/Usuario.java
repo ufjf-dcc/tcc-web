@@ -308,6 +308,12 @@ public class Usuario implements Serializable {
 	public void setDepartamento(Departamento departamento) {
 		this.departamento = departamento;
 	}
+	
+	public String getCursoOuDepartamento() {
+		return this.tipoUsuario.getIdTipoUsuario() != 2 ? 
+				(this.curso.getNomeCurso() != null ? this.curso.getNomeCurso() : "Nenhum curso") : 
+					(this.departamento.getNomeDepartamento() != null ? this.departamento.getNomeDepartamento() : "Nenhum departamento");
+	}
 
 	public void copy(Usuario another) {
 		this.idUsuario = another.idUsuario;
