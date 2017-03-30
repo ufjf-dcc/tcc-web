@@ -58,7 +58,7 @@
 				<column hflex="3" label="Nome" sort="auto(nomeUsuario)" />
 				<column hflex="2" label="Email" sort="auto(email)" />
 				<column hflex="2" label="Curso ou Departamento"
-					sort="auto(curso.nomeCurso)" />
+					sort="auto(cursoOuDepartamento)" />
 				<column label="Tipo" hflex="1"
 					sort="auto(tipoUsuario.nomeTipoUsuario)" />
 				<column hflex="1" label="Titulação"

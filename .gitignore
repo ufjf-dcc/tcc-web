@@ -15,7 +15,7 @@ local.properties
 .settings
 .project
 .classpath
-
+.tern-project
 # Arquivo de configuracao
 src/br/ufjf/tcc/library/config.txt
 
