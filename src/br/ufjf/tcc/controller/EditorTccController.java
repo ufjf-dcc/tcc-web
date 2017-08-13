@@ -320,8 +320,7 @@ public class EditorTccController extends CommonsController {
 		Messagebox.show("Arquivo enviado com sucesso.", "Confirmação", Messagebox.OK , Messagebox.INFORMATION, new org.zkoss.zk.ui.event.EventListener() {
 		    public void onEvent(Event evt) throws InterruptedException {
 		        if (evt.getName().equals("onOK")) {
-		        	if(trabFinal)
-		        		submit();
+		        	
 		        } 
 		    }
 		});
