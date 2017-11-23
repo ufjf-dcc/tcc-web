@@ -22,7 +22,9 @@ public class EnviadorEmailProjetoCriado extends EnviadorEmailChain {
 			emailBuilder.appendMensagem("Prezado coordenador de curso, ").breakLine().breakLine();
 			emailBuilder.appendMensagem("O aluno <b>"+nomeAluno+"</b> iniciou a criação do projeto de TCC. ");
 			emailBuilder.appendMensagem("Por enquanto o projeto ainda está incompleto. ");
-			emailBuilder.appendMensagem("Você será notificado quando o discente completar o cadastro do projeto de TCC.");
+			emailBuilder.appendMensagem("Você será notificado quando o discente completar o cadastro do projeto de TCC.").breakLine().breakLine();
+			emailBuilder.appendLinkSistema();
+			
 			UsuarioBusiness ub = new UsuarioBusiness();
 			List<Usuario> coordenadoresESecretarias = new ArrayList<>();
 			coordenadoresESecretarias.addAll(ub.getCoordenadoresByCurso(tcc.getAluno().getCurso()));
