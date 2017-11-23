@@ -40,6 +40,7 @@ public class EnviadorEmailChainTAAProfessor extends EnviadorEmailChain {
 			String dataFormatada = new DateTime(tcc.getDataApresentacao().getTime()).toString("dd/MM/yyyy - HH:mm");
 			emailBuilder.appendMensagem("<b>Data da apresentação:</b> "+dataFormatada).breakLine();
 			emailBuilder.appendMensagem("<b>Local de defesa:</b> "+tcc.getSalaDefesa()).breakLine().breakLine();
+			emailBuilder.appendLinkSistema().breakLine().breakLine();
 			
 			emailBuilder.appendMensagem("<b> * Funcionalidade disponível somente para usuários do SIGA-UFJF. </b>").breakLine();
 			inserirDestinatarios(tcc.getProfessoresParticipacoes(), emailBuilder);

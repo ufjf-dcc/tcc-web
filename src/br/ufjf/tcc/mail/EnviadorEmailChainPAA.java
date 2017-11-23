@@ -29,7 +29,8 @@ public class EnviadorEmailChainPAA extends EnviadorEmailChain {
 				emailBuilder.appendMensagem("Coorientador(a): "+tcc.getCoOrientador().getNomeUsuario()).breakLine();
 			}
 			emailBuilder.appendMensagem("Resumo: "+tcc.getResumoTCC()).breakLine();
-			emailBuilder.appendMensagem("Palavras-chave: "+tcc.getPalavrasChave()).breakLine();
+			emailBuilder.appendMensagem("Palavras-chave: "+tcc.getPalavrasChave()).breakLine().breakLine();
+			emailBuilder.appendLinkSistema();
 			UsuarioBusiness ub = new UsuarioBusiness();
 			List<Usuario> coordenadoresESecretarias = new ArrayList<>();
 			coordenadoresESecretarias.addAll(ub.getCoordenadoresByCurso(tcc.getAluno().getCurso()));

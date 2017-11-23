@@ -44,7 +44,8 @@ public class EnviadorEmailChainTrabFinal extends EnviadorEmailChain {
 			}
 			String dataFormatada = new DateTime(tcc.getDataApresentacao().getTime()).toString("dd/MM/yyyy - HH:mm");
 			emailBuilder.appendMensagem("<b>Data da apresentação:</b> "+dataFormatada).breakLine();
-			emailBuilder.appendMensagem("<b>Local de defesa:</b> "+tcc.getSalaDefesa()).breakLine();
+			emailBuilder.appendMensagem("<b>Local de defesa:</b> "+tcc.getSalaDefesa()).breakLine().breakLine();
+			emailBuilder.appendLinkSistema();
 			UsuarioBusiness ub = new UsuarioBusiness();
 			List<Usuario> destinatarios = new ArrayList<>();
 			destinatarios.addAll(ub.getCoordenadoresByCurso(tcc.getAluno().getCurso()));

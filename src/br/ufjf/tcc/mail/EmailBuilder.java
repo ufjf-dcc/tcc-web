@@ -7,12 +7,18 @@ public class EmailBuilder {
 	private String titulo;
 	private boolean isHtmlFormat;
 	private static String VIRGULA_ESPACO = ", ";
+	private static String linkSistema = "http://www.monografias.ice.ufjf.br";
 
 	public EmailBuilder(boolean isHtmlFormat) {
 		mensagem = new StringBuilder();
 		destinatarios = new StringBuilder();
 		titulo = new String();
 		this.isHtmlFormat = isHtmlFormat;
+	}
+	
+	public EmailBuilder appendLinkSistema() {
+		mensagem.append(String.format("<b><a href=\"%s\">Acessar o sistema </a></b>", linkSistema));
+		return this;
 	}
 	
 	public EmailBuilder comTitulo(String titulo) {
