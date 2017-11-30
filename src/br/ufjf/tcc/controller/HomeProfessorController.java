@@ -235,7 +235,7 @@ public class HomeProfessorController extends CommonsController {
 	public void getTCCApresentacao(@BindingParam("tcc") TCC tcc,
 			@BindingParam("lbl") Label lbl) {
 		if (tcc.getDataApresentacao() != null) {
-			DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy, hh:mm");
+			DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy, HH:mm");
 			lbl.setValue(dateFormat.format(tcc.getDataApresentacao()));
 			if (tcc.getSalaDefesa() != null)
 				lbl.setValue(lbl.getValue() + " - Sala " + tcc.getSalaDefesa());
