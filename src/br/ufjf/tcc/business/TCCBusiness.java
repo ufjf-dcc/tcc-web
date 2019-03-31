@@ -3,12 +3,16 @@ package br.ufjf.tcc.business;
 import java.io.File;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
+import org.joda.time.DateTime;
 
 import br.ufjf.tcc.library.ConfHandler;
 import br.ufjf.tcc.model.CalendarioSemestre;
 import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.model.Participacao;
+import br.ufjf.tcc.model.Prazo;
 import br.ufjf.tcc.model.TCC;
 import br.ufjf.tcc.model.Usuario;
 import br.ufjf.tcc.persistent.impl.TCCDAO;
@@ -415,5 +419,76 @@ public class TCCBusiness {
 			return true;
 		return false;
 		
+	}
+	
+	public boolean isTarefasDentroDoPrazo(TCC tcc) {
+		boolean tarefasDentroDoPrazo = true;
+		
+		DateTime diaHoje = new DateTime(new Date());
+		int ultimoPrazoPassado = -1; // caso nenhum prazo tenha passado			
+		
+		Curso curso = tcc.getAluno().getCurso();		
+		CalendarioSemestre calendarioAtual = new CalendarioSemestreBusiness().getCurrentCalendarByCurso(curso);
+		
+		if (calendarioAtual != null) {
+			List<Prazo> prazos = calendarioAtual.getPrazos();
+			
+			for (int i = prazos.size() - 1; i >= 0; i--) {
+				if (diaHoje.isAfter(new DateTime(prazos.get(i)
+						.getDataFinal()))) {
+					ultimoPrazoPassado = i;
+					break;
+				}
+			}
+			
+			switch (ultimoPrazoPassado) {
+				case Prazo.PRAZO_PROJETO :
+					if (isProjetoIncompleto(tcc)) {
+						tarefasDentroDoPrazo = false;
+					}
+					break;
+					
+				case Prazo.ENTREGA_TCC_BANCA :
+					if (isProjetoIncompleto(tcc) || isProjetoAguardandoAprovacao(tcc)) {
+						tarefasDentroDoPrazo = false;
+					}
+					break;					
+					
+				case Prazo.ENTREGA_FORM_BANCA :
+					if (isProjetoIncompleto(tcc) || isProjetoAguardandoAprovacao(tcc)) {
+						tarefasDentroDoPrazo = false;
+					}
+					break;
+					
+				case Prazo.DEFESA :
+					if (isProjetoIncompleto(tcc) || isProjetoAguardandoAprovacao(tcc)) {
+						tarefasDentroDoPrazo = false;
+					}
+					break;
+					
+				case Prazo.ENTREGA_ATA_DEF :
+					if (!tcc.isEntregouDoc()) {
+						tarefasDentroDoPrazo = false;
+					}
+					break;
+					
+				case Prazo.ENTREGA_FINAL :
+					if (!tcc.isTrabFinal()) {
+						tarefasDentroDoPrazo = false;
+					}
+					break;
+					
+				case Prazo.FIM_SEMESTRE :
+					if (!tcc.isTrabFinal()) {
+						tarefasDentroDoPrazo = false;
+					}
+					break;				
+					
+				default:
+					tarefasDentroDoPrazo = true;
+			}
+		}
+		
+		return tarefasDentroDoPrazo;
 	}
 }

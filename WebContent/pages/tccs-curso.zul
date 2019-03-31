@@ -107,7 +107,8 @@
 			<template name="lista">
 				<row xmlns:w="client"
 					w:onClick="visualzarTCC(${each.idTCC});"
-					tooltip="${forEachStatus.index}, position=at_pointer">
+					tooltip="${forEachStatus.index}, position=at_pointer"
+					style="@load(!each.tarefasDentroDoPrazo ? 'text-decoration: line-through;' : '')">
 					<div>
 						<label value="@load(each.dataApresentacao eq null ? '' : vm.sdf.format(each.dataApresentacao).toString().substring(0,16))" />
 						<popup id="${forEachStatus.index}">

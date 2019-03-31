@@ -243,7 +243,6 @@ public class TCC implements Serializable,Comparable<TCC> {
 	
 	@Column(name = "qtDownloads", nullable = false) 
 	private int qtDownloads;
-	
 
 	public TCC() {
 
@@ -525,4 +524,8 @@ public class TCC implements Serializable,Comparable<TCC> {
 		return getParticipacoes()!=null && getParticipacoes().size() >= 3;
 	}
 	
+	public boolean isTarefasDentroDoPrazo()
+	{
+		return (new TCCBusiness()).isTarefasDentroDoPrazo(this);
+	}
 }
