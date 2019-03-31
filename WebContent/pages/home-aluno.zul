@@ -45,10 +45,10 @@
 					<row>
 						<label
 							onCreate="@command('formatDate', dataFinal=each.dataFinal, label=self)"
-							style="@load(each.tipo eq vm.currentPrazo ? 'font-weight:bold;' : (each.tipo lt vm.currentPrazo ? 'color:#FF3333' : ''))" />
+							style="@load(each.tipo eq vm.currentPrazo ? 'color:#337AB7;' : (each.tipo lt vm.currentPrazo ? 'color:#D3D3D3' : ''))" />
 						<label
 							onCreate="@command('getDescription', tipo=each.tipo, label=self)"
-							style="@load(each.tipo eq vm.currentPrazo ? 'font-weight:bold;' : (each.tipo lt vm.currentPrazo ? 'color:#FF3333' : ''))" />
+							style="@load(each.tipo eq vm.currentPrazo ? 'color:#337AB7;' : (each.tipo lt vm.currentPrazo ? 'color:#D3D3D3' : ''))" />
 					</row>
 				</template>
 			</grid>

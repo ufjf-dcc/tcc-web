@@ -5,10 +5,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.DateTime;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
@@ -21,10 +23,13 @@ import org.zkoss.zul.Window;
 
 import br.ufjf.tcc.business.AvisoBusiness;
 import br.ufjf.tcc.business.CursoBusiness;
+import br.ufjf.tcc.business.PrazoBusiness;
 import br.ufjf.tcc.business.QuestionarioBusiness;
 import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.model.Aviso;
+import br.ufjf.tcc.model.CalendarioSemestre;
 import br.ufjf.tcc.model.Curso;
+import br.ufjf.tcc.model.Prazo;
 import br.ufjf.tcc.model.Questionario;
 import br.ufjf.tcc.model.TCC;
 import br.ufjf.tcc.model.Usuario;
@@ -39,6 +44,9 @@ public class HomeProfessorController extends CommonsController {
 			showAll = false;
 	private List<Aviso> avisos;
 	private Aviso aviso = new Aviso();
+	private List<Prazo> prazos;
+	private int currentPrazo = 0;
+	private PrazoBusiness prazoBusiness = new PrazoBusiness();
 
 	/*
 	 * Pega todas as TCCs em que o Prof/Coord tem Participação e verifica se o
@@ -70,9 +78,10 @@ public class HomeProfessorController extends CommonsController {
 				tccs.add(tcc);
 
 		filterTccs = tccs;
-
-		currentCalendarExists = getCurrentCalendar() != null;
-		if (getCurrentCalendar() != null) {
+		
+		CalendarioSemestre currentCalendar = getCurrentCalendar();
+		currentCalendarExists = currentCalendar != null;
+		if (currentCalendarExists) {
 			currentQuestionary = new QuestionarioBusiness()
 					.getCurrentQuestionaryByCurso(getUsuario().getCurso());
 
@@ -81,8 +90,30 @@ public class HomeProfessorController extends CommonsController {
 				currentQuestionaryUsed = new QuestionarioBusiness()
 						.isQuestionaryUsed(currentQuestionary);
 			}
-		}
+			
+			prazos = getCurrentCalendar().getPrazos();
+			
+			DateTime currentDay = new DateTime(new Date());
 
+			for (int i = prazos.size() - 1; i >= 0; i--)
+				if (currentDay.isAfter(new DateTime(prazos.get(i)
+						.getDataFinal()))) {
+					currentPrazo = i + 1;
+					break;
+				}
+		}
+	}
+	
+	public List<Prazo> getPrazos() {
+		return prazos;
+	}
+	
+	public void setPrazos(List<Prazo> prazos) {
+		this.prazos = prazos;
+	}
+	
+	public int getCurrentPrazo() {
+		return currentPrazo;
 	}
 
 	public List<Aviso> getAvisos() {
@@ -296,5 +327,17 @@ public class HomeProfessorController extends CommonsController {
 	public void showTCC(@BindingParam("tcc") TCC tcc) {
 		Executions.sendRedirect("/pages/visualiza.zul?id=" + tcc.getIdTCC());
 	}
+	
+	@Command
+	public void formatDate(@BindingParam("dataFinal") Date dataFinal,
+			@BindingParam("label") Label label) {
+		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+		label.setValue(df.format(dataFinal));
+	}
 
+	@Command
+	public void getDescription(@BindingParam("tipo") int type,
+			@BindingParam("label") Label label) {
+		label.setValue(prazoBusiness.getDescription(type));
+	}
 }
