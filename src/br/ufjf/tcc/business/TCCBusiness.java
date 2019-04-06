@@ -448,17 +448,11 @@ public class TCCBusiness {
 					}
 					break;
 					
-				case Prazo.ENTREGA_TCC_BANCA :
+				case Prazo.ENTREGA_BANCA :
 					if (isProjetoIncompleto(tcc) || isProjetoAguardandoAprovacao(tcc)) {
 						tarefasDentroDoPrazo = false;
 					}
 					break;					
-					
-				case Prazo.ENTREGA_FORM_BANCA :
-					if (isProjetoIncompleto(tcc) || isProjetoAguardandoAprovacao(tcc)) {
-						tarefasDentroDoPrazo = false;
-					}
-					break;
 					
 				case Prazo.DEFESA :
 					if (isProjetoIncompleto(tcc) || isProjetoAguardandoAprovacao(tcc)) {
@@ -466,14 +460,8 @@ public class TCCBusiness {
 					}
 					break;
 					
-				case Prazo.ENTREGA_ATA_DEF :
-					if (!tcc.isEntregouDoc()) {
-						tarefasDentroDoPrazo = false;
-					}
-					break;
-					
 				case Prazo.ENTREGA_FINAL :
-					if (!tcc.isTrabFinal()) {
+					if (!tcc.isEntregouDoc() || !tcc.isTrabFinal()) {
 						tarefasDentroDoPrazo = false;
 					}
 					break;
