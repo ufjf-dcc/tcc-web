@@ -8,16 +8,20 @@ import java.util.List;
 
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
+import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zhtml.Filedownload;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Div;
+import org.zkoss.zul.Grid;
 import org.zkoss.zul.Iframe;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Window;
 
 import br.ufjf.tcc.business.ParticipacaoBusiness;
 import br.ufjf.tcc.business.PerguntaBusiness;
@@ -29,6 +33,7 @@ import br.ufjf.tcc.library.FileManager;
 import br.ufjf.tcc.library.SessionManager;
 import br.ufjf.tcc.mail.Email;
 import br.ufjf.tcc.mail.EmailBuilder;
+import br.ufjf.tcc.model.CalendarioSemestre;
 import br.ufjf.tcc.model.Participacao;
 import br.ufjf.tcc.model.Pergunta;
 import br.ufjf.tcc.model.Resposta;
@@ -49,6 +54,7 @@ public class VisualizaTCCController extends CommonsController {
 	private boolean exibeBaixarTrabExtra;
 	private boolean possuiBanca ;
 	private boolean exibirChave ;
+	private Button btnAtualizarTCC;
 
 	public String getPageTitle() {
 		return pageTitle;
@@ -59,26 +65,27 @@ public class VisualizaTCCController extends CommonsController {
 	}
 
 	@Init
-	public void init() {
-		
-		
-		
-		String tccId = Executions.getCurrent().getParameter("id");
+	public void init(@ExecutionArgParam("id") int id, @ExecutionArgParam("btnAtualizarTCC") Button btnAtualizarTCC) {
+		Integer tccId = id;
+		this.btnAtualizarTCC = btnAtualizarTCC;
 
 		if (tccId != null) {
 			TCCBusiness tccBusiness = new TCCBusiness();
-			tcc = tccBusiness.getTCCById(Integer.parseInt(tccId));
+			tcc = tccBusiness.getTCCById(tccId);
 		}
+		
 		if(tcc.getParticipacoes().isEmpty())
 			possuiBanca = false;
 		else
 			possuiBanca=true;
+		
 		this.exibirBaixarProjeto = exibirBaixarProjeto();
 		this.exibirTrabalhoBanca = exibirTrabalho();
 		this.exibirBaixarTrabalhoBanca = exibirBaixarTrabalhoBanca();
 		this.exibeBaixarProjExtra = exibirBaixarProjetoExtra();
 		this.exibeBaixarTrabExtra = exibirBaixarTrabalhoExtra();
 		this.exibirChave = exibirChave();
+		
 		if (tcc != null && canViewTCC()) {
 			if (getUsuario() != null && checkLogin()) {
 				if (canAnswer) {
@@ -86,7 +93,7 @@ public class VisualizaTCCController extends CommonsController {
 							.getQuestionsByQuestionary(new QuestionarioBusiness()
 									.getCurrentQuestionaryByCurso(tcc
 											.getAluno().getCurso()));
-
+					
 					Participacao p = null;
 					List<Participacao> participacoes = new ParticipacaoBusiness().getParticipacoesByUser(getUsuario());
 					for (Participacao aux : participacoes) {
@@ -409,7 +416,7 @@ public class VisualizaTCCController extends CommonsController {
 	
 	@SuppressWarnings({"unchecked","rawtypes"})
 	@Command
-	public void finalizaProjeto()
+	public void finalizaProjeto(@BindingParam("window") final Window window)
 	{
 		Messagebox.show("Você tem certeza que deseja validar esse projeto?", "Confirmação", Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new org.zkoss.zk.ui.event.EventListener() {
 		    public void onEvent(Event evt) throws InterruptedException {
@@ -434,7 +441,13 @@ public class VisualizaTCCController extends CommonsController {
 						inserirDestinatarios(alunos, emailBuilder);
 						enviarEmail(emailBuilder);
 						SessionManager.setAttribute("trabalhos_semestre",true);
-						Executions.sendRedirect("/pages/tccs-curso.zul");
+						//Executions.sendRedirect("/pages/tccs-curso.zul");
+						
+						if (btnAtualizarTCC != null)
+							Events.sendEvent(new Event("onClick", btnAtualizarTCC));
+						
+						if (window != null)
+							window.detach();
 					}
 					else
 						Messagebox.show("O projeto não esta completo");
@@ -446,7 +459,7 @@ public class VisualizaTCCController extends CommonsController {
 	
 	@SuppressWarnings({"unchecked", "rawtypes"})
 	@Command
-	public void finalizaTrabalho()
+	public void finalizaTrabalho(@BindingParam("window") final Window window)
 	{
 		Messagebox.show("Você tem certeza que deseja finalizar esse Trabalho?\nApós a aprovação, o trabalho será publicado para acesso público", "Confirmação", Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new org.zkoss.zk.ui.event.EventListener() {
 		    public void onEvent(Event evt) throws InterruptedException {
@@ -474,7 +487,13 @@ public class VisualizaTCCController extends CommonsController {
 						inserirDestinatarios(alunos, emailBuilder);
 						enviarEmail(emailBuilder);
 						SessionManager.setAttribute("trabalhos_semestre",true);
-						Executions.sendRedirect("/pages/tccs-curso.zul");
+						//Executions.sendRedirect("/pages/tccs-curso.zul");
+						
+						if (btnAtualizarTCC != null)
+							Events.sendEvent(new Event("onClick", btnAtualizarTCC));
+						
+						if (window != null)
+							window.detach();
 		        	}
 		        	else
 						Messagebox.show("O projeto não esta completo");

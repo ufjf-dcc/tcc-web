@@ -26,6 +26,18 @@ tr.z-row td.z-row-inner {
 	cursor: pointer;
 }
 
+.trab{
+	background: -webkit-linear-gradient(#08c, #2E2EFE);
+	background: -o-linear-gradient(#08c, #2E2EFE);
+	background: -moz-linear-gradient(#08c, #2E2EFE);
+	background: linear-gradient(#08c, #2E2EFE);
+	color:white;
+}
+		
+.trab:hover{
+	color:black;
+}
+
 .publicList .z-image {
 	padding-left: 15px; 
 	cursor:pointer;
