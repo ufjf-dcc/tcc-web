@@ -29,6 +29,7 @@ import br.ufjf.tcc.library.FileManager;
 import br.ufjf.tcc.library.SessionManager;
 import br.ufjf.tcc.mail.Email;
 import br.ufjf.tcc.mail.EmailBuilder;
+import br.ufjf.tcc.mail.EnviadorEmailCartaParticipacaoBanca;
 import br.ufjf.tcc.model.Participacao;
 import br.ufjf.tcc.model.Pergunta;
 import br.ufjf.tcc.model.Resposta;
@@ -473,6 +474,37 @@ public class VisualizaTCCController extends CommonsController {
 						alunos.add(tcc.getAluno());
 						inserirDestinatarios(alunos, emailBuilder);
 						enviarEmail(emailBuilder);
+						
+				//		EnviadorEmailCartaParticipacaoBanca cartasParticipacao = new EnviadorEmailCartaParticipacaoBanca();
+				//		emailBuilder = cartasParticipacao.gerarEmail(tcc, "Aprovado");
+						
+						for(Participacao p : tcc.getParticipacoes()) {
+							String nomeMembro = p.getProfessor().getNomeUsuario();
+							emailBuilder = new EmailBuilder(true).comTitulo("[TCC_WEB] Carta de participação da banca");
+							emailBuilder.appendMensagem("Prezado(a) " + nomeMembro);
+							emailBuilder.appendMensagem("Gostaríamos de agradecer, em nome do curso " + tcc.getAluno().getCurso().getNomeCurso() + "a sua participação como");
+							emailBuilder.appendMensagem("Membro em Banca Examinadora do Trabalho de Conclusão de Curso, conforme as especificações: ");
+							emailBuilder.appendMensagem("Candidato: " + tcc.getAluno().getNomeUsuario());
+							emailBuilder.appendMensagem("Orientador: " + tcc.getOrientador().getNomeUsuario());
+							emailBuilder.appendMensagem("Coorientador: " + tcc.getCoOrientador().getNomeUsuario());
+							emailBuilder.appendMensagem("Titulo: " + tcc.getNomeTCC());
+							emailBuilder.appendMensagem("Data da defesa (data): " + tcc.getDataApresentacao());
+							emailBuilder.appendMensagem("Banca Examinadora: ");
+							for(Participacao membros : tcc.getParticipacoes()) {
+								emailBuilder.appendMensagem(p.getProfessor().getNomeUsuario());
+							}
+							emailBuilder.appendMensagem("Atensiosamente,");							
+							
+							
+							// TODO: Anexar pdf ao email, ou definir modelo da carta de participação no corpo do email
+							
+							List<Usuario> destinatarios = new ArrayList<>();
+							destinatarios.add(p.getProfessor());				
+							inserirDestinatarios(destinatarios, emailBuilder);
+							enviarEmail(emailBuilder);
+						}
+						
+						
 						SessionManager.setAttribute("trabalhos_semestre",true);
 						Executions.sendRedirect("/pages/tccs-curso.zul");
 		        	}

@@ -42,7 +42,7 @@ public class Email {
 			else
 				message.setText(builder.getMensagem());
 
-			Transport.send(message); // Método para enviar a mensagem criada
+			//Transport.send(message); // Método para enviar a mensagem criada
 			System.out.println("Email enviado com sucesso!!\n\n");
 
 		} catch (MessagingException e) {
