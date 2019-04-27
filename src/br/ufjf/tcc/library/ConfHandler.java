@@ -8,6 +8,10 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
 import org.apache.commons.io.IOUtils;
 
 public class ConfHandler {
@@ -18,8 +22,12 @@ public class ConfHandler {
 		try {
 			//InputStream inputStream = new FileInputStream("/tcc-config/config.txt");
 			InputStream inputStream = new FileInputStream("C:\\dcc-config\\tcc\\config.txt");
+			Context env = (Context) new InitialContext().lookup("java:comp/env");
+			final String configPath = (String) env.lookup("config-path");
+			
 	        String arquivo = IOUtils.toString(inputStream);
-			confs = new HashMap<String, String>();
+			
+	        confs = new HashMap<String, String>();
 			Pattern patternConf = Pattern.compile("^([A-Z]+\\.[A-Z]+) = (.*)$", Pattern.MULTILINE);
 			Matcher conf = patternConf.matcher(arquivo);
 			while (conf.find()) {
@@ -29,6 +37,9 @@ public class ConfHandler {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (NamingException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

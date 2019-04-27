@@ -119,9 +119,9 @@ public class UsuarioBusiness {
 
 	// comunicação com o UsuarioDAO
 	public boolean login(String login, String password) {
-		//return loginIntegra(login, password);
+		return loginIntegra(login, password);
 
-		return loginTeste();
+		//return loginTeste();
 	}
 
 	private boolean loginIntegra(String login, String password) {
@@ -137,8 +137,8 @@ public class UsuarioBusiness {
 				users = usuarioDAO.getByMatricula(integra.getProfiles());
 				usuarioIntegra = true;
 				
-			} catch (WsException_Exception e) {
-				errors.add(e.getFaultInfo().getErrorUserMessage());
+			} catch (Exception e) {
+				errors.add(e.getMessage());
 				return false;
 			}
 		} else {
