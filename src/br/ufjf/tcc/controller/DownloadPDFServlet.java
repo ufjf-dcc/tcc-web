@@ -23,39 +23,42 @@ public class DownloadPDFServlet extends HttpServlet {
 
 	public void service(HttpServletRequest req, HttpServletResponse res)
 			throws ServletException, IOException {
-
 		String tccId = req.getParameter("id");
-
-		if (tccId != null) {
+		
+		if (tccId != null && !tccId.isEmpty() && tccId.matches("[0-9]+")) {
 			TCCBusiness tccBusiness = new TCCBusiness();
 			tcc = tccBusiness.getTCCById(Integer.valueOf(tccId));
 
-			tcc.setQtDownloads(tcc.getQtDownloads()+1);
-			tccBusiness.edit(tcc);
-		}
-
-		
-		File file = FileManager.getFile(tcc.getArquivoTCCFinal());
-		
-		if(file==null){
-			try{
-				req.getRequestDispatcher("index.jsp?").forward(req, res);
-			}catch(Exception e2){
-				e2.printStackTrace();
+			if (tcc != null) {
+				tcc.setQtDownloads(tcc.getQtDownloads()+1);
+				tccBusiness.edit(tcc);
+				
+				File file = FileManager.getFile(tcc.getArquivoTCCFinal());
+				
+				if(file != null) {
+					byte[] bytes = null;
+					try {
+						bytes = fileToByte(file);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					
+					res.setContentLength(bytes.length);
+					res.setHeader("Content-Disposition", "attachment; filename=\""+tcc.getNomeTCC()+".pdf"+"\";");
+					res.getOutputStream().write(bytes);
+					
+					return;
+				}	
 			}
-			return;		
-		}
-		byte[] bytes = null;
-		try {
-			bytes = fileToByte(file);
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 		
-		res.setContentLength(bytes.length);
-		res.setHeader("Content-Disposition", "attachment; filename=\""+tcc.getNomeTCC()+".pdf"+"\";");
-		res.getOutputStream().write(bytes);
-
+		try {
+			req.getRequestDispatcher("index.jsp?").forward(req, res);
+		} catch(Exception e2){
+			e2.printStackTrace();
+		}
+		
+		return;	
 	}
 
 	public static byte[] fileToByte(File imagem) throws Exception {

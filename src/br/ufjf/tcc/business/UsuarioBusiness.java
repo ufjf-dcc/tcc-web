@@ -134,8 +134,10 @@ public class UsuarioBusiness {
 		if (login.matches("[0-9]+")) {
 			try {
 				integra.doLogin(login, this.encripta(password, "md5"));
-				users = usuarioDAO.getByMatricula(integra.getProfiles());
-				usuarioIntegra = true;
+				if (!integra.getProfiles().isEmpty()) {
+					users = usuarioDAO.getByMatricula(integra.getProfiles());
+					usuarioIntegra = true;
+				}
 				
 			} catch (Exception e) {
 				errors.add(e.getMessage());
