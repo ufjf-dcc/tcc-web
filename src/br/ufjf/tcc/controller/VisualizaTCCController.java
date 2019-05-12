@@ -35,6 +35,7 @@ import br.ufjf.tcc.model.Pergunta;
 import br.ufjf.tcc.model.Resposta;
 import br.ufjf.tcc.model.TCC;
 import br.ufjf.tcc.model.Usuario;
+import br.ufjf.tcc.pdfHandle.CartaParticipacaoBanca;
 
 public class VisualizaTCCController extends CommonsController {
 	private TCC tcc = null;
@@ -486,17 +487,22 @@ public class VisualizaTCCController extends CommonsController {
 							emailBuilder.appendMensagem("Membro em Banca Examinadora do Trabalho de Conclusão de Curso, conforme as especificações: ");
 							emailBuilder.appendMensagem("Candidato: " + tcc.getAluno().getNomeUsuario());
 							emailBuilder.appendMensagem("Orientador: " + tcc.getOrientador().getNomeUsuario());
-							emailBuilder.appendMensagem("Coorientador: " + tcc.getCoOrientador().getNomeUsuario());
+							if(tcc.getCoOrientador() != null)
+								emailBuilder.appendMensagem("Coorientador: " + tcc.getCoOrientador().getNomeUsuario());
 							emailBuilder.appendMensagem("Titulo: " + tcc.getNomeTCC());
 							emailBuilder.appendMensagem("Data da defesa (data): " + tcc.getDataApresentacao());
 							emailBuilder.appendMensagem("Banca Examinadora: ");
 							for(Participacao membros : tcc.getParticipacoes()) {
-								emailBuilder.appendMensagem(p.getProfessor().getNomeUsuario());
+								emailBuilder.appendMensagem(membros.getProfessor().getNomeUsuario());
 							}
 							emailBuilder.appendMensagem("Atensiosamente,");							
 							
-							
-							// TODO: Anexar pdf ao email, ou definir modelo da carta de participação no corpo do email
+							 CartaParticipacaoBanca cartaParticipacao = new CartaParticipacaoBanca();
+							 cartaParticipacao.gerarCartaParticipacao(tcc.getAluno().getCurso().getNomeCurso(), nomeMembro, tcc.getAluno().getNomeUsuario(), tcc.getOrientador().getNomeUsuario(), tcc.getIdTCC(),
+									 tcc.getCoOrientador().getNomeUsuario(), tcc.getNomeTCC(), tcc.getDataApresentacao().toString(), tcc.getParticipacoes(), p.getProfessor().getMatricula());
+							 
+							// TODO: Anexar pdf ao email
+							emailBuilder.setFileName(cartaParticipacao.obterNomeArquivo());
 							
 							List<Usuario> destinatarios = new ArrayList<>();
 							destinatarios.add(p.getProfessor());				

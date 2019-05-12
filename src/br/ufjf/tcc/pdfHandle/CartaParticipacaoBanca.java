@@ -1,31 +1,74 @@
 package br.ufjf.tcc.pdfHandle;
 
-import br.ufjf.tcc.library.ConfHandler;
-import br.ufjf.tcc.model.TCC;
-
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.List;
 
-import com.itextpdf.text.pdf.*;
+import com.lowagie.text.pdf.AcroFields;
+import com.lowagie.text.pdf.PdfReader;
+import com.lowagie.text.pdf.PdfStamper;
+
+import br.ufjf.tcc.library.ConfHandler;
+import br.ufjf.tcc.model.Participacao;
 
 public class CartaParticipacaoBanca {
-
-	private TCC tcc;
-	private String template;
-	private FileOutputStream saida;
-	private PdfReader leitor;
-	private PdfStamper stamper;
-	private PdfContentByte over;
-	private AcroFields form;
-	
+	private static final String PASTA_ARQUIVOS_TEMP = ConfHandler.getConf("FILE.PATH") + "arquivosTemporarios/";
+	private static final String PASTA_COM_TEMPLATE = ConfHandler.getConf("FILE.PATH") + "templatePDF/";
 	private static final String TEMPLATE = "CartaParticipacaoBanca";
 	
-	public static final String EXTENSAO_PDF = ".pdf";
-	public static final String PASTA_ARQUIVOS_TEMP = ConfHandler.getConf("FILE.PATH") + "arquivosTemporarios/";
-	public static final String PASTA_COM_TEMPLATE = ConfHandler.getConf("FILE.PATH") + "templatePDF/";
+	private String nomeArquivo;
 	
+	public void gerarCartaParticipacao(String nomeCurso, String nomeMembroDaBanca, String nomeAluno, String nomeOrientador, int idTCC,
+			String nomeCoorientador, String tituloTrabalho, String dataDefesa, List<Participacao> membrosDaBanca, String siapeProfessor)
+	{
+		String template = PASTA_COM_TEMPLATE + TEMPLATE + ".pdf";
+		String Arquivo_Saida = PASTA_ARQUIVOS_TEMP + TEMPLATE + "-" + idTCC + "-" + siapeProfessor + ".pdf";
+		this.nomeArquivo = TEMPLATE + "-" + idTCC + "-" + siapeProfessor + ".pdf";
+		try {
+			FileOutputStream saida = new FileOutputStream(Arquivo_Saida);
+			PdfReader leitor = new PdfReader(new PdfReader(new FileInputStream(template)));
+			PdfStamper stamper = new PdfStamper(leitor, saida);
+			AcroFields form = stamper.getAcroFields();
+			
+			form.setField("nomeCursoNoCabecalho", nomeCurso);
+			form.setField("nomeMembroDaBanca", nomeMembroDaBanca);
+			form.setField("nomeDoCursoNoTexto", nomeCurso);
+			form.setField("nomeAluno", nomeAluno);
+			form.setField("nomeOrientador", nomeOrientador);
+			form.setField("Coorientador", nomeCoorientador);
+			form.setField("tituloTrabalho", tituloTrabalho);
+			form.setField("dataDefesa", dataDefesa);
+			//form.setField("nomeCoordenadorDoCurso", nomeCoordenadorCurso);
+			//form.setField("nomeDoCursoNaAssinatura", nomeCurso);
+			CertificacaoDigital certificacaoDigital = new CertificacaoDigital();
+			System.out.println("GerarCertificadoDigital");
+			form.setField("certificadoDigital", certificacaoDigital.gerarCertificadoDigital());
+			
+			String NomeMembrosBanca = "";
+			
+			for(Participacao p : membrosDaBanca)
+			{
+				NomeMembrosBanca += "\n\n" + p.getProfessor().getNomeUsuario();
+			}
+			
+			form.setField("membrosDaBanca", NomeMembrosBanca);
+			
+			stamper.setFormFlattening(true);
+			stamper.close();
+			saida.close();
+			leitor.close();
+			
+			System.out.println("Gerou Carta Participacao");
+		} catch (Exception e) {
+			System.out.println("Ocorreu algum problema ao gerar o pdf");
+			e.getMessage();
+			e.printStackTrace();
+		}
+	}
 	
-	public Ata
-	
+	public String obterNomeArquivo() {
+		if(this.nomeArquivo != null)
+			return this.nomeArquivo;
+		return "";
+	}
 }
