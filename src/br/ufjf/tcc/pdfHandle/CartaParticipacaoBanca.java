@@ -1,5 +1,6 @@
 package br.ufjf.tcc.pdfHandle;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.List;
@@ -18,8 +19,11 @@ public class CartaParticipacaoBanca {
 	
 	private String nomeArquivo;
 	
+	public CartaParticipacaoBanca() {
+	}
+	
 	public void gerarCartaParticipacao(String nomeCurso, String nomeMembroDaBanca, String nomeAluno, String nomeOrientador, int idTCC,
-			String nomeCoorientador, String tituloTrabalho, String dataDefesa, List<Participacao> membrosDaBanca, String siapeProfessor)
+			String nomeCoorientador, String tituloTrabalho, String dataDefesa, List<Participacao> membrosDaBanca, String siapeProfessor, String certificadoDigital)
 	{
 		String template = PASTA_COM_TEMPLATE + TEMPLATE + ".pdf";
 		String Arquivo_Saida = PASTA_ARQUIVOS_TEMP + TEMPLATE + "-" + idTCC + "-" + siapeProfessor + ".pdf";
@@ -40,9 +44,7 @@ public class CartaParticipacaoBanca {
 			form.setField("dataDefesa", dataDefesa);
 			//form.setField("nomeCoordenadorDoCurso", nomeCoordenadorCurso);
 			//form.setField("nomeDoCursoNaAssinatura", nomeCurso);
-			CertificacaoDigital certificacaoDigital = new CertificacaoDigital();
-			System.out.println("GerarCertificadoDigital");
-			form.setField("certificadoDigital", certificacaoDigital.gerarCertificadoDigital());
+			form.setField("certificadoDigital", certificadoDigital);
 			
 			String NomeMembrosBanca = "";
 			
@@ -70,5 +72,17 @@ public class CartaParticipacaoBanca {
 		if(this.nomeArquivo != null)
 			return this.nomeArquivo;
 		return "";
+	}
+	
+	public void apagarArquivo() {
+		deleteFile(PASTA_ARQUIVOS_TEMP + this.nomeArquivo);
+	}
+	
+	private void deleteFile(String path){
+		File file = new File(path);
+		if(file.exists()){
+			if(file.delete())
+				System.out.println(path+" - DELETADO");
+		}
 	}
 }

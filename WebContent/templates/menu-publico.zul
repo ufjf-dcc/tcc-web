@@ -5,6 +5,8 @@
 			style="text-align: center;">
 			<menuitem label="Universidade Federal de Juiz de Fora"
 				href="http://www.ufjf.br/" target="_blank" />
+			<menuitem label="Validar Certificado Digital"
+				href="/pages/autenticacao.zul" />
 			<menuitem label="Entrar no sistema"
 				onClick="@command('showForm', window=loginWin)"
 				style="float:right;" />

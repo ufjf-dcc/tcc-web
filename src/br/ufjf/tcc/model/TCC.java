@@ -244,7 +244,9 @@ public class TCC implements Serializable,Comparable<TCC> {
 	@Column(name = "qtDownloads", nullable = false) 
 	private int qtDownloads;
 	
-
+	@Column(name = "certificadoDigital", length = 255, nullable = true)
+	private String certificadoDigital;
+	
 	public TCC() {
 
 	}
@@ -507,6 +509,14 @@ public class TCC implements Serializable,Comparable<TCC> {
 
 	public void setQtDownloads(int qtDownloads) {
 		this.qtDownloads = qtDownloads;
+	}
+	
+	public String getCertificadoDigital() {
+		return certificadoDigital;
+	}
+	
+	public void setCertificadoDigital(String certificadoDigital) {
+		this.certificadoDigital = certificadoDigital;
 	}
 	
 	public List<Usuario> getProfessoresParticipacoes() {

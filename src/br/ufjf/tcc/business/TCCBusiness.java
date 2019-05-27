@@ -154,6 +154,10 @@ public class TCCBusiness {
 		return tccDao.getTCCById(id);
 	}
 	
+	public TCC getTCCByCertificadoDigital(String certificadoDigital) {
+		return tccDao.getTCCByCertificadoDigital(certificadoDigital);
+	}
+	
 	public List<TCC> getTCCsByOrientador(Usuario user) {
 		return tccDao.getTCCsByOrientador(user);
 	}

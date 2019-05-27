@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Random;
 
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
@@ -461,6 +462,7 @@ public class VisualizaTCCController extends CommonsController {
 			        	tcc.setArquivoExtraTCCFinal(tcc.getArquivoExtraTCCBanca());
 			        	tcc.setArquivoTCCBanca(null);
 			        	tcc.setArquivoExtraTCCBanca(null);
+			        	tcc.setCertificadoDigital(gerarCertificadoDigital());
 			        	UsuarioBusiness ub = new UsuarioBusiness();
 						new TCCBusiness().edit(tcc);
 						tcc.getAluno().setAtivo(false);
@@ -476,38 +478,53 @@ public class VisualizaTCCController extends CommonsController {
 						inserirDestinatarios(alunos, emailBuilder);
 						enviarEmail(emailBuilder);
 						
-				//		EnviadorEmailCartaParticipacaoBanca cartasParticipacao = new EnviadorEmailCartaParticipacaoBanca();
-				//		emailBuilder = cartasParticipacao.gerarEmail(tcc, "Aprovado");
 						
 						for(Participacao p : tcc.getParticipacoes()) {
 							String nomeMembro = p.getProfessor().getNomeUsuario();
 							emailBuilder = new EmailBuilder(true).comTitulo("[TCC_WEB] Carta de participação da banca");
-							emailBuilder.appendMensagem("Prezado(a) " + nomeMembro);
-							emailBuilder.appendMensagem("Gostaríamos de agradecer, em nome do curso " + tcc.getAluno().getCurso().getNomeCurso() + "a sua participação como");
-							emailBuilder.appendMensagem("Membro em Banca Examinadora do Trabalho de Conclusão de Curso, conforme as especificações: ");
-							emailBuilder.appendMensagem("Candidato: " + tcc.getAluno().getNomeUsuario());
-							emailBuilder.appendMensagem("Orientador: " + tcc.getOrientador().getNomeUsuario());
+							emailBuilder.appendMensagem("Prezado(a) " + nomeMembro + " ");
+							emailBuilder.appendMensagem(" Gostaríamos de agradecer, em nome do curso " + tcc.getAluno().getCurso().getNomeCurso() + " a sua participação como ");
+							emailBuilder.appendMensagem(" Membro em Banca Examinadora do Trabalho de Conclusão de Curso, conforme as especificações: ");
+							emailBuilder.appendMensagem(" Candidato: " + tcc.getAluno().getNomeUsuario());
+							emailBuilder.appendMensagem(" Orientador: " + tcc.getOrientador().getNomeUsuario());
 							if(tcc.getCoOrientador() != null)
-								emailBuilder.appendMensagem("Coorientador: " + tcc.getCoOrientador().getNomeUsuario());
-							emailBuilder.appendMensagem("Titulo: " + tcc.getNomeTCC());
-							emailBuilder.appendMensagem("Data da defesa (data): " + tcc.getDataApresentacao());
-							emailBuilder.appendMensagem("Banca Examinadora: ");
+								emailBuilder.appendMensagem(" Coorientador: " + tcc.getCoOrientador().getNomeUsuario());
+							emailBuilder.appendMensagem(" Titulo: " + tcc.getNomeTCC());
+							emailBuilder.appendMensagem(" Data da defesa (data): " + tcc.getDataApresentacao());
+							emailBuilder.appendMensagem(" Banca Examinadora: ");
 							for(Participacao membros : tcc.getParticipacoes()) {
 								emailBuilder.appendMensagem(membros.getProfessor().getNomeUsuario());
 							}
-							emailBuilder.appendMensagem("Atensiosamente,");							
+							emailBuilder.appendMensagem(" Atensiosamente, ");							
 							
-							 CartaParticipacaoBanca cartaParticipacao = new CartaParticipacaoBanca();
-							 cartaParticipacao.gerarCartaParticipacao(tcc.getAluno().getCurso().getNomeCurso(), nomeMembro, tcc.getAluno().getNomeUsuario(), tcc.getOrientador().getNomeUsuario(), tcc.getIdTCC(),
-									 tcc.getCoOrientador().getNomeUsuario(), tcc.getNomeTCC(), tcc.getDataApresentacao().toString(), tcc.getParticipacoes(), p.getProfessor().getMatricula());
+							CartaParticipacaoBanca cartaParticipacao = new CartaParticipacaoBanca();								
+							try {
+								
+								
+								
+								String CoOrientador = "";
+								
+								
+								
+								if(tcc.getCoOrientador() == null)
+									CoOrientador = " "; 
+								else
+									CoOrientador = tcc.getCoOrientador().getNomeUsuario();
+								cartaParticipacao.gerarCartaParticipacao(tcc.getAluno().getCurso().getNomeCurso(), nomeMembro, tcc.getAluno().getNomeUsuario(), tcc.getOrientador().getNomeUsuario(), tcc.getIdTCC(),
+										CoOrientador, tcc.getNomeTCC(), tcc.getDataApresentacao().toString(), tcc.getParticipacoes(), p.getProfessor().getMatricula(), tcc.getCertificadoDigital());
+								emailBuilder.setFileName(cartaParticipacao.obterNomeArquivo());
 							 
-							// TODO: Anexar pdf ao email
-							emailBuilder.setFileName(cartaParticipacao.obterNomeArquivo());
+							} catch(Exception e) {
+								System.out.println("Exceção capturada ao gerar carta de participacao");
+								e.printStackTrace();
+							}
 							
 							List<Usuario> destinatarios = new ArrayList<>();
 							destinatarios.add(p.getProfessor());				
 							inserirDestinatarios(destinatarios, emailBuilder);
 							enviarEmail(emailBuilder);
+							
+							cartaParticipacao.apagarArquivo();
 						}
 						
 						
@@ -530,6 +547,25 @@ public class VisualizaTCCController extends CommonsController {
 		} catch (RuntimeException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public String gerarCertificadoDigital() {
+		char[] caracteres = { '1', '2', '3', '4', '5', '6', '7', '8', '9', '0',
+				'A', 'B', 'D', 'E', 'F' };
+		Random r = new Random();
+		StringBuffer certificado = new StringBuffer();
+		
+		for(int i = 0; i < 5; i++) {
+			for(int j = 0; j < 5; j++) {
+				certificado.append(caracteres[r.nextInt(caracteres.length)]);				
+			}
+			if(i == 4)
+				continue;
+			certificado.append('-');
+		}
+		
+		System.out.println("certificado: " + certificado.toString());
+		return certificado.toString();
 	}
 	
 	private void inserirDestinatarios(List<Usuario> usuarios, EmailBuilder builder) {

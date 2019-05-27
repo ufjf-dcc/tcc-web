@@ -131,6 +131,25 @@ public class TCCDAO extends GenericoDAO {
 
 		return resultado;
 	}
+	
+	public TCC getTCCByCertificadoDigital(String certificadoDigital) {
+		TCC resultado = null;
+		try {
+			Query query = getSession()
+					.createQuery(
+						"SELECT t FROM TCC AS t JOIN FETCH t.aluno AS a JOIN FETCH a.curso JOIN FETCH t.orientador LEFT JOIN FETCH t.coOrientador LEFT JOIN FETCH t.participacoes AS p LEFT JOIN FETCH p.professor WHERE t.certificadoDigital = :certificadoDigital"
+						);
+			query.setParameter("certificadoDigital", certificadoDigital);
+			
+			resultado = (TCC) query.uniqueResult();
+			
+			getSession().close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return resultado;
+	}
 
 	public List<TCC> getTCCsByOrientador(Usuario user) {
 		List<TCC> results = null;
