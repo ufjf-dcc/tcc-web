@@ -122,7 +122,7 @@ public class HomeAlunoController extends CommonsController {
 	public void action(@BindingParam("tipo") int tipo,
 			@BindingParam("window") Window window) {
 		switch (tipo) {
-		case Prazo.ENTREGA_TCC_BANCA:
+		case Prazo.ENTREGA_BANCA:
 			if (getUsuario().getTcc().size() != 0) {
 				Executions.sendRedirect("/pages/editor.zul");
 			} else {

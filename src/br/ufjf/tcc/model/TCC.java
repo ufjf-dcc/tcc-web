@@ -247,6 +247,7 @@ public class TCC implements Serializable,Comparable<TCC> {
 	@Column(name = "certificadoDigital", length = 255, nullable = true)
 	private String certificadoDigital;
 	
+
 	public TCC() {
 
 	}
@@ -535,4 +536,8 @@ public class TCC implements Serializable,Comparable<TCC> {
 		return getParticipacoes()!=null && getParticipacoes().size() >= 3;
 	}
 	
+	public boolean isTarefasDentroDoPrazo()
+	{
+		return (new TCCBusiness()).isTarefasDentroDoPrazo(this);
+	}
 }

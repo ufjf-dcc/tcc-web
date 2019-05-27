@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.ufjf.ice.integra3.ws.login.IWsLogin;
+import br.ufjf.ice.integra3.ws.login.IntegraSoapServiceException_Exception;
 import br.ufjf.ice.integra3.ws.login.Profile;
 import br.ufjf.ice.integra3.ws.login.WsLoginResponse;
 import br.ufjf.ice.integra3.ws.login.WsUserInfoResponse;
@@ -31,8 +32,11 @@ public class IntegraHandler {
 				profiles.add(profile.getMatricula());
 			}
 		}
+		catch(IntegraSoapServiceException_Exception integraEx) {
+			integraEx.printStackTrace();
+		}
 		catch(Exception ex) {
-			
+			ex.printStackTrace();
 		}
 	}
 
