@@ -215,12 +215,14 @@ public class VisualizaTCCController extends CommonsController {
 		if(thisBtn!=null)
 		thisBtn.setStyle("background: -webkit-linear-gradient(#08c, #2E2EFE);background: -o-linear-gradient(#08c, #2E2EFE);background: -moz-linear-gradient(#08c, #2E2EFE);background: linear-gradient(#08c, #2E2EFE);color:white");
 		
-		InputStream is;
+		InputStream is = null;
+		
 		if (tcc.getArquivoTCCFinal() != null)
 			is = FileManager.getFileInputSream(tcc.getArquivoTCCFinal());
 		else if (tcc.getArquivoTCCBanca() != null)
 			is = FileManager.getFileInputSream(tcc.getArquivoTCCBanca());
-		else
+		
+		if (is == null)
 			is = FileManager.getFileInputSream("modelo.pdf");
 
 		final AMedia amedia = new AMedia(tcc.getNomeTCC() + ".pdf", "pdf",

@@ -228,6 +228,7 @@
 								onUpload="@command('upload', button=self, evt=event)" />
 							<button hflex="1"
 								label="Selecionar arquivo extra..." upload="true,maxsize=204800"
+								visible="@load(not vm.project)"
 								onUpload="@command('extraUpload', button=self, evt=event)" />
 						</hlayout>
 					</vlayout>

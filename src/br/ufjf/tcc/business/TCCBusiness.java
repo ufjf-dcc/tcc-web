@@ -376,6 +376,23 @@ public class TCCBusiness {
 			return "Aprovado";
 	}
 	
+	public String getStatusCorridoTCC(TCC tcc)
+	{
+		if(isProjetoAguardandoAprovacao(tcc))
+			return "Projeto aguardando aprovação";
+		else
+		if(isProjetoIncompleto(tcc))
+			return "Projeto incompleto";
+		else
+		if(isTrabalhoAguardandoAprovacao(tcc))
+			return "Trabalho aguardando aprovação";
+		else
+		if(isTrabalhoIncompleto(tcc))
+			return "Trabalho incompleto";
+		else
+			return "Aprovado";
+	}
+	
 	public boolean excluitTCC(TCC tcc)
 	{
 		ParticipacaoBusiness PB = new ParticipacaoBusiness();

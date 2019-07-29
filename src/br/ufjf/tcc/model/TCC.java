@@ -449,6 +449,11 @@ public class TCC implements Serializable,Comparable<TCC> {
 		return (new TCCBusiness()).getStatusTCC(this);
 	}
 	
+	public String getStatusCorridoTCC()
+	{
+		return (new TCCBusiness().getStatusCorridoTCC(this));
+	}
+	
 	public int compareTo(TCC outroTcc){
 		if(this.getDataEnvioFinal()!=null && outroTcc.getDataEnvioFinal()!=null){
 			if(this.getDataEnvioFinal().before(outroTcc.getDataEnvioFinal()))
