@@ -526,7 +526,7 @@ public class VisualizaTCCController extends CommonsController {
 									CoOrientador = tcc.getCoOrientador().getNomeUsuario();
 								cartaParticipacao.gerarCartaParticipacao(tcc.getAluno().getCurso().getNomeCurso(), nomeMembro, tcc.getAluno().getNomeUsuario(), tcc.getOrientador().getNomeUsuario(), tcc.getIdTCC(),
 										CoOrientador, tcc.getNomeTCC(), tcc.getDataApresentacao().toString(), tcc.getParticipacoes(), p.getProfessor().getMatricula(), tcc.getCertificadoDigital());
-								emailBuilder.setFileName(cartaParticipacao.obterNomeArquivo());
+								//emailBuilder.setFileName(cartaParticipacao.obterNomeArquivo());
 							 
 							} catch(Exception e) {
 								System.out.println("Exceção capturada ao gerar carta de participacao");

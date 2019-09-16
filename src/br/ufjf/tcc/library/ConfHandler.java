@@ -20,11 +20,10 @@ public class ConfHandler {
 
 	private ConfHandler() {
 		try {
-			//InputStream inputStream = new FileInputStream("/tcc-config/config.txt");
-			InputStream inputStream = new FileInputStream("C:\\dcc-config\\tcc\\config.txt");
 			Context env = (Context) new InitialContext().lookup("java:comp/env");
 			final String configPath = (String) env.lookup("config-path");
 			
+			InputStream inputStream = new FileInputStream(configPath);
 	        String arquivo = IOUtils.toString(inputStream);
 			
 	        confs = new HashMap<String, String>();
