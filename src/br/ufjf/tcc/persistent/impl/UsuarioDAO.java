@@ -160,7 +160,6 @@ public class UsuarioDAO extends GenericoDAO {
 			getSession().close();
 			return usuarios;
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -180,7 +179,6 @@ public class UsuarioDAO extends GenericoDAO {
 			getSession().close();
 			return usuarios;
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

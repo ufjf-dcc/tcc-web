@@ -539,7 +539,6 @@ public class EditorTccController extends CommonsController {
 				try {
 					tccFile.close();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				tccFile = null;
@@ -555,7 +554,6 @@ public class EditorTccController extends CommonsController {
 				try {
 					extraFile.close();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				extraFile = null;

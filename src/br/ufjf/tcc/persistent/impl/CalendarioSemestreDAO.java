@@ -27,7 +27,6 @@ public class CalendarioSemestreDAO extends GenericoDAO {
 			getSession().close();
 			return currentCalendar;
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -47,7 +46,6 @@ public class CalendarioSemestreDAO extends GenericoDAO {
 			getSession().close();
 			return currentCalendar;
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -68,7 +66,6 @@ public class CalendarioSemestreDAO extends GenericoDAO {
 			getSession().close();
 			return currentCalendar;
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -92,7 +89,6 @@ public class CalendarioSemestreDAO extends GenericoDAO {
 			getSession().close();
 			return true;
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		

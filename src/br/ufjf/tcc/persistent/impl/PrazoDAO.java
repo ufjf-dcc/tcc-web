@@ -25,7 +25,6 @@ public class PrazoDAO extends GenericoDAO {
 			getSession().close();
 			return prazos;
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

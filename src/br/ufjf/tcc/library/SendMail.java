@@ -66,10 +66,8 @@ public class SendMail {
 			Transport.send(message);
 			return true;
 		} catch (AddressException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (MessagingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return false;
@@ -97,10 +95,8 @@ public class SendMail {
 			Transport.send(message);
 			return true;
 		} catch (AddressException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (MessagingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return false;
@@ -123,10 +119,8 @@ public class SendMail {
 			Transport.send(message);
 			return true;
 		} catch (AddressException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (MessagingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return false;
@@ -156,10 +150,8 @@ public class SendMail {
 			Transport.send(message);
 			return true;
 		} catch (AddressException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (MessagingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return false;

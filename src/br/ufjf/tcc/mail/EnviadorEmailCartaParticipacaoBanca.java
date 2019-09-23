@@ -24,7 +24,7 @@ public class EnviadorEmailCartaParticipacaoBanca extends EnviadorEmailChain {
 				emailBuilder.appendMensagem("Prezado(a) " + nomeMembro);
 				emailBuilder.appendMensagem("");
 				
-				// anexar pdf TODO: Anexar pdf ao email, ou definir modelo da carta de participação no corpo do email
+				// TODO: Anexar pdf ao email ou definir modelo da carta de participacao no corpo do email
 				
 				List<Usuario> destinatarios = new ArrayList<>();
 				destinatarios.add(p.getProfessor());				

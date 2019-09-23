@@ -38,7 +38,6 @@ public class ConfHandler {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (NamingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
