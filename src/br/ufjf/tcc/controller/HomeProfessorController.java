@@ -325,7 +325,12 @@ public class HomeProfessorController extends CommonsController {
 
 	@Command
 	public void showTCC(@BindingParam("tcc") TCC tcc) {
-		Executions.sendRedirect("/pages/visualiza.zul?id=" + tcc.getIdTCC());
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("id", tcc.getIdTCC());
+		
+		final Window window = (Window) Executions.createComponents(
+				"/pages/visualiza.zul", null, map);
+		window.doModal();
 	}
 	
 	@Command
