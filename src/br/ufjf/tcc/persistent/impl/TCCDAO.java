@@ -300,7 +300,7 @@ public class TCCDAO extends GenericoDAO {
 		try {
 			Query query = getSession()
 					.createSQLQuery(
-							"SELECT EXTRACT(YEAR FROM t.dataEnvioFinal) FROM TCC AS t WHERE t.dataEnvioFinal IS NOT NULL GROUP BY EXTRACT(YEAR FROM t.dataEnvioFinal) ORDER BY t.dataEnvioFinal DESC");
+							"SELECT EXTRACT(YEAR FROM t.dataEnvioFinal) FROM tcc AS t WHERE t.dataEnvioFinal IS NOT NULL GROUP BY EXTRACT(YEAR FROM t.dataEnvioFinal) ORDER BY t.dataEnvioFinal DESC");
 			
 			years.addAll(query.list());
 

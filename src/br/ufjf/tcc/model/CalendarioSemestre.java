@@ -23,7 +23,7 @@ import org.hibernate.annotations.GenericGenerator;
  * 
  */
 @Entity
-@Table(name = "CalendarioSemestre")
+@Table(name = "calendariosemestre")
 public class CalendarioSemestre implements Serializable {
 	public static final int PRAZO_ENVIO_TCC = 90;
 

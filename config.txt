@@ -12,11 +12,11 @@ HIBERNATE.DRIVE = com.mysql.jdbc.Driver
 HIBERNATE.DIALECT = org.hibernate.dialect.MySQLDialect
 
 
-HIBERNATE.DB = jdbc:mysql://localhost/tcc_web
+HIBERNATE.DB = jdbc:mysql://localhost/tcc_web_test
 
-HIBERNATE.USER = root
+HIBERNATE.USER = caio
 
-HIBERNATE.PASS = 1234
+HIBERNATE.PASS = admin
 
 
 

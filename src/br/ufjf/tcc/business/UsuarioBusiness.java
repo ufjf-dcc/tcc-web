@@ -286,6 +286,10 @@ public class UsuarioBusiness {
 		return usuarioDAO.getProfessoresECoordenadores();
 	}
 
+	public List<Usuario> getProfessoresECoordenadoresByDepartamento(Departamento departamento) {
+		return usuarioDAO.getProfessoresECoordenadoresByDepartamento(departamento);
+	}
+
 	public boolean editar(Usuario usuario) {
 		return usuarioDAO.editar(usuario);
 	}

@@ -24,7 +24,7 @@ import br.ufjf.tcc.business.TCCBusiness;
  * 
  */
 @Entity
-@Table(name = "TCC")
+@Table(name = "tcc")
 public class TCC implements Serializable,Comparable<TCC> {
 
 	private static final long serialVersionUID = 1L;

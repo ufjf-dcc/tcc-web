@@ -22,7 +22,7 @@ import org.hibernate.annotations.GenericGenerator;
  * 
  */
 @Entity
-@Table(name = "Usuario")
+@Table(name = "usuario")
 public class Usuario implements Serializable {
 	public static final int ALUNO = 1, PROFESSOR = 2, COORDENADOR = 3,
 			ADMINISTRADOR = 4, SECRETARIA = 5;
@@ -123,7 +123,15 @@ public class Usuario implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "idDepartamento", nullable = true)
 	private Departamento departamento;
-
+	
+	/**
+		Relacionamendo N pra 1 entra Usuario e Usuario.
+		Um usuario tem 1 usuário como orientador, e 1 orientador orienta N usuários
+	*/
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "idOrientador", nullable = true)
+	private Usuario orientador;
+	
 	/**
 	 * Relacionamento 1 para N entre Usuario e TCC. Mapeada em {@link TCC} pela
 	 * variável {@code aluno} e retorno do tipo {@code LAZY} que indica que não
@@ -313,6 +321,15 @@ public class Usuario implements Serializable {
 		return this.tipoUsuario.getIdTipoUsuario() != 2 ? 
 				(this.curso.getNomeCurso() != null ? this.curso.getNomeCurso() : "Nenhum curso") : 
 					(this.departamento.getNomeDepartamento() != null ? this.departamento.getNomeDepartamento() : "Nenhum departamento");
+	}
+	
+
+	public Usuario getOrientador() {
+		return orientador;
+	}
+
+	public void setOrientador(Usuario orientador) {
+		this.orientador = orientador;
 	}
 
 	public void copy(Usuario another) {
