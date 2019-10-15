@@ -138,7 +138,8 @@ public class TCCDAO extends GenericoDAO {
 		try {
 			Query query = getSession()
 					.createQuery(
-							"SELECT t FROM TCC AS t JOIN FETCH t.aluno JOIN FETCH t.orientador LEFT JOIN FETCH t.coOrientador WHERE t.orientador = :user OR t.coOrientador = :user");
+							"SELECT DISTINCT t FROM TCC AS t JOIN FETCH t.aluno JOIN FETCH t.orientador LEFT JOIN FETCH t.coOrientador LEFT JOIN FETCH t.participacoes AS ps "
+							+ " LEFT JOIN FETCH ps.professor AS prof WHERE t.orientador = :user OR t.coOrientador = :user");
 			query.setParameter("user", user);
 			results = query.list();
 			getSession().close();
@@ -156,7 +157,8 @@ public class TCCDAO extends GenericoDAO {
 		try {
 			Query query = getSession()
 					.createQuery(
-							"SELECT t FROM TCC AS t JOIN FETCH t.aluno JOIN FETCH t.orientador LEFT JOIN FETCH t.coOrientador LEFT JOIN t.participacoes AS p WHERE p.professor = :user");
+							"SELECT t FROM TCC AS t JOIN FETCH t.aluno JOIN FETCH t.orientador LEFT JOIN FETCH t.coOrientador LEFT JOIN FETCH t.participacoes AS p "
+							+ " WHERE p.professor = :user");
 			query.setParameter("user", user);
 			results = query.list();
 			getSession().close();
