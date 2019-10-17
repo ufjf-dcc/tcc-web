@@ -243,7 +243,7 @@
 					<row>
 						<label value="Orientador:" />
 						<combobox id="comboOrientador" width="100%"
-							readonly="true" model="@load(vm.professoresECoordenadoresByDepartamento)"
+							readonly="true" model="@load(vm.allByDepartamento)"
 							value="@load(vm.newUsuario.orientador ne null ? vm.newUsuario.orientador.nomeUsuario : 'Nenhum')"
 							selectedItem="@bind(vm.newUsuario.orientador)"
 							disabled="true" autodrop="true">
@@ -373,7 +373,7 @@
 					<row visible="false">
 						<label value="Orientador:" />
 						<combobox id="comboOrientador" width="100%"
-							readonly="true" model="@load(vm.professoresECoordenadoresByDepartamento)"
+							readonly="true" model="@load(vm.allByDepartamento)"
 							selectedItem="@bind(vm.editUsuario.orientador)"
 							disabled="false">
 							<template name="model">

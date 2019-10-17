@@ -124,8 +124,8 @@ public class GerenciamentoUsuarioController extends CommonsController {
 		return filterUsuarios;
 	}
 	
-	public List<Usuario> getProfessoresECoordenadoresByDepartamento(){
-		return usuarioBusiness.getProfessoresECoordenadoresByDepartamento(getUsuario().getDepartamento());
+	public List<Usuario> getAllByDepartamento(){
+		return usuarioBusiness.getAllByDepartamento(getUsuario().getDepartamento());
 	}
 
 	public List<Usuario> getUsuariosCSV() {

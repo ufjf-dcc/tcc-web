@@ -187,29 +187,6 @@ public class UsuarioDAO extends GenericoDAO {
 		return null;
 	}
 	
-	@SuppressWarnings("unchecked")
-	public List<Usuario> getProfessoresECoordenadoresByDepartamento(Departamento departamento) {
-		try {
-			Query query = getSession().createQuery("SELECT u FROM Usuario as u "
-													+ "LEFT JOIN FETCH u.departamento LEFT JOIN FETCH u.tipoUsuario tp "
-													+ "WHERE (tp.idTipoUsuario = :professor "
-													+ "OR tp.idTipoUsuario = :coordenador) "
-													+ "AND u.departamento = :departamento "
-													+ "ORDER BY u.nomeUsuario");
-			query.setParameter("professor", Usuario.PROFESSOR);
-			query.setParameter("coordenador", Usuario.COORDENADOR);
-			query.setParameter("departamento", departamento);
-
-			List<Usuario> usuarios = query.list();
-			getSession().close();
-			return usuarios;
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return null;
-	}
 
 
 	public List<Usuario> getAllByDepartamento(Departamento departamento) {
