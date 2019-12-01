@@ -24,12 +24,14 @@ import org.zkoss.zul.Window;
 import br.ufjf.tcc.business.AvisoBusiness;
 import br.ufjf.tcc.business.CursoBusiness;
 import br.ufjf.tcc.business.PrazoBusiness;
+import br.ufjf.tcc.business.ParticipacaoBusiness;
 import br.ufjf.tcc.business.QuestionarioBusiness;
 import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.model.Aviso;
 import br.ufjf.tcc.model.CalendarioSemestre;
 import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.model.Prazo;
+import br.ufjf.tcc.model.Participacao;
 import br.ufjf.tcc.model.Questionario;
 import br.ufjf.tcc.model.TCC;
 import br.ufjf.tcc.model.Usuario;
@@ -47,6 +49,7 @@ public class HomeProfessorController extends CommonsController {
 	private List<Prazo> prazos;
 	private int currentPrazo = 0;
 	private PrazoBusiness prazoBusiness = new PrazoBusiness();
+	private int typeSelecionado = 0;
 
 	/*
 	 * Pega todas as TCCs em que o Prof/Coord tem Participação e verifica se o
@@ -228,8 +231,9 @@ public class HomeProfessorController extends CommonsController {
 	@NotifyChange("filterTccs")
 	@Command
 	public void filterType(@BindingParam("type") int type) {
+		this.typeSelecionado = type;
 		int idUsuarioLogado = getUsuario().getIdUsuario();
-		switch (type) {
+		switch (typeSelecionado) {
 		case 0:
 			filterTccs = showAll ? allTccs : tccs;
 			break;
@@ -246,19 +250,31 @@ public class HomeProfessorController extends CommonsController {
 		case 2:
 			filterTccs = new ArrayList<TCC>();
 			for (TCC t : showAll ? allTccs : tccs){
-				int idOrientador = t.getOrientador().getIdUsuario();
-				int idCoOrientador = t.getCoOrientador() !=null ? t.getCoOrientador().getIdUsuario() : idUsuarioLogado;
-				if (idOrientador != idUsuarioLogado && idCoOrientador != idUsuarioLogado)
+				if (isInParticipacoesTCC(getUsuario(), t))
 					filterTccs.add(t);
 			}
 			break;
 		}
 	}
+	
+	private boolean isInParticipacoesTCC(Usuario professor, TCC t) {
+		List<Participacao> parts = new ParticipacaoBusiness().getParticipacoesUsuarioByTCC(t);
+		for (Participacao participacao : parts) {
+			if(participacao.getProfessor().getIdUsuario() == professor.getIdUsuario()){
+				return true;
+			}
+		}
+		return false;
+	}
 
 	@NotifyChange("filterTccs")
 	@Command
 	public void showAllTccs() {
-		filterTccs = showAll ? allTccs : tccs;
+		if(showAll){
+			filterTccs = allTccs;
+		}else{
+			filterType(this.typeSelecionado);
+		}
 	}
 
 	// Formata a data de apresentação para String
@@ -266,7 +282,7 @@ public class HomeProfessorController extends CommonsController {
 	public void getTCCApresentacao(@BindingParam("tcc") TCC tcc,
 			@BindingParam("lbl") Label lbl) {
 		if (tcc.getDataApresentacao() != null) {
-			DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy, hh:mm");
+			DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy, HH:mm");
 			lbl.setValue(dateFormat.format(tcc.getDataApresentacao()));
 			if (tcc.getSalaDefesa() != null)
 				lbl.setValue(lbl.getValue() + " - Sala " + tcc.getSalaDefesa());

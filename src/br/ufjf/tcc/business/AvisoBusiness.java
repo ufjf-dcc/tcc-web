@@ -22,8 +22,10 @@ public class AvisoBusiness {
 
 	public boolean validate(Aviso aviso) {
 		errors.clear();
-
-		aviso.setMensagem(aviso.getMensagem().trim());
+		if(aviso.getMensagem()!=null){
+			aviso.setMensagem(aviso.getMensagem().trim());
+		}
+		aviso.setMensagem(aviso.getMensagem());
 		validarMensagem(aviso.getMensagem());
 
 		return errors.size() == 0;
