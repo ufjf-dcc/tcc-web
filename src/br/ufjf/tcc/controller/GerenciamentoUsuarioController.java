@@ -805,6 +805,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 		        if (evt.getName().equals("onYes")) {
 					usuario.setAtivo(check.isChecked());
 					usuarioBusiness.editar(usuario);
+					System.out.println("Aluno foi ativado");
 		        } 
 		        else
 		        	check.setChecked(usuario.isAtivo());

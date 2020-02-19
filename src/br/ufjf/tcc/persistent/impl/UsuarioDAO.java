@@ -139,7 +139,7 @@ public class UsuarioDAO extends GenericoDAO {
 							"select t from TipoUsuario t join fetch t.permissoes where t.idTipoUsuario = :idTipoUsuario");
 			query.setParameter("idTipoUsuario", usuario.getTipoUsuario()
 					.getIdTipoUsuario());
-
+			getSession().close();
 			return ((TipoUsuario) query.uniqueResult()).getPermissoes();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -268,7 +268,7 @@ public class UsuarioDAO extends GenericoDAO {
 			query.setParameter("curso", curso);
 			query.setParameter("tipo", Usuario.COORDENADOR);
 
-			coordenadores =  query.list();
+			coordenadores = (List<Usuario>) query.list();
 
 			getSession().close();
 

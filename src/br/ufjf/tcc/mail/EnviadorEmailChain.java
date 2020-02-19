@@ -36,7 +36,7 @@ public abstract class EnviadorEmailChain {
 			EmailBuilder emailBuilder = gerarEmail(tcc, statusInicial);
 			email.enviar(emailBuilder);
 			
-			next(tcc, statusInicial);
+			//next(tcc, statusInicial);
 		} catch (RuntimeException e) {
 			e.printStackTrace();
 		}

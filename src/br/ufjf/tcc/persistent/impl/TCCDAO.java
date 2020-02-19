@@ -357,6 +357,30 @@ public class TCCDAO extends GenericoDAO {
 
 	    return null;
 	}
+	
+	public List<TCC> getNotFinishedProjectsByCalendar(CalendarioSemestre calendar){
+		List<TCC> projects = null;
+		try {
+			Query query = getSession().createQuery(
+								"SELECT t FROM TCC AS t "
+						+		"LEFT JOIN FETCH t.aluno "
+						+		"LEFT JOIN FETCH t.aluno.curso "
+						+		"LEFT JOIN FETCH t.orientador "
+						+ 		"LEFT JOIN FETCH t.participacoes "
+						+ 		"LEFT JOIN FETCH t.calendarioSemestre "
+						+ 		"WHERE t.dataEnvioFinal IS NULL "
+						+ 		"AND t.calendarioSemestre = :currentCalendar "
+						+ 		"AND t.projeto = :projeto"
+					);
+			query.setParameter("currentCalendar", calendar);
+			query.setParameter("projeto", true);
+			projects = (List<TCC>) query.list();
+			getSession().close();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return projects;
+	}
 
 	public List<TCC> getNotFinishedTCCsAndProjectsByCursoAndCalendar(Curso curso, CalendarioSemestre currentCalendar) {
 	    try {
@@ -427,26 +451,23 @@ public class TCCDAO extends GenericoDAO {
 		
 	}
 	
-	public TCC getCurrentNotFinishedTCCByAuthor(Usuario user,
-			CalendarioSemestre currentCalendar) {
-			TCC resultado = null;
-			try {
+	public TCC getCurrentNotFinishedTCCByAuthor(Usuario user, CalendarioSemestre currentCalendar) {
+		TCC resultado = null;
+		try {
 			Query query = getSession()
 			.createQuery(
 			"SELECT t FROM TCC AS t JOIN FETCH t.aluno AS a JOIN FETCH a.curso JOIN FETCH t.orientador LEFT JOIN FETCH t.coOrientador LEFT JOIN FETCH t.participacoes AS p LEFT JOIN FETCH p.professor WHERE t.aluno = :user AND t.calendarioSemestre = :currentCalendar AND t.dataEnvioFinal IS NULL");
 			query.setParameter("user", user);
 			query.setParameter("currentCalendar", currentCalendar);
+	        resultado = (TCC) query.uniqueResult();
+	        getSession().close();
 
-			        resultado = (TCC) query.uniqueResult();
-
-			        getSession().close();
-
-			    } catch (Exception e) {
-			        e.printStackTrace();
-			    }
-
-			    return resultado;
-			}
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	
+	    return resultado;
+	}
 	
 	
 	public List<TCC> getNotFinishedTCCsByCurso(Curso curso) {

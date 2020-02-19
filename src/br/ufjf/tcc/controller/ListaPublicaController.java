@@ -17,6 +17,7 @@ import org.zkoss.zul.Messagebox;
 import br.ufjf.tcc.business.CursoBusiness;
 import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.library.FileManager;
+import br.ufjf.tcc.mail.EmailListener;
 import br.ufjf.tcc.model.Curso;
 import br.ufjf.tcc.model.TCC;
 import br.ufjf.tcc.persistent.impl.TCCDAO;
@@ -33,6 +34,7 @@ public class ListaPublicaController extends CommonsController {
 	private List<TCC> filterTccs = tccsByCurso;
 	private String filterString = "";
 	private String filterYear = "Todos";
+	private EmailListener emailListener = new EmailListener();
 
 	public String getEmptyMessage() {
 		return emptyMessage;

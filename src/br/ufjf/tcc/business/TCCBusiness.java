@@ -140,6 +140,10 @@ public class TCCBusiness {
 		return tccDao.getTCCsByCurso(curso);
 	}
 	
+	public List<TCC> getNotFinishedProjectsByCalendar(CalendarioSemestre currentCalendar){
+		return tccDao.getNotFinishedProjectsByCalendar(currentCalendar);
+	}
+	
 	public TCC getCurrentTCCByAuthor(Usuario user, CalendarioSemestre currentCalendar) {
 		if(currentCalendar != null)
 			return tccDao.getCurrentTCCByAuthor(user, currentCalendar);
@@ -379,13 +383,13 @@ public class TCCBusiness {
 	public String getStatusCorridoTCC(TCC tcc)
 	{
 		if(isProjetoAguardandoAprovacao(tcc))
-			return "Projeto aguardando aprovação";
+			return "Projeto aguardando aprovaï¿½ï¿½o";
 		else
 		if(isProjetoIncompleto(tcc))
 			return "Projeto incompleto";
 		else
 		if(isTrabalhoAguardandoAprovacao(tcc))
-			return "Trabalho aguardando aprovação";
+			return "Trabalho aguardando aprovaï¿½ï¿½o";
 		else
 		if(isTrabalhoIncompleto(tcc))
 			return "Trabalho incompleto";
