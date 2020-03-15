@@ -28,6 +28,9 @@ import br.ufjf.tcc.business.TCCBusiness;
 public class TCC implements Serializable,Comparable<TCC> {
 
 	private static final long serialVersionUID = 1L;
+	
+	public static final int PI = 0, PR = 1, PAA = 2, TI = 3,
+			TR = 4, TAA = 5, APROVADO = 6;
 
 	/**
 	 * Campo com ID do TCC. Relaciona com a coluna {@code idTCC} do banco e é
@@ -247,6 +250,11 @@ public class TCC implements Serializable,Comparable<TCC> {
 	@Column(name = "certificadoDigital", length = 255, nullable = true)
 	private String certificadoDigital;
 	
+	@Column(name = "justificativaReprovacao", nullable = true)
+	private String justificativaReprovacao;
+	
+	@Column(name = "status", nullable = true)
+	private int status;
 
 	public TCC() {
 
@@ -443,6 +451,16 @@ public class TCC implements Serializable,Comparable<TCC> {
 	public void setProjeto(boolean projeto) {
 		this.projeto = projeto;
 	}
+	
+	public int getStatus()
+	{
+		return this.status;
+	}
+	
+	public void setStatus(int status)
+	{
+		this.status = status;
+	}
 
 	public String getStatusTCC()
 	{
@@ -523,6 +541,14 @@ public class TCC implements Serializable,Comparable<TCC> {
 	
 	public void setCertificadoDigital(String certificadoDigital) {
 		this.certificadoDigital = certificadoDigital;
+	}
+	
+	public String getJustificativaReprovacao() {
+		return justificativaReprovacao;
+	}
+	
+	public void setJustificativaReprovacao(String justificativaReprovacao) {
+		this.justificativaReprovacao = justificativaReprovacao;
 	}
 	
 	public List<Usuario> getProfessoresParticipacoes() {

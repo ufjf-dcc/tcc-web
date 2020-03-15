@@ -77,6 +77,11 @@
 							<label value="Status" style="font-size: 14px; font-weight: bold; margin-top: 10px" />
 							<label value="@load(vm.tcc.getStatusCorridoTCC())" />
 							
+							<label value="Justificativa da reprovacao"
+									visible="@load(not empty vm.tcc.justificativaReprovacao)"
+									style="font-size: 14px; font-weight: bold; margin-top: 10px;" />
+							<label value="@load(vm.tcc.justificativaReprovacao)" style="text-align:justify;"/>
+							
 							<div visible="@load(vm.exibeBaixarTrabExtra)">
 								<label value="Arquivos extras" style="font-size: 14px; font-weight: bold; margin-top: 10px" />
 								<div
@@ -95,6 +100,8 @@
 							<div id="verifica" visible="@load(vm.coordenador and not vm.finalizado)">
 								<button image="/img/confirm.gif" label="Aprovar projeto" visible="@load(vm.projeto and vm.projetoAguardandoAprovacao)" onClick="@command('finalizaProjeto', window=windowTCC)"  width="100%"
 								height="30px" style="margin-top:10px"/>
+								<button image="/img/cancel.png" label="Reprovar projeto" visible="@load(vm.projeto and vm.projetoAguardandoAprovacao)" onClick="@command('abrirModalReprovacao', window=modalReprovacao)"  width="100%"
+								height="30px" style="margin-top:10px"/>
 								
 								<div  align="center" style="position:relative;top:20px;text-align:center" >
 									<label  style="padding:1px;color:red" value="Documentos ainda não foram entregues" visible="@load(!vm.tcc.entregouDoc and !vm.tcc.projeto and vm.tcc.statusTCC eq 'TAA')" />
@@ -102,7 +109,7 @@
 									<button disabled="@load(!(vm.tcc.entregouDoc and vm.tcc.trabFinal))" image="/img/confirm.gif" label="Aprovar trabalho" visible="@load(not vm.projeto and vm.trabalhoAguardandoAprovacao)" onClick="@command('finalizaTrabalho', window=windowTCC)"  width="100%"
 								height="30px"  style="margin-top:10px;"/>
 								</div>								
-							</div>							
+							</div>				
 						</tabpanel>
 						<tabpanel
 							visible="@load(vm.canAnswer ? 'true' : 'false')" height="100%"
@@ -152,5 +159,17 @@
 					onCreate="@command('showTCC', iframe=self)" />
 			</div>
 		</div>
+		<window id="modalReprovacao" title="Reprovar projeto"
+			visible="false" width="350px" border="normal"
+			position="center,center" closable="true"
+			onClose="self.setVisible(false); event.stopPropagation();">
+			<label value="Justificativa: " style="margin:5px;" />
+			<textbox value="@bind(vm.tcc.justificativaReprovacao)"
+				rows="12" width="98%" style="margin:5px;" />
+			<div align="center" style="margin:15px" >
+				<button label="Salvar"
+					onClick="@command('reprovar', window=modalReprovacao)" width="100%" height="30px"/>
+			</div>
+		</window>
 	</window>
 </zk>

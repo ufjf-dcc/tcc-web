@@ -4,7 +4,9 @@ import java.io.InputStream;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.zkoss.bind.annotation.BindingParam;
@@ -18,7 +20,6 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Grid;
 import org.zkoss.zul.Iframe;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
@@ -34,7 +35,6 @@ import br.ufjf.tcc.library.FileManager;
 import br.ufjf.tcc.library.SessionManager;
 import br.ufjf.tcc.mail.Email;
 import br.ufjf.tcc.mail.EmailBuilder;
-import br.ufjf.tcc.model.CalendarioSemestre;
 import br.ufjf.tcc.model.Participacao;
 import br.ufjf.tcc.model.Pergunta;
 import br.ufjf.tcc.model.Resposta;
@@ -459,6 +459,20 @@ public class VisualizaTCCController extends CommonsController {
 		    }
 		});
 
+	}
+	
+	@Command
+	public void abrirModalReprovacao(@BindingParam("window") Window window)
+	{
+		window.doModal();
+	}
+	
+	@Command
+	public void reprovar(@BindingParam("window") Window window)
+	{
+		TCCBusiness tccBusiness = new TCCBusiness();
+		tccBusiness.edit(tcc);
+		window.setVisible(false);
 	}
 	
 	@SuppressWarnings({"unchecked", "rawtypes"})
