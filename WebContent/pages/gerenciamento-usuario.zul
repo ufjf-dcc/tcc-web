@@ -11,10 +11,10 @@
 			mold="paging" pageSize="10" vflex="true">
 			<auxhead sclass="text-center">
 				<auxheader label="Usuários cadastrados no sistema"
-					colspan="9" />
+					colspan="10" />
 			</auxhead>
 			<auxhead>
-				<auxheader colspan="9">
+				<auxheader colspan="10">
 					<div>
 						<div style="float:left">
 							<textbox id="filtro"
@@ -61,6 +61,7 @@
 					sort="auto(cursoOuDepartamento)" />
 				<column label="Tipo" hflex="1"
 					sort="auto(tipoUsuario.nomeTipoUsuario)" />
+				<column label="Orientador" hflex="2" sort="auto(orientador)" />
 				<column hflex="1" label="Titulação"
 					sort="auto(titulacao)" />
 				<column width="50px" label="Ativo" sort="auto(ativo)" />
@@ -105,7 +106,7 @@
 						</combobox>
 					</div>
 
-					<combobox readonly="true" width="100%"
+					<combobox readonly="false" width="100%"
 						value="@load(each.tipoUsuario.nomeTipoUsuario)"
 						model="@load(vm.tiposUsuario)"
 						selectedItem="@bind(each.tipoUsuario)"
@@ -138,10 +139,15 @@
 					<label value="@load(each.matricula)" />
 					<label value="@load(each.nomeUsuario)" />
 					<label value="@load(each.email)" />
-					<label
-						value="@load(each.tipoUsuario.idTipoUsuario ne 2 ? (each.curso.nomeCurso ne null ? each.curso.nomeCurso : 'Nenhum curso') : (each.departamento.nomeDepartamento ne null ? each.departamento.nomeDepartamento : 'Nenhum departamento'))" />
-					<label
-						value="@load(each.tipoUsuario.nomeTipoUsuario)" />
+					<label value="@load(each.tipoUsuario.idTipoUsuario ne 2 ? 
+						(each.curso.nomeCurso ne null ? each.curso.nomeCurso : 'Nenhum curso') : 
+						(each.departamento.nomeDepartamento ne null ? each.departamento.nomeDepartamento : 'Nenhum departamento'))"
+					/>
+					<label value="@load(each.tipoUsuario.nomeTipoUsuario)" />
+					<label value="@load(each.tipoUsuario.idTipoUsuario ne 1 ? 
+							'Esse tipo de usuario não possui orientador' : 
+							(each.orientador.nomeUsuario ne null ? each.orientador.nomeUsuario : 'Nenhum orientador'))" 
+					/>
 					<label value="@load(each.titulacao)" />
 					<checkbox checked="@load(each.ativo)"
 						disabled="false" onClick="@command('mudarAtivo',check=self,usuario=each)"/>
@@ -169,7 +175,7 @@
 						<combobox id="cmbTipoUsuario" width="100%"
 							readonly="true" model="@load(vm.tiposUsuarioSelecionado)"
 							selectedItem="@bind(vm.newUsuario.tipoUsuario)"
-							onChange="@command('typeChange', titu=txtTitu, comboc=comboCurso, combod=comboDepartamento, label=login, senha=senha)">
+							onChange="@command('typeChange', titu=txtTitu, comboc=comboCurso, combod=comboDepartamento, label=login, senha=senha, comorient=comboOrientador)">
 							<template name="model">
 								<comboitem
 									label="@load(each.nomeTipoUsuario)" />
@@ -233,7 +239,21 @@
 							</template>
 						</combobox>
 					</row>
-			
+
+					<row>
+						<label value="Orientador:" />
+						<combobox id="comboOrientador" width="100%"
+							readonly="true" model="@load(vm.allByDepartamento)"
+							value="@load(vm.newUsuario.orientador ne null ? vm.newUsuario.orientador.nomeUsuario : 'Nenhum')"
+							selectedItem="@bind(vm.newUsuario.orientador)"
+							disabled="true" autodrop="true">
+							<template name="model">
+								<comboitem
+									label="@load(each.nomeUsuario)" />
+							</template>
+						</combobox>
+					</row>
+
 					<row>
 						<label  value="Senha:" />
 						<textbox id="senha"
@@ -348,8 +368,20 @@
 					<row visible="true">
 						<label value="Alterar Tipo:" />
 						<button id="alterarTipo" onClick="@command('trocarTipo',window=editUsuario)" />
-						
 					</row>
+
+					<row visible="false">
+						<label value="Orientador:" />
+						<combobox id="comboOrientador" width="100%"
+							readonly="true" model="@load(vm.allByDepartamento)"
+							selectedItem="@bind(vm.editUsuario.orientador)"
+							disabled="false">
+							<template name="model">
+								<comboitem label="@load(each.nomeUsuario)" />
+							</template>
+						</combobox>
+					</row>
+
 				</rows>
 			</grid>
 			<div align="center">

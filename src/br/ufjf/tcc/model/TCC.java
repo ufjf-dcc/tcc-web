@@ -24,7 +24,7 @@ import br.ufjf.tcc.business.TCCBusiness;
  * 
  */
 @Entity
-@Table(name = "TCC")
+@Table(name = "tcc")
 public class TCC implements Serializable,Comparable<TCC> {
 
 	private static final long serialVersionUID = 1L;
@@ -174,6 +174,17 @@ public class TCC implements Serializable,Comparable<TCC> {
 	{@code @Column(name = "projeto", nullable = false)}. */ 
 	@Column(name = "projeto", nullable = false) 
 	private boolean projeto;
+	
+	/**
+	 * Compo que indica se os e-mails de alerta já foram enviados
+	 * # 0 => nenhum e-mail de aviso enviado
+	 * # 1 => e-mail de aviso de prazo para finalização do projeto enviado
+	 * # 2 => e-mail de aviso de prazo para informar dados de defesa.
+	 * # 3 => e-mail de aviso de prazo para colocar trabalho para banca no sistema
+	 * # 4 => e-mail de aviso de prazo para colocar versão final do trabalho no sistema
+	 */
+	@Column(name = "emailsAlertaEnviados")
+	private int emailsAlertaEnviados;
 	
 	@Column(name = "entregouDoc", nullable = false) 
 	private boolean entregouDoc;
@@ -571,4 +582,26 @@ public class TCC implements Serializable,Comparable<TCC> {
 	{
 		return (new TCCBusiness()).isTarefasDentroDoPrazo(this);
 	}
+
+	/*
+	 * Retorna o campo no banco de dados que diz
+	 * se o e-mail de alerta foi enviado
+	 */
+	public boolean isEmailAlertaPrazoProjetoSubmetidoEnviado() {
+		return this.emailsAlertaEnviados > 0;
+	}
+	public boolean isEmailAlertaPrazoDadosDefesaEnviado() {
+		return this.emailsAlertaEnviados > 1;
+	}
+	public boolean isEmailAlertaPrazoTrabalhoEnviado() {
+		return this.emailsAlertaEnviados > 2;
+	}
+	public boolean isEmailAlertaPrazoTrabalhoFinaloEnviado() {
+		return this.emailsAlertaEnviados > 3;
+	}
+
+	public void setEmailAlertaEnviado(int emailAlerta) {
+		this.emailsAlertaEnviados = emailAlerta;
+	}
+	
 }

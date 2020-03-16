@@ -139,7 +139,11 @@ public class TCCBusiness {
 	public List<TCC> getTCCsByCurso(Curso curso) {
 		return tccDao.getTCCsByCurso(curso);
 	}
-
+	
+	public List<TCC> getNotFinishedProjectsByCalendar(CalendarioSemestre currentCalendar){
+		return tccDao.getNotFinishedProjectsByCalendar(currentCalendar);
+	}
+	
 	public TCC getCurrentTCCByAuthor(Usuario user, CalendarioSemestre currentCalendar) {
 		if (currentCalendar != null)
 			return tccDao.getCurrentTCCByAuthor(user, currentCalendar);
@@ -396,18 +400,18 @@ public class TCCBusiness {
 		case TCC.PR:
 			return "Projeto reprovado";
 		case TCC.PAA:
-			return "Projeto aguardando aprovação";
+			return "Projeto aguardando aprovaï¿½ï¿½o";
 		case TCC.TI:
 			return "Trabalho incompleto";
 		case TCC.TR:
 			return "Trabalho reprovado";
 		case TCC.TAA:
-			return "Trabalho aguardando aprovação";
+			return "Trabalho aguardando aprovaï¿½ï¿½o";
 		case TCC.APROVADO:
 			return "Aprovado";
 		default:
 			return "";
-	}
+		}
 	}
 
 	public boolean excluitTCC(TCC tcc) {
