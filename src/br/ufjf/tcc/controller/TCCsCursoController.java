@@ -5,7 +5,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.BindingParam;
@@ -15,8 +18,10 @@ import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zhtml.Filedownload;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Window;
 
 import br.ufjf.tcc.business.TCCBusiness;
 import br.ufjf.tcc.library.FileManager;
@@ -35,6 +40,7 @@ public class TCCsCursoController extends CommonsController {
 	private int tipoTrabalho = 0; // 0=todos, 1 = projeto, 2 = trabalho
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss.S");
 	private boolean podeMarcarTrabFinal = false;
+	private int idTccModal = 0;
 
 	@Init
 	public void init() {
@@ -132,7 +138,6 @@ public class TCCsCursoController extends CommonsController {
 	@NotifyChange({ "filterTccs", "filterYear" })
 	@Command
 	public void filtra() {
-
 		String filter = filterString.toLowerCase().trim();
 		if (tccs != null) {
 			List<TCC> temp = new ArrayList<TCC>();
@@ -462,4 +467,30 @@ public class TCCsCursoController extends CommonsController {
 		this.podeMarcarTrabFinal = podeMarcarTrabFinal;
 	}
 	
+	@Command
+	public void visualizarTCC(@BindingParam("idTCC") int idTCC, @BindingParam("btnAtualizarTCC") Button btnAtualizarTCC) {
+		idTccModal = idTCC;
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("id", idTCC);
+		map.put("btnAtualizarTCC", btnAtualizarTCC);
+		
+		final Window window = (Window) Executions.createComponents(
+				"/pages/visualiza.zul", null, map);
+		window.doModal();
+	}
+	
+	@NotifyChange("filterTccs")
+	@Command
+	public void atualizarTCC() {
+		if (idTccModal > 0) { 
+			for (int index = 0; index < filterTccs.size(); index++) {
+				TCC tcc = filterTccs.get(index);
+				
+				if (tcc.getIdTCC() == idTccModal) {				
+					TCC tccAtualizado = new TCCBusiness().getTCCById(idTccModal);
+					filterTccs.set(index, tccAtualizado);
+				}
+			}
+		}
+	}
 }

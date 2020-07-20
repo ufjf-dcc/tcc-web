@@ -23,38 +23,52 @@ public class ExibiPdfServlet extends HttpServlet {
 
 	public void service(HttpServletRequest req, HttpServletResponse res)
 			throws ServletException, IOException {
-
 		String tccId = req.getParameter("id");
-
-		if (tccId != null) {
+		
+		if (tccId != null && !tccId.isEmpty() && tccId.matches("[0-9]+")) {
 			TCCBusiness tccBusiness = new TCCBusiness();
 			tcc = tccBusiness.getTCCById(Integer.parseInt(tccId));
-
+			
+			if (tcc != null) {
+				File file = FileManager.getFile(tcc.getArquivoTCCFinal());
+				
+				if (file != null) {
+					res.setHeader("Content-Disposition", "inline; filename="+tcc.getNomeTCC());
+				
+					try {
+						outputStreamWrite(res, file);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					
+					return;
+				}
+			}
 		}
-
-		File file = FileManager.getFile(tcc.getArquivoTCCFinal());
 		
+		File file = FileManager.getFile("modelo.pdf");
 		
-		if(file==null){
-			file = FileManager.getFile("modelo.pdf");
-			res.setHeader("Content-Disposition",
-					"inline; filename=modelo.pdf");
-		}else{
-			res.setHeader("Content-Disposition",
-					"inline; filename="+tcc.getNomeTCC());
+		try {
+			outputStreamWrite(res, file);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+	}
+
+	private void outputStreamWrite(HttpServletResponse res, File file) throws IOException {
 		byte[] bytes = null;
+		
 		try {
 			bytes = fileToByte(file);
-		} catch (Exception e) {
-			
+		} catch (Exception e) {		
 			e.printStackTrace();
-		} 
+		}
+		
+		res.setHeader("Content-Disposition", "inline; filename=modelo.pdf");
 		res.setContentType("application/pdf"); 
 		res.setContentLength(bytes.length);
 		res.setStatus(200);
 		res.getOutputStream().write(bytes);
-
 	}
 
 	public static byte[] fileToByte(File imagem) throws Exception {

@@ -19,7 +19,7 @@ import org.hibernate.annotations.GenericGenerator;
  * 
  */
 @Entity
-@Table(name = "Resposta")
+@Table(name = "resposta")
 public class Resposta implements Serializable {
 
 	private static final long serialVersionUID = 1L;

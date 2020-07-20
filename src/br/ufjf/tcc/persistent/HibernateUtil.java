@@ -37,7 +37,7 @@ public class HibernateUtil {
 					.applySetting("hibernate.connection.url",ConfHandler.getConf("HIBERNATE.DB"))
 					.applySetting("hibernate.connection.username",ConfHandler.getConf("HIBERNATE.USER"))
 					.applySetting("hibernate.connection.password",ConfHandler.getConf("HIBERNATE.PASS"))
-					.applySetting("dialect",ConfHandler.getConf("HIBERNATE.DIALECT"));
+					.applySetting("hibernate.dialect",ConfHandler.getConf("HIBERNATE.DIALECT"));
 			sessionFactory = configuration.buildSessionFactory(builder.build());
 		} catch (Throwable e) {
 			throw new ExceptionInInitializerError(e);

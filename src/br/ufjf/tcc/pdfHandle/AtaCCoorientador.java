@@ -77,6 +77,10 @@ public class AtaCCoorientador extends Ata {
 		form.setField("avaliador1_2", "3. "+avaliadores[2]);
 		
 		form.setField("avaliador2_2", "4. "+avaliadores[3]);
+		
+		form.setField("nomeAvaliador1_3", "(" + avaliadores[2] + ")");
+		
+		form.setField("nomeAvaliador2_3", "(" + avaliadores[3] + ")");
 
 		if (qtAvaliador >= 5) {
 			form.setField("avaliador3_2", "5. "+avaliadores[4]);
@@ -85,7 +89,7 @@ public class AtaCCoorientador extends Ata {
 			over.setTextMatrix(118, 128);
 			over.showText("__________________________");
 			over.setTextMatrix(159, 115);
-			over.showText("(Avaliador 04)");
+			over.showText("(" + avaliadores[4] + ")");
 
 			if (qtAvaliador >= 6) {
 				form.setField("avaliador4_2", "6. "+avaliadores[5]);
@@ -94,7 +98,7 @@ public class AtaCCoorientador extends Ata {
 				over.setTextMatrix(358, 128);
 				over.showText("__________________________");
 				over.setTextMatrix(399, 115);
-				over.showText("(Avaliador 05)");
+				over.showText("(" + avaliadores[5] + ")");
 			}
 		}
 	}
@@ -111,6 +115,8 @@ public class AtaCCoorientador extends Ata {
 		
 		form.setField("titulo3", DivisorString.dividirTitulo(tcc.getNomeTCC())[2]);
 		
+		form.setField("subtitulo", tcc.getSubNomeTCC());
+		
 		form.setField("orientador1", tcc.getOrientador().getNomeUsuario());
 		
 		form.setField("coorientador1", tcc.getCoOrientador().getNomeUsuario());
@@ -118,6 +124,14 @@ public class AtaCCoorientador extends Ata {
 		form.setField("avaliador1", avaliadores[2]);
 		
 		form.setField("avaliador2", avaliadores[3]);
+		
+		form.setField("nomeAvaliador1", avaliadores[2]);
+		
+		form.setField("nomeAvaliador2", avaliadores[3]);
+		
+		form.setField("nomeAvaliador1_2", "(" + avaliadores[2] + ")");
+		
+		form.setField("nomeAvaliador2_2", "(" + avaliadores[3] + ")");
 		
 		
 		if (qtAvaliador >= 5) {
@@ -130,7 +144,7 @@ public class AtaCCoorientador extends Ata {
 			over.setTextMatrix(113, 125);
 			over.showText("__________________________");
 			over.setTextMatrix(154, 112);
-			over.showText("(Avaliador 03)");
+			over.showText("(" + avaliadores[4] + ")");
 
 		}
 		if (qtAvaliador >= 6) {
@@ -142,7 +156,7 @@ public class AtaCCoorientador extends Ata {
 			over.setTextMatrix(357, 125);
 			over.showText("__________________________");
 			over.setTextMatrix(398, 112);
-			over.showText("(Avaliador 04)");
+			over.showText("(" + avaliadores[5] + ")");
 
 		}
 
@@ -160,7 +174,7 @@ public class AtaCCoorientador extends Ata {
 			tabela.setAbsolutePosition(98, 417);
 			over.addImage(tabela);
 			over.setTextMatrix(102, 424);
-			over.showText("Avaliador(a) 3");
+			over.showText(avaliadores[4]);
 		}
 
 		if (qtAvaliador == 6) {
@@ -168,9 +182,9 @@ public class AtaCCoorientador extends Ata {
 			tabela.setAbsolutePosition(98, 397);
 			over.addImage(tabela);
 			over.setTextMatrix(102, 424);
-			over.showText("Avaliador(a) 3");
+			over.showText(avaliadores[4]);
 			over.setTextMatrix(102, 404);
-			over.showText("Avaliador(a) 4");
+			over.showText(avaliadores[5]);
 		}
 	}
 	

@@ -67,4 +67,10 @@
 	    <listener-class>org.zkoss.jsp.spec.JspFactoryContextListener</listener-class>
 	</listener>
 	
+	<env-entry> 
+	    <env-entry-name>config-path</env-entry-name>
+	    <env-entry-type>java.lang.String</env-entry-type>
+	    <env-entry-value>/home/caio/Workspaces/eclipse-workspace/tcc-web/config.txt</env-entry-value> 
+	</env-entry>
+	
 </web-app>

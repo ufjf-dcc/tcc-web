@@ -1,0 +1,55 @@
+<?page title="Validar Certificado Digital - UFJF"?>
+<zk>
+<div apply="org.zkoss.bind.BindComposer"
+	viewModel="@id('vm') @init('br.ufjf.tcc.controller.CertificacaoDigitalController')"
+	style="background-color:#efefef;" height="94.3%">
+	<include src="@load(vm.menu)" />
+	
+	<hlayout height="10%" style="display: table; margin: 0 auto; margin-top:30px;">
+		<textbox id="certificadoDigital" style="width:600px" placeholder="Insira seu código digital"
+				 value="@bind(vm.certificadoDigital)" hflex="1"/>
+		<div align="center"
+			width="100%">
+			<button
+				label="Validar Certificado" onClick="@command('validarCertificado')" />
+		</div>
+	</hlayout>
+	<div style="display: table; margin: 0 auto; margin-top:30px;">
+		<label visible="@load(vm.naoEncontrou)" style="font-weight:bold; font-size:large;">
+	    		Nenhum certificado foi encontrado
+	    </label>
+		<label style="font-weight:bold; font-size:large;" visible="@bind(not empty vm.tcc)">
+			Este certificado é um certificado válido!
+		</label>
+	</div>
+	<div style="display: table; margin: 30px 80px;">
+    	<vbox visible="@bind(not empty vm.tcc)">
+        	<hlayout>
+            	Título: <label value="@bind(vm.tcc.nomeTCC)" style="font-weight:bold"/>
+        	</hlayout>
+        	<hlayout>
+            	Subtítulo: <label value="@bind(vm.tcc.subNomeTCC)" style="font-weight:bold"/>
+        	</hlayout>
+        	<hlayout>
+            	Resumo: <label value="@bind(vm.tcc.resumoTCC)" style="font-weight:bold"/>
+        	</hlayout>
+        	<hlayout>
+            	Aluno: <label value="@bind(vm.tcc.aluno.nomeUsuario)" style="font-weight:bold"/>
+        	</hlayout>
+        	<hlayout>
+            	Orientador: <label value="@bind(vm.tcc.orientador.nomeUsuario)" style="font-weight:bold"/>
+        	</hlayout>
+        	<grid model="@load(vm.tcc.participacoes)" style="margin: auto;">
+        		<columns>
+        			<column label="Participações" />
+        		</columns>
+        		<template name="model">
+					<row>
+						<label value="@load(each.professor.nomeUsuario)" />
+					</row>
+				</template>
+        	</grid>
+    	</vbox>
+	</div>
+</div>
+</zk>

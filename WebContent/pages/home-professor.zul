@@ -58,6 +58,26 @@
 								</hlayout>
 							</div>
 						</row>
+						<row
+							visible="@load(vm.currentCalendarExists ? 'true' : 'false')">
+							<grid
+								model="@load(vm.prazos) @template('prazos')" style="margin:10px">
+								<columns>
+									<column label="Data" width="80px" />
+									<column label="Descrição" />
+								</columns>
+								<template name="prazos">
+									<row>
+										<label
+											onCreate="@command('formatDate', dataFinal=each.dataFinal, label=self)"
+											style="@load(each.tipo eq vm.currentPrazo ? 'color:#337AB7;' : (each.tipo lt vm.currentPrazo ? 'color:#D3D3D3' : ''))" />
+										<label
+											onCreate="@command('getDescription', tipo=each.tipo, label=self)"
+											style="@load(each.tipo eq vm.currentPrazo ? 'color:#337AB7;' : (each.tipo lt vm.currentPrazo ? 'color:#D3D3D3' : ''))" />
+									</row>
+								</template>
+							</grid>
+						</row>
 					</rows>
 				</grid>
 						

@@ -1,12 +1,8 @@
 <?page title="Gerenciamento de Trabalhos"?>
 <?init class="br.ufjf.tcc.controller.AuthController"?>
 <zk>
-	<script type="text/javascript">
-		function visualzarTCC(id) {
-		window.open('visualiza.zul?id='+id,'_blank'); }
-	</script>
 	<style src="/style.css" />
-	<div apply="org.zkoss.bind.BindComposer"
+	<window apply="org.zkoss.bind.BindComposer"
 		viewModel="@id('vm') @init('br.ufjf.tcc.controller.TCCsCursoController')"
 		height="100%" class="publicList">
 		<include src="@load(vm.menu)" />
@@ -106,8 +102,9 @@
 			</columns>
 			<template name="lista">
 				<row xmlns:w="client"
-					w:onClick="visualzarTCC(${each.idTCC});"
-					tooltip="${forEachStatus.index}, position=at_pointer">
+					onClick="@command('visualizarTCC', idTCC=each.idTCC, btnAtualizarTCC=btnAtualizarTCC)"
+					tooltip="${forEachStatus.index}, position=at_pointer"
+					style="@load(!each.tarefasDentroDoPrazo ? 'text-decoration: line-through;' : '')">
 					<div>
 						<label value="@load(each.dataApresentacao eq null ? '' : vm.sdf.format(each.dataApresentacao).toString().substring(0,16))" />
 						<popup id="${forEachStatus.index}">
@@ -149,7 +146,8 @@
 				</row>
 			</template>
 		</grid>
-	</div>
+		<button id="btnAtualizarTCC" label="Atualizar TCC" onClick="@command('atualizarTCC')" visible="false" />
+	</window>
 	<popup id="filterHelp">
 		<html>
 			<![CDATA[ Permite filtrar a lista de Trabalhos  com os seguintes filtros:

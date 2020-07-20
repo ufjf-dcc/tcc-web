@@ -4,20 +4,26 @@ import java.io.InputStream;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
+import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.zhtml.Filedownload;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Iframe;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Window;
 
 import br.ufjf.tcc.business.ParticipacaoBusiness;
 import br.ufjf.tcc.business.PerguntaBusiness;
@@ -34,6 +40,7 @@ import br.ufjf.tcc.model.Pergunta;
 import br.ufjf.tcc.model.Resposta;
 import br.ufjf.tcc.model.TCC;
 import br.ufjf.tcc.model.Usuario;
+import br.ufjf.tcc.pdfHandle.CartaParticipacaoBanca;
 
 public class VisualizaTCCController extends CommonsController {
 	private TCC tcc = null;
@@ -49,6 +56,7 @@ public class VisualizaTCCController extends CommonsController {
 	private boolean exibeBaixarTrabExtra;
 	private boolean possuiBanca ;
 	private boolean exibirChave ;
+	private Button btnAtualizarTCC;
 
 	public String getPageTitle() {
 		return pageTitle;
@@ -59,26 +67,27 @@ public class VisualizaTCCController extends CommonsController {
 	}
 
 	@Init
-	public void init() {
-		
-		
-		
-		String tccId = Executions.getCurrent().getParameter("id");
+	public void init(@ExecutionArgParam("id") int id, @ExecutionArgParam("btnAtualizarTCC") Button btnAtualizarTCC) {
+		Integer tccId = id;
+		this.btnAtualizarTCC = btnAtualizarTCC;
 
 		if (tccId != null) {
 			TCCBusiness tccBusiness = new TCCBusiness();
-			tcc = tccBusiness.getTCCById(Integer.parseInt(tccId));
+			tcc = tccBusiness.getTCCById(tccId);
 		}
+		
 		if(tcc.getParticipacoes().isEmpty())
 			possuiBanca = false;
 		else
 			possuiBanca=true;
+		
 		this.exibirBaixarProjeto = exibirBaixarProjeto();
 		this.exibirTrabalhoBanca = exibirTrabalho();
 		this.exibirBaixarTrabalhoBanca = exibirBaixarTrabalhoBanca();
 		this.exibeBaixarProjExtra = exibirBaixarProjetoExtra();
 		this.exibeBaixarTrabExtra = exibirBaixarTrabalhoExtra();
 		this.exibirChave = exibirChave();
+		
 		if (tcc != null && canViewTCC()) {
 			if (getUsuario() != null && checkLogin()) {
 				if (canAnswer) {
@@ -86,7 +95,7 @@ public class VisualizaTCCController extends CommonsController {
 							.getQuestionsByQuestionary(new QuestionarioBusiness()
 									.getCurrentQuestionaryByCurso(tcc
 											.getAluno().getCurso()));
-
+					
 					Participacao p = null;
 					List<Participacao> participacoes = new ParticipacaoBusiness().getParticipacoesByUser(getUsuario());
 					for (Participacao aux : participacoes) {
@@ -206,12 +215,14 @@ public class VisualizaTCCController extends CommonsController {
 		if(thisBtn!=null)
 		thisBtn.setStyle("background: -webkit-linear-gradient(#08c, #2E2EFE);background: -o-linear-gradient(#08c, #2E2EFE);background: -moz-linear-gradient(#08c, #2E2EFE);background: linear-gradient(#08c, #2E2EFE);color:white");
 		
-		InputStream is;
+		InputStream is = null;
+		
 		if (tcc.getArquivoTCCFinal() != null)
 			is = FileManager.getFileInputSream(tcc.getArquivoTCCFinal());
 		else if (tcc.getArquivoTCCBanca() != null)
 			is = FileManager.getFileInputSream(tcc.getArquivoTCCBanca());
-		else
+		
+		if (is == null)
 			is = FileManager.getFileInputSream("modelo.pdf");
 
 		final AMedia amedia = new AMedia(tcc.getNomeTCC() + ".pdf", "pdf",
@@ -409,7 +420,7 @@ public class VisualizaTCCController extends CommonsController {
 	
 	@SuppressWarnings({"unchecked","rawtypes"})
 	@Command
-	public void finalizaProjeto()
+	public void finalizaProjeto(@BindingParam("window") final Window window)
 	{
 		Messagebox.show("Você tem certeza que deseja validar esse projeto?", "Confirmação", Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new org.zkoss.zk.ui.event.EventListener() {
 		    public void onEvent(Event evt) throws InterruptedException {
@@ -434,7 +445,13 @@ public class VisualizaTCCController extends CommonsController {
 						inserirDestinatarios(alunos, emailBuilder);
 						enviarEmail(emailBuilder);
 						SessionManager.setAttribute("trabalhos_semestre",true);
-						Executions.sendRedirect("/pages/tccs-curso.zul");
+						//Executions.sendRedirect("/pages/tccs-curso.zul");
+						
+						if (btnAtualizarTCC != null)
+							Events.sendEvent(new Event("onClick", btnAtualizarTCC));
+						
+						if (window != null)
+							window.detach();
 					}
 					else
 						Messagebox.show("O projeto não esta completo");
@@ -444,9 +461,23 @@ public class VisualizaTCCController extends CommonsController {
 
 	}
 	
+	@Command
+	public void abrirModalReprovacao(@BindingParam("window") Window window)
+	{
+		window.doModal();
+	}
+	
+	@Command
+	public void reprovar(@BindingParam("window") Window window)
+	{
+		TCCBusiness tccBusiness = new TCCBusiness();
+		tccBusiness.edit(tcc);
+		window.setVisible(false);
+	}
+	
 	@SuppressWarnings({"unchecked", "rawtypes"})
 	@Command
-	public void finalizaTrabalho()
+	public void finalizaTrabalho(@BindingParam("window") final Window window)
 	{
 		Messagebox.show("Você tem certeza que deseja finalizar esse Trabalho?\nApós a aprovação, o trabalho será publicado para acesso público", "Confirmação", Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new org.zkoss.zk.ui.event.EventListener() {
 		    public void onEvent(Event evt) throws InterruptedException {
@@ -459,6 +490,7 @@ public class VisualizaTCCController extends CommonsController {
 			        	tcc.setArquivoExtraTCCFinal(tcc.getArquivoExtraTCCBanca());
 			        	tcc.setArquivoTCCBanca(null);
 			        	tcc.setArquivoExtraTCCBanca(null);
+			        	tcc.setCertificadoDigital(gerarCertificadoDigital());
 			        	UsuarioBusiness ub = new UsuarioBusiness();
 						new TCCBusiness().edit(tcc);
 						tcc.getAluno().setAtivo(false);
@@ -473,8 +505,65 @@ public class VisualizaTCCController extends CommonsController {
 						alunos.add(tcc.getAluno());
 						inserirDestinatarios(alunos, emailBuilder);
 						enviarEmail(emailBuilder);
+						
+						
+						for(Participacao p : tcc.getParticipacoes()) {
+							String nomeMembro = p.getProfessor().getNomeUsuario();
+							emailBuilder = new EmailBuilder(true).comTitulo("[TCC_WEB] Carta de participação da banca");
+							emailBuilder.appendMensagem("Prezado(a) " + nomeMembro + " ");
+							emailBuilder.appendMensagem(" Gostaríamos de agradecer, em nome do curso " + tcc.getAluno().getCurso().getNomeCurso() + " a sua participação como ");
+							emailBuilder.appendMensagem(" Membro em Banca Examinadora do Trabalho de Conclusão de Curso, conforme as especificações: ");
+							emailBuilder.appendMensagem(" Candidato: " + tcc.getAluno().getNomeUsuario());
+							emailBuilder.appendMensagem(" Orientador: " + tcc.getOrientador().getNomeUsuario());
+							if(tcc.getCoOrientador() != null)
+								emailBuilder.appendMensagem(" Coorientador: " + tcc.getCoOrientador().getNomeUsuario());
+							emailBuilder.appendMensagem(" Titulo: " + tcc.getNomeTCC());
+							emailBuilder.appendMensagem(" Data da defesa (data): " + tcc.getDataApresentacao());
+							emailBuilder.appendMensagem(" Banca Examinadora: ");
+							for(Participacao membros : tcc.getParticipacoes()) {
+								emailBuilder.appendMensagem(membros.getProfessor().getNomeUsuario());
+							}
+							emailBuilder.appendMensagem(" Atensiosamente, ");							
+							
+							CartaParticipacaoBanca cartaParticipacao = new CartaParticipacaoBanca();								
+							try {
+								
+								
+								
+								String CoOrientador = "";
+								
+								
+								
+								if(tcc.getCoOrientador() == null)
+									CoOrientador = " "; 
+								else
+									CoOrientador = tcc.getCoOrientador().getNomeUsuario();
+								cartaParticipacao.gerarCartaParticipacao(tcc.getAluno().getCurso().getNomeCurso(), nomeMembro, tcc.getAluno().getNomeUsuario(), tcc.getOrientador().getNomeUsuario(), tcc.getIdTCC(),
+										CoOrientador, tcc.getNomeTCC(), tcc.getDataApresentacao().toString(), tcc.getParticipacoes(), p.getProfessor().getMatricula(), tcc.getCertificadoDigital());
+								//emailBuilder.setFileName(cartaParticipacao.obterNomeArquivo());
+							 
+							} catch(Exception e) {
+								System.out.println("Exceção capturada ao gerar carta de participacao");
+								e.printStackTrace();
+							}
+							
+							List<Usuario> destinatarios = new ArrayList<>();
+							destinatarios.add(p.getProfessor());				
+							inserirDestinatarios(destinatarios, emailBuilder);
+							enviarEmail(emailBuilder);
+							
+							cartaParticipacao.apagarArquivo();
+						}
+						
+						
 						SessionManager.setAttribute("trabalhos_semestre",true);
-						Executions.sendRedirect("/pages/tccs-curso.zul");
+						//Executions.sendRedirect("/pages/tccs-curso.zul");
+						
+						if (btnAtualizarTCC != null)
+							Events.sendEvent(new Event("onClick", btnAtualizarTCC));
+						
+						if (window != null)
+							window.detach();
 		        	}
 		        	else
 						Messagebox.show("O projeto não esta completo");
@@ -492,6 +581,25 @@ public class VisualizaTCCController extends CommonsController {
 		} catch (RuntimeException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public String gerarCertificadoDigital() {
+		char[] caracteres = { '1', '2', '3', '4', '5', '6', '7', '8', '9', '0',
+				'A', 'B', 'D', 'E', 'F' };
+		Random r = new Random();
+		StringBuffer certificado = new StringBuffer();
+		
+		for(int i = 0; i < 5; i++) {
+			for(int j = 0; j < 5; j++) {
+				certificado.append(caracteres[r.nextInt(caracteres.length)]);				
+			}
+			if(i == 4)
+				continue;
+			certificado.append('-');
+		}
+		
+		System.out.println("certificado: " + certificado.toString());
+		return certificado.toString();
 	}
 	
 	private void inserirDestinatarios(List<Usuario> usuarios, EmailBuilder builder) {

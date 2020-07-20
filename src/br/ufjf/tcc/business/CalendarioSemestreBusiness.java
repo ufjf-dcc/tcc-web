@@ -68,4 +68,8 @@ public class CalendarioSemestreBusiness {
 	public boolean updateFimSemCalendarById(Date fim,int id) {
 		return calendarioSemestreDAO.updateFimSemCalendarById(fim, id);
 	}
+	
+	public List<CalendarioSemestre> getCurrentCalendars(){
+		return calendarioSemestreDAO.getCalendarsByDate(new Date());
+	}
 }

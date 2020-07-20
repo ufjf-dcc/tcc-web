@@ -70,8 +70,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 		if (getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.ADMINISTRADOR)
 			allUsuarios = usuarioBusiness.getAll();
 		else if (getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.COORDENADOR)
-			allUsuarios = usuarioBusiness
-					.getAllByCurso(getUsuario().getCurso());
+			allUsuarios = usuarioBusiness.getAllByCurso(getUsuario().getCurso());
 
 		filterUsuarios = allUsuarios;
 	}
@@ -113,8 +112,20 @@ public class GerenciamentoUsuarioController extends CommonsController {
 		return departamentos;
 	}
 
+	public List<Usuario> getAllUsuarios() {
+		return allUsuarios;
+	}
+
+	public void setAllUsuarios(List<Usuario> allUsuarios) {
+		this.allUsuarios = allUsuarios;
+	}
+
 	public List<Usuario> getFilterUsuarios() {
 		return filterUsuarios;
+	}
+	
+	public List<Usuario> getAllByDepartamento(){
+		return usuarioBusiness.getAllByDepartamento(getUsuario().getDepartamento());
 	}
 
 	public List<Usuario> getUsuariosCSV() {
@@ -171,7 +182,8 @@ public class GerenciamentoUsuarioController extends CommonsController {
 			@BindingParam("comboc") Combobox cmbCurso,
 			@BindingParam("combod") Combobox cmbDep,
 			@BindingParam("label") Label labelLogin,
-			@BindingParam("senha") Textbox textSenha) {
+			@BindingParam("senha") Textbox textSenha,
+			@BindingParam("comorient") Combobox orientador) {
 
 		switch (newUsuario.getTipoUsuario().getIdTipoUsuario()) {
 		case Usuario.ALUNO:
@@ -186,6 +198,8 @@ public class GerenciamentoUsuarioController extends CommonsController {
 			cmbDep.getParent().setVisible(false);
 			labelLogin.setValue("Matricula: ");
 			textSenha.getParent().setVisible(false);
+			orientador.setDisabled(false);
+			orientador.getParent().setVisible(true);
 			break;
 		case Usuario.PROFESSOR:
 			titulacao.setReadonly(false);
@@ -196,7 +210,9 @@ public class GerenciamentoUsuarioController extends CommonsController {
 			cmbDep.setDisabled(false);
 			cmbDep.getParent().setVisible(true);
 			labelLogin.setValue("SIAPE: ");
-			textSenha.getParent().setVisible(false);			
+			textSenha.getParent().setVisible(false);
+			orientador.setDisabled(true);
+			orientador.getParent().setVisible(false);
 			break;
 		case Usuario.COORDENADOR:
 			titulacao.setReadonly(false);
@@ -206,7 +222,9 @@ public class GerenciamentoUsuarioController extends CommonsController {
 			cmbDep.setDisabled(false);
 			cmbDep.getParent().setVisible(true);
 			labelLogin.setValue("SIAPE: ");
-			textSenha.getParent().setVisible(false);			
+			textSenha.getParent().setVisible(false);
+			orientador.setDisabled(true);
+			orientador.getParent().setVisible(false);
 			break;
 		case Usuario.ADMINISTRADOR:
 			newUsuario.setTitulacao(null);
@@ -220,6 +238,8 @@ public class GerenciamentoUsuarioController extends CommonsController {
 			cmbDep.getParent().setVisible(false);
 			labelLogin.setValue("Login: ");
 			textSenha.getParent().setVisible(false);
+			orientador.setDisabled(true);
+			orientador.getParent().setVisible(false);
 			break;
 		case Usuario.SECRETARIA:
 			newUsuario.setTitulacao(null);
@@ -232,7 +252,8 @@ public class GerenciamentoUsuarioController extends CommonsController {
 			cmbDep.getParent().setVisible(false);
 			labelLogin.setValue("Login: ");
 			textSenha.getParent().setVisible(true);
-
+			orientador.setReadonly(true);
+			orientador.getParent().setVisible(false);
 			break;
 		}
 		BindUtils.postNotifyChange(null, null, this, "newUsuario");
@@ -344,21 +365,16 @@ public class GerenciamentoUsuarioController extends CommonsController {
 						public void onEvent(Event event) throws Exception {
 							if(getUsuario().getTipoUsuario().getIdTipoUsuario() == Usuario.COORDENADOR)
 								if(newUsuario!=null)
-								newUsuario.setCurso(getUsuario().getCurso());
-							if (usuarioBusiness
-									.validate(newUsuario, null, true)) {
-								
-								if(newUsuario.getSenha()!=null)
+									newUsuario.setCurso(getUsuario().getCurso());
+							if (usuarioBusiness.validate(newUsuario, null, true)) {
+								if(newUsuario.getSenha() != null)
 								{
-									newUsuario.setSenha(usuarioBusiness
-											.encripta(newUsuario.getSenha()));
+									newUsuario.setSenha(usuarioBusiness.encripta(newUsuario.getSenha()));
 								}
 								else
 								{
-									String newPassword = usuarioBusiness
-											.generatePassword();
-									newUsuario.setSenha(usuarioBusiness
-											.encripta(newPassword));
+									String newPassword = usuarioBusiness.generatePassword();
+									newUsuario.setSenha(usuarioBusiness.encripta(newPassword));
 								}
 								
 								
@@ -731,6 +747,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(4)).setVisible(false);
 			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(6)).setVisible(false);
 			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(8)).setVisible(false);
+			((Row)window.getChildren().get(0).getChildren().get(1).getChildren().get(9)).setVisible(true);
 		}
 		
 	}
@@ -788,6 +805,7 @@ public class GerenciamentoUsuarioController extends CommonsController {
 		        if (evt.getName().equals("onYes")) {
 					usuario.setAtivo(check.isChecked());
 					usuarioBusiness.editar(usuario);
+					System.out.println("Aluno foi ativado");
 		        } 
 		        else
 		        	check.setChecked(usuario.isAtivo());

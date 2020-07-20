@@ -131,6 +131,25 @@ public class TCCDAO extends GenericoDAO {
 
 		return resultado;
 	}
+	
+	public TCC getTCCByCertificadoDigital(String certificadoDigital) {
+		TCC resultado = null;
+		try {
+			Query query = getSession()
+					.createQuery(
+						"SELECT t FROM TCC AS t JOIN FETCH t.aluno AS a JOIN FETCH a.curso JOIN FETCH t.orientador LEFT JOIN FETCH t.coOrientador LEFT JOIN FETCH t.participacoes AS p LEFT JOIN FETCH p.professor WHERE t.certificadoDigital = :certificadoDigital"
+						);
+			query.setParameter("certificadoDigital", certificadoDigital);
+			
+			resultado = (TCC) query.uniqueResult();
+			
+			getSession().close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return resultado;
+	}
 
 	public List<TCC> getTCCsByOrientador(Usuario user) {
 		List<TCC> results = null;
@@ -283,7 +302,7 @@ public class TCCDAO extends GenericoDAO {
 		try {
 			Query query = getSession()
 					.createSQLQuery(
-							"SELECT EXTRACT(YEAR FROM t.dataEnvioFinal) FROM TCC AS t WHERE t.dataEnvioFinal IS NOT NULL GROUP BY EXTRACT(YEAR FROM t.dataEnvioFinal) ORDER BY t.dataEnvioFinal DESC");
+							"SELECT EXTRACT(YEAR FROM t.dataEnvioFinal) FROM tcc AS t WHERE t.dataEnvioFinal IS NOT NULL GROUP BY EXTRACT(YEAR FROM t.dataEnvioFinal) ORDER BY t.dataEnvioFinal DESC");
 			
 			years.addAll(query.list());
 
@@ -339,6 +358,30 @@ public class TCCDAO extends GenericoDAO {
 	    }
 
 	    return null;
+	}
+	
+	public List<TCC> getNotFinishedProjectsByCalendar(CalendarioSemestre calendar){
+		List<TCC> projects = null;
+		try {
+			Query query = getSession().createQuery(
+								"SELECT t FROM TCC AS t "
+						+		"LEFT JOIN FETCH t.aluno "
+						+		"LEFT JOIN FETCH t.aluno.curso "
+						+		"LEFT JOIN FETCH t.orientador "
+						+ 		"LEFT JOIN FETCH t.participacoes "
+						+ 		"LEFT JOIN FETCH t.calendarioSemestre "
+						+ 		"WHERE t.dataEnvioFinal IS NULL "
+						+ 		"AND t.calendarioSemestre = :currentCalendar "
+						+ 		"AND t.projeto = :projeto"
+					);
+			query.setParameter("currentCalendar", calendar);
+			query.setParameter("projeto", true);
+			projects = (List<TCC>) query.list();
+			getSession().close();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return projects;
 	}
 
 	public List<TCC> getNotFinishedTCCsAndProjectsByCursoAndCalendar(Curso curso, CalendarioSemestre currentCalendar) {
@@ -410,26 +453,23 @@ public class TCCDAO extends GenericoDAO {
 		
 	}
 	
-	public TCC getCurrentNotFinishedTCCByAuthor(Usuario user,
-			CalendarioSemestre currentCalendar) {
-			TCC resultado = null;
-			try {
+	public TCC getCurrentNotFinishedTCCByAuthor(Usuario user, CalendarioSemestre currentCalendar) {
+		TCC resultado = null;
+		try {
 			Query query = getSession()
 			.createQuery(
 			"SELECT t FROM TCC AS t JOIN FETCH t.aluno AS a JOIN FETCH a.curso JOIN FETCH t.orientador LEFT JOIN FETCH t.coOrientador LEFT JOIN FETCH t.participacoes AS p LEFT JOIN FETCH p.professor WHERE t.aluno = :user AND t.calendarioSemestre = :currentCalendar AND t.dataEnvioFinal IS NULL");
 			query.setParameter("user", user);
 			query.setParameter("currentCalendar", currentCalendar);
+	        resultado = (TCC) query.uniqueResult();
+	        getSession().close();
 
-			        resultado = (TCC) query.uniqueResult();
-
-			        getSession().close();
-
-			    } catch (Exception e) {
-			        e.printStackTrace();
-			    }
-
-			    return resultado;
-			}
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	
+	    return resultado;
+	}
 	
 	
 	public List<TCC> getNotFinishedTCCsByCurso(Curso curso) {

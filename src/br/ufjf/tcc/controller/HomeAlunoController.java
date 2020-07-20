@@ -46,7 +46,7 @@ public class HomeAlunoController extends CommonsController {
 			
 			prazos = getCurrentCalendar().getPrazos();
 			
-			TCC tccUsuario = (new TCCBusiness()).getCurrentTCCByAuthor(getUsuario(), getCurrentCalendar(getUsuario().getCurso()));
+//			TCC tccUsuario = (new TCCBusiness()).getCurrentTCCByAuthor(getUsuario(), getCurrentCalendar(getUsuario().getCurso()));
 //			if(tccUsuario!=null)
 //			if(tccUsuario.isProjeto())
 //			{
@@ -93,6 +93,18 @@ public class HomeAlunoController extends CommonsController {
 
 	public List<String> getInfos() {
 		List<String> infos = new ArrayList<String>();
+		
+		TCC tcc = new TCCBusiness().getCurrentNotFinishedTCCByAuthor(getUsuario(), getCurrentCalendar(getUsuario().getCurso()));
+		if (tcc != null) {
+			if (tcc.getStatus() == TCC.PR) {
+				infos.add("Seu projeto foi reprovado, faça as respectivas correções conforme a justificativa: "
+						+ tcc.getJustificativaReprovacao());
+			}
+			else if (tcc.getStatus() == TCC.TR) {
+				infos.add("Seu trabalho foi reprovado, faça as respectivas correções conforme a justificativa: "
+						+ tcc.getJustificativaReprovacao());
+			}
+		}
 
 		for (Aviso aviso : (new AvisoBusiness()).getAvisosByCurso(getUsuario()
 				.getCurso()))
@@ -103,6 +115,7 @@ public class HomeAlunoController extends CommonsController {
 				&& tccBusiness.getMissing(getUsuario().getTcc().get(0), true)) {
 			infos.addAll(tccBusiness.getErrors());
 		}
+		
 		return infos;
 	}
 
@@ -122,7 +135,7 @@ public class HomeAlunoController extends CommonsController {
 	public void action(@BindingParam("tipo") int tipo,
 			@BindingParam("window") Window window) {
 		switch (tipo) {
-		case Prazo.ENTREGA_TCC_BANCA:
+		case Prazo.ENTREGA_BANCA:
 			if (getUsuario().getTcc().size() != 0) {
 				Executions.sendRedirect("/pages/editor.zul");
 			} else {

@@ -7,6 +7,10 @@ tbody.z-grid-emptybody td {
 	padding: 10px;
 }
 
+.z-grid-body {
+    height: fit-content !important;
+}
+
 .error {
 	color: #FF0000;
 }
@@ -24,6 +28,18 @@ tr.z-row td.z-row-inner {
 
 .publicList .z-row {
 	cursor: pointer;
+}
+
+.trab{
+	background: -webkit-linear-gradient(#08c, #2E2EFE);
+	background: -o-linear-gradient(#08c, #2E2EFE);
+	background: -moz-linear-gradient(#08c, #2E2EFE);
+	background: linear-gradient(#08c, #2E2EFE);
+	color:white;
+}
+		
+.trab:hover{
+	color:black;
 }
 
 .publicList .z-image {

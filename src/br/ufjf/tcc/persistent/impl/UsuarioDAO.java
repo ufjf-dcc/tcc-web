@@ -86,7 +86,7 @@ public class UsuarioDAO extends GenericoDAO {
 		try {
 			Query query = getSession()
 					.createQuery(
-							"SELECT u FROM Usuario AS u left join fetch u.departamento LEFT JOIN FETCH u.curso JOIN FETCH u.tipoUsuario WHERE u.curso = :curso ORDER BY u.idUsuario");
+							"SELECT u FROM Usuario AS u left join fetch u.departamento LEFT JOIN FETCH u.curso JOIN FETCH u.tipoUsuario LEFT JOIN FETCH u.orientador WHERE u.curso = :curso ORDER BY u.idUsuario");
 			query.setParameter("curso", curso);
 
 			List<Usuario> resultados = query.list();
@@ -139,7 +139,7 @@ public class UsuarioDAO extends GenericoDAO {
 							"select t from TipoUsuario t join fetch t.permissoes where t.idTipoUsuario = :idTipoUsuario");
 			query.setParameter("idTipoUsuario", usuario.getTipoUsuario()
 					.getIdTipoUsuario());
-
+			getSession().close();
 			return ((TipoUsuario) query.uniqueResult()).getPermissoes();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -160,7 +160,6 @@ public class UsuarioDAO extends GenericoDAO {
 			getSession().close();
 			return usuarios;
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -180,12 +179,13 @@ public class UsuarioDAO extends GenericoDAO {
 			getSession().close();
 			return usuarios;
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 		return null;
 	}
+	
+
 
 	public List<Usuario> getAllByDepartamento(Departamento departamento) {
 		try {
@@ -266,7 +266,7 @@ public class UsuarioDAO extends GenericoDAO {
 			query.setParameter("curso", curso);
 			query.setParameter("tipo", Usuario.COORDENADOR);
 
-			coordenadores =  query.list();
+			coordenadores = (List<Usuario>) query.list();
 
 			getSession().close();
 

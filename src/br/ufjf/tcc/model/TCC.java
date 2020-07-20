@@ -24,10 +24,13 @@ import br.ufjf.tcc.business.TCCBusiness;
  * 
  */
 @Entity
-@Table(name = "TCC")
+@Table(name = "tcc")
 public class TCC implements Serializable,Comparable<TCC> {
 
 	private static final long serialVersionUID = 1L;
+	
+	public static final int PI = 0, PR = 1, PAA = 2, TI = 3,
+			TR = 4, TAA = 5, APROVADO = 6;
 
 	/**
 	 * Campo com ID do TCC. Relaciona com a coluna {@code idTCC} do banco e é
@@ -172,6 +175,17 @@ public class TCC implements Serializable,Comparable<TCC> {
 	@Column(name = "projeto", nullable = false) 
 	private boolean projeto;
 	
+	/**
+	 * Compo que indica se os e-mails de alerta já foram enviados
+	 * # 0 => nenhum e-mail de aviso enviado
+	 * # 1 => e-mail de aviso de prazo para finalização do projeto enviado
+	 * # 2 => e-mail de aviso de prazo para informar dados de defesa.
+	 * # 3 => e-mail de aviso de prazo para colocar trabalho para banca no sistema
+	 * # 4 => e-mail de aviso de prazo para colocar versão final do trabalho no sistema
+	 */
+	@Column(name = "emailsAlertaEnviados")
+	private int emailsAlertaEnviados;
+	
 	@Column(name = "entregouDoc", nullable = false) 
 	private boolean entregouDoc;
 	
@@ -244,6 +258,14 @@ public class TCC implements Serializable,Comparable<TCC> {
 	@Column(name = "qtDownloads", nullable = false) 
 	private int qtDownloads;
 	
+	@Column(name = "certificadoDigital", length = 255, nullable = true)
+	private String certificadoDigital;
+	
+	@Column(name = "justificativaReprovacao", nullable = true)
+	private String justificativaReprovacao;
+	
+	@Column(name = "status", nullable = true)
+	private int status;
 
 	public TCC() {
 
@@ -440,10 +462,25 @@ public class TCC implements Serializable,Comparable<TCC> {
 	public void setProjeto(boolean projeto) {
 		this.projeto = projeto;
 	}
+	
+	public int getStatus()
+	{
+		return this.status;
+	}
+	
+	public void setStatus(int status)
+	{
+		this.status = status;
+	}
 
 	public String getStatusTCC()
 	{
 		return (new TCCBusiness()).getStatusTCC(this);
+	}
+	
+	public String getStatusCorridoTCC()
+	{
+		return (new TCCBusiness().getStatusCorridoTCC(this));
 	}
 	
 	public int compareTo(TCC outroTcc){
@@ -509,6 +546,22 @@ public class TCC implements Serializable,Comparable<TCC> {
 		this.qtDownloads = qtDownloads;
 	}
 	
+	public String getCertificadoDigital() {
+		return certificadoDigital;
+	}
+	
+	public void setCertificadoDigital(String certificadoDigital) {
+		this.certificadoDigital = certificadoDigital;
+	}
+	
+	public String getJustificativaReprovacao() {
+		return justificativaReprovacao;
+	}
+	
+	public void setJustificativaReprovacao(String justificativaReprovacao) {
+		this.justificativaReprovacao = justificativaReprovacao;
+	}
+	
 	public List<Usuario> getProfessoresParticipacoes() {
 		List<Usuario> usuarioParticipacoes = new ArrayList<>();
 		for (Participacao participacao : getParticipacoes()) {
@@ -523,6 +576,32 @@ public class TCC implements Serializable,Comparable<TCC> {
 	
 	public boolean isQuantidadeParticipacoesValidas(){
 		return getParticipacoes()!=null && getParticipacoes().size() >= 3;
+	}
+	
+	public boolean isTarefasDentroDoPrazo()
+	{
+		return (new TCCBusiness()).isTarefasDentroDoPrazo(this);
+	}
+
+	/*
+	 * Retorna o campo no banco de dados que diz
+	 * se o e-mail de alerta foi enviado
+	 */
+	public boolean isEmailAlertaPrazoProjetoSubmetidoEnviado() {
+		return this.emailsAlertaEnviados > 0;
+	}
+	public boolean isEmailAlertaPrazoDadosDefesaEnviado() {
+		return this.emailsAlertaEnviados > 1;
+	}
+	public boolean isEmailAlertaPrazoTrabalhoEnviado() {
+		return this.emailsAlertaEnviados > 2;
+	}
+	public boolean isEmailAlertaPrazoTrabalhoFinaloEnviado() {
+		return this.emailsAlertaEnviados > 3;
+	}
+
+	public void setEmailAlertaEnviado(int emailAlerta) {
+		this.emailsAlertaEnviados = emailAlerta;
 	}
 	
 }
